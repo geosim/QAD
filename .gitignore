@@ -1,21 +1,13 @@
 # SVN
 *.svn
 
-# Object files
-*.o
-*.ko
+# ECLIPSE
+*.settings
+*.project
+*.pydevproject
 
-# Libraries
-*.lib
-*.a
+# COMPILED PYTHON
+*.pyc
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
+Thumbs.db
+*.psproj

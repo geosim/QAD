@@ -1,0 +1,50 @@
+<RCC>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/arc.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/circle.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/pline.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/line.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/qad.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/setcurrlayerbygraph.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/setcurrupdateablelayerbygraph.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/dsettings.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/erase.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/mpolygon.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/mbuffer.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/rotate.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/move.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/scale.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/copy.png</file>
+    </qresource>
+    <qresource prefix="/plugins/qad" >
+        <file>icons/offset.png</file>
+    </qresource>
+</RCC>
