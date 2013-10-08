@@ -22,7 +22,7 @@
  ***************************************************************************/
 """
 
-DEBUG = True # False # True
+DEBUG = False # True
 
 if DEBUG == True:
    import sys
