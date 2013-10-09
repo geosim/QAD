@@ -9,5 +9,8 @@
 # COMPILED PYTHON
 *.pyc
 
+# debug
+qad_debug.*
+
 Thumbs.db
 *.psproj
