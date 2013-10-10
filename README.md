@@ -1,7 +1,7 @@
 QAD
 ===
 
-Quantum Aided Design - Cad Tools plugin for QGIS 1.8
+Quantum Aided Design - Cad Tools plugin for QGIS 1.8 (copyright by Iren Acqua Gas SpA, Genova, Italy)
 
 Developers:
 Roberto Poltini (roberto.poltini@irenacquagas.it)
