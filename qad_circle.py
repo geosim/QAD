@@ -122,6 +122,13 @@ class QadCircle():
       if distFromCenters == 0: # stesso centro
          return result
       distFromCirc = distFromCenters - self.radius - circle.radius
+
+      # se è così vicino allo zero da considerarlo = 0
+      if qad_utils.doubleNear(distFromCirc, 0, 1.e-9):
+         angle = qad_utils.getAngleBy2Pts(self.center, circle.center)
+         result.append(qad_utils.getPolarPointByPtAngle(self.center, angle, self.radius))
+         return result
+         
       if distFromCirc > 0: # i cerchi sono troppo distanti
          return result
 
@@ -135,7 +142,10 @@ class QadCircle():
          x1 = x1 / (2 * (circle.center.x() - self.center.x()))
          x2 = x1         
          D = radius2_self - ((x1 - self.center.x()) * (x1 - self.center.x()))
-         if D < 0: # non si può fare la radice quadrata di un numero negativo
+         # se D è così vicino a zero 
+         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+            D = 0
+         elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
          E = math.sqrt(D)
          
@@ -153,7 +163,10 @@ class QadCircle():
          B = (2 * a * b) - (2 * self.center.x()) - (2 * a * self.center.y())
          C = (b * b) - (2 * self.center.y() * b) + x2_self + y2_self - radius2_self
          D = (B * B) - (4 * A * C)
-         if D < 0: # non si può fare la radice quadrata di un numero negativo
+         # se D è così vicino a zero 
+         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+            D = 0
+         elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
          E = math.sqrt(D)
          
@@ -184,7 +197,10 @@ class QadCircle():
          B = -2 * self.center.y()
          C = x2_self + y2_self + (p1.x() * p1.x()) - (2* p1.x() * self.center.x()) - radius2_self
          D = (B * B) - (4 * C) 
-         if D < 0: # non si può fare la radice quadrata di un numero negativo
+         # se D è così vicino a zero 
+         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+            D = 0
+         elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
          E = math.sqrt(D)
          
@@ -201,7 +217,10 @@ class QadCircle():
          C = x2_self + (q * q) + y2_self - (2 * q * self.center.y()) - radius2_self
               
          D = (B * B) - 4 * A * C
-         if D < 0: # non si può fare la radice quadrata di un numero negativo
+         # se D è così vicino a zero 
+         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+            D = 0
+         elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
          E = math.sqrt(D)
       
@@ -299,7 +318,7 @@ class QadCircle():
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
-      if dummy <= 0: # se la tolleranza è troppo bassa ripsetto al raggio
+      if dummy <= 0: # se la tolleranza è troppo bassa rispetto al raggio
          SegmentLen = self.radius
       else:
          dummy      = (self.radius * self.radius) - (dummy * dummy)
@@ -346,7 +365,7 @@ class QadCircle():
       if (totPoints - 1) - startVertex < atLeastNSegment or atLeastNSegment < 2:
          return None
 
-      epsilon = 1.e-2
+      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
 
       InfinityLinePerpOnMiddle1 = None
       InfinityLinePerpOnMiddle2 = None
@@ -378,10 +397,11 @@ class QadCircle():
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
+                  maxDifference = radius * epsilon
          else: # e sono già stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
-            if qad_utils.doubleNear(radius, dist, epsilon):
+            if qad_utils.doubleNear(radius, dist, maxDifference):
                nSegment = nSegment + 1 # anche questo segmento fa parte del cerchio
             else: # questo segmento non fa parte del cerchio
                #qad_debug.breakPoint()

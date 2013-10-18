@@ -58,7 +58,10 @@ class QadOFFSETCommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.entity = QadEntity()
+      self.subGeom = None
       self.offSet = QadVariables.get("OFFSETDIST")
+      self.lastOffSetOnLeftSide = 0
+      self.lastOffSetOnRightSide = 0
       self.firstPt = QgsPoint()
       self.eraseEntity = False
       self.multi = False
@@ -85,38 +88,53 @@ class QadOFFSETCommandClass(QadCommandClass):
    #============================================================================
    # addFeatureCache
    #============================================================================
-   def addFeatureCache(self, newPt):      
+   def addFeatureCache(self, newPt):
       featureCacheLen = len(self.featureCache)
       layer = self.entity.layer
-      feature = self.entity.getFeature()
-      transformedNewPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
-      subGeom = qad_utils.getSubGeom(feature.geometry(), newPt)
+      f = self.entity.getFeature()
+      transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
 
       # ritorna una tupla (<The squared cartesian distance>,
       #                    <minDistPoint>
       #                    <afterVertex>
       #                    <leftOf>)
-      dummy = qad_utils.closestSegmentWithContext(transformedPt, subGeom)
+      dummy = qad_utils.closestSegmentWithContext(transformedPt, self.subGeom)
       if self.offSet < 0:
          afterVertex = dummy[2]
-         pt = qad_utils.getPerpendicularPointOnInfinityLine(subGeom.vertexAt(afterVertex - 1), \
-                                                            subGeom.vertexAt(afterVertex), \
-                                                            newPt)
-         offSetDistance = qad_utils.getDistance(newPt, pt)
-      else:
-         offSetDistance = self.offSet
-      
-      lines = qad_utils.offSetPolyline(subGeom.asPolyline(), \
+         pt = qad_utils.getPerpendicularPointOnInfinityLine(self.subGeom.vertexAt(afterVertex - 1), \
+                                                            self.subGeom.vertexAt(afterVertex), \
+                                                            transformedPt)
+         offSetDistance = qad_utils.getDistance(transformedPt, pt)
+      else:        
+         offSetDistance = qad_utils.distMapToLayerCoordinates(self.offSet, \
+                                                              self.plugIn.canvas,\
+                                                              layer)                     
+         if self.multi == True:
+            if dummy[3] < 0: # alla sinistra
+               offSetDistance = offSetDistance + self.lastOffSetOnLeftSide
+               self.lastOffSetOnLeftSide = offSetDistance
+               self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide                     
+            else: # alla destra
+               offSetDistance = offSetDistance + self.lastOffSetOnRightSide
+               self.lastOffSetOnRightSide = offSetDistance            
+               self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
+
+      #qad_debug.breakPoint()
+      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get("TOLERANCE2APPROXCURVE"), \
+                                                                  self.plugIn.canvas,\
+                                                                  layer)      
+      lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), \
                                        offSetDistance, \
-                                       "left" if dummy[2] < 0 else "right", \
-                                       self.gapType)
+                                       "left" if dummy[3] < 0 else "right", \
+                                       self.gapType, \
+                                       tolerance2ApproxCurve)
       for line in lines:
          if layer.geometryType() == QGis.Polygon:
             offsetGeom = QgsGeometry.fromPolygon([line])
          else:
             offsetGeom = QgsGeometry.fromPolyline(line)
 
-         if g.isGeosValid():           
+         if offsetGeom.isGeosValid():           
             offsetFeature = QgsFeature(f)                              
             offsetFeature.setGeometry(offsetGeom)
             self.featureCache.append([layer, offsetFeature])
@@ -167,7 +185,7 @@ class QadOFFSETCommandClass(QadCommandClass):
    def offsetGeoms(self):
       featuresLayers = [] # lista di (layer, features)
       
-      qad_debug.breakPoint()   
+      #qad_debug.breakPoint()   
       for f in self.featureCache:
          layer = f[0]
          feature = f[1]
@@ -189,7 +207,8 @@ class QadOFFSETCommandClass(QadCommandClass):
    #============================================================================
    def waitForDistance(self):      
       # imposto il map tool
-      self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_FIRST_OFFSET_PT)                                
+      self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_FIRST_OFFSET_PT)
+      self.getPointMapTool().gapType = self.gapType                        
 
       # "Punto" "Cancella"
       keyWords = QadMsg.get(224) + " " + QadMsg.get(225)
@@ -215,8 +234,12 @@ class QadOFFSETCommandClass(QadCommandClass):
    #============================================================================
    def waitForObjectSel(self):      
       # imposto il map tool
-      self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_ENTITY_SELECTION)                                
-
+      self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_ENTITY_SELECTION)                                      
+      self.lastOffSetOnLeftSide = 0
+      self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide
+      self.lastOffSetOnRightSide = 0
+      self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
+      
       # "Esci" "ANnulla"
       keyWords = QadMsg.get(227) + " " + QadMsg.get(228)
       
@@ -318,7 +341,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                value = self.getPointMapTool().point
          else: # il punto arriva come parametro della funzione
             value = msg
-
+         
          if type(value) == unicode:
             if value == QadMsg.get(224): # "Punto"
                self.offSet = -1
@@ -392,20 +415,23 @@ class QadOFFSETCommandClass(QadCommandClass):
                return True
             elif value == QadMsg.get(228): # "ANnulla"
                self.undoGeomsInCache()
+               # si appresta ad attendere la selezione di un oggetto
+               self.waitForObjectSel()
          elif type(value) == QgsPoint: # se è stato selezionato un punto
             if entity is not None and entity.isInitialized(): # se è stata selezionata una entità
                self.entity.set(entity.layer, entity.featureId)
                self.getPointMapTool().layer = self.entity.layer
                geom = entity.getGeometry()
                transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.entity.layer, value)
-               #qad_debug.breakPoint()             
+
                # ritorna una tupla (<The squared cartesian distance>,
                #                    <minDistPoint>
                #                    <afterVertex>
                #                    <leftOf>)
                dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
                if dummy[2] is not None:
-                  self.getPointMapTool().subGeom = qad_utils.getSubGeom(geom, dummy[2])
+                  self.subGeom = qad_utils.getSubGeom(geom, dummy[2])
+                  self.getPointMapTool().subGeom = self.subGeom
                   if self.offSet < 0: # richiesta di punto di passaggio
                      self.waitForPassagePt()
                   else:  # richiesta la parte dell'oggetto
@@ -450,8 +476,16 @@ class QadOFFSETCommandClass(QadCommandClass):
                   self.waitForSidePt()               
                elif value == QadMsg.get(228): # "ANnulla"
                   self.undoGeomsInCache()               
+                  # si appresta ad attendere la selezione di un oggetto
+                  self.waitForObjectSel()
             elif type(value) == QgsPoint: # se è stato selezionato un punto            
-               self.addFeatureCache(value)       
+               self.addFeatureCache(value) 
+               if self.multi == False:
+                  # si appresta ad attendere la selezione di un oggetto
+                  self.waitForObjectSel()
+               else:
+                  # richiesta la parte dell'oggetto
+                  self.waitForSidePt()
 
          return False
 
@@ -489,8 +523,16 @@ class QadOFFSETCommandClass(QadCommandClass):
                   self.waitForPassagePt()               
                elif value == QadMsg.get(228): # "ANnulla"
                   self.undoGeomsInCache()               
+                  # si appresta ad attendere la selezione di un oggetto
+                  self.waitForObjectSel()
             elif type(value) == QgsPoint: # se è stato selezionato un punto            
                self.addFeatureCache(value)       
+               if self.multi == False:
+                  # si appresta ad attendere la selezione di un oggetto
+                  self.waitForObjectSel()
+               else:
+                  # richiesta di punto di passaggio
+                  self.waitForPassagePt()
 
          return False
 

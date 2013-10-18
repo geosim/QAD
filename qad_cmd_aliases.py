@@ -53,9 +53,10 @@ class QadCommandAliasesClass():
       """
       Dato l'alias restituisce il nome del comando 
       """
-      UpperAlias = alias
-      result = self.__commandAliases.get(UpperAlias.upper())
-      return result
+      if type(alias) == str or type(alias) == unicode: 
+         return self.__commandAliases.get(alias.upper())
+      else:
+         return self.__commandAliases.get(alias.toUpper())
 
 
    #============================================================================

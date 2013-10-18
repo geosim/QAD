@@ -111,14 +111,17 @@ def str2bool(s):
 #===============================================================================
 # str2QgsPoint
 #===============================================================================
-def str2QgsPoint(s, lastPoint = None, currenPoint = None):
+def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = True):
    """
    Ritorna la conversione di una stringa in punto QgsPoint
+   se <oneNumberAllowed> = False significa che s non può essere un solo numero
+   che rappresenterebbe la distanza dall'ultimo punto con angolo in base al punto corrente
+   (questo viene vietato quando si vuole accettare un numero o un punto)
    lastPoint viene usato solo per le espressioni tipo @10<45 (dall'ultimo punto, lunghezza 10, angolo 45 gradi)
    o @ (dall'ultimo punto)
    o @10,20 (dall'ultimo punto, + 10 per la X e + 20 per la Y)
-   o 100 (dall'ultimo punto, lunghezza 100, angolo in base al punto corrente)
-   """
+   o 100 (dall'ultimo punto, distanza 100, angolo in base al punto corrente)
+   """   
    expression = s.strip() # senza spazi iniziali e finali
    if len(expression) == 0:
       return None
@@ -161,6 +164,9 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None):
             return None
          return QgsPoint(x, y)
       else:
+         if oneNumberAllowed == False: # vietato che la stringa sia un solo numero
+            return None
+         
          dist = str2float(expression)
 
          if (dist is None) or (lastPoint is None) or (currenPoint is None):
@@ -1215,17 +1221,32 @@ def getInfinityLinePerpOnMiddle(pt1, pt2):
 #===============================================================================
 # getBisectorInfinityLine
 #===============================================================================
-def getBisectorInfinityLine(pt1, pt2, pt3):
+def getBisectorInfinityLine(pt1, pt2, pt3, acuteMode = True):
    """
    dato un angolo definito da 3 punti il cui secondo punto è vertice dell'angolo,
    la funzione restituisce la linea bisettrice dell'angolo attraverso 2 punti 
-   della linea (il vertice dell'angolo e un altro punto calcolato distante 10).
+   della linea (il vertice dell'angolo e un altro punto calcolato distante quanto
+   la distanza di pt1 da pt2).
+   acuteMode = True considera l'angolo acuto, acuteMode = False l'angolo ottuso 
    """   
    angle1 = getAngleBy2Pts(pt2, pt1)
    angle2 = getAngleBy2Pts(pt2, pt3)
    angle = (angle1 + angle2) / 2 # angolo medio
-   return pt2, getPolarPointByPtAngle(pt2, angle, 10)
-
+#   return pt2, getPolarPointByPtAngle(pt2, angle, 10)
+   
+   dist = getDistance(pt1, pt2)
+   ptProj = getPolarPointByPtAngle(pt2, angle, dist)
+   ptInverseProj = getPolarPointByPtAngle(pt2, angle - math.pi, dist)
+   if getDistance(pt1, ptProj) < getDistance(pt1, ptInverseProj):
+      if acuteMode == True:
+         return pt2, ptProj
+      else:
+         return pt2, ptInverseProj
+   else:
+      if acuteMode == True:
+         return pt2, ptInverseProj
+      else:
+         return pt2, ptProj
 
 #===============================================================================
 # getXOnInfinityLine
@@ -1338,11 +1359,17 @@ def isAngleBetweenAngles(startAngle, endAngle, angle):
       _angle = (math.pi * 2) - _angle
       
    if startAngle < endAngle:
-      if _angle >= startAngle and _angle <= endAngle:
+      if (_angle > startAngle or doubleNear(_angle, startAngle, 1.e-9)) and \
+         (_angle < endAngle or doubleNear(_angle, endAngle, 1.e-9)):
          return True      
    else:
-      if (_angle >= 0 and _angle <= endAngle) or (_angle <= (math.pi * 2) and _angle >= startAngle): 
-         return True
+      if (_angle > 0 or doubleNear(_angle, 0, 1.e-9)) and \
+         (_angle < endAngle or doubleNear(_angle, endAngle, 1.e-9)):
+         return True      
+
+      if (_angle < (math.pi * 2) or doubleNear(_angle, (math.pi * 2), 1.e-9)) and \
+         (_angle > startAngle or doubleNear(_angle, startAngle, 1.e-9)):
+         return True      
    
    return False
 
@@ -1362,7 +1389,7 @@ def getPolarPointBy2Pts(p1, p2, dist):
 #===============================================================================
 def isPtOnSegment(p1, p2, point):
    """
-   la funzione ritorna true se il punto è sulo segmento.
+   la funzione ritorna true se il punto è sul segmento (estremi compresi).
    """
    if p1[0] < p2[0]:
       xMin = p1[0]
@@ -1377,9 +1404,11 @@ def isPtOnSegment(p1, p2, point):
    else:
       yMax = p1[1]
       yMin = p2[1]
-      
-   if point[0] >= xMin and point[0] <= xMax and \
-      point[1] >= yMin and point[1] <= yMax:
+            
+   if (point[0] > xMin or doubleNear(point[0], xMin, 1.e-9)) and \
+      (point[0] < xMax or doubleNear(point[0], xMax, 1.e-9)) and \
+      (point[1] > yMin or doubleNear(point[1], yMin, 1.e-9)) and \
+      (point[1] < yMax or doubleNear(point[1], yMax, 1.e-9)):
       return True
    else:
       return False  
@@ -1983,26 +2012,938 @@ def getSubGeom(geom, atVertex):
 
 
 #===============================================================================
-# offSetAuxiliary
+# getOffSetCircle
 #===============================================================================
-def offSetAuxiliary(offSetDist, offSetSide, mode, pt1, pt2, pt3 = None):
-   AngleToAdd = math.pi if offSetSide == "right" else -math.pi 
+def getOffSetCircle(circle, offSetDist, offSetSide):
+   """
+   la funzione ritorna l'offset di un cerchio
+   secondo una distanza e un lato di offset ("internal" o "external")        
+   """
+   if offSetSide == "internal":
+      # offset verso l'interno del cerchio
+      radius = circle.radius - offSetDist
+      if radius <= 0:
+         return None
+   else:
+      # offset verso l'esterno del cerchio
+      radius = circle.radius + offSetDist
+
+   result = QadCircle(circle)
+   result.radius = radius
+       
+   return result
+
+
+#===============================================================================
+# getOffSetArc
+#===============================================================================
+def getOffSetArc(arc, offSetDist, offSetSide):
+   """
+   la funzione ritorna l'offset di un arco
+   secondo una distanza e un lato di offset ("internal" o "external")        
+   """
+   if offSetSide == "internal":
+      # offset verso l'interno del cerchio
+      radius = arc.radius - offSetDist
+      if radius <= 0:
+         return None
+   else:
+      # offset verso l'esterno del cerchio
+      radius = arc.radius + offSetDist
+
+   result = QadArc(arc)
+   result.radius = radius
+       
+   return result
+
+
+#===============================================================================
+# getOffSetLine
+#===============================================================================
+def getOffSetLine(pt1, pt2, offSetDist, offSetSide):
+   """
+   la funzione ritorna l'offset di una linea (lista di 2 punti)
+   secondo una distanza e un lato di offset ("right" o "left")        
+   """
+   if offSetSide == "right":
+      AngleProjected = getAngleBy2Pts(pt1, pt2) - (math.pi / 2)
+   else:
+      AngleProjected = getAngleBy2Pts(pt1, pt2) + (math.pi / 2)
    # calcolo il punto proiettato
-   pt1Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
+   pt1Proj = getPolarPointByPtAngle(pt1, AngleProjected, offSetDist)
+   pt2Proj = getPolarPointByPtAngle(pt2, AngleProjected, offSetDist)
+       
+   return [pt1Proj, pt2Proj]
 
-   if pt3 is None:
-      return pt1Proj
+#===============================================================================
+# bridgeTheGapBetweenLines_offset
+#===============================================================================
+def bridgeTheGapBetweenLines_offset(line1, line2, offSetDist, gapType, tolerance2ApproxCurve = None):
+   """
+   la funzione colma il vuoto tra 2 linee di cui si è fatto l'offset.  
+   secondo una distanza ed un modo <gapType>:
+   0 = Estende i segmenti di linea alle relative intersezioni proiettate
+   1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
+       Il raggio di ciascun segmento di arco è uguale alla distanza di offset
+   2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
+       La distanza perpendicolare da ciascuna cima al rispettivo vertice
+       sull'oggetto originale è uguale alla distanza di offset.
+   tolerance2ApproxCurve = errore minimo di tolleranza
+   
+   Ritorna una lista di 3 elementi (None in caso di errore):   
+   una linea che sostituisce <line1>, se = None <line1> va rimossa
+   un arco, se = None non c'è arco di raccordo tra le due linee
+   una linea che sostituisce <line2>, se = None <line2> va rimossa
+   """
+   # cerco il punto di intersezione tra le due linee
+   ptInt = getIntersectionPointOn2InfinityLines(line1[0], line1[1], line2[0], line2[1])
+   if ptInt is None: # linee parallele
+      return None
+   distBetweenLine1Pt1AndPtInt = getDistance(line1[0], ptInt)
+   distBetweenLine1Pt2AndPtInt = getDistance(line1[1], ptInt)
+   distBetweenLine2Pt1AndPtInt = getDistance(line2[0], ptInt)
+   distBetweenLine2Pt2AndPtInt = getDistance(line2[1], ptInt)
+   
+   if gapType == 0: # Estende i segmenti     
+      if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
+         # secondo punto di line1 più vicino al punto di intersezione
+         newLine1 = [line1[0], ptInt]
+      else:
+         # primo punto di line1 più vicino al punto di intersezione
+         newLine1 = [ptInt, line1[1]]
+         
+      if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
+         # secondo punto di line2 più vicino al punto di intersezione
+         newLine2 = [line2[0], ptInt]
+      else:
+         # primo punto di line2 più vicino al punto di intersezione
+         newLine2 = [ptInt, line2[1]]
+      
+      return [newLine1, None, newLine2]
+   elif gapType == 1: # Raccorda i segmenti      
+      angleLine1 = getAngleBy2Pts(ptInt, line1[0])   
+      angleLine2 = getAngleBy2Pts(ptInt, line2[0])   
 
-#          # calcolo i punti proiettati
-#          pt1Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
-#          pt2Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
-#          # calcolo punto di intersezione tra le righe proiettate
-#          intPt = getIntersectionPointOn2InfinityLines()
-#          # la funzione ritorna una numero < 0 se il punto di intersezione è alla sinistra della linea
-#          # pt1 e pt1Proj
-#          if leftOfLine(intPt, pt1, pt1Proj) < 0:
+      bisectorLine = getBisectorInfinityLine(line1[1], ptInt, line2[1], True)
+      angleBisectorLine = getAngleBy2Pts(bisectorLine[0], bisectorLine[1])
 
+      # calcolo l'angolo (valore assoluto) tra un lato e la bisettrice            
+      alfa = angleLine1 - angleBisectorLine
+      if alfa < 0:
+         alfa = angleBisectorLine - angleLine1      
+      if alfa > math.pi:
+         alfa = (2 * math.pi) - alfa 
 
+      distFromPtInt = offSetDist / math.sin(alfa)
+      pt1Proj = getPolarPointByPtAngle(ptInt, angleLine1, distFromPtInt)
+      pt2Proj = getPolarPointByPtAngle(ptInt, angleLine2, distFromPtInt)
+      # Pitagora
+      distFromPtInt = math.sqrt((distFromPtInt * distFromPtInt) + (offSetDist * offSetDist))      
+      secondPt = getPolarPointByPtAngle(ptInt, angleBisectorLine, distFromPtInt - offSetDist)
+      arc = QadArc()
+      arc.fromStartSecondEndPts(pt1Proj, secondPt, pt2Proj)
+      
+      if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
+         # secondo punto di line1 più vicino al punto di intersezione
+         newLine1 = [line1[0], pt1Proj]
+      else:
+         # primo punto di line1 più vicino al punto di intersezione
+         newLine1 = [pt1Proj, line1[1]]      
+
+      if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
+         # secondo punto di line2 più vicino al punto di intersezione
+         newLine2 = [line2[0], pt2Proj]
+      else:
+         # primo punto di line2 più vicino al punto di intersezione
+         newLine2 = [pt2Proj, line2[1]]
+      
+      # se i punti sono così vicini da essere considerati uguali         
+      inverse = False if ptNear(newLine1[1], arc.getStartPt(), 1.e-9) else True
+      return [newLine1, [arc, inverse], newLine2]
+   elif gapType == 2: # Cima i segmenti
+      bisectorLine = getBisectorInfinityLine(line1[1], ptInt, line2[1], True)
+      angleBisectorLine = getAngleBy2Pts(bisectorLine[0], bisectorLine[1])
+      ptProj = getPolarPointByPtAngle(ptInt, angleBisectorLine, offSetDist)
+
+      pt1Proj = getPerpendicularPointOnInfinityLine(line1[0], line1[1], ptProj)
+      if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
+         # secondo punto di line1 più vicino al punto di intersezione
+         newLine1 = [line1[0], pt1Proj]
+      else:
+         # primo punto di line1 più vicino al punto di intersezione
+         newLine1 = [pt1Proj, line1[1]]      
+
+      pt2Proj = getPerpendicularPointOnInfinityLine(line2[0], line2[1], ptProj)
+      if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
+         # secondo punto di line2 più vicino al punto di intersezione
+         newLine2 = [line2[0], pt2Proj]
+      else:
+         # primo punto di line2 più vicino al punto di intersezione
+         newLine2 = [pt2Proj, line2[1]]
+
+      return [newLine1, [pt1Proj, pt2Proj], newLine2]
+
+   return None
+
+#===============================================================================
+# getPartListFromPolylinePts
+#===============================================================================
+def getPartListFromPolylinePts(points):
+   """
+   la funzione ritorna una lista di segmenti e archi che compone la polilinea
+   es. (<segmento> <arco> ...).
+   Se una parte ha punto iniziale e finale coincidenti 
+   (es. 2 vertici consecutivi che si sovrappongono o arco con angolo totale = 0 oppure = 360)
+   la parte viene rimossa dalla lista.
+   
+   dove:
+    segmento = (<pt1> <pt2>)
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vert6ici della polilinea  
+   """
+   pointsLen = len(points)
+   arcList = QadArcList()
+   arcList.fromPoints(points)
+
+   # creo una lista dei segmenti e archi che formano la polilinea
+   parts = []
+   i = 0
+   while i < pointsLen - 1:   
+      # verifico il punto i + 1 fa parte di un arco
+      arcInfo = arcList.arcAt(i + 1)
+      if arcInfo is not None:
+         arc = arcInfo[0]
+         if arc.getStartPt() != arc.getEndPt():
+            # se i punti sono così vicini da essere considerati uguali         
+            inverse = False if ptNear(points[i], arc.getStartPt(), 1.e-9) else True
+            parts.append([arc, inverse])
+         startEndVertices = arcInfo[1]
+         endVertex = startEndVertices[1]
+         i = endVertex
+      else:
+         pt1 = points[i]
+         pt2 = points[i + 1]
+         if pt1 != pt2: # solo se il punto iniziale è diverso da quello finale
+            parts.append([pt1, pt2])
+         i = i + 1
+
+   return parts
+
+#===============================================================================
+# getPolylinePtsFromPartList
+#===============================================================================
+def getPolylinePtsFromPartList(parts):
+   """
+   la funzione ritorna una lista di punti che compone la polilinea formata da una lista di
+   parti di segmenti e archi
+   es. (<segmento> <arco> ...)
+   dove:
+   segmento = (<pt1> <pt2>)
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea  
+   """
+   # ottengo una lista di punti delle nuove polilinee
+   result = []
+   firstPt = True
+   for part in parts:
+      if type(part[0]) == QgsPoint: # segmento
+         if firstPt == True:
+            result.append(part[0]) 
+            firstPt = False
+         result.append(part[1])
+      else: # arco
+         arcPoints = part[0].asPolyline()
+         arcPointsLen = len(arcPoints)
+         if part[1] == False: # l'arco non è in senso inverso 
+            if firstPt == True: 
+               i = 0 
+               firstPt = False
+            else:
+               i = 1
+            while i < arcPointsLen:
+               result.append(arcPoints[i])
+               i = i + 1
+         else: # l'arco è in senso inverso
+            if firstPt == True: 
+               i = arcPointsLen - 1 
+               firstPt = False
+            else:
+               i = arcPointsLen - 2
+            while i >= 0:
+               result.append(arcPoints[i])
+               i = i - 1
+                  
+   return result
+
+#===============================================================================
+# getIntersectionPtsBetweenParts_offset
+#===============================================================================
+def getIntersectionPtsBetweenParts_offset(part, nextPart):
+   """
+   la funzione calcola i punti di intersezione tra 2 parti.
+   Ritorna una lista di punti di intersezione
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      if type(nextPart[0]) == QgsPoint: # segmento
+         ptInt = getIntersectionPointOn2InfinityLines(part[0], part[1], nextPart[0], nextPart[1])
+         if ptInt is not None: # se non sono parallele
+            if isPtOnSegment(part[0], part[1], ptInt) == True:
+               return [QgsPoint(ptInt)]
+         else:
+            # il segmento nextPart si sovrappone a part
+            if isPtOnSegment(part[0], part[1], nextPart[0]) == True and \
+               isPtOnSegment(part[0], part[1], nextPart[1]) == True:
+               return []
+            # il segmento part si sovrappone a nextPart
+            if isPtOnSegment(nextPart[0], nextPart[1], part[0]) == True and \
+               isPtOnSegment(nextPart[0], nextPart[1], part[1]) == True:
+               return []
+            if part[1] == nextPart[0] or part[1] == nextPart[1]:
+               return [QgsPoint(part[1])]
+            if part[0] == nextPart[0] or part[0] == nextPart[1]:
+               return [QgsPoint(part[0])]            
+      else: # arco
+         result = []
+         circle = QadCircle()
+         circle.set(nextPart[0].center, nextPart[0].radius)
+         ptIntList = circle.getIntersectionPointsWithline(part[0], part[1])
+         for ptInt in ptIntList:
+            if nextPart[0].isPtOnArc(ptInt) and isPtOnSegment(part[0], part[1], ptInt):
+               result.append(QgsPoint(ptInt))      
+         return result
+   else: # arco
+      if type(nextPart[0]) == QgsPoint: # segmento
+         result = []
+         circle = QadCircle()
+         circle.set(part[0].center, part[0].radius)
+         ptIntList = circle.getIntersectionPointsWithline(nextPart[0], nextPart[1])
+         for ptInt in ptIntList:
+            if part[0].isPtOnArc(ptInt) and isPtOnSegment(nextPart[0], nextPart[1], ptInt):
+               result.append(QgsPoint(ptInt))      
+         return result
+      else: # arco
+         result = []
+         circle1 = QadCircle()
+         circle1.set(part[0].center, part[0].radius)
+         circle2 = QadCircle()
+         circle2.set(nextPart[0].center, nextPart[0].radius)
+         ptIntList = circle1.getIntersectionPointsWithCircle(circle2)
+         for ptInt in ptIntList:
+            if part[0].isPtOnArc(ptInt) and nextPart[0].isPtOnArc(ptInt):
+               result.append(QgsPoint(ptInt))      
+         return result
+      
+   return []
+
+#===============================================================================
+# getIntersectionPtsBetweenExtendedParts_offset
+#===============================================================================
+def getIntersectionPtsBetweenExtendedParts_offset(part, nextPart):
+   """
+   la funzione calcola i punti di intersezione tra 2 parti prolungate.
+   Ritorna una lista di punti di intersezione
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      if type(nextPart[0]) == QgsPoint: # segmento
+         ptInt = getIntersectionPointOn2InfinityLines(part[0], part[1], nextPart[0], nextPart[1])
+         if ptInt is not None: # se non sono parallele
+            return [QgsPoint(ptInt)]
+         else:
+            # il segmento nextPart si sovrappone a part
+            if isPtOnSegment(part[0], part[1], nextPart[0]) == True and \
+               isPtOnSegment(part[0], part[1], nextPart[1]) == True:
+               return []
+            # il segmento part si sovrappone a nextPart
+            if isPtOnSegment(nextPart[0], nextPart[1], part[0]) == True and \
+               (nextPart[0], nextPart[1], part[1]) == True:
+               return []
+            if part[1] == nextPart[0] or part[1] == nextPart[1]:
+               return [QgsPoint(part[1])]
+            if part[0] == nextPart[0] or part[0] == nextPart[1]:
+               return [QgsPoint(part[0])]            
+      else: # arco
+         result = []
+         circle = QadCircle()
+         circle.set(nextPart[0].center, nextPart[0].radius)
+         return circle.getIntersectionPointsWithline(part[0], part[1])
+   else: # arco
+      if type(nextPart[0]) == QgsPoint: # segmento
+         result = []
+         circle = QadCircle()
+         circle.set(part[0].center, part[0].radius)
+         return circle.getIntersectionPointsWithline(nextPart[0], nextPart[1])
+      else: # arco
+         result = []
+         circle1 = QadCircle()
+         circle1.set(part[0].center, part[0].radius)
+         circle2 = QadCircle()
+         circle2.set(nextPart[0].center, nextPart[0].radius)
+         return circle1.getIntersectionPointsWithCircle(circle2)
+      
+   return []
+
+#===============================================================================
+# pretreatment_offset
+#===============================================================================
+def pretreatment_offset(partList, isClosedPolyline):
+   """
+   la funzione controlla le "local self intersection"> :
+   se il segmento (o arco) i-esimo e il successivo hanno 2 intersezioni allora si inserisce un vertice
+   nel segmento (o arco) i-esimo tra i 2 punti di intersezione.
+   La funzione riceve una lista di segmenti ed archi e ritorna una nuova lista di parti
+   """
+   # verifico se polilinea chiusa  
+   i = -1 if isClosedPolyline == True else 0   
+   
+   result = []
+   while i < len(partList) - 1:
+      if i == -1: # polilinea chiusa quindi prendo in esame l'ultimo segmento e il primo
+         part = partList[len(partList) - 1]
+         nextPart = partList[0]
+      else:                  
+         part = partList[i]
+         nextPart = partList[i + 1]
+
+      ptIntList = getIntersectionPtsBetweenParts_offset(part, nextPart)
+      if len(ptIntList) == 2: # 2 punti di intersezione
+         # calcolo il punto medio tra i 2 punti di intersezione in part
+         if type(part[0]) == QgsPoint: # segmento
+            ptMiddle = getMiddlePoint(ptIntList[0], ptIntList[1])
+            result.append([part[0], ptMiddle])
+            result.append([ptMiddle, part[1]])
+         else: # arco
+            arc1 = QadArc(part[0])
+            arc2 = QadArc(part[0])
+            # se i punti sono così vicini da essere considerati uguali
+            if qad_utils.ptNear(part[0].getEndPt(), ptIntList[0], 1.e-9):
+               ptInt = part[0].getEndPt()
+            else:
+               ptInt = part[0].getStartPt()
+            
+            angleInt = getAngleBy2Pts(part[0].center, ptInt)
+            arc1.endAngle = angleInt
+            arc2.startAngle = angleInt            
+            result.append([arc1, part[1]])
+            result.append([arc2, part[1]])
+      else: # un solo punto di intersezione
+         result.append(part)
+      
+      i = i + 1
+   
+   if isClosedPolyline == False: # se non è chiusa aggiungo l'ultima parte
+      if len(partList) > 1:
+         result.append(nextPart)   
+      else:
+         result.append(partList[0])   
+   
+   return result
+
+#===============================================================================
+# getIntersectionPointInfo_offset
+#===============================================================================
+def getIntersectionPointInfo_offset(part, nextPart):
+   """
+   la funzione restituisce il punto di intersezione tra le 2 parti e
+   e il tipo di intersezione per <part> e per <nextPart>.
+   Alle parti deve essere già stato fatto l'offset singolarmente:
+   
+   1 = TIP (True Intersection Point) se il punto di intersezione ottenuto estendendo 
+   le 2 parti si trova su <part>
+   
+   2  = FIP  (False Intersection Point) se il punto di intersezione ottenuto estendendo
+    
+   le 2 parti non si trova su <part>
+   3 = PFIP (Positive FIP) se il punto di intersezione è nella stessa direzione di part
+
+   4 = NFIP (Negative FIP) se il punto di intersezione è nella direzione opposta di part
+   """
+
+   ptIntList = getIntersectionPtsBetweenExtendedParts_offset(part, nextPart)
+   if len(ptIntList) == 0:
+      return None
+   elif len(ptIntList) == 1:
+      if type(part[0]) == QgsPoint: # segmento      
+         if isPtOnSegment(part[0], part[1], ptIntList[0]) == True:
+            intTypePart = 1 # TIP
+         else: # l'intersezione non è sul segmento (FIP)
+            # se la direzione è la stessa del segmento
+            if doubleNear(getAngleBy2Pts(part[0], part[1]), getAngleBy2Pts(part[0], ptIntList[0]), 1.e-9):
+               intTypePart = 3 # PFIP
+            else:
+               intTypePart = 4 # NFIP
+      else: # arco
+         if part[0].isPtOnArc(ptIntList[0]) == True:
+            intTypePart = 1 # TIP
+         else:
+            intTypePart = 2 # FIP
+
+      if type(nextPart[0]) == QgsPoint: # segmento      
+         if isPtOnSegment(nextPart[0], nextPart[1], ptIntList[0]) == True:
+            intTypeNextPart = 1 # TIP
+         else: # l'intersezione non è sul segmento (FIP)
+            # se la direzione è la stessa del segmento
+            if doubleNear(getAngleBy2Pts(nextPart[0], nextPart[1]), getAngleBy2Pts(nextPart[0], ptIntList[0]), 1.e-9):
+               intTypeNextPart = 3 # PFIP
+            else:
+               intTypeNextPart = 4 # NFIP
+      else: # arco
+         if nextPart[0].isPtOnArc(ptIntList[0]) == True:
+            intTypeNextPart = 1 # TIP
+         else:
+            intTypeNextPart = 2 # FIP
+
+      return [ptIntList[0], intTypePart, intTypeNextPart]
+   else: # 2 punti di intersezione
+      # scelgo il punto più vicino al punto finale di part     
+      if type(part[0]) == QgsPoint: # segmento
+         if getDistance(ptIntList[0], part[1]) < getDistance(ptIntList[1], part[1]):
+            ptInt = ptIntList[0]
+         else:
+            ptInt = ptIntList[1]
+
+         if isPtOnSegment(part[0], part[1], ptInt) == True:
+            intTypePart = 1 # TIP
+         else: # l'intersezione non è sul segmento (FIP)
+            # se la direzione è la stessa del segmento
+            if doubleNear(getAngleBy2Pts(part[0], part[1]), getAngleBy2Pts(part[0], ptInt), 1.e-9):
+               intTypePart = 3 # PFIP
+            else:
+               intTypePart = 4 # NFIP
+
+         # la seconda parte è sicuramente un'arco
+         if nextPart[0].isPtOnArc(ptInt) == True:
+            intTypeNextPart = 1 # TIP
+         else: # l'intersezione non è sull'arco (FIP)
+            intTypeNextPart = 2 # FIP         
+
+         return [ptInt, intTypePart, intTypeNextPart]
+      else: # arco
+         if part[1] == False: # inverse
+            finalPt = part[0].getEndPt()
+         else:
+            finalPt = part[0].getStartPt()
+
+         if getDistance(ptIntList[0], finalPt) < getDistance(ptIntList[1], finalPt):
+            ptInt = ptIntList[0]
+         else:
+            ptInt = ptIntList[1]
+
+         if part[0].isPtOnArc(ptInt) == True:
+            intTypePart = 1 # TIP
+         else: # l'intersezione non è sull'arco (FIP)
+           intTypePart = 2 # FIP         
+
+         if type(nextPart[0]) == QgsPoint: # segmento
+            if isPtOnSegment(nextPart[0], nextPart[1], ptInt) == True:
+               intTypeNextPart = 1 # TIP
+            else: # l'intersezione non è sul segmento (FIP)
+               # se la direzione è la stessa del segmento
+               if doubleNear(getAngleBy2Pts(nextPart[0], nextPart[1]), getAngleBy2Pts(nextPart[0], ptInt), 1.e-9):
+                  intTypeNextPart = 3 # PFIP
+               else:
+                  intTypeNextPart = 4 # NFIP
+         else : # arco
+            if nextPart[0].isPtOnArc(ptInt) == True:
+               intTypeNextPart = 1 # TIP
+            else: # l'intersezione non è sull'arco (FIP)
+               intTypeNextPart = 2 # FIP
+                        
+         return [ptInt, intTypePart, intTypeNextPart]
+
+#===============================================================================
+# getStartPtOfPart_offset
+#===============================================================================
+def getStartPtOfPart_offset(part):
+   """
+   la funzione restituisce il punto di partenza della parte.
+   dove parte può essere:
+   segmento = (<pt1> <pt2>)
+   oppure
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea     
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      return part[0]
+   else: # arco
+      if part[1] == False:
+         return part[0].getStartPt()
+      else:
+         return part[0].getEndPt()
+
+#===============================================================================
+# setStartPtOfPart_offset
+#===============================================================================
+def setStartPtOfPart_offset(part, pt):
+   """
+   la funzione restituisce una nuova parte con il punto di partenza variato.
+   dove parte può essere:
+   segmento = (<pt1> <pt2>)
+   oppure
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea     
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      return [pt, part[1]]
+   else: # arco
+      arc = QadArc(part[0])
+      if part[1] == False: # inverse
+         arc.setStartAngleByPt(pt)
+      else:
+         arc.setEndAngleByPt(pt)
+      return [arc, part[1]]
+
+#===============================================================================
+# getEndPtOfPart_offset
+#===============================================================================
+def getEndPtOfPart_offset(part):
+   """
+   la funzione restituisce il punto finale della parte.
+   dove parte può essere:
+   segmento = (<pt1> <pt2>)
+   oppure
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea     
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      return part[1]
+   else: # arco
+      if part[1] == False:
+         return part[0].getEndPt()
+      else:
+         return part[0].getStartPt()
+
+#===============================================================================
+# setEndPtOfPart_offset
+#===============================================================================
+def setEndPtOfPart_offset(part, pt):
+   """
+   la funzione restituisce una nuova parte con il punto finale variato.
+   dove parte può essere:
+   segmento = (<pt1> <pt2>)
+   oppure
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea     
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      return [part[0], pt]
+   else: # arco
+      arc = QadArc(part[0])
+      if part[1] == False: # inverse
+         arc.setEndAngleByPt(pt)
+      else:
+         arc.setStartAngleByPt(pt)
+      return [arc, part[1]]
+   
+
+#===============================================================================
+# setStartEndPtOfPart_offset
+#===============================================================================
+def setStartEndPtOfPart_offset(part, startPt, endPt):
+   """
+   la funzione restituisce una nuova parte con il punto iniziale e finale variati.
+   dove parte può essere:
+   segmento = (<pt1> <pt2>)
+   oppure
+   arco = (<QadArc> <inverse>)
+   <inverse> = se True significa che il punto iniziale dell'arco deve essere 
+               considerato finale nel senso dei vertici della polilinea     
+   """
+   if type(part[0]) == QgsPoint: # segmento
+      return [startPt, endPt]
+   else: # arco
+      arc = QadArc(part[0])
+      if part[1] == False: # inverse
+         arc.setStartAngleByPt(startPt)
+         arc.setEndAngleByPt(endPt)
+      else:
+         arc.setStartAngleByPt(endPt)
+         arc.setEndAngleByPt(startPt)
+      return [arc, part[1]]
+   
+   
+#===============================================================================
+# fillet2Parts_offset
+#===============================================================================
+def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
+   """
+   la funzione raccorda 2 parti nei seguenti casi:   
+   1) segmento-arco (PFIP-FIP, nessuna intersezione)
+   2) arco-segmento (FIP-NFIP, nessuna intersezione)
+   3) arco-arco (nessuna intersezione)
+   """
+   #qad_debug.breakPoint()
+   # se la prima parte è un segmento      
+   if type(part[0]) == QgsPoint:
+      newNextPart = [part[1], part[0]]
+      newPart = [nextPart[0], not nextPart[1]]
+      newOffSetSide = "left" if offSetSide == "right" else "right"
+      result = fillet2Parts_offset(newPart, newNextPart, newOffSetSide, offSetDist)
+      return [result[0], not result[1]]
+   else: # se la prima parte è un arco
+      arc = part[0]
+      inverse = part[1]         
+      AngleProjected = getAngleBy2Pts(arc.center, getEndPtOfPart_offset(part))
+      if inverse == False: # l'arco gira verso sin
+         if offSetSide == "right": # l'offset era verso l'esterno
+            # calcolo il punto proiettato per ri-ottenere quello originale 
+            center = getPolarPointByPtAngle(arc.center, AngleProjected, arc.radius - offSetDist)
+         else: # l'offset era verso l'interno
+            center = getPolarPointByPtAngle(arc.center, AngleProjected, arc.radius + offSetDist)         
+      else: # l'arco gira verso destra
+         if offSetSide == "right": # l'offset era verso l'interno
+            center = getPolarPointByPtAngle(arc.center, AngleProjected, arc.radius + offSetDist)         
+         else: # l'offset era verso l'esterno
+            center = getPolarPointByPtAngle(arc.center, AngleProjected, arc.radius - offSetDist)
+      
+   newArc = QadArc()                                                                                        
+   # se il centro dell'arco di raccordo è interno all'arco di offset
+   if getDistance(arc.center, center) < arc.radius:                           
+      newArcInverse = inverse
+      if inverse == False:
+         newArc.fromStartCenterEndPts(arc.getEndPt(), \
+                                      center, \
+                                      getStartPtOfPart_offset(nextPart))
+      else:
+         newArc.fromStartCenterEndPts(getStartPtOfPart_offset(nextPart), \
+                                      center, \
+                                      arc.getStartPt())                        
+   else: # se il centro dell'arco di raccordo è esterno all'arco di offset
+      newArcInverse = not inverse
+      if inverse == False:
+         newArc.fromStartCenterEndPts(getStartPtOfPart_offset(nextPart), \
+                                      center, \
+                                      arc.getEndPt())
+      else:
+         newArc.fromStartCenterEndPts(arc.getStartPt(), \
+                                      center, \
+                                      getStartPtOfPart_offset(nextPart))
+                                                            
+   return [newArc, newArcInverse]                     
+
+#===============================================================================
+# getUntrimmedOffSetPartList
+#===============================================================================
+def getUntrimmedOffSetPartList(points, offSetDist, offSetSide, gapType, tolerance2ApproxCurve = None):
+   """
+   la funzione fa l'offset non pulito da eventuali tagli da apportare (vedi
+   getClippedOffsetPartList") di una polilinea (lista di punti = <points>)
+   secondo una distanza e un lato di offset ("right" o "left") 
+   ed un modo <gapType>:
+   0 = Estende i segmenti di linea alle relative intersezioni proiettate
+   1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
+       Il raggio di ciascun segmento di arco è uguale alla distanza di offset
+   2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
+       La distanza perpendicolare da ciascuna cima al rispettivo vertice
+       sull'oggetto originale è uguale alla distanza di offset.
+   tolerance2ApproxCurve = errore minimo di tolleranza
+       
+   La funzione ritorna una lista di parti della polilinee (lista di segmenti o archi) 
+   """
+   # verifico se polilinea chiusa
+   isClosedPolyline = True if points[0] == points[-1] else False
+   # creo una lista dei segmenti e archi che formano la polilinea
+   partList = pretreatment_offset(getPartListFromPolylinePts(points), isClosedPolyline)
+     
+   # faccio l'offset di ogni parte della polilinea
+   newPartList = []
+   for part in partList:
+      if type(part[0]) == QgsPoint: # segmento
+         newPart = getOffSetLine(part[0], part[1], offSetDist, offSetSide)
+         newPartList.append(newPart)
+      else: # arco
+         if part[1] == False: # l'arco gira verso sin
+            arcOffSetSide = "external" if offSetSide == "right" else "internal"
+         else: # l'arco gira verso destra
+            arcOffSetSide = "internal" if offSetSide == "right" else "external"         
+         
+         newArc = getOffSetArc(part[0], offSetDist, arcOffSetSide)
+         if newArc is not None:
+            newPart = [newArc, part[1]] # <arco> e <inverse>
+            newPartList.append(newPart)
+
+   #qad_debug.breakPoint()
+
+   # calcolo i punti di intersezione tra parti adiacenti
+   # per ottenere una linea di offset non tagliata
+   if isClosedPolyline == True:
+      i = -1
+   else:
+      i = 0   
+
+   untrimmedOffsetPartList = []
+   while i < len(newPartList) - 1:
+      if i == -1: # polylinea chiusa quindi prendo in esame l'ultimo segmento e il primo
+         part = newPartList[-1] # ultima parte
+         nextPart = newPartList[0]
+      else:                  
+         part = newPartList[i]
+         nextPart = newPartList[i + 1]
+
+      if len(untrimmedOffsetPartList) == 0:
+         lastUntrimmedOffsetPt = getStartPtOfPart_offset(part)
+      else:
+         lastUntrimmedOffsetPt = getEndPtOfPart_offset(untrimmedOffsetPartList[-1]) # ultima parte
+      
+      #qad_debug.breakPoint()
+      IntPointInfo = getIntersectionPointInfo_offset(part, nextPart)
+      if IntPointInfo is not None: # se c'è un'intersezione
+         IntPoint = IntPointInfo[0]
+         IntPointTypeForPart = IntPointInfo[1]
+         IntPointTypeForNextPart = IntPointInfo[2]
+
+      if type(part[0]) == QgsPoint: # segmento
+         if type(nextPart[0]) == QgsPoint: # segmento-segmento         
+            if IntPointTypeForPart == 1: # TIP
+               if IntPointTypeForNextPart == 1: # TIP
+                  untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+               else: # FIP
+                  untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                  untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                  getStartPtOfPart_offset(nextPart)])
+            else: # FIP
+               if IntPointTypeForPart == 3: # PFIP
+                  if gapType != 0:
+                     newLines = bridgeTheGapBetweenLines_offset(part, nextPart, offSetDist, gapType, tolerance2ApproxCurve)
+                     # secondo punto del primo segmento                     
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, newLines[0][1]))
+                     untrimmedOffsetPartList.append(newLines[1]) # arco o linea di raccordo
+                  else:
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+               else: # NFIP
+                  untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                  untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                  getStartPtOfPart_offset(nextPart)])
+         else: # segmento-arco
+            arc = nextPart[0]
+            inverse = nextPart[1]
+            if IntPointInfo is not None: # se esiste un punto di intersezione
+               if IntPointTypeForPart == 1: # TIP
+                  if IntPointTypeForNextPart == 1: # TIP
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+                  else: # FIP
+                     untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                     untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                     getStartPtOfPart_offset(nextPart)])
+               else: # FIP
+                  if IntPointTypeForPart == 3: # PFIP
+                     if IntPointTypeForNextPart == 2: # FIP
+                        #qad_debug.breakPoint()                        
+                        untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                        untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
+                  else: # NFIP
+                     if IntPointTypeForNextPart == 1: # TIP
+                        untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                        untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                        getStartPtOfPart_offset(nextPart)])
+            else: # non esiste un punto di intersezione               
+               untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+               untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
+      else: # arco
+         if type(nextPart[0]) == QgsPoint: # arco-segmento         
+            arc = part[0]
+            inverse = part[1]
+            #qad_debug.breakPoint() 
+            if IntPointInfo is not None: # se esiste un punto di intersezione
+               if IntPointTypeForPart == 1: # TIP
+                  if IntPointTypeForNextPart == 1: # TIP
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+                  else: # FIP
+                     if IntPointTypeForNextPart == 3: # PFIP                     
+                        untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                        untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                        getStartPtOfPart_offset(nextPart)])
+               else: # FIP
+                  if IntPointTypeForNextPart == 4: # NFIP
+                     #qad_debug.breakPoint()                        
+                     untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                     untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
+                  elif IntPointTypeForNextPart == 1: # TIP
+                     untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                     untrimmedOffsetPartList.append([getEndPtOfPart_offset(part), \
+                                                     getStartPtOfPart_offset(nextPart)])
+            else: # non esiste un punto di intersezione
+               untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+               untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
+         else: # arco-arco
+            arc = part[0]
+            inverse = part[1]
+            nextArc = nextPart[0]
+            nextInverse = nextPart[1]
+            #qad_debug.breakPoint() 
+            if IntPointInfo is not None: # se esiste un punto di intersezione
+               if IntPointTypeForPart == 1: # TIP
+                  if IntPointTypeForNextPart == 1: # TIP
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+                  else : # FIP
+                     untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                     if inverse == False:
+                        center = getPolarPointByPtAngle(arc.center, arc.endAngle, arc.radius - offSetDist)
+                     else:
+                        center = getPolarPointByPtAngle(arc.center, arc.startAngle, arc.radius - offSetDist)
+                        
+                     secondPtNewArc = getPolarPointByPtAngle(center, \
+                                                             getAngleBy2Pts(center, IntPoint), \
+                                                             offSetDist)                     
+                     newArc = QadArc()
+                     newArc.fromStartSecondEndPts(getEndPtOfPart_offset(part), \
+                                                  secondPtNewArc, \
+                                                  getStartPtOfPart_offset(nextPart))
+
+                     if ptNear(newArc.getStartPt(), getEndPtOfPart_offset(part), 1.e-9):
+                        untrimmedOffsetPartList.append([newArc, False])
+                     else:
+                        untrimmedOffsetPartList.append([newArc, True])                     
+               else: # FIP
+                  if IntPointTypeForNextPart == 1: # TIP
+                     untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+                     if inverse == False:
+                        center = getPolarPointByPtAngle(arc.center, arc.endAngle, arc.radius - offSetDist)
+                     else:
+                        center = getPolarPointByPtAngle(arc.center, arc.startAngle, arc.radius - offSetDist)
+                        
+                     secondPtNewArc = getPolarPointByPtAngle(center, \
+                                                             getAngleBy2Pts(center, IntPoint), \
+                                                             offSetDist)                     
+                     newArc = QadArc()
+                     newArc.fromStartSecondEndPts(getEndPtOfPart_offset(part), \
+                                                  secondPtNewArc, \
+                                                  getStartPtOfPart_offset(nextPart))
+                     if ptNear(newArc.getStartPt(), getEndPtOfPart_offset(part), 1.e-9):
+                        untrimmedOffsetPartList.append([newArc, False])
+                     else:
+                        untrimmedOffsetPartList.append([newArc, True])                     
+                  else: # FIP
+                     untrimmedOffsetPartList.append(setStartEndPtOfPart_offset(part, lastUntrimmedOffsetPt, IntPoint))
+            else: # non esiste un punto di intersezione
+               untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+               untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))
+               
+      i = i + 1
+
+   #qad_debug.breakPoint()
+   if len(newPartList) > 0:
+      if isClosedPolyline == False:
+         if len(untrimmedOffsetPartList) == 0:
+            lastUntrimmedOffsetPt = getStartPtOfPart_offset(newPartList[0])
+         else:
+            lastUntrimmedOffsetPt = getEndPtOfPart_offset(untrimmedOffsetPartList[-1]) # ultima parte
+            
+         part = newPartList[-1]
+         untrimmedOffsetPartList.append(setStartPtOfPart_offset(part, lastUntrimmedOffsetPt))
+      else:
+         # primo punto = ultimo punto
+         newPart = setStartPtOfPart_offset(untrimmedOffsetPartList[0], getEndPtOfPart_offset(untrimmedOffsetPartList[-1]))
+         del untrimmedOffsetPartList[0]
+         untrimmedOffsetPartList.insert(0, newPart)
+
+   return untrimmedOffsetPartList
+   
 #===============================================================================
 # offSetPolyline
 #===============================================================================
@@ -2028,45 +2969,54 @@ def offSetPolyline(points, offSetDist, offSetSide, gapType, tolerance2ApproxCurv
    
    result = []
    
-   AngleToAdd = math.pi if offSetSide == "right" else -math.pi
+   AngleToAdd = (-math.pi / 2) if offSetSide == "right" else (math.pi / 2)
    pointsLen = len(points)
-   pt1 = points[0]
-   pt2 = points[1]
 
-   #qad_debug.breakPoint()
-   
    # verifico se è un cerchio
    circle = QadCircle()
    startEndVertices = circle.fromPolyline(points, 0)
    if startEndVertices is not None and \
-      startEndVertices[0] == 0 and startEndVertices[1] == (pointsLen - 1): 
-      # calcolo il primo punto proiettato
-      pt1Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
-      circle.radius = getDistance(pt1Proj, circle.center)
-            
-      return [circle.asPolyline(tolerance)]
-      
-      
-   if gapType == 0: # Estende i segmenti di linea
-      i = 0
-      pointsLen = len(points)
-      while i < pointsLen - 1:
-         pt1 = points[i]
-         pt2 = points[i]
-         # calcolo i punti proiettati
-         pt1Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
-         pt2Proj = getPolarPointByPtAngle(pt1, getAngleBy2Pts(pt1, pt2) + AngleToAdd, offSetDist)
-         # calcolo punto di intersezione tra le righe proiettate
-         intPt = getIntersectionPointOn2InfinityLines()
-         # la funzione ritorna una numero < 0 se il punto di intersezione è alla sinistra della linea
-         # pt1 e pt1Proj
-#         if leftOfLine(intPt, pt1, pt1Proj) < 0:
-      pass
-   elif gapType == 1: # Raccorda i segmenti di linea
-      pass
-   elif gapType == 2: # Cima i segmenti di linea
-      pass
+      startEndVertices[0] == 0 and startEndVertices[1] == (pointsLen - 1):
+      points = circle.asPolyline()         
+      pt1 = points[0]
+      angleLine = getAngleBy2Pts(pt1, points[1])
 
+      # calcolo il primo punto proiettato
+      pt1Proj = getPolarPointByPtAngle(pt1, angleLine + AngleToAdd, offSetDist)
+      pt1InverseProj = getPolarPointByPtAngle(pt1, angleLine - AngleToAdd, offSetDist)
+      if getDistance(pt1Proj, circle.center) > getDistance(pt1InverseProj, circle.center):
+         # offset verso l'interno del cerchio
+         offSetCircle = getOffSetCircle(circle, offSetDist, "internal")
+      else:
+         # offset verso l'esterno del cerchio
+         offSetCircle = getOffSetCircle(circle, offSetDist, "external")      
+      
+      if offSetCircle is not None:
+         result.append(offSetCircle.asPolyline(tolerance))
+         
+      return result
+   
+   #qad_debug.breakPoint()
+
+   untrimmedOffsetPartList = getUntrimmedOffSetPartList(points, offSetDist, offSetSide, gapType, tolerance)
+              
+   #qad_debug.breakPoint()
+      
+
+                  
+   #newLines = bridgeTheGapBetweenLines_offset(line1, line2, offSetDist, gapType, tolerance2ApproxCurve = None):
+   
+   # taglio gli oggetti che necessitano di essere tagliati con le parti adiacenti
+   # taglio gli oggetti che necessitano di essere tagliati con altre parti (non adiacenti) in offset
+   # accorpo gli oggetti che hanno punti terminali in comune
+   
+   newPartLists = [untrimmedOffsetPartList] # test
+   # ottengo una lista di punti delle nuove polilinee
+   result = []
+   firstPt = True
+   for newPartList in newPartLists:
+      result.append(getPolylinePtsFromPartList(newPartList))
+                  
    return result
 
 #===============================================================================
@@ -2246,8 +3196,12 @@ def solveApollonius(c1, c2, c3, s1, s2, s3):
    # Find a root of a quadratic equation. This requires the circle centers not to be e.g. colinear
    if a == 0:
       return None
-   D = b*b-4*a*c
-   if D < 0: # non si può fare la radice quadrata di un numero negativo
+   D = (b * b) - (4 * a * c)
+   
+   # se D è così vicino a zero 
+   if qad_utils.doubleNear(D, 0.0, 1.e-9):
+      D = 0
+   elif D < 0: # non si può fare la radice quadrata di un numero negativo
       return None
    
    rs = (-b-math.sqrt(D))/(2*a)

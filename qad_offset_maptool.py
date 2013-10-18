@@ -64,7 +64,9 @@ class Qad_offset_maptool(QadGetPoint):
       self.firstPt = None
       self.layer = None
       self.subGeom = None
-      self.offSet = 0      
+      self.offSet = 0
+      self.lastOffSetOnLeftSide = 0
+      self.lastOffSetOnRightSide = 0
       self.gapType = 0
       self.__offsetRubberBand = None   
       self.__offsetRubberBandPolygon = None   
@@ -99,8 +101,6 @@ class Qad_offset_maptool(QadGetPoint):
       self.__offsetRubberBand = QgsRubberBand(self.canvas, False)
       self.__offsetRubberBandPolygon = QgsRubberBand(self.canvas, True)
             
-      #qad_debug.breakPoint()   
-
       transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.layer, newPt)
       
       # ritorna una tupla (<The squared cartesian distance>,
@@ -114,13 +114,24 @@ class Qad_offset_maptool(QadGetPoint):
                                                             self.subGeom.vertexAt(afterVertex), \
                                                             transformedPt)
          offSetDistance = qad_utils.getDistance(transformedPt, pt)
-      else:
-         offSetDistance = self.offSet
+      else:           
+         offSetDistance = qad_utils.distMapToLayerCoordinates(self.offSet, \
+                                                              self.plugIn.canvas,\
+                                                              self.layer)
+         if dummy[3] < 0: # alla sinistra
+            offSetDistance = offSetDistance + self.lastOffSetOnLeftSide
+         else: # alla destra
+            offSetDistance = offSetDistance + self.lastOffSetOnRightSide         
       
+      #qad_debug.breakPoint() 
+      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get("TOLERANCE2APPROXCURVE"), \
+                                                                  self.plugIn.canvas,\
+                                                                  self.layer)
       lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
-                                       self.gapType)
+                                       self.gapType, \
+                                       tolerance2ApproxCurve)
             
       for line in lines:
          if self.layer.geometryType() == QGis.Polygon:

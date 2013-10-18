@@ -240,7 +240,7 @@ class QadCommandsClass():
       # se il maptool del comando attuale se non è attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      self.actualCommand.PointMapTool.forceSnapTypeOnce(snapType, snapParams)
+      self.actualCommand.getPointMapTool().forceSnapTypeOnce(snapType, snapParams)
 
 
    #============================================================================

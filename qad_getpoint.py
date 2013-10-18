@@ -357,7 +357,7 @@ class QadGetPoint(QgsMapTool):
          self.__QadSnapper.toggleReferenceLines(geom, point, crs)
          self.__QadSnapper.toggleIntExtLine(geom, point, crs)
       
-   def canvasMoveEvent(self, event):    
+   def canvasMoveEvent(self, event):
       # se l'obiettivo è selezionare un'entità
       #qad_debug.breakPoint()   
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:

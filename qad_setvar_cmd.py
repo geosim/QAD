@@ -42,6 +42,9 @@ class QadSETVARCommandClass(QadCommandClass):
    
    def getName(self):
       return QadMsg.get(6) # "MODIVAR"
+
+   def connectQAction(self, action):
+      QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETVARCommand)
    
    def getNote(self):
       # impostare le note esplicative del comando

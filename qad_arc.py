@@ -100,11 +100,27 @@ class QadArc():
       return qad_utils.getPolarPointByPtAngle(self.center,
                                               self.startAngle,
                                               self.radius)
+   def setStartAngleByPt(self, pt):
+      # da usare per modificare un arco già definito
+      angle = qad_utils.getAngleBy2Pts(self.center, pt)
+      if angle == self.endAngle:
+         return False
+      else:
+         self.startAngle = angle
+         return True
 
    def getEndPt(self):
       return qad_utils.getPolarPointByPtAngle(self.center,
                                               self.endAngle,
                                               self.radius)
+   def setEndAngleByPt(self, pt):
+      # da usare per modificare un arco già definito
+      angle = qad_utils.getAngleBy2Pts(self.center, pt)
+      if angle == self.startAngle:
+         return False
+      else:
+         self.endAngle = angle
+         return True
 
    def isPtOnArc(self, point):
       dist =  qad_utils.getDistance(self.center, point)
@@ -214,8 +230,12 @@ class QadArc():
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
-      SegmentLen = math.sqrt((self.radius * self.radius) - (dummy * dummy)) # radice quadrata
-      SegmentLen = SegmentLen * 2
+      if dummy <= 0: # se la tolleranza è troppo bassa rispetto al raggio
+         SegmentLen = self.radius
+      else:
+         dummy      = (self.radius * self.radius) - (dummy * dummy)
+         SegmentLen = math.sqrt(dummy) # radice quadrata
+         SegmentLen = SegmentLen * 2
       
       if SegmentLen == 0: # se la tolleranza è troppo bassa la lunghezza del segmento diventa zero  
          return None
@@ -356,13 +376,13 @@ class QadArc():
       if angle < math.pi: # se angolo < 180 gradi
          # aggiungo 90 gradi per cercare il centro a sinistra del segmento
          self.center = qad_utils.getPolarPointByPtAngle(ptMiddle, 
-                                                                        angleSegment + (math.pi / 2),
-                                                                        distFromCenter)
+                                                        angleSegment + (math.pi / 2),
+                                                        distFromCenter)
       else:
          # sottraggo 90 gradi per cercare il centro a destra del segmento
          self.center = qad_utils.getPolarPointByPtAngle(ptMiddle, 
-                                                                        angleSegment - (math.pi / 2),
-                                                                        distFromCenter)
+                                                        angleSegment - (math.pi / 2),
+                                                        distFromCenter)
       self.startAngle = qad_utils.getAngleBy2Pts(self.center, startPt)
       self.endAngle = qad_utils.getAngleBy2Pts(self.center, endPt)      
       return True
@@ -485,7 +505,7 @@ class QadArc():
       if (totPoints - 1) - startVertex < atLeastNSegment or atLeastNSegment < 2:
          return None
 
-      epsilon = 1.e-2
+      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
             
       InfinityLinePerpOnMiddle1 = None
       InfinityLinePerpOnMiddle2 = None
@@ -519,10 +539,11 @@ class QadArc():
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
+                  maxDifference = radius * epsilon
          else: # e sono già stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
-            if qad_utils.doubleNear(radius, dist, epsilon):
+            if qad_utils.doubleNear(radius, dist, maxDifference):
                nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
             else: # questo segmento non fa parte del cerchio
                #qad_debug.breakPoint()

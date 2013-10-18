@@ -444,10 +444,17 @@ class Qad:
    # funzioni per l'avvio di un comando
    #============================================================================
    def runCommandAbortingTheCurrent(self, cmdName):
+      #qad_debug.breakPoint()
       self.canvas.setFocus()
       self.abortCommand()
       self.showEvaluateMsg(cmdName)
+      
+   def runIDCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.get(3)) # "ID"
    
+   def runSETVARCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.get(6)) # "MODIVAR"
+
    def runPLINECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.get(35)) # "PLINEA"
       

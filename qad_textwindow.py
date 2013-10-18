@@ -324,9 +324,12 @@ class QadEdit(QTextEdit):
          if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier:
             if e.key() == Qt.Key_C or e.key() == Qt.Key_A:
                QTextEdit.keyPressEvent(self, e)
-            else:
-               # all other keystrokes get sent to the input line
-               self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)                        
+         else:
+            # all other keystrokes get sent to the input line
+            self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+                                    
+         self.setTextCursor(self.cursor)
+         self.ensureCursorVisible()
       else:
          # if Return is pressed, then perform the commands
          if e.key() == Qt.Key_Return:
@@ -366,11 +369,11 @@ class QadEdit(QTextEdit):
          else:
             QTextEdit.keyPressEvent(self, e)
 
-      self.setTextCursor(self.cursor)
-      self.ensureCursorVisible()
-
-      if self.inputType & QadInputTypeEnum.COMMAND:
-         self.cmdSuggestWindow.show(True, self.getCurrMsg())
+         self.setTextCursor(self.cursor)
+         self.ensureCursorVisible()
+   
+         if self.inputType & QadInputTypeEnum.COMMAND:
+            self.cmdSuggestWindow.show(True, self.getCurrMsg())
       
    def entered(self):
       if self.inputType & QadInputTypeEnum.COMMAND:
@@ -549,7 +552,19 @@ class QadEdit(QTextEdit):
             self.insertPlainText(QadMsg.get(33)) # "\n(impostato snap temporaneo)\n"
             self.displayPrompt()          
             return
-         pt = qad_utils.str2QgsPoint(cmd, self.parent.getLastPoint(), self.parent.getCurrenPointFromCommandMapTool())
+         if (self.inputType & QadInputTypeEnum.INT) or \
+            (self.inputType & QadInputTypeEnum.LONG) or \
+            (self.inputType & QadInputTypeEnum.FLOAT) or \
+            (self.inputType & QadInputTypeEnum.ANGLE) or \
+            (self.inputType & QadInputTypeEnum.BOOL):
+            oneNumberAllowed = False
+         else:
+            oneNumberAllowed = True
+            
+         pt = qad_utils.str2QgsPoint(cmd, \
+                                     self.parent.getLastPoint(), \
+                                     self.parent.getCurrenPointFromCommandMapTool(), \
+                                     oneNumberAllowed)
                       
          if pt is not None:
             self.parent.continueCommand(pt)

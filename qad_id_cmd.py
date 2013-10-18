@@ -40,6 +40,9 @@ class QadIDCommandClass(QadCommandClass):
    def getName(self):
       return QadMsg.get(3) # "ID"
 
+   def connectQAction(self, action):
+      QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runIDCommand)
+
    def getNote(self):
       # impostare le note esplicative del comando
       return QadMsg.get(99)

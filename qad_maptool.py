@@ -42,9 +42,9 @@ class QadMapTool(QgsMapTool):
       QgsMapTool.__init__(self, plugIn.iface.mapCanvas())
       self.plugIn = plugIn
       self.iface = self.plugIn.iface
-      self.canvas = self.plugIn.iface.mapCanvas()
-      
+      self.canvas = self.plugIn.iface.mapCanvas()      
       self.cursor = qad_utils.getGetPointCursor()
+      self.popupMenu = None
 
 
    #============================================================================
@@ -105,6 +105,11 @@ class QadMapTool(QgsMapTool):
       self.plugIn.QadCommands.continueCommandFromMapTool()
    
    def deactivate(self):
+      if self.popupMenu is not None:
+         #qad_debug.breakPoint()
+         self.popupMenu.clear()
+         del self.popupMenu
+         self.popupMenu = None
       pass
       
    def isTransient(self):
@@ -135,17 +140,26 @@ class QadMapTool(QgsMapTool):
             if isLastCmdToInsert:
                isLastCmdToInsert = False
                msg = QadMsg.get(126) + cmd.getName() # "Ripeti "
-               lastCmdAction = QAction(cmd.getIcon(), msg, self.popupMenu)
+               icon = cmd.getIcon()
+               if icon is None:
+                  lastCmdAction = QAction(msg, self.popupMenu)
+               else:
+                  lastCmdAction = QAction(cmd.getIcon(), msg, self.popupMenu)
                cmd.connectQAction(lastCmdAction)      
                self.popupMenu.addAction(lastCmdAction)     
             else:
                if isRecentMenuToInsert:
                   isRecentMenuToInsert = False
                   recentCmdsMenu = self.popupMenu.addMenu(QadMsg.get(127)) # "Comandi recenti"
-                  
-               recentCmdAction = QAction(cmd.getIcon(), cmd.getName(), recentCmdsMenu)      
+
+               icon = cmd.getIcon()
+               if icon is None:
+                  recentCmdAction = QAction(cmd.getName(), recentCmdsMenu)
+               else:
+                  recentCmdAction = QAction(cmd.getIcon(), cmd.getName(), recentCmdsMenu)                  
                cmd.connectQAction(recentCmdAction)      
                recentCmdsMenu.addAction(recentCmdAction)
       
       if isLastCmdToInsert == False: # menu non vuoto
          self.popupMenu.popup(self.plugIn.iface.mapCanvas().mapToGlobal(pos))
+         

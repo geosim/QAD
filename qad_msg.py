@@ -269,9 +269,19 @@ class QadMsgClass():
       self.__Messages[234] = "Specificare punto di passaggio o [Esci/ANnulla] <oggetto successivo>: "
       self.__Messages[235] = "Specificare punto sul lato di cui eseguire l'offset o [Esci/MUltiplo/ANnulla] <Esci>: "
       self.__Messages[236] = "Specificare punto sul lato di cui eseguire l'offset o [Esci/ANnulla] <oggetto successivo>: "
-      self.__Messages[237] = ""
-      self.__Messages[238] = ""
-      self.__Messages[239] = ""
+      self.__Messages[237] = "ESTENDI"
+      self.__Messages[238] = "Selezionare i limiti di estensione..."
+      self.__Messages[239] = "Selezionare oggetto o <selezionare tutto>: "
+      self.__Messages[240] = "Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [iNTercetta/Interseca/Annulla]: "
+      self.__Messages[241] = "iNTercetta"
+      self.__Messages[242] = "Interseca"
+      self.__Messages[243] = "Annulla"
+      self.__Messages[244] = "L'oggetto non interseca uno spigolo."
+      self.__Messages[245] = ""
+      self.__Messages[246] = ""
+      self.__Messages[247] = ""
+      self.__Messages[248] = ""
+      self.__Messages[249] = ""
       
       
    def get(self, MsgNumber):
