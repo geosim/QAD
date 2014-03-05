@@ -10,3 +10,5 @@ Roberto Poltini (roberto.poltini@irenacquagas.it)
 Paolo De Sole (paoo.desole@irenacquagas.it)
 ###User Interface Designers:##
 Massimo Dente (massimo.dente@irenacquagas.it)
+###Documentation:##
+Massimo Dente (massimo.dente@irenacquagas.it)
