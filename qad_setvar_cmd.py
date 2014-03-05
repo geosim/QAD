@@ -35,20 +35,20 @@ from qad_msg import QadMsg
 from qad_variables import *
 
 
-# Classe che gestisce il comando ID
+# Classe che gestisce il comando SETVAR
 class QadSETVARCommandClass(QadCommandClass):
 
    varName = ""
    
    def getName(self):
-      return QadMsg.get(6) # "MODIVAR"
+      return QadMsg.translate("Command_list", "MODIVAR")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETVARCommand)
    
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(103)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_SETVAR", "Imposta le variabili di ambiente di QAD.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -56,7 +56,8 @@ class QadSETVARCommandClass(QadCommandClass):
    def run(self, msgMapTool = False, msg = None):
       if self.step == 0: # inizio del comando
          # si appresta ad attendere una stringa
-         self.waitForString(QadMsg.get(12), "?") # "Digitare nome della variabile o [?]: "
+         self.waitForString(QadMsg.translate("Command_SETVAR", "Digitare nome della variabile o [?]: "), \
+                            QadMsg.translate("Command_SETVAR", "?"))
          self.step = 1
          return False
       elif self.step == 1: # dopo aver atteso il nome della variabile si riavvia il comando
@@ -64,19 +65,21 @@ class QadSETVARCommandClass(QadCommandClass):
             return False
          #  il nome della variabile arriva come parametro della funzione
          self.varName = msg
-         if self.varName == "?": # lista delle variabili            
-            # si appresta ad attendere una stringa
-            self.waitForString(QadMsg.get(14), "*") # "Digitare variabile/i da elencare <*>: "
+         if self.varName == QadMsg.translate("Command_SETVAR", "?"): # lista delle variabili            
+            # si appresta ad attendere una stringa            
+            self.waitForString(QadMsg.translate("Command_SETVAR", "Digitare variabile/i da elencare <*>: "), \
+                               QadMsg.translate("Command_SETVAR", "*"))
             self.step = 3
             return False
          else:
             varValue = QadVariables.get(self.varName)
             if varValue is None:
-               # "\nNome della variabile sconosciuto. Digitare MODIVAR ? per un elenco delle variabili."
-               self.showErr(QadMsg.get(13))
+               
+               msg = QadMsg.translate("Command_SETVAR", "\nNome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.")
+               self.showErr(msg.format(QadMsg.translate("Command_list", "MODIVAR")))
                return False
             else:
-               msg = QadMsg.get(15) # "Digitare nuovo valore per {0} <{1}>: "
+               msg = QadMsg.translate("Command_SETVAR", "Digitare nuovo valore per {0} <{1}>: ")
                vartype = str(type(varValue))
                if vartype == "<type 'str'>":
                   # si appresta ad attendere una stringa

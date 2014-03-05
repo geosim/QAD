@@ -1,0 +1,34 @@
+<RCC>
+  <qresource prefix="/plugins/qad">
+    <file>icons/dsettings/OSNAP_ToolTIP_END_PLINE.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_EXTINT.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_CENTROID.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_EXTP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_TANP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_PROGRESP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_PARLP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_PERP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_QUADP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_NEARP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_NODP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_INTP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_MIDP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_CENP.png</file>
+    <file>icons/dsettings/OSNAP_ToolTIP_ENDP.png</file>
+    <file>icons/dsettings/OSNAP_EXTINT.png</file>
+    <file>icons/dsettings/OSNAP_EXTP.png</file>
+    <file>icons/dsettings/OSNAP_INSP.png</file>
+    <file>icons/dsettings/OSNAP_INTAPP.png</file>
+    <file>icons/dsettings/OSNAP_INTP.png</file>
+    <file>icons/dsettings/OSNAP_MEDP.png</file>
+    <file>icons/dsettings/OSNAP_NEARP.png</file>
+    <file>icons/dsettings/OSNAP_NODP.png</file>
+    <file>icons/dsettings/OSNAP_PARP.png</file>
+    <file>icons/dsettings/OSNAP_PERP.png</file>
+    <file>icons/dsettings/OSNAP_PROGP.png</file>
+    <file>icons/dsettings/OSNAP_QUADP.png</file>
+    <file>icons/dsettings/OSNAP_TANP.png</file>
+    <file>icons/dsettings/OSNAP_CENP.png</file>
+    <file>icons/dsettings/OSNAP_ENDP.png</file>
+  </qresource>
+</RCC>

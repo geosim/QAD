@@ -37,6 +37,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_arc import *
+from qad_rubberband import createRubberBand
 
 
 #===============================================================================
@@ -185,7 +186,7 @@ class Qad_arc_maptool(QadGetPoint):
          result = arc.fromStartEndPtsRadius(self.arcStartPt, self.tmpPoint, self.arcRadius)
       
       if result == True:
-         self.__arcRubberBand = QgsRubberBand(self.canvas, False)
+         self.__arcRubberBand = createRubberBand(self.canvas, QGis.Line)
          points = arc.asPolyline()
       
          if points is not None:

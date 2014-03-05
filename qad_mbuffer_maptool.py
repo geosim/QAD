@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import createRubberBand
 
 
 #===============================================================================
@@ -56,8 +57,11 @@ class Qad_mbuffer_maptool(QadGetPoint):
       QadGetPoint.__init__(self, plugIn)
                         
       self.startPtForBufferWidth = None
-      self.segments = 10
+      # vedi il numero minimo di punti affinchè venga riconosciuto un arco o un cerchio
+      # nei files qad_arc.py e qad_circle.py
+      self.segments = 12
       self.entitySet = QadEntitySet()
+      self.geomType = QGis.Polygon
       self.__bufferRubberBand = None   
 
    def hidePointMapToolMarkers(self):
@@ -91,18 +95,20 @@ class Qad_mbuffer_maptool(QadGetPoint):
       if self.mode == Qad_mbuffer_maptool_ModeEnum.FIRST_PT_ASK_FOR_BUFFER_WIDTH:
          #qad_debug.breakPoint()
          
-         self.__bufferRubberBand = QgsRubberBand(self.canvas, False)
+         self.__bufferRubberBand = createRubberBand(self.canvas, self.geomType)
          for layerEntitySet in self.entitySet.layerEntitySetList:
-            transformedPt1 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
-            transformedPt2 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
+            transformedPt1 = self.mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
+            transformedPt2 = self.mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
             width = qad_utils.getDistance(transformedPt1, transformedPt2)
-            tolerance = qad_utils.distMapToLayerCoordinates(QadVariables.get("TOLERANCE2APPROXCURVE"), \
+            tolerance = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                             self.canvas,\
                                                             layerEntitySet.layer)
             
             geoms = layerEntitySet.getGeometryCollection()
             for geom in geoms:
-               bufferGeom = qad_utils.ApproxCurvesOnGeom(geom.buffer(width, self.segments), self.segments, tolerance)
+               bufferGeom = qad_utils.ApproxCurvesOnGeom(geom.buffer(width, self.segments), \
+                                                         self.segments, self.segments, \
+                                                         tolerance)
                self.__bufferRubberBand.addGeometry(bufferGeom, layerEntitySet.layer)
                            
     

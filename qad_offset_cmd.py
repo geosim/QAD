@@ -38,12 +38,15 @@ from qad_textwindow import *
 from qad_entity import *
 from qad_variables import *
 import qad_utils
+import qad_layer
+from qad_rubberband import createRubberBand
+
 
 # Classe che gestisce il comando OFFSET
 class QadOFFSETCommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(221) # "OFFSET"
+      return QadMsg.translate("Command_list", "OFFSET")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runOFFSETCommand)
@@ -53,24 +56,26 @@ class QadOFFSETCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(222)
+      return QadMsg.translate("Command_OFFSET", "Crea cerchi concentrici, linee e curve parallele.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.entity = QadEntity()
       self.subGeom = None
-      self.offSet = QadVariables.get("OFFSETDIST")
+      self.subGeomSelectedPt = None
+      self.offSet = QadVariables.get(QadMsg.translate("Environment variables", "OFFSETDIST"))
       self.lastOffSetOnLeftSide = 0
       self.lastOffSetOnRightSide = 0
       self.firstPt = QgsPoint()
       self.eraseEntity = False
       self.multi = False
-      self.gapType = QadVariables.get("OFFSETGAPTYPE")
+      self.OnlySegment = False
+      self.gapType = QadVariables.get(QadMsg.translate("Environment variables", "OFFSETGAPTYPE"))
       
       self.featureCache = [] # lista di (layer, feature)
       self.undoFeatureCacheIndexes = [] # posizioni in featureCache dei punti di undo
-      self.rubberBand = QgsRubberBand(self.plugIn.canvas, False)
-      self.rubberBandPolygon = QgsRubberBand(self.plugIn.canvas, True)
+      self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
+      self.rubberBandPolygon = createRubberBand(self.plugIn.canvas, QGis.Polygon)
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -92,7 +97,7 @@ class QadOFFSETCommandClass(QadCommandClass):
       featureCacheLen = len(self.featureCache)
       layer = self.entity.layer
       f = self.entity.getFeature()
-      transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
+      transformedPt = self.mapToLayerCoordinates(layer, newPt)
 
       # ritorna una tupla (<The squared cartesian distance>,
       #                    <minDistPoint>
@@ -120,27 +125,34 @@ class QadOFFSETCommandClass(QadCommandClass):
                self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
 
       #qad_debug.breakPoint()
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get("TOLERANCE2APPROXCURVE"), \
+      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
-                                                                  layer)      
-      lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), \
+                                                                  layer)
+      epsg = layer.crs().authid()      
+      lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
                                        self.gapType, \
                                        tolerance2ApproxCurve)
-      for line in lines:
+      added = False
+      for line in lines:        
          if layer.geometryType() == QGis.Polygon:
-            offsetGeom = QgsGeometry.fromPolygon([line])
+            if line[0] == line[-1]: # se è una linea chiusa
+               offsetGeom = QgsGeometry.fromPolygon([line])
+            else:
+               offsetGeom = QgsGeometry.fromPolyline(line)
          else:
             offsetGeom = QgsGeometry.fromPolyline(line)
 
-         if offsetGeom.isGeosValid():           
+         if offsetGeom.type() == QGis.Line or offsetGeom.type() == QGis.Polygon:           
             offsetFeature = QgsFeature(f)                              
             offsetFeature.setGeometry(offsetGeom)
             self.featureCache.append([layer, offsetFeature])
             self.addFeatureToRubberBand(layer, offsetFeature)            
-      
-      self.undoFeatureCacheIndexes.append(featureCacheLen)
+            added = True           
+
+      if added:      
+         self.undoFeatureCacheIndexes.append(featureCacheLen)
 
    #============================================================================
    # undoGeomsInCache
@@ -162,8 +174,13 @@ class QadOFFSETCommandClass(QadCommandClass):
    # addFeatureToRubberBand
    #============================================================================
    def addFeatureToRubberBand(self, layer, feature):
+      qad_debug.breakPoint()
+
       if layer.geometryType() == QGis.Polygon:
-         self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+         if feature.geometry().type() == QGis.Polygon:
+            self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+         else:
+            self.rubberBand.addGeometry(feature.geometry(), layer)
       else:
          self.rubberBand.addGeometry(feature.geometry(), layer)
       
@@ -172,17 +189,25 @@ class QadOFFSETCommandClass(QadCommandClass):
    # refreshRubberBand
    #============================================================================
    def refreshRubberBand(self):
-      self.rubberBand.reset(False)
-      self.rubberBandPolygon.reset(True)
+      self.rubberBand.reset(QGis.Line)
+      self.rubberBandPolygon.reset(QGis.Polygon)
       for f in self.featureCache:
          layer = f[0]
          feature = f[1]
          if layer.geometryType() == QGis.Polygon:
-            self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+            #qad_debug.breakPoint()
+            if feature.geometry().type() == QGis.Polygon:
+               self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+            else:
+               self.rubberBand.addGeometry(feature.geometry(), layer)            
          else:
             self.rubberBand.addGeometry(feature.geometry(), layer)            
 
-   def offsetGeoms(self):
+
+   #============================================================================
+   # offsetGeoms
+   #============================================================================
+   def offsetGeoms(self, currLayer):
       featuresLayers = [] # lista di (layer, features)
       
       #qad_debug.breakPoint()   
@@ -199,8 +224,69 @@ class QadOFFSETCommandClass(QadCommandClass):
          if not found:
             featuresLayers.append([layer, [feature]])
 
+      layerList = []
       for featuresLayer in featuresLayers:
-         qad_utils.addFeaturesToLayer(self.plugIn, featuresLayer[0], featuresLayer[1])  
+         layerList.append(featuresLayer[0])
+
+      PointTempLayer = None
+      LineTempLayer = None
+      PolygonTempLayer = None
+      self.plugIn.beginEditCommand("Feature offseted", layerList)
+
+      for featuresLayer in featuresLayers:
+         #qad_debug.breakPoint()
+         if featuresLayer[0].crs() != currLayer.crs():
+            coordTransform = QgsCoordinateTransform(featuresLayer[0].crs(),\
+                                                    currLayer.crs()) # trasformo la geometria
+         else:
+            coordTransform = None
+         
+         # filtro le features per tipo
+         pointGeoms, lineGeoms, polygonGeoms = qad_utils.filterFeaturesByType(featuresLayer[1], \
+                                                                              currLayer.geometryType())
+         # aggiungo le features con geometria del tipo corretto
+         if currLayer.geometryType() == QGis.Line:
+            polygonToLines = []
+            # Riduco le geometrie in linee
+            for g in polygonGeoms:
+               lines = qad_utils.asPointOrPolyline(g)
+               for l in lines:
+                  if l.type() == QGis.Line:
+                      polygonToLines.append(l)
+            # plugIn, layer, geoms, coordTransform , refresh, check_validity
+            if qad_layer.addGeomsToLayer(self.plugIn, currLayer, polygonToLines, coordTransform, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
+               
+            del polygonGeoms[:] # svuoto la lista
+
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeaturesToLayer(self.plugIn, currLayer, featuresLayer[1], coordTransform, False, False) == False:  
+            self.plugIn.destroyEditCommand()
+            return
+
+         if pointGeoms is not None and len(pointGeoms) > 0 and PointTempLayer is None:
+            PointTempLayer = qad_layer.createQADTempLayer(self.plugIn, QGis.Point)
+            self.plugIn.addLayerToLastEditCommand("Feature offseted", PointTempLayer)
+         
+         if lineGeoms is not None and len(lineGeoms) > 0 and LineTempLayer is None:
+            LineTempLayer = qad_layer.createQADTempLayer(self.plugIn, QGis.Line)
+            self.plugIn.addLayerToLastEditCommand("Feature offseted", LineTempLayer)
+            
+         if polygonGeoms is not None and len(polygonGeoms) > 0 and PolygonTempLayer is None:
+            PolygonTempLayer = qad_layer.createQADTempLayer(self.plugIn, QGis.Polygon)
+            self.plugIn.addLayerToLastEditCommand("Feature offseted", PolygonTempLayer)
+         
+         # aggiungo gli scarti nei layer temporanei di QAD
+         # trasformo la geometria in quella dei layer temporanei 
+         # plugIn, pointGeoms, lineGeoms, polygonGeoms, coord, refresh
+         if qad_layer.addGeometriesToQADTempLayers(self.plugIn, pointGeoms, lineGeoms, polygonGeoms, \
+                                                 featuresLayer[0].crs(), False) == False:
+            self.plugIn.destroyEditCommand()
+            return
+
+      self.plugIn.endEditCommand()
+
  
    #============================================================================
    # waitForDistance
@@ -210,12 +296,13 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_FIRST_OFFSET_PT)
       self.getPointMapTool().gapType = self.gapType                        
 
-      # "Punto" "Cancella"
-      keyWords = QadMsg.get(224) + " " + QadMsg.get(225)
-      msg = QadMsg.get(223) # "Specificare distanza di offset o [Punto/Cancella] <{0}>: "
+      keyWords = QadMsg.translate("Command_OFFSET", "Punto") + " " + \
+                 QadMsg.translate("Command_OFFSET", "Cancella")
+                 
+      msg = QadMsg.translate("Command_OFFSET", "Specificare distanza di offset o [Punto/Cancella] <{0}>: ")
       if self.offSet < 0:
-         msg = msg.format(QadMsg.get(224)) # "Punto"
-         default = QadMsg.get(224) # "Punto"
+         msg = msg.format(QadMsg.translate("Command_OFFSET", "Punto"))
+         default = QadMsg.translate("Command_OFFSET", "Punto")
       else:
          msg = msg.format(str(self.offSet))
          default = self.offSet
@@ -240,16 +327,15 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.lastOffSetOnRightSide = 0
       self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
       
-      # "Esci" "ANnulla"
-      keyWords = QadMsg.get(227) + " " + QadMsg.get(228)
+      # "Esci" "ANnulla"      
+      keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+                 QadMsg.translate("Command_OFFSET", "ANnulla")
       
-      # 226 = "Selezionare oggetto di cui eseguire l'offset o [Esci/ANnulla] <Esci>: "
-      # 227 = "Esci"
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.get(226), \
+      self.waitFor(QadMsg.translate("Command_OFFSET", "Selezionare oggetto di cui eseguire l'offset o [Esci/ANnulla] <Esci>: "), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                   QadMsg.get(227), \
+                   QadMsg.translate("Command_OFFSET", "Esci"), \
                    keyWords, QadInputModeEnum.NONE)      
       self.step = 2      
         
@@ -261,20 +347,33 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.OFFSET_KNOWN_ASK_FOR_SIDE_PT)                                
 
       if self.multi == False:
-         # "Esci" "MUltiplo" "ANnulla"    
-         keyWords = QadMsg.get(227) + " " + QadMsg.get(233) + " " + QadMsg.get(228)
-         msg = QadMsg.get(235) # ""Specificare punto sul lato di cui eseguire l'offset o [Esci/MUltiplo/ANnulla] <Esci>: "
-         default = QadMsg.get(227) # "Esci"
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+                    QadMsg.translate("Command_OFFSET", "MUltiplo") + " " + \
+                    QadMsg.translate("Command_OFFSET", "ANnulla")
+         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "ANnulla")           
+         defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
+         default = QadMsg.translate("Command_OFFSET", "Esci")
       else:
-         # "Esci" "ANnulla"
-         keyWords = QadMsg.get(227) + " " + QadMsg.get(228)
-         msg = QadMsg.get(236) # "Specificare punto sul lato di cui eseguire l'offset o [Esci/ANnulla] <oggetto successivo>: "
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+                    QadMsg.translate("Command_OFFSET", "ANnulla")
+         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "ANnulla")
+         defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
 
-      # 227 = "Esci"
+      if self.OnlySegment == False:
+         keyWords = keyWords + " " + \
+                    QadMsg.translate("Command_OFFSET", "Segmento")
+         keyWordsMsg = keyWordsMsg + "/" + \
+                       QadMsg.translate("Command_OFFSET", "Segmento")
+
+      msg = QadMsg.translate("Command_OFFSET", "Specificare punto sul lato di cui eseguire l'offset o [{0}] <{1}>: ")
+
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg, \
+      self.waitFor(msg.format(keyWordsMsg, defaultMsg), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    default, \
                    keyWords, QadInputModeEnum.NONE)      
@@ -288,20 +387,33 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_PASSAGE_PT)                                
 
       if self.multi == False:
-         # "Esci" "MUltiplo" "ANnulla"    
-         keyWords = QadMsg.get(227) + " " + QadMsg.get(233) + " " + QadMsg.get(228)
-         msg = QadMsg.get(232) # "Specificare punto di passaggio o [Esci/MUltiplo/ANnulla] <Esci>: "
-         default = QadMsg.get(227) # "Esci"
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+                    QadMsg.translate("Command_OFFSET", "MUltiplo") + " " + \
+                    QadMsg.translate("Command_OFFSET", "ANnulla")
+         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "ANnulla")
+         defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
+         default = QadMsg.translate("Command_OFFSET", "Esci")
       else:
-         # "Esci" "ANnulla"    
-         keyWords = QadMsg.get(227) + " " + QadMsg.get(228)
-         msg = QadMsg.get(234) # "Specificare punto di passaggio o [Esci/ANnulla] <oggetto successivo>: "
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+                    QadMsg.translate("Command_OFFSET", "ANnulla")
+         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                       QadMsg.translate("Command_OFFSET", "ANnulla")
+         defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
 
-      # 227 = "Esci"
+      if self.OnlySegment == False:
+         keyWords = keyWords + " " + \
+                    QadMsg.translate("Command_OFFSET", "Segmento")
+         keyWordsMsg = keyWordsMsg + "/" + \
+                       QadMsg.translate("Command_OFFSET", "Segmento")
+
+      msg = QadMsg.translate("Command_OFFSET", "Specificare punto di passaggio o [{0}] <{1}>: ")
+
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg, \
+      self.waitFor(msg.format(keyWordsMsg, defaultMsg), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    default, \
                    keyWords, QadInputModeEnum.NONE)      
@@ -312,12 +424,29 @@ class QadOFFSETCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         return True # fine comando
+
+      # il layer corrente deve essere editabile e di tipo linea o poligono
+      currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, [QGis.Line, QGis.Polygon])
+      if currLayer is None:
+         self.showMsg(errMsg)
          return True # fine comando
 
       #=========================================================================
       # RICHIESTA DISTANZA DI OFFSET
       if self.step == 0: # inizio del comando
+         CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
+         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_OFFSET", "OFFSETGAPTYPE = ") + str(self.gapType)                        
+         if self.gapType == 0:
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_OFFSET", " (estende i segmenti)")         
+         elif self.gapType == 1:
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_OFFSET", " (raccorda i segmenti)")         
+         elif self.gapType == 2:
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_OFFSET", " (cima i segmenti)")         
+         
+         self.showMsg(CurrSettingsMsg)         
+
          self.waitForDistance()
             
       #=========================================================================
@@ -331,7 +460,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.offSet < 0:
-                     value = QadMsg.get(224) # "Punto"
+                     value = QadMsg.translate("Command_OFFSET", "Punto")
                   else:
                      value = self.offSet
                else:
@@ -343,31 +472,31 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.get(224): # "Punto"
+            if value == QadMsg.translate("Command_OFFSET", "Punto"):
                self.offSet = -1
                self.getPointMapTool().offSet = self.offSet
-               QadVariables.set("OFFSETDIST", self.offSet)
+               QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offSet)
                QadVariables.save()               
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
-            elif value == QadMsg.get(225): # "Cancella"
-               keyWords = QadMsg.get(230) + " " + QadMsg.get(231) # "Sì" "No"                               
+            elif value == QadMsg.translate("Command_OFFSET", "Cancella"):
+               keyWords = QadMsg.translate("QAD", "Sì") + " " + \
+                          QadMsg.translate("QAD", "No")                               
               
-               # "Cancellare l'oggetto sorgente dopo l'offset? [Sì/No] <{0}>: "
-               msg = QadMsg.get(229)
+               msg = QadMsg.translate("Command_OFFSET", "Cancellare l'oggetto sorgente dopo l'offset? [Sì/No] <{0}>: ")
                if self.eraseEntity == True:
-                  default = QadMsg.get(230) # "Sì"
+                  default = QadMsg.translate("QAD", "Sì")
                else: 
-                  default = QadMsg.get(231) # "No"
+                  default = QadMsg.translate("QAD", "No")
                    
-               # si appresta ad attendere un punto o enter o una parola chiave         
+               # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(msg.format(default), \
                             QadInputTypeEnum.KEYWORDS, \
                             default, \
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5
-            elif value == QadMsg.get(220): # "MUltiplo"
+            elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
                self.multi = True
                self.waitForBasePt()                         
          elif type(value) == QgsPoint: # se è stato inserito il primo punto per il calcolo della distanza
@@ -376,12 +505,12 @@ class QadOFFSETCommandClass(QadCommandClass):
             self.getPointMapTool().firstPt = self.firstPt           
             self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.FIRST_OFFSET_PT_KNOWN_ASK_FOR_SECOND_PT)
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "           
+            self.waitForPoint(QadMsg.translate("Command_OFFSET", "Specificare secondo punto: "))           
             self.step = 6
          elif type(value) == float:
             self.offSet = value
             self.getPointMapTool().offSet = self.offSet
-            QadVariables.set("OFFSETDIST", self.offSet)
+            QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offSet)
             QadVariables.save()
             # si appresta ad attendere la selezione di un oggetto
             self.waitForObjectSel()
@@ -399,7 +528,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  value = QadMsg.get(227) # "Esci"
+                  value = QadMsg.translate("Command_OFFSET", "Esci")
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
@@ -410,10 +539,10 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.get(227): # "Esci"
-               self.offsetGeoms()
+            if value == QadMsg.translate("Command_OFFSET", "Esci"):
+               self.offsetGeoms(currLayer)
                return True
-            elif value == QadMsg.get(228): # "ANnulla"
+            elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
                self.undoGeomsInCache()
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
@@ -422,7 +551,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                self.entity.set(entity.layer, entity.featureId)
                self.getPointMapTool().layer = self.entity.layer
                geom = entity.getGeometry()
-               transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.entity.layer, value)
+               transformedPt = self.mapToLayerCoordinates(self.entity.layer, value)
 
                # ritorna una tupla (<The squared cartesian distance>,
                #                    <minDistPoint>
@@ -430,7 +559,11 @@ class QadOFFSETCommandClass(QadCommandClass):
                #                    <leftOf>)
                dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
                if dummy[2] is not None:
-                  self.subGeom = qad_utils.getSubGeom(geom, dummy[2])
+                  # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
+                  # la posizione è espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+                  self.subGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])[0]
+                  self.subGeomSelectedPt = QgsPoint(transformedPt)
+                  
                   self.getPointMapTool().subGeom = self.subGeom
                   if self.offSet < 0: # richiesta di punto di passaggio
                      self.waitForPassagePt()
@@ -453,7 +586,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.multi == False: # default = esci                     
-                     self.offsetGeoms()
+                     self.offsetGeoms(currLayer)
                      return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -468,16 +601,24 @@ class QadOFFSETCommandClass(QadCommandClass):
             self.waitForObjectSel()
          else:
             if type(value) == unicode:
-               if value == QadMsg.get(227): # "Esci"
-                  self.offsetGeoms()
+               if value == QadMsg.translate("Command_OFFSET", "Esci"):
+                  self.offsetGeoms(currLayer)
                   return True # fine comando
-               elif value == QadMsg.get(233): # "MUltiplo"
+               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
                   self.multi = True
                   self.waitForSidePt()               
-               elif value == QadMsg.get(228): # "ANnulla"
+               elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
                   self.undoGeomsInCache()               
                   # si appresta ad attendere la selezione di un oggetto
                   self.waitForObjectSel()
+               elif value == QadMsg.translate("Command_OFFSET", "Segmento"):
+                  self.OnlySegment = True                  
+                  linearObject = qad_utils.QadLinearObject()
+                  if linearObject.setByClosestSegmentOfGeom(self.subGeomSelectedPt, self.subGeom) == True:
+                     self.subGeom = QgsGeometry.fromPolyline(linearObject.asPolyline())
+                     self.getPointMapTool().subGeom = self.subGeom
+                  
+                  self.waitForSidePt()                  
             elif type(value) == QgsPoint: # se è stato selezionato un punto            
                self.addFeatureCache(value) 
                if self.multi == False:
@@ -500,7 +641,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.multi == False: # default = esci                     
-                     self.offsetGeoms()
+                     self.offsetGeoms(currLayer)
                      return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -515,16 +656,24 @@ class QadOFFSETCommandClass(QadCommandClass):
             self.waitForObjectSel()
          else:
             if type(value) == unicode:
-               if value == QadMsg.get(227): # "Esci"
-                  self.offsetGeoms()
+               if value == QadMsg.translate("Command_OFFSET", "Esci"):
+                  self.offsetGeoms(currLayer)
                   return True # fine comando
-               elif value == QadMsg.get(233): # "MUltiplo"
+               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
                   self.multi = True
-                  self.waitForPassagePt()               
-               elif value == QadMsg.get(228): # "ANnulla"
+                  self.waitForPassagePt()     
+               elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
                   self.undoGeomsInCache()               
                   # si appresta ad attendere la selezione di un oggetto
                   self.waitForObjectSel()
+               elif value == QadMsg.translate("Command_OFFSET", "Segmento"):
+                  self.OnlySegment = True                  
+                  linearObject = qad_utils.QadLinearObject()
+                  if linearObject.setByClosestSegmentOfGeom(self.subGeomSelectedPt, self.subGeom) == True:
+                     self.subGeom = QgsGeometry.fromPolyline(linearObject.asPolyline())
+                     self.getPointMapTool().subGeom = self.subGeom
+                  
+                  self.waitForPassagePt()     
             elif type(value) == QgsPoint: # se è stato selezionato un punto            
                self.addFeatureCache(value)       
                if self.multi == False:
@@ -545,7 +694,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
             if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-               value = QadMsg.get(231) # "No"   
+               value = QadMsg.translate("QAD", "No")   
             else:
                self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                return False
@@ -553,10 +702,10 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(230): # "Sì"
+            if value == QadMsg.translate("QAD", "Sì"):
                self.eraseEntity = True
                self.waitForDistance()
-            elif value == QadMsg.get(231): # "No"
+            elif value == QadMsg.translate("QAD", "No"):
                self.eraseEntity = False
                self.waitForDistance()
          
@@ -582,15 +731,14 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
 
          if value == self.firstPt:
-            # "\nIl valore deve essere positivo e diverso da zero."
-            self.showMsg(QadMsg.get(201))
+            self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_OFFSET", "Specificare secondo punto: "))
             return False
                
          self.offSet = qad_utils.getDistance(self.firstPt, value)
          self.getPointMapTool().offSet = self.offSet
-         QadVariables.set("OFFSETDIST", self.offSet)
+         QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offSet)
          QadVariables.save()
          # si appresta ad attendere la selezione di un oggetto
          self.waitForObjectSel()

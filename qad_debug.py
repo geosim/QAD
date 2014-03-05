@@ -25,9 +25,13 @@
 DEBUG = True # False # True
 
 if DEBUG == True:
-   import sys
-   sys.path.append("C:/software/python/eclipse-SDK-4.2.2-win32/eclipse/plugins/org.python.pydev_2.7.3.2013031601/pysrc/")
-   from pydevd import *
+   import os.path
+   
+   path = "C:/software/python/eclipse-SDK-4.2.2-win32/eclipse/plugins/org.python.pydev_2.7.3.2013031601/pysrc/"
+   if os.path.exists(path):
+      import sys
+      sys.path.append(path)
+      from pydevd import *
 
 
 # Import the PyQt library
@@ -40,7 +44,7 @@ def isDebug():
 
 def displayMsg(msg):
    if isDebug():
-      QMessageBox.information(None, "Qad Debug Window", msg)
+      QMessageBox.information(None, "QAD Debug Window", msg)
 
 def displayList(values):
    if isDebug():

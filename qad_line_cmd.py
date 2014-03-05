@@ -37,13 +37,15 @@ from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_snapper import *
 import qad_utils
+import qad_layer
+from qad_rubberband import createRubberBand
 
 
 # Classe che gestisce il comando LINE
 class QadLINECommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(117) # "LINEA"
+      return QadMsg.translate("Command_list", "LINEA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runLINECommand)
@@ -53,14 +55,17 @@ class QadLINECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(118)
+      return QadMsg.translate("Command_LINE", "Crea segmenti di linee rette.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
-      self.rubberBand = QgsRubberBand(self.plugIn.canvas, False)
+      self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
       self.firstPtTan = None
       self.firstPtPer = None      
+      # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
+      # che non verrà salvata su un layer
+      self.virtualCmd = False
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -112,29 +117,29 @@ class QadLINECommandClass(QadCommandClass):
    def addLinesToLayer(self, layer):
       i = 1
       while i < len(self.vertices):                     
-         qad_utils.addLineToLayer(self.plugIn, layer,
+         qad_layer.addLineToLayer(self.plugIn, layer,
                                   [self.vertices[i - 1], self.vertices[i]])
          i = i + 1
          
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
 
-      currLayer = qad_utils.getCurrLayerEditable(self.plugIn.canvas, QGis.Line)
-      if currLayer is None:
-         self.showMsg(QadMsg.get(53)) # "\nIl layer corrente non è valido\n"
-         return True # fine comando
+      if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
+         currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Line)
+         if currLayer is None:
+            self.showMsg(errMsg)
+            return True # fine comando
       
       # RICHIESTA PRIMO PUNTO 
       if self.step == 0: # inizio del comando
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)
-         # "Specificare primo punto: "        
          # si appresta ad attendere un punto o enter
          #                        msg, inputType,              default, keyWords, nessun controllo         
-         self.waitFor(QadMsg.get(119), QadInputTypeEnum.POINT2D, None, "", \
-                      QadInputModeEnum.NONE)
+         self.waitFor(QadMsg.translate("Command_LINE", "Specificare primo punto: "), \
+                      QadInputTypeEnum.POINT2D, None, "", QadInputModeEnum.NONE)
          self.step = 1
          return False
       
@@ -148,7 +153,8 @@ class QadLINECommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.addLinesToLayer(currLayer)
+                  if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
+                     self.addLinesToLayer(currLayer)
                   return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -162,24 +168,24 @@ class QadLINECommandClass(QadCommandClass):
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
          if type(value) == unicode:
-            if value == QadMsg.get(122): # "Annulla"               
+            if value == QadMsg.translate("Command_LINE", "Annulla"):               
                self.delLastVertex() # cancello ultimo vertice
                # imposto il map tool
                if len(self.vertices) == 0:
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)
-                  # "Specificare primo punto: "        
                   # si appresta ad attendere un punto o enter
                   #                        msg, inputType,              default, keyWords, nessun controllo
-                  self.waitFor(QadMsg.get(119), QadInputTypeEnum.POINT2D, None, "", \
-                               QadInputModeEnum.NONE)
+                  self.waitFor(QadMsg.translate("Command_LINE", "Specificare primo punto: "), \
+                               QadInputTypeEnum.POINT2D, None, "", QadInputModeEnum.NONE)
                   return False                  
                else:
                   self.getPointMapTool().firstPt = self.vertices[-1]
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)        
-            elif value == QadMsg.get(123): # "Chiudi"
+            elif value == QadMsg.translate("Command_LINE", "Chiudi"):
                newPt = self.vertices[0]
                self.addVertex(newPt) # aggiungo un nuovo vertice
-               self.addLinesToLayer(currLayer)
+               if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
+                  self.addLinesToLayer(currLayer)
                return True # fine comando
          else:
             if len(self.vertices) == 0: # primo punto
@@ -221,8 +227,7 @@ class QadLINECommandClass(QadCommandClass):
                         # imposto il map tool
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
-                        # \nNessuna tangente possibile"
-                        self.showMsg(QadMsg.get(124))
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
@@ -242,8 +247,7 @@ class QadLINECommandClass(QadCommandClass):
                         # imposto il map tool
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
-                        # \nNessuna tangente possibile"
-                        self.showMsg(QadMsg.get(124))
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))                        
                         
                # se è stato selezionato un punto con la modalità PER_DEF è un punto differito
                elif snapTypeOnSel == QadSnapTypeEnum.PER_DEF and entity.isInitialized():
@@ -278,8 +282,7 @@ class QadLINECommandClass(QadCommandClass):
                         # imposto il map tool
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
-                        # \nNessuna perpendicolare possibile"
-                        self.showMsg(QadMsg.get(125))
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna perpendicolare possibile"))
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
@@ -299,8 +302,7 @@ class QadLINECommandClass(QadCommandClass):
                         # imposto il map tool
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
-                        # \nNessuna perpendicolare possibile"
-                        self.showMsg(QadMsg.get(125))
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna perpendicolare possibile"))
                else: # altrimenti è un punto esplicito
                   # se era stato selezionato un punto con la modalità TAN_DEF
                   if self.firstPtTan is not None:
@@ -319,9 +321,8 @@ class QadLINECommandClass(QadCommandClass):
                            self.addVertex(value) # aggiungo un nuovo vertice
                            break
 
-                     if len(self.vertices) == 0:                        
-                        # \nNessuna tangente possibile"
-                        self.showMsg(QadMsg.get(124))
+                     if len(self.vertices) == 0:
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))                                          
                   # se era stato selezionato un punto con la modalità PER_DEF
                   elif self.firstPtPer is not None:
                      snapper = QadSnapper()
@@ -339,8 +340,7 @@ class QadLINECommandClass(QadCommandClass):
                            break
 
                      if len(self.vertices) == 0:                        
-                        # \nNessuna perpendicolare possibile"
-                        self.showMsg(QadMsg.get(125))
+                        self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna perpendicolare possibile"))
                   else:
                      self.addVertex(value) # aggiungo un nuovo vertice
 
@@ -350,7 +350,8 @@ class QadLINECommandClass(QadCommandClass):
                      self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
             else: # secondo punto
                if value is None:
-                  self.addLinesToLayer(currLayer)
+                  if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
+                     self.addLinesToLayer(currLayer)
                   return True # fine comando
                # se il primo punto è esplicito
                if len(self.vertices) > 0 is not None:
@@ -360,11 +361,11 @@ class QadLINECommandClass(QadCommandClass):
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
 
          if len(self.vertices) > 2:
-            keyWords = QadMsg.get(123) + " " + QadMsg.get(122) # "Chiudi" "Annulla"
-            msg = QadMsg.get(121) # "Specificare punto successivo o [Chiudi/Annulla]: "          
+            keyWords = QadMsg.translate("Command_LINE", "Chiudi") + " " + QadMsg.translate("Command_LINE", "Annulla")
+            msg = QadMsg.translate("Command_LINE", "Specificare punto successivo o [Chiudi/Annulla]: ")          
          else:
-            keyWords = QadMsg.get(122) # "Annulla"
-            msg = QadMsg.get(120) # "Specificare punto successivo o [Annulla]: "          
+            keyWords = QadMsg.translate("Command_LINE", "Annulla")
+            msg = QadMsg.translate("Command_LINE", "Specificare punto successivo o [Annulla]: ")          
             
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo

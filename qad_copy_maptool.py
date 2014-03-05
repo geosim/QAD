@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -59,39 +60,24 @@ class Qad_copy_maptool(QadGetPoint):
       self.entitySet = QadEntitySet()
       self.seriesLen = 0
       self.adjust = False
-      self.__copiedRubberBand = None   
-      self.__copiedRubberBandPolygon = None   
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__copiedRubberBand is not None:
-         self.__copiedRubberBand.hide()
-      if self.__copiedRubberBandPolygon is not None:
-         self.__copiedRubberBandPolygon.hide()         
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__copiedRubberBand is not None:
-         self.__copiedRubberBand.show()
-      if self.__copiedRubberBandPolygon is not None:
-         self.__copiedRubberBandPolygon.show()         
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__copiedRubberBand is not None:
-         self.__copiedRubberBand.hide()
-         del self.__copiedRubberBand
-         self.__copiedRubberBand = None
-      if self.__copiedRubberBandPolygon is not None:
-         self.__copiedRubberBandPolygon.hide()
-         del self.__copiedRubberBandPolygon
-         self.__copiedRubberBandPolygon = None
+      self.__rubberBand.reset()
       self.mode = None    
    
-   def addCopiedGeometries(self, newPt):
-      #qad_debug.breakPoint()      
-      self.__copiedRubberBand = QgsRubberBand(self.canvas, False)
-      self.__copiedRubberBandPolygon = QgsRubberBand(self.canvas, True)
+   def setCopiedGeometries(self, newPt):
+      qad_debug.breakPoint()      
+      self.__rubberBand.reset()            
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
@@ -112,58 +98,33 @@ class Qad_copy_maptool(QadGetPoint):
             deltaY = offSetY
                
             for i in xrange(1, self.seriesLen, 1):
-               if layer.geometryType() != QGis.Polygon:
-                  for geom in geoms:
-                     copiedGeom = qad_utils.moveQgsGeometry(geom, deltaX, deltaY)
-                     self.__copiedRubberBand.addGeometry(copiedGeom, layer)
-               else:
-                  for geom in geoms:
-                     copiedGeom = qad_utils.moveQgsGeometry(geom, deltaX, deltaY)
-                     self.__copiedRubberBandPolygon.addGeometry(copiedGeom, layer)
-                     
+               for geom in geoms:
+                  copiedGeom = qad_utils.moveQgsGeometry(geom, deltaX, deltaY)
+                  self.__rubberBand.addGeometry(copiedGeom, layer)
+                                    
                deltaX = deltaX + offSetX
                deltaY = deltaY + offSetY     
          else:
-            if layer.geometryType() != QGis.Polygon:
-               for geom in geoms:
-                  copiedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
-                  self.__copiedRubberBand.addGeometry(copiedGeom, layer)
-            else:
-               for geom in geoms:
-                  copiedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
-                  self.__copiedRubberBandPolygon.addGeometry(copiedGeom, layer)
+            for geom in geoms:
+               copiedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
+               self.__rubberBand.addGeometry(copiedGeom, layer)
             
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__copiedRubberBand  is not None:
-         self.__copiedRubberBand.hide()
-         del self.__copiedRubberBand
-         self.__copiedRubberBand = None
-      if self.__copiedRubberBandPolygon  is not None:
-         self.__copiedRubberBandPolygon.hide()
-         del self.__copiedRubberBandPolygon
-         self.__copiedRubberBandPolygon = None
-               
-      # noto il punto base si richiede il secondo punto per l'angolo di rotazione
+      # noto il punto base si richiede il secondo punto
       if self.mode == Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT:
-         self.addCopiedGeometries(self.tmpPoint)                           
+         self.setCopiedGeometries(self.tmpPoint)                           
          
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__copiedRubberBand is not None:
-         self.__copiedRubberBand.show()
-      if self.__copiedRubberBandPolygon is not None:
-         self.__copiedRubberBandPolygon.show()
+      self.__rubberBand.show()          
 
    def deactivate(self):
       QadGetPoint.deactivate(self)
-      if self.__copiedRubberBand is not None:
-         self.__copiedRubberBand.hide()
-      if self.__copiedRubberBandPolygon is not None:
-         self.__copiedRubberBandPolygon.hide()
+      self.__rubberBand.hide()
 
    def setMode(self, mode):
       self.mode = mode

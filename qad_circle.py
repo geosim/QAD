@@ -82,8 +82,47 @@ class QadCircle():
    def length(self):
       return 2 * math.pi * self.radius
 
+   def lengthBetween2Points(self, pt1, pt2, leftOfPt1):
+      """
+      Calcola la distanza tra 2 punti sulla circonferenza. L'arco considerato può essere
+      quello a sinistra o a destra di <pt1> (vedi <leftOfPt1>)
+      se <leftOfPt1> è boolean allora se = True viene considerato l'arco a sin di pt1
+      se <leftOfPt1> è float allora significa che si tratta della direzione della tangente su pt1
+                     e se la direzione è a sin viene considerato l'arco a sin di pt1
+      """
+      if qad_utils.ptNear(pt1, pt2): # se i punti sono così vicini da essere considerati uguali
+         return 0
+      
+      if type(leftOfPt1) == float: # direzione della tangente su pt1 
+         startAngle = qad_utils.getAngleBy2Pts(self.center, pt1)         
+         if qad_utils.doubleNear(qad_utils.normalizeAngle(startAngle + math.pi / 2), 
+                                 qad_utils.normalizeAngle(leftOfPt1)):
+            _leftOfPt1 = True
+         else:
+            _leftOfPt1 = False
+      else: # booolean
+         _leftOfPt1 = leftOfPt1
+      
+      if _leftOfPt1: # arco a sinistra di pt1
+         startAngle = qad_utils.getAngleBy2Pts(self.center, pt1)         
+         endAngle = qad_utils.getAngleBy2Pts(self.center, pt2)
+      else: # arco a destra di pt1
+         startAngle = qad_utils.getAngleBy2Pts(self.center, pt2)
+         endAngle = qad_utils.getAngleBy2Pts(self.center, pt1)         
+
+      if startAngle < endAngle:
+         totalAngle = endAngle - startAngle
+      else:
+         totalAngle =  (2 * math.pi - startAngle) + endAngle
+      
+      return self.radius * totalAngle
+
    def area(self):
       return math.pi * self.radius * self.radius
+
+   def isPtOnCircle(self, point):
+      dist = qad_utils.getDistance(self.center, point)
+      return qad_utils.doubleNear(self.radius, dist)
 
    def getQuadrantPoints(self):
       pt1 = QgsPoint(self.center.x(), self.center.y() + self.radius)
@@ -118,13 +157,14 @@ class QadCircle():
 
    def getIntersectionPointsWithCircle(self, circle):
       result = []
-      distFromCenters = qad_utils.getDistance(self.center, circle.center)
-      if distFromCenters == 0: # stesso centro
+      # se i punti sono così vicini da essere considerati uguali 
+      if qad_utils.ptNear(self.center, circle.center): # stesso centro
          return result
+      distFromCenters = qad_utils.getDistance(self.center, circle.center)
       distFromCirc = distFromCenters - self.radius - circle.radius
 
       # se è così vicino allo zero da considerarlo = 0
-      if qad_utils.doubleNear(distFromCirc, 0, 1.e-9):
+      if qad_utils.doubleNear(distFromCirc, 0):
          angle = qad_utils.getAngleBy2Pts(self.center, circle.center)
          result.append(qad_utils.getPolarPointByPtAngle(self.center, angle, self.radius))
          return result
@@ -137,13 +177,13 @@ class QadCircle():
       radius2_self = self.radius * self.radius # raggio del cerchio <self> al quadrato
       radius2_circle = circle.radius * circle.radius # raggio del cerchio <circle> al quadrato
       
-      if self.center.y() == circle.center.y():
+      if qad_utils.doubleNear(self.center.y(), circle.center.y()):
          x1 = x2_circle - x2_self + radius2_self - radius2_circle
          x1 = x1 / (2 * (circle.center.x() - self.center.x()))
          x2 = x1         
          D = radius2_self - ((x1 - self.center.x()) * (x1 - self.center.x()))
          # se D è così vicino a zero 
-         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+         if qad_utils.doubleNear(D, 0.0):
             D = 0
          elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
@@ -164,7 +204,7 @@ class QadCircle():
          C = (b * b) - (2 * self.center.y() * b) + x2_self + y2_self - radius2_self
          D = (B * B) - (4 * A * C)
          # se D è così vicino a zero 
-         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+         if qad_utils.doubleNear(D, 0.0):
             D = 0
          elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
@@ -183,7 +223,7 @@ class QadCircle():
       return result
 
 
-   def getIntersectionPointsWithline(self, p1, p2):
+   def getIntersectionPointsWithInfinityLine(self, p1, p2):
       result = []
       if p1 == p2:
          return result
@@ -198,7 +238,7 @@ class QadCircle():
          C = x2_self + y2_self + (p1.x() * p1.x()) - (2* p1.x() * self.center.x()) - radius2_self
          D = (B * B) - (4 * C) 
          # se D è così vicino a zero 
-         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+         if qad_utils.doubleNear(D, 0.0):
             D = 0
          elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
@@ -218,7 +258,7 @@ class QadCircle():
               
          D = (B * B) - 4 * A * C
          # se D è così vicino a zero 
-         if qad_utils.doubleNear(D, 0.0, 1.e-9):
+         if qad_utils.doubleNear(D, 0.0):
             D = 0
          elif D < 0: # non si può fare la radice quadrata di un numero negativo
             return result
@@ -234,6 +274,18 @@ class QadCircle():
       if x1 != x2 or y1 != y2: # i punti non sono coincidenti
          result.append(QgsPoint(x2, y2))
       
+      return result
+
+
+   #============================================================================
+   # getIntersectionPointsWithSegment
+   #============================================================================
+   def getIntersectionPointsWithSegment(self, p1, p2):
+      result = []
+      intPtList = self.getIntersectionPointsWithInfinityLine(p1, p2)
+      for intPt in intPtList:
+         if qad_utils.isPtOnSegment(p1, p2, intPt):
+            result.append(intPt)
       return result
 
 
@@ -305,16 +357,21 @@ class QadCircle():
    #============================================================================
    # asPolyline
    #============================================================================
-   def asPolyline(self, tolerance2ApproxCurve = None):
+   def asPolyline(self, tolerance2ApproxCurve = None, atLeastNSegment = None):
       """
       ritorna una lista di punti che definisce il cerchio
       """
       #qad_debug.breakPoint()
       
       if tolerance2ApproxCurve is None:
-         tolerance = QadVariables.get("TOLERANCE2APPROXCURVE")
+         tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       else:
          tolerance = tolerance2ApproxCurve
+
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
@@ -325,10 +382,13 @@ class QadCircle():
          SegmentLen = math.sqrt(dummy) # radice quadrata
          SegmentLen = SegmentLen * 2
 
-      # calcolo quanti segmenti ci vogliono (non meno di 4)
+      if SegmentLen == 0: # se la tolleranza è troppo bassa la lunghezza del segmento diventa zero  
+         return None
+
+      # calcolo quanti segmenti ci vogliono (non meno di _atLeastNSegment)
       SegmentTot = math.ceil(self.length() / SegmentLen)
-      if SegmentTot < 4:
-         SegmentTot = 4
+      if SegmentTot < _atLeastNSegment:
+         SegmentTot = _atLeastNSegment
       
       points = []
       # primo punto
@@ -352,17 +412,22 @@ class QadCircle():
    #============================================================================
    # fromPolyline
    #============================================================================
-   def fromPolyline(self, points, startVertex, atLeastNSegment = 4):
+   def fromPolyline(self, points, startVertex, atLeastNSegment = None):
       """
       setta le caratteristiche del primo cerchio incontrato nella lista di punti
       partendo dalla posizione startVertex (0-indexed)
       ritorna la posizione nella lista del punto iniziale e finale se è stato trovato un cerchio
       altrimenti None
       """
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       #qad_debug.breakPoint()
       totPoints = len(points)
-      # perchè sia un cerchio ci vogliono almeno atLeastNSegment segmenti
-      if (totPoints - 1) - startVertex < atLeastNSegment or atLeastNSegment < 2:
+      # perchè sia un cerchio ci vogliono almeno _atLeastNSegment segmenti
+      if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 
       epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
@@ -391,17 +456,32 @@ class QadCircle():
                                                                        InfinityLinePerpOnMiddle2[0], \
                                                                        InfinityLinePerpOnMiddle2[1])
                if center is None: # linee parallele
-                  InfinityLinePerpOnMiddle1 = InfinityLinePerpOnMiddle2[:] # copio la lista dei 2 punti
+                  InfinityLinePerpOnMiddle1 = InfinityLinePerpOnMiddle2
+                  InfinityLinePerpOnMiddle2 = None
                   nStartVertex = i
                   nSegment = 1
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
+                  # calcolo il verso dell'arco e l'angolo dell'arco                 
+                  # se un punto intermedio dell'arco è a sinistra del
+                  # segmento che unisce i due punti allora il verso è antiorario
+                  startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
+                  angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                                    
          else: # e sono già stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
-            if qad_utils.doubleNear(radius, dist, maxDifference):
+            # calcolo il verso dell'arco e l'angolo                 
+            clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
+            angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise)
+             
+            # se la distanza è così vicina a quella del raggio
+            # il verso dell'arco deve essere quello iniziale
+            # l'angolo dell'arco non può essere > 360 gradi
+            if qad_utils.doubleNear(radius, dist, maxDifference) and \
+               startClockWise == clockWise and \
+               (angle < 2 * math.pi or qad_utils.doubleNear(angle, 2 * math.pi)):                              
                nSegment = nSegment + 1 # anche questo segmento fa parte del cerchio
             else: # questo segmento non fa parte del cerchio
                #qad_debug.breakPoint()
@@ -412,8 +492,10 @@ class QadCircle():
                
          i = i + 1
 
+      #qad_debug.breakPoint()
+
       # se sono stati trovati un numero sufficiente di segmenti successivi
-      if nSegment >= atLeastNSegment:
+      if nSegment >= _atLeastNSegment:
          nEndVertex = nStartVertex + nSegment
          # se il punto iniziale e quello finale coincidono è un cerchio
          if points[nStartVertex] == points[nEndVertex]:
@@ -422,6 +504,22 @@ class QadCircle():
             return nStartVertex, nEndVertex
 
       return None
+
+
+   #============================================================================
+   # fromCenterPtArea
+   #============================================================================
+   def fromCenterArea(self, centerPt, area):
+      """
+      setta le caratteristiche del cerchio attraverso:
+      il punto centrale
+      area
+      """
+      if centerPt is None or area <= 0:
+         return False
+      self.center = centerPt
+      self.radius = math.sqrt(area / math.pi)
+      return True
 
 
    #============================================================================
@@ -622,7 +720,7 @@ class QadCircle():
          ptInt = qad_utils.getPerpendicularPointOnInfinityLine(line3[0], line3[1], circleTan.center)
          AvgList.append(qad_utils.getDistance(ptInt, pt3))
 
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -724,7 +822,7 @@ class QadCircle():
          ptInt = qad_utils.getPolarPointByPtAngle(circleTan.center, angle, circleTan.radius)
          AvgList.append(qad_utils.getDistance(ptInt, pt3))
                   
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -776,7 +874,7 @@ class QadCircle():
          ptInt = qad_utils.getPolarPointByPtAngle(circleTan.center, angle, circleTan.radius)
          AvgList.append(qad_utils.getDistance(ptInt, pt2))
                   
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -850,7 +948,7 @@ class QadCircle():
          ptInt = qad_utils.getPolarPointByPtAngle(circleTan.center, angle, circleTan.radius)
          AvgList.append(qad_utils.getDistance(ptInt, pt3))
          
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -1031,7 +1129,7 @@ class QadCircle():
          if dist1 == circle.radius: # entrambi i punti sono sulla circonferenza di circle
             return False 
          axis = qad_utils.getInfinityLinePerpOnMiddle(pt1, pt2) # asse di pt1 e pt2
-         intPts = circle.getIntersectionPointsWithline(axis) # punti di intersezione tra l'asse e circle
+         intPts = circle.getIntersectionPointsWithInfinityLine(axis) # punti di intersezione tra l'asse e circle
          for intPt in intPts:
             circleTan = QadCircle()
             if circleTan.from3Pts(pt1, pt2, intPt) == True:
@@ -1260,7 +1358,7 @@ class QadCircle():
          ptInt = qad_utils.getPerpendicularPointOnInfinityLine(line2[0], line2[1], circleTan.center)
          AvgList.append(qad_utils.getDistance(ptInt, pt2))
                   
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -1329,7 +1427,7 @@ class QadCircle():
          ptInt = qad_utils.getPolarPointByPtAngle(circleTan.center, angle, circleTan.radius)
          AvgList.append(qad_utils.getDistance(ptInt, pt2))
                   
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
@@ -1395,17 +1493,13 @@ class QadCircle():
          ptInt = qad_utils.getPolarPointByPtAngle(circleTan.center, angle, circleTan.radius)
          AvgList.append(qad_utils.getDistance(ptInt, pt2))
                   
-         currAvg = qad_utils.doubleListAvg(AvgList)           
+         currAvg = qad_utils.numericListAvg(AvgList)           
          if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             self.center = circleTan.center
             self.radius = circleTan.radius
             
       return True
-
-
-
-
 
    
    #============================================================================
@@ -1452,7 +1546,7 @@ class QadCircle():
          ptPer = qad_utils.getPerpendicularPointOnInfinityLine(obj[0], obj[1], startPt)
          return self.fromDiamEnds(startPt, ptPer)
       elif objType == "CIRCLE":        
-         ptIntList = obj.getIntersectionPointsWithline(startPt, obj.center)     
+         ptIntList = obj.getIntersectionPointsWithInfinityLine(startPt, obj.center)     
          # scelgo il punto pià vicino al punto pt
          ptTan = qad_utils.getNearestPoints(pt, ptIntList)[0]
          return self.fromDiamEnds(startPt, ptTan)
@@ -1525,7 +1619,7 @@ class QadCircle():
 
       ptPer = qad_utils.getPerpendicularPointOnInfinityLine(line[0], line[1], circle.center)
       
-      ptIntList = obj.getIntersectionPointsWithline(ptPer, circle.center)     
+      ptIntList = obj.getIntersectionPointsWithInfinityLine(ptPer, circle.center)     
       # scelgo il punto pià vicino al punto pt
       ptTan = qad_utils.getNearestPoints(pt, ptIntList)[0]
       return self.fromDiamEnds(ptPer, ptTan)
@@ -1543,11 +1637,11 @@ class QadCircle():
       punto di selezione cerchio2
       """
 
-      ptIntList = circle1.getIntersectionPointsWithline(circle1.center, circle2.center)     
+      ptIntList = circle1.getIntersectionPointsWithInfinityLine(circle1.center, circle2.center)     
       # scelgo il punto pià vicino al punto pt1
       ptTan1 = qad_utils.getNearestPoints(pt1, ptIntList)[0]
       
-      ptIntList = circle2.getIntersectionPointsWithline(circle1.center, circle2.center)     
+      ptIntList = circle2.getIntersectionPointsWithInfinityLine(circle1.center, circle2.center)     
       # scelgo il punto pià vicino al punto pt2
       ptTan2 = qad_utils.getNearestPoints(pt2, ptIntList)[0]
       
@@ -1628,7 +1722,7 @@ class QadCircle():
                                                              line2[0], line2[1])
       if ptInt is None: # le rette sono parallele
          ptPer = qad_utils.getPerpendicularPointOnInfinityLine(line1[0], line1[1], ptMiddle)
-         if qad_utils.doubleNear(radius, qad_utils.getDistance(ptPer, ptMiddle, 1.e-9)):                                 
+         if qad_utils.doubleNear(radius, qad_utils.getDistance(ptPer, ptMiddle)):                                 
             self.center = ptMiddle
             self.radius = radius
             return True
@@ -1711,8 +1805,8 @@ class QadCircle():
       # creo un cerchio con un raggio + grande
       circleTan = QadCircle()
       circleTan.set(circle.center, circle.radius + radius)
-      ptIntList = circleTan.getIntersectionPointsWithline(pt1Par1Line, pt2Par1Line)
-      ptIntList2 = circleTan.getIntersectionPointsWithline(pt1Par2Line, pt2Par2Line)
+      ptIntList = circleTan.getIntersectionPointsWithInfinityLine(pt1Par1Line, pt2Par1Line)
+      ptIntList2 = circleTan.getIntersectionPointsWithInfinityLine(pt1Par2Line, pt2Par2Line)
       ptIntList.extend(ptIntList2)
 
       if len(ptIntList) == 0: # nessuna intersezione
@@ -1772,21 +1866,26 @@ class QadCircleList():
    #============================================================================
    # fromPoints
    #============================================================================
-   def fromPoints(self, points, atLeastNSegment = 4):
+   def fromPoints(self, points, atLeastNSegment = None):
       """
       setta la lista deg cerchi e degli estremi leggendo una sequenza di punti
       ritorna il numero dei cerchi trovati
       """
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       self.clear()
       startVertex = 0
       circle = QadCircle()
-      startEndVertices = circle.fromPolyline(points, startVertex, atLeastNSegment)
+      startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
       while startEndVertices is not None:
          _circle = QadCircle(circle) # ne faccio una copia
          self.circleList.append(_circle)
          self.startEndVerticesList.append(startEndVertices)
          startVertex = startEndVertices[1] # l'ultimo punto del cerchio
-         startEndVertices = circle.fromPolyline(points, startVertex, atLeastNSegment)               
+         startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)               
 
       return len(self.circleList)
 
@@ -1794,11 +1893,16 @@ class QadCircleList():
    #============================================================================
    # fromGeom
    #============================================================================
-   def fromGeom(self, geom, atLeastNSegment = 4):
+   def fromGeom(self, geom, atLeastNSegment = None):
       """
       setta la lista dei cerchi e degli estremi leggendo una geometria
       ritorna il numero di cerchi trovati
       """
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       self.clear()
       circle = QadCircle()
       incremental = 0 
@@ -1807,13 +1911,13 @@ class QadCircleList():
       for g in geoms:
          points = g.asPolyline() # vettore di punti
          startVertex = 0
-         startEndVertices = circle.fromPolyline(points, startVertex, atLeastNSegment)
+         startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
          while startEndVertices is not None:
             _circle = QadCircle(circle) # ne faccio una copia
             self.circleList.append(_circle)
             self.startEndVerticesList.append([startEndVertices[0] + incremental, startEndVertices[1] + incremental])
             startVertex = startEndVertices[1] # l'ultimo punto del cerchio
-            startEndVertices = circle.fromPolyline(points, startVertex, atLeastNSegment)
+            startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
                            
          incremental = len(points) - 1
 

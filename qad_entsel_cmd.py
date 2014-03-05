@@ -47,12 +47,21 @@ class QadEntSelClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
       self.entity = QadEntity()
       self.point = None
-      self.onlyEditableLayers = False
-      self.msg = QadMsg.get(162) # "Selezionare oggetto: "
+      # opzioni per limitare gli oggetti da selezionare
+      self.onlyEditableLayers = False     
+      self.checkPointLayer = True
+      self.checkLineLayer = True
+      self.checkPolygonLayer = True
+      self.msg = QadMsg.translate("QAD", "Selezionare oggetto: ")
+      
+   def __del__(self):
+      QadCommandClass.__del__(self)
+      if self.entity.isInitialized():
+         self.entity.deselectOnLayer()      
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
 
       #=========================================================================
@@ -61,8 +70,11 @@ class QadEntSelClass(QadCommandClass):
          # imposto il map tool
          self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
          self.getPointMapTool().onlyEditableLayers = self.onlyEditableLayers
-         
-         keyWords = QadMsg.get(135) # "Ultimo"
+         self.getPointMapTool().checkPointLayer = self.checkPointLayer
+         self.getPointMapTool().checkLineLayer = self.checkLineLayer
+         self.getPointMapTool().checkPolygonLayer = self.checkPolygonLayer
+                  
+         keyWords = QadMsg.translate("Command_ENTSEL", "Ultimo")
                   
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
@@ -101,26 +113,29 @@ class QadEntSelClass(QadCommandClass):
             return True # fine comando
          
          if type(value) == unicode:
-            if value == QadMsg.get(135): # "Ultimo"
+            if value == QadMsg.translate("Command_ENTSEL", "Ultimo"):
                # Seleziona l'ultima entità inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:
                   self.entity.set(lastEnt.layer, lastEnt.featureId)
+                  self.entity.selectOnLayer()
          elif type(value) == QgsPoint:
             if entity is None:
                # cerco se ci sono entità nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
                                             None, \
-                                            True, True, True, \
+                                            self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
                                             True, \
                                             self.onlyEditableLayers)
                if result is not None:
                   feature = result[0]
                   layer = result[1]
                   self.entity.set(layer, feature.id())               
+                  self.entity.selectOnLayer()
             else:
                self.entity.set(entity.layer, entity.featureId)
+               self.entity.selectOnLayer()
 
             self.point = value
                                    

@@ -10,7 +10,7 @@
 *.pyc
 
 # debug
-qad_debug.*
+#qad_debug.*
 
 Thumbs.db
 *.psproj

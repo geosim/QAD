@@ -39,12 +39,15 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 from qad_variables import *
 import qad_utils
+import qad_layer
+from qad_rubberband import createRubberBand
+
 
 # Classe che gestisce il comando COPY
 class QadCOPYCommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(202) # "COPIA"
+      return QadMsg.translate("Command_list", "COPIA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runCOPYCommand)
@@ -54,7 +57,7 @@ class QadCOPYCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(203)
+      return QadMsg.translate("Command_COPY", "Copia gli oggetti selezionati ad una distanza e in una direzione specificate.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -65,12 +68,12 @@ class QadCOPYCommandClass(QadCommandClass):
       self.series = False
       self.seriesLen = 2
       self.adjust = False
-      self.copyMode = QadVariables.get("COPYMODE")
+      self.copyMode = QadVariables.get(QadMsg.translate("Environment variables", "COPYMODE"))
       
       self.featureCache = [] # lista di (layer, feature)
       self.undoFeatureCacheIndexes = [] # posizioni in featureCache dei punti di undo
-      self.rubberBand = QgsRubberBand(self.plugIn.canvas, False)
-      self.rubberBandPolygon = QgsRubberBand(self.plugIn.canvas, True)
+      self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
+      self.rubberBandPolygon = createRubberBand(self.plugIn.canvas, QGis.Polygon)
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -92,12 +95,13 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    # addFeatureCache
    #============================================================================
-   def addFeatureCache(self, newPt):      
+   def addFeatureCache(self, newPt):
       featureCacheLen = len(self.featureCache)
+      added = False
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
-         transformedBasePt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
-         transformedNewPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
+         transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
+         transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
          
@@ -116,7 +120,8 @@ class QadCOPYCommandClass(QadCommandClass):
                   copiedFeature = QgsFeature(f)
                   copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), deltaX, deltaY))
                   self.featureCache.append([layer, copiedFeature])
-                  self.addFeatureToRubberBand(layer, copiedFeature)            
+                  self.addFeatureToRubberBand(layer, copiedFeature)
+                  added = True           
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY     
             else:
@@ -124,8 +129,10 @@ class QadCOPYCommandClass(QadCommandClass):
                copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), offSetX, offSetY))
                self.featureCache.append([layer, copiedFeature])
                self.addFeatureToRubberBand(layerEntitySet.layer, copiedFeature)            
+               added = True           
       
-      self.undoFeatureCacheIndexes.append(featureCacheLen)
+      if added:
+         self.undoFeatureCacheIndexes.append(featureCacheLen)
 
    #============================================================================
    # undoGeomsInCache
@@ -157,8 +164,8 @@ class QadCOPYCommandClass(QadCommandClass):
    # refreshRubberBand
    #============================================================================
    def refreshRubberBand(self):
-      self.rubberBand.reset(False)
-      self.rubberBandPolygon.reset(True)
+      self.rubberBand.reset(QGis.Line)
+      self.rubberBandPolygon.reset(QGis.Polygon)
       for f in self.featureCache:
          layer = f[0]
          feature = f[1]
@@ -167,6 +174,9 @@ class QadCOPYCommandClass(QadCommandClass):
          else:
             self.rubberBand.addGeometry(feature.geometry(), layer)            
 
+   #============================================================================
+   # copyGeoms
+   #============================================================================
    def copyGeoms(self):
       featuresLayers = [] # lista di (layer, features)
       
@@ -184,9 +194,21 @@ class QadCOPYCommandClass(QadCommandClass):
          if not found:
             featuresLayers.append([layer, [feature]])
 
+      layerList = []
       for featuresLayer in featuresLayers:
-         qad_utils.addFeaturesToLayer(self.plugIn, featuresLayer[0], featuresLayer[1])  
+         layerList.append(featuresLayer[0])
+
+      self.plugIn.beginEditCommand("Feature copied", layerList)
+         
+      for featuresLayer in featuresLayers:
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeaturesToLayer(self.plugIn, featuresLayer[0], featuresLayer[1], None, False, False) == False:  
+            self.plugIn.destroyEditCommand()
+            return
    
+      self.plugIn.endEditCommand()
+
+
    #============================================================================
    # waitForBasePt
    #============================================================================
@@ -195,19 +217,20 @@ class QadCOPYCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
 
       if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
-         # "Spostamento" "mOdalità"
-         keyWords = QadMsg.get(205) + " " + QadMsg.get(206)
-         msg = QadMsg.get(204) # "Specificare il punto base o [Spostamento/mOdalità] <Spostamento>: "
+         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + " " + \
+                    QadMsg.translate("Command_COPY", "mOdalità")
+         msg = QadMsg.translate("Command_COPY", "Specificare il punto base o [Spostamento/mOdalità] <Spostamento>: ")
       else:
-         # "Spostamento" "mOdalità" "MUltiplo"
-         keyWords = QadMsg.get(205) + " " + QadMsg.get(206) + " " + QadMsg.get(220)
-         msg = QadMsg.get(219) # "Specificare il punto base o [Spostamento/mOdalità/MUltiplo] <Spostamento>: "
+         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + " " + \
+                    QadMsg.translate("Command_COPY", "mOdalità") + " " + \
+                    QadMsg.translate("Command_COPY", "MUltiplo")                    
+         msg = QadMsg.translate("Command_COPY", "Specificare il punto base o [Spostamento/mOdalità/MUltiplo] <Spostamento>: ")
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(msg, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                   QadMsg.get(205), \
+                   QadMsg.translate("Command_COPY", "Spostamento"), \
                    keyWords, QadInputModeEnum.NONE)      
       self.step = 2      
    
@@ -216,7 +239,7 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    def waitForSeries(self):
       # si appresta ad attendere un numero intero
-      msg = QadMsg.get(212) # "Digitare il numero di elementi da disporre in serie <{0}>: "
+      msg = QadMsg.translate("Command_COPY", "Digitare il numero di elementi da disporre in serie <{0}>: ")
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(msg.format(str(self.seriesLen)), \
                    QadInputTypeEnum.INT, \
@@ -235,23 +258,25 @@ class QadCOPYCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)
                                       
       if len(self.featureCache) > 0:
-         # "Serie" "Esci" "Annulla"
-         keyWords = QadMsg.get(211) + " " + QadMsg.get(216) + " " + QadMsg.get(217)
-         msg = QadMsg.get(215) # "Specificare il secondo punto o [Serie/Esci/Annulla] <Esci>: "
+         keyWords = QadMsg.translate("Command_COPY", "Serie") + " " + \
+                    QadMsg.translate("Command_COPY", "Esci") + " " + \
+                    QadMsg.translate("Command_COPY", "Annulla")
+         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie/Esci/Annulla] <Esci>: ")
    
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(msg, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                      QadMsg.get(216), \
+                      QadMsg.translate("Command_COPY", "Esci"), \
                       keyWords, QadInputModeEnum.NONE)
       else:
-         keyWords = QadMsg.get(211) # "Serie"
+         keyWords = QadMsg.translate("Command_COPY", "Serie")
          # "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento>: "
-         
+         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento>: ")         
+                   
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(QadMsg.get(210), \
+         self.waitFor(msg, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)      
@@ -263,10 +288,10 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    def waitForSecondPtBySeries(self):
       if self.adjust == False:
-         keyWords = QadMsg.get(218) # "Adatta"
+         keyWords = QadMsg.translate("Command_COPY", "Adatta")
       else:
-         keyWords = QadMsg.get(211) # "Serie"
-      msg = QadMsg.get(213) # "Specificare il secondo punto o [{0}]: "
+         keyWords = QadMsg.translate("Command_COPY", "Serie")
+      msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}]: ")
 
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
@@ -281,7 +306,7 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
             
       #=========================================================================
@@ -299,6 +324,13 @@ class QadCOPYCommandClass(QadCommandClass):
          
          if self.entitySet.count() == 0:
             return True # fine comando
+
+         CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
+         if self.copyMode == 0: # 0 = multipla 
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalità = Multipla")         
+         else: # 1 = singola
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalità = Singola")         
+         self.showMsg(CurrSettingsMsg)         
 
          self.getPointMapTool().entitySet.set(self.entitySet)
          self.waitForBasePt()
@@ -324,28 +356,29 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if value is None:
-            value = QadMsg.get(205) # "Spostamento"
+            value = QadMsg.translate("Command_COPY", "Spostamento")
 
          if type(value) == unicode:
-            if value == QadMsg.get(205): # "Spostamento"
+            if value == QadMsg.translate("Command_COPY", "Spostamento"):
                self.basePt.set(0, 0)
                self.getPointMapTool().basePt = self.basePt
                self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)                                
                # si appresta ad attendere un punto
-               msg = QadMsg.get(191) # "Specificare lo spostamento <{0}, {1}>: "
+               msg = QadMsg.translate("Command_COPY", "Specificare lo spostamento <{0}, {1}>: ")
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                             QadInputTypeEnum.POINT2D, \
                             self.plugIn.lastOffsetPt, \
                             "", QadInputModeEnum.NONE)                                      
                self.step = 4
-            elif value == QadMsg.get(206): # "mOdalità"
-               keyWords = QadMsg.get(208) + " " + QadMsg.get(209) # "Singola" "Multipla"
-               msg = QadMsg.get(207) # "Digitare un'opzione di modalità di copia [Singola/Multipla] <{0}>: "
+            elif value == QadMsg.translate("Command_COPY", "mOdalità"):
+               keyWords = QadMsg.translate("Command_COPY", "Singola") + " " + \
+                          QadMsg.translate("Command_COPY", "Multipla")
+               msg = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalità di copia [Singola/Multipla] <{0}>: ")
                if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
-                  default = QadMsg.get(209) # "Multipla"
+                  default = QadMsg.translate("Command_COPY", "Multipla")
                else:
-                  default = QadMsg.get(208) # "Singola"               
+                  default = QadMsg.translate("Command_COPY", "Singola")               
                              
                # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
@@ -354,7 +387,7 @@ class QadCOPYCommandClass(QadCommandClass):
                             default, \
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5      
-            elif value == QadMsg.get(220): # "MUltiplo"
+            elif value == QadMsg.translate("Command_COPY", "MUltiplo"):
                self.copyMode = 0 # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                self.waitForBasePt()                         
          elif type(value) == QgsPoint: # se è stato inserito il punto base
@@ -377,7 +410,7 @@ class QadCOPYCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if len(self.featureCache) > 0:
-                     value = QadMsg.get(216) # "Esci"
+                     value = QadMsg.translate("Command_COPY", "Esci")
                   else:
                      value = None
                else:
@@ -390,7 +423,7 @@ class QadCOPYCommandClass(QadCommandClass):
 
          if value is None:
             if len(self.featureCache) > 0:
-               value = QadMsg.get(216) # "Esci"
+               value = QadMsg.translate("Command_COPY", "Esci")
             else:               
                # utilizzare il primo punto come spostamento
                value = QgsPoint(self.basePt)
@@ -400,12 +433,12 @@ class QadCOPYCommandClass(QadCommandClass):
                return True # fine comando
          
          if type(value) == unicode:
-            if value == QadMsg.get(211): # "Serie"
+            if value == QadMsg.translate("Command_COPY", "Serie"):
                self.waitForSeries()               
-            elif value == QadMsg.get(216): # "Esci"
+            elif value == QadMsg.translate("Command_COPY", "Esci"):
                self.copyGeoms()
                return True # fine comando
-            elif value == QadMsg.get(217): # "Annulla"
+            elif value == QadMsg.translate("Command_COPY", "Annulla"):
                self.undoGeomsInCache()
                self.waitForSecondPt()
          elif type(value) == QgsPoint: # se è stato inserito lo spostamento con un punto
@@ -461,14 +494,15 @@ class QadCOPYCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if value == QadMsg.get(208): # "Singola"
-            self.copyMode = 1
-            QadVariables.set("COPYMODE", 1)
-            QadVariables.save()
-         elif value == QadMsg.get(209): # "Multipla"
-            self.copyMode = 0
-            QadVariables.set("COPYMODE", 0)
-            QadVariables.save()
+         if type(value) == unicode:
+            if value == QadMsg.translate("Command_COPY", "Singola"):
+               self.copyMode = 1
+               QadVariables.set(QadMsg.translate("Environment variables", "COPYMODE"), 1)
+               QadVariables.save()
+            elif value == QadMsg.translate("Command_COPY", "Multipla"):
+               self.copyMode = 0
+               QadVariables.set(QadMsg.translate("Environment variables", "COPYMODE"), 0)
+               QadVariables.save()
             
          self.waitForBasePt()
          return False
@@ -485,8 +519,7 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if value < 2:
-            # "\nIl valore deve essere un intero compreso tra 2 e 32767."
-            self.showMsg(QadMsg.get(214))
+            self.showMsg(QadMsg.translate("Command_COPY", "\nIl valore deve essere un intero compreso tra 2 e 32767."))
             self.waitForSeries()
          else:
             self.series = True
@@ -517,11 +550,11 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(211): # "Serie"
+            if value == QadMsg.translate("Command_COPY", "Serie"):
                self.adjust = False
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()
-            elif value == QadMsg.get(218): # "Adatta"
+            elif value == QadMsg.translate("Command_COPY", "Adatta"):
                self.adjust = True
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()

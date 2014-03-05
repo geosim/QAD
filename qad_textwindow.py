@@ -58,11 +58,11 @@ class QadInputTypeEnum():
 # QadInputModeEnum class.
 #===============================================================================
 class QadInputModeEnum():
-   NONE          = 0
-   NOT_NULL      = 1   # inserimento nullo non permesso
-   NOT_ZERO      = 2   # valore zero non permesso 
-   NOT_NEGATIVE  = 4   # valore negativo non permesso 
-   NOT_POSITIVEE = 8   # valore positivo non permesso  
+   NONE         = 0
+   NOT_NULL     = 1   # inserimento nullo non permesso
+   NOT_ZERO     = 2   # valore zero non permesso 
+   NOT_NEGATIVE = 4   # valore negativo non permesso 
+   NOT_POSITIVE = 8   # valore positivo non permesso  
 
         
 #===============================================================================
@@ -106,8 +106,13 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       if displayPrompt:
          self.edit.displayPrompt() # ripete il prompt      
 
-   def showInputMsg(self, inputMsg = QadMsg.get(0), inputType = QadInputTypeEnum.COMMAND, \
+   def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NOT_NULL):
+      # il valore di default del parametro di una funzione non può essere una traduzione
+      # perchè lupdate.exe non lo riesce ad interpretare
+      if inputMsg is None: 
+         inputMsg = QadMsg.translate("QAD", "Comando: ")
+         
       self.edit.displayPrompt(inputMsg)
       self.edit.inputType = inputType
       self.edit.default = default
@@ -125,8 +130,11 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       return self.edit.getCurrMsg()
 
    def getHistory(self):
-      return self.edit.history # QStringList
-            
+      return self.edit.history # list
+
+   def updateHistory(self, command):
+      return self.edit.updateHistory(command)
+               
    def runCommand(self, cmd):
       self.plugin.runCommand(cmd)      
       
@@ -188,9 +196,9 @@ class QadEdit(QTextEdit):
    
       self.buffer = []
    
-      self.displayPrompt(QadMsg.get(0)) # "Comando: "
+      self.displayPrompt(QadMsg.translate("QAD", "Comando: "))
 
-      self.history = QStringList()
+      self.history = []
       self.historyIndex = 0
    
       # Creo la finestra per il suggerimento dei comandi
@@ -212,10 +220,10 @@ class QadEdit(QTextEdit):
    def currentCommand(self):
       block = self.cursor.block()
       text = block.text()
-      return text.right(text.length()-self.currentPromptLength)
+      return text[self.currentPromptLength:]
 
    def showPrevious(self):
-      if self.historyIndex < len(self.history) and not self.history.isEmpty():
+      if self.historyIndex < len(self.history) and len(self.history) > 0:
          self.historyIndex += 1
          if self.historyIndex == len(self.history):
             self.substituteText("")
@@ -233,7 +241,7 @@ class QadEdit(QTextEdit):
 #             self.insertPlainText(self.history[self.historyIndex])
                 
    def showNext(self):
-      if  self.historyIndex > 0 and not self.history.isEmpty():
+      if  self.historyIndex > 0 and len(self.history) > 0:
          self.historyIndex -= 1
          if self.historyIndex == len(self.history):
             self.substituteText("")
@@ -251,7 +259,7 @@ class QadEdit(QTextEdit):
 #             self.insertPlainText(self.history[self.historyIndex])
                
    def showLast(self):
-      if not self.history.isEmpty():
+      if len(self.history) > 0:
          self.substituteText(self.history[len(self.history) - 1])
 #          self.cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
 #          self.cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.KeepAnchor)
@@ -271,7 +279,7 @@ class QadEdit(QTextEdit):
 
    def updateHistory(self, command):
       # Se command è una lista di comandi
-      if isinstance(command, QStringList):
+      if isinstance(command, list):
          for line in command:
             self.updateHistory(line)
       elif not command == "":
@@ -303,8 +311,8 @@ class QadEdit(QTextEdit):
          self.parent.togglePolarMode()
          return
 
-      # Se è stato premuto il tasto F9
-      if e.key() == Qt.Key_F9:
+      # Se è stato premuto il tasto F3
+      if e.key() == Qt.Key_F3:
          # Attivo o disattivo lo snap
          self.parent.toggleOsMode()
          return
@@ -409,7 +417,7 @@ class QadEdit(QTextEdit):
 
    def showEvaluateMsg(self, msg = None):
       """
-      mostra e valuta il messaggio msg se dicerso da None altrimenti usa il messaggio corrente
+      mostra e valuta il messaggio msg se diverso da None altrimenti usa il messaggio corrente
       """
       self.cursor = self.textCursor()
       if msg is not None:
@@ -437,33 +445,31 @@ class QadEdit(QTextEdit):
          self.inputType & QadInputTypeEnum.POINT3D:
          if self.inputType & QadInputTypeEnum.KEYWORDS and \
             (self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE):
-            # "\nÈ richiesto un punto, un numero reale o la parola chiave di un'opzione.\n"
-            return QadMsg.get(114)
+            return QadMsg.translate("QAD", "\nÈ richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.KEYWORDS:
-            # "\nÈ richiesto un punto o la parola chiave di un'opzione.\n"
-            return QadMsg.get(34)
+            return QadMsg.translate("QAD", "\nÈ richiesto un punto o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-            # "\nÈ richiesto un punto o un numero reale.\n"
-            return QadMsg.get(44)
+            return QadMsg.translate("QAD", "\nÈ richiesto un punto o un numero reale.\n")
          else:
-            return QadMsg.get(5) # "\nPunto non valido.\n"         
+            return QadMsg.translate("QAD", "\nPunto non valido.\n")         
       elif self.inputType & QadInputTypeEnum.KEYWORDS:
-         return QadMsg.get(7) # "\nParola chiave dell'opzione non valida.\n"
+         return QadMsg.translate("QAD", "\nParola chiave dell'opzione non valida.\n")
       elif self.inputType & QadInputTypeEnum.STRING:
-         return QadMsg.get(9) # "\nStringa non valida.\n"
+         return QadMsg.translate("QAD", "\nStringa non valida.\n")
       elif self.inputType & QadInputTypeEnum.INT:
-         return QadMsg.get(10) # "\nNumero intero non valido.\n"
+         return QadMsg.translate("QAD", "\nNumero intero non valido.\n")
       elif self.inputType & QadInputTypeEnum.LONG:
-         return QadMsg.get(18) # "\nNumero intero lungo non valido.\n"
+         return QadMsg.translate("QAD", "\nNumero intero lungo non valido.\n")
       elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-         return QadMsg.get(11) # "\nNumero reale non valido.\n"
+         return QadMsg.translate("QAD", "\nNumero reale non valido.\n")
       elif self.inputType & QadInputTypeEnum.BOOL:
-         return QadMsg.get(11) # "\nValore booleano non valido.\n"
+         return QadMsg.translate("QAD", "\nValore booleano non valido.\n")
       else:
          return ""
       
 
    def evaluateKeyWords(self, cmd):
+      #qad_debug.breakPoint()
       # The required portion of the keyword is specified in uppercase characters, 
       # and the remainder of the keyword is specified in lowercase characters.
       # The uppercase abbreviation can be anywhere in the keyword
@@ -473,40 +479,40 @@ class QadEdit(QTextEdit):
       selectedKeyWords = []
       for keyWord in self.keyWords:
          #qad_debug.breakPoint()
-         # se cmd è contenuto nella parola chiave (insensitive)
-         upperKeyWord = keyWord.upper()
-         if upperKeyWord.find(upperCmd) >= 0:
-            upperPart = ""
-            for letter in keyWord:
-               if letter.isupper():
-                  upperPart = upperPart + letter
-
-            if len(upperPart) > 0:
-               # se la parte maiuscola (obbligatoria) della parola chiave è contenuta in cmd                  
-               if upperCmd.find(upperPart) >= 0:
-                  return keyWord
-               else:
-                  if upperPart.find(upperCmd) == 0:
-                     selectedKeyWords.append(keyWord)
+         # estraggo la parte maiuscola della paola chiave
+         upperPart = ""
+         for letter in keyWord:
+            if letter.isupper():
+               upperPart = upperPart + letter
+            elif len(upperPart) > 0:
+               break
+         
+         if upperPart.find(upperCmd) == 0: # se la parte maiuscola della parola chiave inizia per upperCmd
+            if upperPart == upperCmd: # Se uguale
+               return keyWord
             else:
                selectedKeyWords.append(keyWord)
-      
+         elif keyWord.upper().find(upperCmd) == 0: # se la parola chiave inizia per cmd (insensitive)
+            if keyWord.upper() == upperCmd: # Se uguale
+               return keyWord
+            else:
+               selectedKeyWords.append(keyWord)
+
       selectedKeyWordsLen = len(selectedKeyWords)
       if selectedKeyWordsLen == 0:
          return None
       elif selectedKeyWordsLen == 1:
          return selectedKeyWords[0]
       else:
-         # "\nRisposta ambigua: specificare con maggior chiarezza...\n"
-         self.insertPlainText(QadMsg.get(157))            
+         self.insertPlainText(QadMsg.translate("QAD", "\nRisposta ambigua: specificare con maggior chiarezza...\n"))            
          Msg = ""         
          for keyWord in selectedKeyWords:
             if Msg == "":
                Msg = keyWord
             else:
-               Msg = Msg + QadMsg.get(158) + keyWord # " o "
+               Msg = Msg + QadMsg.translate("QAD", " o ") + keyWord
 
-         Msg = Msg + QadMsg.get(159) # " ?\n"
+         Msg = Msg + QadMsg.translate("QAD", " ?\n")
          self.insertPlainText(Msg)            
          
       return None
@@ -523,7 +529,7 @@ class QadEdit(QTextEdit):
             self.updateHistory(cmd)
             self.parent.runCommand(cmd)
          else:
-            msg = QadMsg.get(2) # "\nComando sconosciuto \"{0}\"."
+            msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
             self.insertPlainText(msg.format(cmd.encode('ascii','ignore')))
             self.displayPrompt() # ripete il prompt
          return
@@ -533,7 +539,7 @@ class QadEdit(QTextEdit):
             if type(self.default) == QgsPoint:
                cmd = self.default.toString()
             else:
-               cmd = str(self.default)
+               cmd = unicode(self.default)              
                
          if cmd == "" and \
             not (self.inputMode & QadInputModeEnum.NOT_NULL): # permesso input nullo              
@@ -543,13 +549,13 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------
       # punto 2D
       #------------------------------------------------------------------------------ 
-      if self.inputType & QadInputTypeEnum.POINT2D:                 
+      if self.inputType & QadInputTypeEnum.POINT2D:
          snapType = qad_utils.str2snapTypeEnum(cmd)
          if snapType != QadSnapTypeEnum.NONE:
             # se è stato forzato uno snap
             snapParams = qad_utils.str2snapParams(cmd)
             self.parent.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
-            self.insertPlainText(QadMsg.get(33)) # "\n(impostato snap temporaneo)\n"
+            self.insertPlainText(QadMsg.translate("QAD", "\n(impostato snap temporaneo)\n"))
             self.displayPrompt()          
             return
          if (self.inputType & QadInputTypeEnum.INT) or \
@@ -603,7 +609,7 @@ class QadEdit(QTextEdit):
             num = None
          elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
             num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVEE): # non permesso valore > 0              
+         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
             num = None
                
          if num is not None:
@@ -619,7 +625,7 @@ class QadEdit(QTextEdit):
             num = None
          elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
             num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVEE): # non permesso valore > 0              
+         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
             num = None
             
          if num is not None:
@@ -635,7 +641,7 @@ class QadEdit(QTextEdit):
             num = None
          elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
             num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVEE): # non permesso valore > 0              
+         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
             num = None
             
          if num is not None:
@@ -681,7 +687,7 @@ class ConsoleHighlighter(QSyntaxHighlighter):
          self.f[tag].setForeground(color)
 
    def highlightBlock(self, txt):
-      size = txt.length()
+      size = len(txt)
       state = self.currentBlockState()
       if state == self.OUTPUT or state == self.ERROR or state == self.INIT:
          self.setFormat(0,size, self.f[state])
@@ -782,10 +788,10 @@ class QadCmdSuggestListView(QListView):
    def keyPressEvent(self, e):
       # if Return is pressed, then perform the commands
       if e.key() == Qt.Key_Return:
-         cmd = self.selectionModel().currentIndex().data().toString()
+         cmd = self.selectionModel().currentIndex().data()
          self.parent.substituteText(cmd)
       
    def mouseReleaseEvent(self, e):
-      cmd = self.selectionModel().currentIndex().data().toString()
+      cmd = self.selectionModel().currentIndex().data()
       self.parent.substituteText(cmd)
       

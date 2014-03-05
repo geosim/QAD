@@ -78,6 +78,7 @@ class QadMapTool(QgsMapTool):
 
 
    def keyPressEvent(self, event):
+      #qad_debug.breakPoint() 
       self.plugIn.keyPressEvent(event)
 
 
@@ -131,7 +132,7 @@ class QadMapTool(QgsMapTool):
       
       historyLen = len(history)
       i = historyLen - 1
-      cmdInputHistoryMax = QadVariables.get("CMDINPUTHISTORYMAX")
+      cmdInputHistoryMax = QadVariables.get(QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"))
       while i >= 0 and (historyLen - i) <= cmdInputHistoryMax:
          cmdName = history[i]
          i = i - 1
@@ -139,7 +140,7 @@ class QadMapTool(QgsMapTool):
          if cmd is not None:
             if isLastCmdToInsert:
                isLastCmdToInsert = False
-               msg = QadMsg.get(126) + cmd.getName() # "Ripeti "
+               msg = QadMsg.translate("Popup_menu_graph_window", "Ripeti ") + cmd.getName() # "Ripeti "
                icon = cmd.getIcon()
                if icon is None:
                   lastCmdAction = QAction(msg, self.popupMenu)
@@ -150,7 +151,7 @@ class QadMapTool(QgsMapTool):
             else:
                if isRecentMenuToInsert:
                   isRecentMenuToInsert = False
-                  recentCmdsMenu = self.popupMenu.addMenu(QadMsg.get(127)) # "Comandi recenti"
+                  recentCmdsMenu = self.popupMenu.addMenu(QadMsg.translate("Popup_menu_graph_window", "Comandi recenti "))
 
                icon = cmd.getIcon()
                if icon is None:

@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_entity import *
 from qad_variables import *
+from qad_rubberband import createRubberBand
 
 
 #===============================================================================
@@ -80,9 +81,11 @@ class QadGetPoint(QgsMapTool):
       self.__oldSnapProgrDist = None
       self.__geometryTypesAccordingToSnapType = (False, False, False)
       self.__startPoint = None
-      self.shiftKey = False
-      self.rightButton = False
+      # opzioni per limitare l'oggetto da selezionare
       self.onlyEditableLayers = False
+      self.checkPointLayer = True
+      self.checkLineLayer = True
+      self.checkPolygonLayer = True
             
       self.__RubberBand = None
       self.__prevGeom = None
@@ -98,22 +101,27 @@ class QadGetPoint(QgsMapTool):
       self.__QadSnapper = QadSnapper()
       self.__QadSnapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
       self.__QadSnapper.setSnapLayers(self.canvas.layers())
-      self.__QadSnapper.setProgressDistance(QadVariables.get("OSPROGRDISTANCE"))
-      self.setSnapType(QadVariables.get("OSMODE"))
+      self.__QadSnapper.setProgressDistance(QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE")))
+      self.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
             
       self.setOrthoMode() # setto secondo le variabili d'ambiente
       self.setAutoSnap() # setto secondo le variabili d'ambiente
       
       # leggo la tolleranza in unità di mappa
-      ToleranceInMapUnits = QadVariables.get("PICKBOX") * self.canvas.mapRenderer().mapUnitsPerPixel()    
+      ToleranceInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) * self.canvas.mapRenderer().mapUnitsPerPixel()    
       self.__QadSnapper.setDistToExcludeNea(ToleranceInMapUnits)
       self.__QadSnapper.setToleranceExtParLines(ToleranceInMapUnits)
 
       self.__QadSnapPointsDisplayManager = QadSnapPointsDisplayManager(self.canvas)
-      self.__QadSnapPointsDisplayManager.setIconSize(QadVariables.get("OSSIZE"))
-      self.__QadSnapPointsDisplayManager.setColor(QColor(QadVariables.get("OSCOLOR")))
+      self.__QadSnapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "OSSIZE")))
+      self.__QadSnapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "OSCOLOR"))))
       
       # output
+      self.rightButton = False
+
+      self.shiftKey = False
+      self.tmpShiftKey = False
+
       self.point = None # punto selezionato dal click
       self.tmpPoint = None # punto selezionato dal movimento del mouse
       
@@ -132,9 +140,12 @@ class QadGetPoint(QgsMapTool):
          
       if self.__drawMode == QadGetPointDrawModeEnum.ELASTIC_LINE:
          self.refreshOrthoMode() # setto il default
-         self.__RubberBand = QgsRubberBand(self.canvas, False)
+         self.__RubberBand = createRubberBand(self.canvas, QGis.Line)
+         self.__RubberBand.setLineStyle(Qt.DotLine)
       elif self.__drawMode == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
-         self.__RubberBand = QgsRubberBand(self.canvas, True)
+         self.__RubberBand = createRubberBand(self.canvas, QGis.Polygon)
+         self.__RubberBand.setLineStyle(Qt.DotLine)
+         
 
    def getDrawMode(self):
       return self.__drawMode
@@ -184,12 +195,19 @@ class QadGetPoint(QgsMapTool):
       self.entity.clear() # entità selezionata dal click
       self.tmpEntity.clear() # entità selezionata dal movimento del mouse
       
+      self.tmpShiftKey = False # tasto shift premuto durante il movimento del mouse      
       self.snapTypeOnSelection = None # snap attivo al momento del click
 
-      self.shiftKey = False      
-      self.rightButton = False
+      self.shiftKey = False
+      self.tmpShiftKey = False # tasto shift premuto durante il movimento del mouse      
+       
+      self.rightButton = False      
+      # opzioni per limitare l'oggetto da selezionare
       self.onlyEditableLayers = False
-
+      self.checkPointLayer = True # usato solo per ENTITY_SELECTION
+      self.checkLineLayer = True # usato solo per ENTITY_SELECTION
+      self.checkPolygonLayer = True # usato solo per ENTITY_SELECTION
+      
       self.__oldSnapType = None
       self.__oldSnapProgrDist = None
       self.__startPoint = None
@@ -200,7 +218,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setSnapType(self, snapType = None):
       if snapType is None:      
-         self.__QadSnapper.setSnapType(QadVariables.get("OSMODE"))
+         self.__QadSnapper.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
       else:
          self.__QadSnapper.setSnapType(snapType)
          
@@ -244,7 +262,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setOrthoMode(self, orthoMode = None):
       if orthoMode is None:      
-         self.__OrthoMode = QadVariables.get("ORTHOMODE")
+         self.__OrthoMode = QadVariables.get(QadMsg.translate("Environment variables", "ORTHOMODE"))
       else:
          self.__OrthoMode = orthoMode
 
@@ -264,8 +282,8 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setAutoSnap(self, autoSnap = None):
       if autoSnap is None:      
-         self.__AutoSnap = QadVariables.get("AUTOSNAP")
-         self.__PolarAng = math.radians(QadVariables.get("POLARANG"))
+         self.__AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+         self.__PolarAng = math.radians(QadVariables.get(QadMsg.translate("Environment variables", "POLARANG")))
       else:
          self.__AutoSnap = autoSnap
          
@@ -299,6 +317,7 @@ class QadGetPoint(QgsMapTool):
    # Elastic
    #============================================================================
    def moveElastic(self, point):
+      #qad_debug.breakPoint()
       numberOfVertices = self.__RubberBand.numberOfVertices()
       if numberOfVertices > 0:         
          if numberOfVertices == 2:
@@ -315,13 +334,17 @@ class QadGetPoint(QgsMapTool):
             self.__RubberBand.movePoint(numberOfVertices - 1, QgsPoint(adjustedPoint.x(), p1.y()))            
 
             
+   #============================================================================
+   # setStartPoint
+   #============================================================================
    def setStartPoint(self, startPoint):
+      #qad_debug.breakPoint()
       self.__startPoint = startPoint
       self.__QadSnapper.setStartPoint(startPoint)
       
       if self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_LINE:
          # previsto uso della linea elastica
-         self.__RubberBand.reset(False)
+         self.__RubberBand.reset(QGis.Line)
          #numberOfVertices = self.__RubberBand.numberOfVertices()
          #if numberOfVertices == 2:
          #   self.__RubberBand.removeLastPoint()
@@ -337,7 +360,7 @@ class QadGetPoint(QgsMapTool):
          self.__RubberBand.addPoint(point, True)
       elif self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
          # previsto uso del rettangolo elastico
-         self.__RubberBand.reset(True)
+         self.__RubberBand.reset(QGis.Polygon)
          self.__RubberBand.addPoint(startPoint, False)
          
          point = self.toMapCoordinates(self.canvas.mouseLastXY())
@@ -362,8 +385,8 @@ class QadGetPoint(QgsMapTool):
       #qad_debug.breakPoint()   
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
          result = qad_utils.getEntSel(event.pos(), self, \
-                                      None, True, True, True, True, \
-                                      self.onlyEditableLayers)  
+                                      None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
+                                      True, self.onlyEditableLayers)  
       else:
          result = qad_utils.getEntSel(event.pos(), self, \
                                       None, \
@@ -428,6 +451,9 @@ class QadGetPoint(QgsMapTool):
       
       if self.tmpPoint is None:
          self.tmpPoint = self.toMapCoordinates(event.pos())
+
+      # tasto shift premuto durante il movimento del mouse      
+      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False 
       
       if self.__RubberBand is not None:
          if oSnapPoint is None:
@@ -440,7 +466,6 @@ class QadGetPoint(QgsMapTool):
             self.moveElastic(self.tmpPoint)
 
    def canvasPressEvent(self, event):
-
       # volevo mettere questo evento nel canvasReleaseEvent
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
@@ -459,12 +484,15 @@ class QadGetPoint(QgsMapTool):
             self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)            
             
       self.shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-      self.plugIn.setStandardMapTool()
+      self.plugIn.QadCommands.continueCommandFromMapTool()     
+      #self.plugIn.setStandardMapTool()
 
    def canvasReleaseEvent(self, event):
       # se l'obiettivo è selezionare un gruppo di entità attraverso un rettangolo
-      if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION and \
-         self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
+      #if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION and \
+      #   self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
+      # se l'obiettivo è selezionare un rettangolo
+      if self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
          if event.button() == Qt.LeftButton:
             p1 = self.__RubberBand.getPoint(0, 0)
             # se il mouse è in una posizione diversa dal punto iniziale del rettangolo
@@ -481,7 +509,8 @@ class QadGetPoint(QgsMapTool):
                   self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)
                    
                self.shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-               self.plugIn.setStandardMapTool()
+               self.plugIn.QadCommands.continueCommandFromMapTool()
+               #self.plugIn.setStandardMapTool()
 
    def __setPoint(self, event):
       # se non era mai stato mosso il mouse     
@@ -493,6 +522,7 @@ class QadGetPoint(QgsMapTool):
       self.entity.set(self.tmpEntity.layer, self.tmpEntity.featureId)
     
    def keyPressEvent(self, event):
+      #qad_debug.breakPoint()
       self.plugIn.keyPressEvent(event)
     
    def activate(self):
@@ -508,12 +538,15 @@ class QadGetPoint(QgsMapTool):
       self.snapTypeOnSelection = None # snap attivo al momento del click
       
       self.shiftKey = False
+      self.tmpShiftKey = False # tasto shift premuto durante il movimento del mouse      
+      
       self.rightButton = False
       self.canvas.setCursor(self.__cursor)
       self.showPointMapToolMarkers()
 
    def deactivate(self):
       self.hidePointMapToolMarkers()
+      #qad_debug.breakPoint() 
 
    def isTransient(self):
       return False

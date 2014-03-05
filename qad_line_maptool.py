@@ -37,6 +37,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_circle import *
+from qad_rubberband import createRubberBand
 
 
 #===============================================================================
@@ -129,7 +130,7 @@ class Qad_line_maptool(QadGetPoint):
                break
       
       if line is not None:
-         self.__lineRubberBand = QgsRubberBand(self.canvas, False)
+         self.__lineRubberBand = createRubberBand(self.canvas, QGis.Line)
          self.__lineRubberBand.addPoint(line[0], False)
          self.__lineRubberBand.addPoint(line[1], True)
       

@@ -6,10 +6,10 @@
 # This file should be included when you package your plugin.
 
 [general]
-name=qad
+name=QAD
 description=Comandi di editazione grafica in stile CAD
 version=0.1
-qgisMinimumVersion=1.0
+qgisMinimumVersion=2.0
 class_name=Qad
 website=
 [author]

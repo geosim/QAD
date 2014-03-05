@@ -74,6 +74,8 @@ class QadCommandAliasesClass():
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
          Path = Path + "qad.pgp"
 
+      #qad_debug.displayMsg(Path)
+
       if not os.path.exists(Path):
          return True
          
@@ -86,7 +88,6 @@ class QadCommandAliasesClass():
          # se la riga inizia per ; allora è una riga commentata
          if line[0] == ";":
             continue
-         #qad_debug.breakPoint()
 
          # leggo il nome dell'alias + il nome del comando (es "alias, *comando")
          sep = line.find(",")

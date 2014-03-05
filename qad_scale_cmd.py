@@ -38,12 +38,13 @@ from qad_textwindow import *
 from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
+import qad_layer
 
 # Classe che gestisce il comando SCALA
 class QadSCALECommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(195) # "SCALA"
+      return QadMsg.translate("Command_list", "SCALA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSCALECommand)
@@ -52,8 +53,8 @@ class QadSCALECommandClass(QadCommandClass):
       return QIcon(":/plugins/qad/icons/scale.png")
 
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(196)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_SCALE", "Ingrandisce o riduce gli oggetti selezionati.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -83,9 +84,11 @@ class QadSCALECommandClass(QadCommandClass):
 
    def scaleGeoms(self, scale):      
       #qad_debug.breakPoint()
+      self.plugIn.beginEditCommand("Feature scaled", self.entitySet.getLayerList())
+      
       for layerEntitySet in self.entitySet.layerEntitySetList:                        
          scaledObjects = []
-         transformedBasePt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
+         transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          
          for featureId in layerEntitySet.featureIds:
             f = layerEntitySet.getFeature(featureId)
@@ -93,18 +96,26 @@ class QadSCALECommandClass(QadCommandClass):
             scaledObjects.append(f)
 
          if self.copyFeatures == False:
-            qad_utils.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects)
+            # plugIn, layer, features, refresh, check_validity
+            if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
          else:             
-            qad_utils.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects)
+            # plugIn, layer, features, coordTransform, refresh, check_validity
+            if qad_layer.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects, None, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
+
+      self.plugIn.endEditCommand()
 
 
    def waitForScale(self):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT)
 
-      keyWords = QadMsg.get(186) + " " + QadMsg.get(187) # "Copia" "Riferimento"
-      # "Specificare fattore di scala o [Copia/Riferimento]: "
-      msg = QadMsg.get(197)            
+      keyWords = QadMsg.translate("Command_SCALE", "Copia") + " " + \
+                 QadMsg.translate("Command_SCALE", "Riferimento")
+      msg = QadMsg.translate("Command_SCALE", "Specificare fattore di scala o [Copia/Riferimento]: ")            
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
@@ -119,8 +130,7 @@ class QadSCALECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_PT_REFERENCE_LEN)
       
-      # "Specificare lunghezza di riferimento <{0}>: "
-      msg = QadMsg.get(198)                           
+      msg = QadMsg.translate("Command_SCALE", "Specificare lunghezza di riferimento <{0}>: ")                          
       # si appresta ad attendere un punto o enter     
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(msg.format(str(self.plugIn.lastReferenceLen)), \
@@ -134,9 +144,8 @@ class QadSCALECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_LEN_PT)
       
-      keyWords = QadMsg.get(188) # "Punti"
-      # "Specificare nuova lunghezza o [Punti] <{0}>: "
-      msg = QadMsg.get(199)                           
+      keyWords = QadMsg.translate("Command_SCALE", "Punti")
+      msg = QadMsg.translate("Command_SCALE", "Specificare nuova lunghezza o [Punti] <{0}>: ")                           
       
       if self.plugIn.lastNewReferenceLen == 0:
          length = self.plugIn.lastScale
@@ -153,7 +162,7 @@ class QadSCALECommandClass(QadCommandClass):
 
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
             
       #=========================================================================
@@ -176,7 +185,7 @@ class QadSCALECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
 
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(180)) # "Specificare punto base: "
+         self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare punto base: "))
                   
          self.step = 2     
          return False
@@ -229,20 +238,18 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(186): # "Copia"
+            if value == QadMsg.translate("Command_SCALE", "Copia"):
                self.copyFeatures = True
-               # "\nScala di una copia degli oggetti selezionati."
-               self.showMsg(QadMsg.get(200))
+               self.showMsg(QadMsg.translate("Command_SCALE", "\nScala di una copia degli oggetti selezionati."))
                # si appresta ad attendere la scala               
                self.waitForScale()                
-            elif value == QadMsg.get(187): # "Riferimento"
+            elif value == QadMsg.translate("Command_SCALE", "Riferimento"):
                # si appresta ad attendere la lunghezza di riferimento                      
                self.waitForReferenceLen()
          elif type(value) == QgsPoint or type(value) == float: # se è stato inserita la scala
             if type(value) == QgsPoint: # se è stato inserita la scala con un punto
                if value == self.basePt:
-                  # "\nIl valore deve essere positivo e diverso da zero."
-                  self.showMsg(QadMsg.get(201))
+                  self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
                   # si appresta ad attendere un punto
                   self.waitForScale()
                   return False
@@ -288,7 +295,7 @@ class QadSCALECommandClass(QadCommandClass):
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT_REFERENCE_LEN)
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare secondo punto: "))
             self.step = 5           
             
          return False
@@ -313,10 +320,9 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if self.Pt1ReferenceLen == value:
-            # "\nIl valore deve essere positivo e diverso da zero."
-            self.showMsg(QadMsg.get(201))
+            self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare secondo punto: "))
             return False
             
          length = qad_utils.getDistance(self.Pt1ReferenceLen, value)
@@ -347,17 +353,16 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(188): # "Punti"
+            if value == QadMsg.translate("Command_SCALE", "Punti"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_NEW_LEN_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(119)) # "Specificare primo punto: "
+               self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare primo punto: "))
                self.step = 7
          elif type(value) == QgsPoint or type(value) == float: # se è stato inserita la lunghezza
             if type(value) == QgsPoint: # se è stato inserito la lunghezza con un punto
                if value == self.basePt:
-                  # "\nIl valore deve essere positivo e diverso da zero."
-                  self.showMsg(QadMsg.get(201))
+                  self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
                   # si appresta ad attendere un punto
                   self.waitForNewReferenceLen()
                   return False
@@ -397,7 +402,7 @@ class QadSCALECommandClass(QadCommandClass):
          self.getPointMapTool().Pt1NewLen = self.Pt1NewLen
          self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_NEW_LEN_PT)
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+         self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare secondo punto: "))
          self.step = 8
             
          return False
@@ -422,10 +427,9 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if value == self.Pt1NewLen:
-            # "\nIl valore deve essere positivo e diverso da zero."
-            self.showMsg(QadMsg.get(201))
+            self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_SCALE", "Specificare secondo punto: "))
             return False
                
          length = qad_utils.getDistance(self.Pt1NewLen, value)

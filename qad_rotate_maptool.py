@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -70,66 +71,37 @@ class Qad_rotate_maptool(QadGetPoint):
       self.ReferenceAng = 0
       self.Pt1NewAng = None
       self.entitySet = QadEntitySet()
-      self.__rotatedRubberBand = None   
-      self.__rotatedRubberBandPolygon = None   
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__rotatedRubberBand is not None:
-         self.__rotatedRubberBand.hide()
-      if self.__rotatedRubberBandPolygon is not None:
-         self.__rotatedRubberBandPolygon.hide()         
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__rotatedRubberBand is not None:
-         self.__rotatedRubberBand.show()
-      if self.__rotatedRubberBandPolygon is not None:
-         self.__rotatedRubberBandPolygon.show()         
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__rotatedRubberBand is not None:
-         self.__rotatedRubberBand.hide()
-         del self.__rotatedRubberBand
-         self.__rotatedRubberBand = None
-      if self.__rotatedRubberBandPolygon is not None:
-         self.__rotatedRubberBandPolygon.hide()
-         del self.__rotatedRubberBandPolygon
-         self.__rotatedRubberBandPolygon = None
+      self.__rubberBand.reset()
       self.mode = None    
    
    def addRotatedGeometries(self, angle):
       #qad_debug.breakPoint()      
-      self.__rotatedRubberBand = QgsRubberBand(self.canvas, False)
-      self.__rotatedRubberBandPolygon = QgsRubberBand(self.canvas, True)
+      self.__rubberBand.reset()            
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
          geoms = layerEntitySet.getGeometryCollection()
-         if layer.geometryType() != QGis.Polygon:
-            for geom in geoms:
-               rotatedGeom = qad_utils.rotateQgsGeometry(geom, transformedBasePt, angle)
-               self.__rotatedRubberBand.addGeometry(rotatedGeom, layer)
-         else:
-            for geom in geoms:
-               rotatedGeom = qad_utils.rotateQgsGeometry(geom, transformedBasePt, angle)
-               self.__rotatedRubberBandPolygon.addGeometry(rotatedGeom, layer)
+         for geom in geoms:
+            rotatedGeom = qad_utils.rotateQgsGeometry(geom, transformedBasePt, angle)
+            self.__rubberBand.addGeometry(rotatedGeom, layer)
             
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
-      
-      if self.__rotatedRubberBand  is not None:
-         self.__rotatedRubberBand.hide()
-         del self.__rotatedRubberBand
-         self.__rotatedRubberBand = None
-      if self.__rotatedRubberBandPolygon  is not None:
-         self.__rotatedRubberBandPolygon.hide()
-         del self.__rotatedRubberBandPolygon
-         self.__rotatedRubberBandPolygon = None
-               
+                     
       # noto il punto base si richiede il secondo punto per l'angolo di rotazione
       if self.mode == Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_ROTATION_PT:
          angle = qad_utils.getAngleBy2Pts(self.basePt, self.tmpPoint)
@@ -149,17 +121,11 @@ class Qad_rotate_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__rotatedRubberBand is not None:
-         self.__rotatedRubberBand.show()
-      if self.__rotatedRubberBandPolygon is not None:
-         self.__rotatedRubberBandPolygon.show()
+      self.__rubberBand.show()          
 
    def deactivate(self):
       QadGetPoint.deactivate(self)
-      if self.__rotatedRubberBand is not None:
-         self.__rotatedRubberBand.hide()
-      if self.__rotatedRubberBandPolygon is not None:
-         self.__rotatedRubberBandPolygon.hide()
+      self.__rubberBand.hide()
 
    def setMode(self, mode):
       self.mode = mode

@@ -32,6 +32,8 @@ from qgis.gui import *
 import qad_debug
 from qad_snapper import *
 from qad_vertexmarker import *
+from qad_rubberband import createRubberBand
+
 
 class QadSnapPointsDisplayManager():
    """
@@ -54,7 +56,7 @@ class QadSnapPointsDisplayManager():
    #============================================================================
    # __del__
    #============================================================================
-   def __del__(self, mapCanvas):
+   def __del__(self):
       self.hide()
 
 
@@ -78,7 +80,7 @@ class QadSnapPointsDisplayManager():
 
 
    def __getIconType(self, snapType):     
-      if snapType == QadSnapTypeEnum.END:
+      if snapType == QadSnapTypeEnum.END or snapType == QadSnapTypeEnum.END_PLINE:
          return QadVertexmarkerIconTypeEnum.BOX
       elif snapType == QadSnapTypeEnum.MID:
          return QadVertexmarkerIconTypeEnum.TRIANGLE
@@ -124,6 +126,7 @@ class QadSnapPointsDisplayManager():
          vertexMarker.hide()
       
       for lineMarker in self.__lineMarkers:
+         #qad_debug.breakPoint()
          lineMarker.hide()
 
          
@@ -141,6 +144,7 @@ class QadSnapPointsDisplayManager():
       linea per intersezione su estensione (lista di 2 punti = linea) per la modalità di snap EXT_INT
       arco per intersezione su estensione per la modalità di snap EXT_INT
       """
+      #qad_debug.breakPoint()
       self.hide()
       # svuoto la lista dei marker
       del self.__vertexMarkers[:]
@@ -159,7 +163,7 @@ class QadSnapPointsDisplayManager():
                for extLine in extLines:
                   dummyPt = qad_utils.getPerpendicularPointOnInfinityLine(extLine[0], extLine[1], point)
                   # se dummyPt e point sono così vicini da essere considerati uguali
-                  if qad_utils.ptNear(point, dummyPt, 1.e-9):
+                  if qad_utils.ptNear(point, dummyPt):
                      # prendo il vertice più vicino a point
                      if qad_utils.getDistance(point, extLine[0]) < qad_utils.getDistance(point, extLine[1]):
                         dummyPt = extLine[0]
@@ -188,7 +192,7 @@ class QadSnapPointsDisplayManager():
                   # disegno l'arco di estensione
                   arcMarker = self.getArcMarker(arc)
                   if arcMarker is not None:
-                     self.__lineMarkers.append(self.getArcMarker(arc))                     
+                     self.__lineMarkers.append(arcMarker)                     
             
             # linee di parallelismo
             if snapType == QadSnapTypeEnum.PAR and (self.__startPoint is not None):
@@ -336,7 +340,7 @@ class QadSnapPointsDisplayManager():
          point = intExtArc[0].getMiddlePt()
          # disegno il marcatore
          self.__vertexMarkers.append(self.getVertexMarker(QadSnapTypeEnum.EXT_INT, point))
-       
+      
             
    def getVertexMarker(self, snapType, point):
       """
@@ -355,19 +359,21 @@ class QadSnapPointsDisplayManager():
       """
       Crea un marcatore lineare
       """
-      lineMarker = QgsRubberBand(self.__mapCanvas, False)
+      lineMarker = createRubberBand(self.__mapCanvas, QGis.Line, True)
       lineMarker.setColor(self.__color)
+      lineMarker.setLineStyle(Qt.DotLine)
       lineMarker.addPoint(pt1, False)
-      lineMarker.addPoint(pt2, True)
+      lineMarker.addPoint(pt2, True)      
       return lineMarker
 
 
    def getArcMarker(self, arc):
       """
-      Crea un marcatore lineare
+      Crea un marcatore lineare x arco
       """
-      lineMarker = QgsRubberBand(self.__mapCanvas, False)
+      lineMarker = createRubberBand(self.__mapCanvas, QGis.Line, True)
       lineMarker.setColor(self.__color)
+      lineMarker.setLineStyle(Qt.DotLine)
       points = arc.asPolyline()
       if points is None:
          return None

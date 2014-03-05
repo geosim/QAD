@@ -23,15 +23,15 @@
 
 
 def name():
-    return "Quantum Aided Design"
+   return "Quantum Aided Design"
 def description():
-    return "Comandi di editazione grafica in stile CAD"
+   return "Comandi di editazione grafica in stile CAD"
 def version():
-    return "Version 0.1"
+    return "Version 2.0"
 def icon():
-    return "icon.png"
+    return ":/plugins/qad/icons/qad.png"
 def qgisMinimumVersion():
-    return "1.0"
+    return "2.0"
 def classFactory(iface):
    
     # load Qad class from file qad

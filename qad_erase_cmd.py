@@ -34,13 +34,14 @@ from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_getpoint import *
 from qad_ssget_cmd import QadSSGetClass
+import qad_layer
 
 
 # Classe che gestisce il comando ERASE
 class QadERASECommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(129) # "CANCELLA"
+      return QadMsg.translate("Command_list", "CANCELLA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runERASECommand)
@@ -50,7 +51,7 @@ class QadERASECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(130)
+      return QadMsg.translate("Command_ERASE", "Cancella oggetti dalla mappa.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -83,19 +84,17 @@ class QadERASECommandClass(QadCommandClass):
       #=========================================================================
       # CANCELLAZIONE OGGETTI
       elif self.step == 1:
-         i = 0
          #qad_debug.breakPoint()
+         self.plugIn.beginEditCommand("Feature deleted", self.SSGetClass.entitySet.getLayerList())
+         
          for layerEntitySet in self.SSGetClass.entitySet.layerEntitySetList:
-            if not layerEntitySet.layer.isEditable():
-               layerEntitySet.layer.startEditing()
-
-            layerEntitySet.layer.beginEditCommand("Feature deleted")     
-            for featureId in layerEntitySet.featureIds:
-               if layerEntitySet.layer.deleteFeature(featureId) == False:
-                  i = i + 1
-            layerEntitySet.layer.endEditCommand()
+            # plugIn, layer, featureIds, refresh
+            if qad_layer.deleteFeaturesToLayer(self.plugIn, layerEntitySet.layer, \
+                                               layerEntitySet.featureIds, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
             
-         self.plugIn.canvas.refresh()
+         self.plugIn.endEditCommand()
             
          return True # fine comando
 

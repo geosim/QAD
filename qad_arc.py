@@ -59,7 +59,7 @@ class QadArc():
       self.startAngle = startAngle
       self.endAngle = endAngle     
 
-   def transform(self, ct):
+   def transform(self, coordTransform):
       """Transform this geometry as described by CoordinateTranasform ct."""
       self.center = coordTransform.transform(self.center)      
 
@@ -90,11 +90,9 @@ class QadArc():
          return self.endAngle - self.startAngle
       else:
          return (2 * math.pi - self.startAngle) + self.endAngle
-         
-   
+
    def length(self):
-      return self.radius * self.totalAngle()
-      
+      return self.radius * self.totalAngle()     
 
    def getStartPt(self):
       return qad_utils.getPolarPointByPtAngle(self.center,
@@ -124,11 +122,16 @@ class QadArc():
 
    def isPtOnArc(self, point):
       dist =  qad_utils.getDistance(self.center, point)
-      if qad_utils.doubleNear(self.radius, dist, 1.e-9):
+      if qad_utils.doubleNear(self.radius, dist):
          angle = qad_utils.getAngleBy2Pts(self.center, point)
          return qad_utils.isAngleBetweenAngles(self.startAngle, self.endAngle, angle)
       else:
          return False
+
+   def inverse(self):
+      dummy = self.endAngle
+      self.endAngle = self.startAngle 
+      self.startAngle = dummy
 
    def getMiddlePt(self):
       #qad_debug.breakPoint()      
@@ -179,19 +182,25 @@ class QadArc():
 
 
    #============================================================================
+   # getTanDirectionOnPt
+   #============================================================================
+   def getTanDirectionOnPt(self, pt):
+      angle = qad_utils.getAngleBy2Pts(self.center, pt)
+      return qad_utils.normalizeAngle(angle + math.pi / 2) 
+
+   
+   #============================================================================
    # getTanDirectionOnStartPt
    #============================================================================
    def getTanDirectionOnStartPt(self):
-      angle = qad_utils.getAngleBy2Pts(self.center, self.getStartPt())
-      return angle + math.pi / 2
+      return self.getTanDirectionOnPt(self.getStartPt()) 
 
 
    #============================================================================
    # getTanDirectionOnEndPt
    #============================================================================
    def getTanDirectionOnEndPt(self):
-      angle = qad_utils.getAngleBy2Pts(self.center, self.getEndPt())
-      return angle + math.pi / 2
+      return self.getTanDirectionOnPt(self.getEndPt()) 
 
 
    #============================================================================
@@ -213,20 +222,78 @@ class QadArc():
          
       return result
 
+   #============================================================================
+   # getIntersectionPointsWithInfinityLine
+   #============================================================================
+   def getIntersectionPointsWithInfinityLine(self, p1, p2):
+      result = []
+      circle = QadCircle()
+      circle.set(self.center, self.radius)
+      intPtList = circle.getIntersectionPointsWithInfinityLine(p1, p2)
+      for intPt in intPtList:
+         if self.isPtOnArc(intPt):
+            result.append(intPt)      
+      return result
+
+
+   #============================================================================
+   # getIntersectionPointsWithSegment
+   #============================================================================
+   def getIntersectionPointsWithSegment(self, p1, p2):
+      result = []
+      intPtList = self.getIntersectionPointsWithInfinityLine(p1, p2)
+      for intPt in intPtList:
+         if qad_utils.isPtOnSegment(p1, p2, intPt):
+            result.append(intPt)      
+      return result
+
+
+   #============================================================================
+   # getIntersectionPointsWithCircle
+   #============================================================================
+   def getIntersectionPointsWithCircle(self, circle):
+      result = []
+      circle1 = QadCircle()
+      circle1.set(self.center, self.radius)
+      intPtList = circle1.getIntersectionPointsWithCircle(circle)
+      for intPt in intPtList:
+         if self.isPtOnArc(intPt):
+            result.append(intPt)      
+      return result
+
+
+   #============================================================================
+   # getIntersectionPointsWithArc
+   #============================================================================
+   def getIntersectionPointsWithArc(self, arc):
+      result = []
+      circle = QadCircle()
+      circle.set(arc.center, arc.radius)
+      intPtList = self.getIntersectionPointsWithCircle(circle)
+      for intPt in intPtList:
+         if arc.isPtOnArc(intPt):
+            result.append(intPt)      
+      return result
+
       
    #============================================================================
    # asPolyline
    #============================================================================
-   def asPolyline(self, tolerance2ApproxCurve = None):
+   def asPolyline(self, tolerance2ApproxCurve = None, atLeastNSegment = None):
       """
       ritorna una lista di punti che definisce l'arco
       """
       #qad_debug.breakPoint()
       
       if tolerance2ApproxCurve is None:
-         tolerance = QadVariables.get("TOLERANCE2APPROXCURVE")
+         tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       else:
          tolerance = tolerance2ApproxCurve
+      
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
@@ -240,10 +307,10 @@ class QadArc():
       if SegmentLen == 0: # se la tolleranza è troppo bassa la lunghezza del segmento diventa zero  
          return None
          
-      # calcolo quanti segmenti ci vogliono (non meno di 3)
+      # calcolo quanti segmenti ci vogliono (non meno di _atLeastNSegment)
       SegmentTot = math.ceil(self.length() / SegmentLen)
-      if SegmentTot < 3:
-         SegmentTot = 3
+      if SegmentTot < _atLeastNSegment:
+         SegmentTot = _atLeastNSegment
       
       points = []
       # primo punto
@@ -493,16 +560,21 @@ class QadArc():
    #============================================================================
    # fromPolyline
    #============================================================================
-   def fromPolyline(self, points, startVertex, atLeastNSegment = 3):
+   def fromPolyline(self, points, startVertex, atLeastNSegment = None):
       """
       setta le caratteristiche del primo arco incontrato nella lista di punti
       partendo dalla posizione startVertex (0-indexed)
       ritorna la posizione nella lista del punto iniziale e finale se è stato trovato un arco
       altrimenti None
-      """      
+      """     
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       totPoints = len(points)
-      # perchè sia un arco ci vogliono almeno atLeastNSegment segmenti
-      if (totPoints - 1) - startVertex < atLeastNSegment or atLeastNSegment < 2:
+      # perchè sia un arco ci vogliono almeno _atLeastNSegment segmenti
+      if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 
       epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
@@ -533,22 +605,40 @@ class QadArc():
                                                                        InfinityLinePerpOnMiddle2[0], \
                                                                        InfinityLinePerpOnMiddle2[1])
                if center is None: # linee parallele
-                  InfinityLinePerpOnMiddle1 = InfinityLinePerpOnMiddle2[:] # copio la lista dei 2 punti
+                  InfinityLinePerpOnMiddle1 = InfinityLinePerpOnMiddle2
+                  InfinityLinePerpOnMiddle2 = None
                   nStartVertex = i
                   nSegment = 1
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
+                  # calcolo il verso dell'arco e l'angolo dell'arco                 
+                  # se un punto intermedio dell'arco è a sinistra del
+                  # segmento che unisce i due punti allora il verso è antiorario
+                  startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
+                  angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                  
          else: # e sono già stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
-            if qad_utils.doubleNear(radius, dist, maxDifference):
+            # calcolo il verso dell'arco e l'angolo                 
+            clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
+            angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
+                       
+            # se la distanza è così vicina a quella del raggio
+            # il verso dell'arco deve essere quello iniziale
+            # l'angolo dell'arco non può essere >= 360 gradi
+            if qad_utils.doubleNear(radius, dist, maxDifference) and \
+               startClockWise == clockWise and \
+               angle < 2 * math.pi:                              
                nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
             else: # questo segmento non fa parte del cerchio
                #qad_debug.breakPoint()
                # se sono stati trovati un numero sufficiente di segmenti successivi
-               if nSegment >= atLeastNSegment:
+               if nSegment >= _atLeastNSegment:
+                  # se è un angolo giro e il primo punto = ultimo punto allora points è un cerchio
+                  if qad_utils.doubleNear(angle, 2 * math.pi) and points[0] == points[-1]: 
+                     return None
                   break
                else:
                   i = i - 2
@@ -557,19 +647,18 @@ class QadArc():
                
          i = i + 1
          
+      #qad_debug.breakPoint()
+               
       # se sono stati trovati un numero sufficiente di segmenti successivi
-      if nSegment >= atLeastNSegment:
+      if nSegment >= _atLeastNSegment:
          nEndVertex = nStartVertex + nSegment
          # se il punto iniziale e quello finale non coincidono è un arco         
          if points[nStartVertex] != points[nEndVertex]:
             self.center = center
             self.radius = radius
                            
-            # se un punto intermedio da quello iniziale e finale dell'arco è a sinistra del
-            # segmento che unisce i due punti
-            if qad_utils.leftOfLine(points[nStartVertex + 1], \
-                                    points[nStartVertex], \
-                                    points[nEndVertex]) < 0:
+            # se il verso è orario
+            if startClockWise:
                # inverto l'angolo iniziale con quello finale
                self.endAngle = qad_utils.getAngleBy2Pts(center, points[nStartVertex])
                self.startAngle = qad_utils.getAngleBy2Pts(center, points[nEndVertex])
@@ -598,21 +687,26 @@ class QadArcList():
    #============================================================================
    # fromPoints
    #============================================================================
-   def fromPoints(self, points, atLeastNSegment = 3):
+   def fromPoints(self, points, atLeastNSegment = None):
       """
       setta la lista degli archi e degli estremi leggendo una sequenza di punti
       ritorna il numero di archi trovati
-      """
+      """      
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       self.clear()
       startVertex = 0
       arc = QadArc()
-      startEndVertices = arc.fromPolyline(points, startVertex, atLeastNSegment)
+      startEndVertices = arc.fromPolyline(points, startVertex, _atLeastNSegment)
       while startEndVertices is not None:
          _arc = QadArc(arc) # ne faccio una copia
          self.arcList.append(_arc)
          self.startEndVerticesList.append(startEndVertices)
          startVertex = startEndVertices[1] # l'ultimo punto dell'arco
-         startEndVertices = arc.fromPolyline(points, startVertex, atLeastNSegment)               
+         startEndVertices = arc.fromPolyline(points, startVertex, _atLeastNSegment)               
 
       return len(self.arcList)
 
@@ -620,11 +714,16 @@ class QadArcList():
    #============================================================================
    # fromGeom
    #============================================================================
-   def fromGeom(self, geom, atLeastNSegment = 3):
+   def fromGeom(self, geom, atLeastNSegment = None):
       """
       setta la lista degli archi e degli estremi leggendo una geometria
       ritorna il numero di archi trovati
       """
+      if atLeastNSegment is None:
+         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
+      else:
+         _atLeastNSegment = atLeastNSegment
+      
       self.clear()
       arc = QadArc()
       incremental = 0 
@@ -633,13 +732,13 @@ class QadArcList():
       for g in geoms:
          points = g.asPolyline() # vettore di punti
          startVertex = 0
-         startEndVertices = arc.fromPolyline(points, startVertex, atLeastNSegment)
+         startEndVertices = arc.fromPolyline(points, startVertex, _atLeastNSegment)
          while startEndVertices is not None:
             _arc = QadArc(arc) # ne faccio una copia
             self.arcList.append(_arc)
             self.startEndVerticesList.append([startEndVertices[0] + incremental, startEndVertices[1] + incremental])
             startVertex = startEndVertices[1] # l'ultimo punto dell'arco
-            startEndVertices = arc.fromPolyline(points, startVertex, atLeastNSegment)
+            startEndVertices = arc.fromPolyline(points, startVertex, _atLeastNSegment)
                            
          incremental = len(points) - 1
 
@@ -651,7 +750,7 @@ class QadArcList():
    def arcAt(self, afterVertex):
       """
       cerca se esiste un arco al segmento il cui secondo vertice è <afterVertex>
-      restituisce una lista con <arco>, <lista con punto iniziale e finale>
+      restituisce una lista con <arco>, <lista con indice del punto iniziale e finale>
       oppure None se arco non trovato
       """
       i = 0

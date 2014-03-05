@@ -28,6 +28,7 @@ from qgis.core import *
 
 import qad_debug
 import qad_utils
+from qad_msg import QadMsg
 
 #===============================================================================
 # Qad variables class.
@@ -43,35 +44,57 @@ class QadVariablesClass():
       """
       Inizializza un dizionario con le variabili e i loro valori di default 
       """
+      # ARCMINSEGMENTQTY (int): numero minimo di segmenti perchè venga riconosciuto un arco
+      VariableName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY") # x lupdate
+      self.__VariableValuesDict[VariableName] = int(12)
       # AUTOSNAP (int): attiva il puntamento polare (somma di bit):
       # 8 = Attiva il puntamento polare
-      self.__VariableValuesDict["AUTOSNAP"] = int(63)
+      VariableName = QadMsg.translate("Environment variables", "AUTOSNAP")
+      self.__VariableValuesDict[VariableName] = int(63)
+      # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perchè venga riconosciuto un cerchio
+      VariableName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY")
+      self.__VariableValuesDict[VariableName] = int(12)
       # CMDINPUTHISTORYMAX (int): Imposta il numero massimo di comandi nella lista di storicizzazione
-      self.__VariableValuesDict["CMDINPUTHISTORYMAX"] = int(20)
+      VariableName = QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX")
+      self.__VariableValuesDict[VariableName] = int(20)
       # COPYMODE (int):
       # 0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente
       # 1 = Imposta il comando COPIA in modo da creare una singola copia
-      self.__VariableValuesDict["COPYMODE"] = int(0)     
+      VariableName = QadMsg.translate("Environment variables", "COPYMODE")
+      self.__VariableValuesDict[VariableName] = int(0)     
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
-      self.__VariableValuesDict["CURSORSIZE"] = int(5)
+      VariableName = QadMsg.translate("Environment variables", "CURSORSIZE")
+      self.__VariableValuesDict[VariableName] = int(5)
+      # EDGEMODE (int): Controlla i comandi ESTENDI e TAGLIA.
+      # O = Vengono usate le dimensioni reali degli oggetti di riferimento
+      # 1 = Vengono usate le estensioni  degli oggetti di riferimento (es. un arco viene considerato cerchio)
+      VariableName = QadMsg.translate("Environment variables", "EDGEMODE")
+      self.__VariableValuesDict[VariableName] = int(0)
+      # FILLETRAD (float): raggio applicato per raccordare (gradi)
+      VariableName = QadMsg.translate("Environment variables", "FILLETRAD")
+      self.__VariableValuesDict[VariableName] = float(0.0)
       # OFFSETDIST(float): Setta la distanza di default per l'offset
       # < 0  offset di un oggetto attraverso un punto
       # >= 0 offset di un oggetto attraverso la distanza
-      self.__VariableValuesDict["OFFSETDIST"] = float(-1.0)
+      VariableName = QadMsg.translate("Environment variables", "OFFSETDIST")
+      self.__VariableValuesDict[VariableName] = float(-1.0)
       # OFFSETGAPTYPE (int):
       # 0 = Estende i segmenti di linea alle relative intersezioni proiettate
       # 1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
       #     Il raggio di ciascun segmento di arco è uguale alla distanza di offset
       # 2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
       #     La distanza perpendicolare da ciascuna cima al rispettivo vertice
-      #     sull'oggetto originale è uguale alla distanza di offset. 
-      self.__VariableValuesDict["OFFSETGAPTYPE"] = int(0)     
+      #     sull'oggetto originale è uguale alla distanza di offset.
+      VariableName = QadMsg.translate("Environment variables", "OFFSETGAPTYPE")
+      self.__VariableValuesDict[VariableName] = int(0)     
       # ORTHOMODE (int):
       # 0 = modalità di movimento ortogonale cursore disabilitata
       # 1 = modalità di movimento ortogonale cursore abilitata
-      self.__VariableValuesDict["ORTHOMODE"] = int(0)
+      VariableName = QadMsg.translate("Environment variables", "ORTHOMODE")
+      self.__VariableValuesDict[VariableName] = int(0)
       # OSCOLOR (str): Imposta il colore (RGB) dei simboli di osnap
-      self.__VariableValuesDict["OSCOLOR"] = "#FF0000" # rosso
+      VariableName = QadMsg.translate("Environment variables", "OSCOLOR")
+      self.__VariableValuesDict[VariableName] = "#FF0000" # rosso
       # OSMODE (int): Imposta lo snap ad oggetto (somma di bit):
       # 0 = (NON) nessuno
       # 1 = (END) punto finale
@@ -90,25 +113,38 @@ class QadVariablesClass():
       # 4096 = (EXT) Estensione : Visualizza una linea o un arco di estensione temporaneo quando si sposta il cursore sul punto finale degli oggetti, 
       #        in modo che sia possibile specificare punti sull'estensione
       # 8192 = (PAR) Parallelo: Vincola un segmento di linea, un segmento di polilinea, un raggio o una xlinea ad essere parallela ad un altro oggetto lineare
-      # 16384 = osnap off  
-      self.__VariableValuesDict["OSMODE"] = int(0)
+      # 16384 = osnap off
+      # 65536 = (PR) Distanza progressiva
+      # 131072 = intersezione sull'estensione
+      # 262144 = perpendicolare differita
+      # 524288 = tangente differita
+      # 1048576 = puntamento polare
+      VariableName = QadMsg.translate("Environment variables", "OSMODE")
+      self.__VariableValuesDict[VariableName] = int(0)
       # OSPROGRDISTANCE (float): Distanza progressima per snap PR
-      self.__VariableValuesDict["OSPROGRDISTANCE"] = float(0.0)
+      VariableName = QadMsg.translate("Environment variables", "OSPROGRDISTANCE")
+      self.__VariableValuesDict[VariableName] = float(0.0)
       # OSSIZE (int): Imposta la dimensione in pixel dei simboli di osnap
-      self.__VariableValuesDict["OSSIZE"] = int(13)
+      VariableName = QadMsg.translate("Environment variables", "OSSIZE")
+      self.__VariableValuesDict[VariableName] = int(13)
       # PICKBOX (int): Imposta la dimensione in pixel della distanza di selezione degli oggetti
       # dalla posizione corrente del puntatore
-      self.__VariableValuesDict["PICKBOX"] = int(5)
+      VariableName = QadMsg.translate("Environment variables", "PICKBOX")
+      self.__VariableValuesDict[VariableName] = int(5)
       # PICKBOXCOLOR (str): Imposta il colore (RGB) del quadratino di selezione degli oggetti
-      self.__VariableValuesDict["PICKBOXCOLOR"] = "#FF0000" # rosso 
+      VariableName = QadMsg.translate("Environment variables", "PICKBOXCOLOR")
+      self.__VariableValuesDict[VariableName] = "#FF0000" # rosso 
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi)
-      self.__VariableValuesDict["POLARANG"] = float(90.0)
+      VariableName = QadMsg.translate("Environment variables", "POLARANG")
+      self.__VariableValuesDict[VariableName] = float(90.0)
       # SHOWTEXTWINDOW (bool): Visualizza la finestra di testo all'avvio
-      self.__VariableValuesDict["SHOWTEXTWINDOW"] = True 
+      VariableName = QadMsg.translate("Environment variables", "SHOWTEXTWINDOW")
+      self.__VariableValuesDict[VariableName] = True 
       # TOLERANCE2APPROXCURVE (float):
       # massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti
-      # (nel sistema map-coordinate) 
-      self.__VariableValuesDict["TOLERANCE2APPROXCURVE"] = float(0.1)
+      # (nel sistema map-coordinate)
+      VariableName = QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")
+      self.__VariableValuesDict[VariableName] = float(0.1)
       
 
    def getVarNames(self):
@@ -139,11 +175,12 @@ class QadVariablesClass():
       """
       Salva il dizionario delle variabili su file 
       """
+      #qad_debug.breakPoint()
       if Path == "":
          # Se la path non è indicata uso il file "qad.ini" in 
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
          if not QDir(Path).exists():
-            os.makedirs(Path.toAscii())
+            os.makedirs(Path)
          Path = Path + "qad.ini"
        
       file = open(Path, "w") # apre il file in scrittura

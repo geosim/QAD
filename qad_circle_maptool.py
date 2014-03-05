@@ -37,6 +37,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_circle import *
+from qad_rubberband import createRubberBand
 
 
 #===============================================================================
@@ -86,6 +87,7 @@ class Qad_circle_maptool(QadGetPoint):
       self.tan2 = None
       self.startPtForRadius = None
       self.__circleRubberBand = None   
+      self.geomType = QGis.Polygon
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
@@ -144,7 +146,7 @@ class Qad_circle_maptool(QadGetPoint):
                                            self.tanGeom2, self.tanPt2, radius)
       
       if result == True:
-         self.__circleRubberBand = QgsRubberBand(self.canvas, False)
+         self.__circleRubberBand = createRubberBand(self.canvas, self.geomType)
          points = circle.asPolyline()
       
          if points is not None:

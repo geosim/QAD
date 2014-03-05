@@ -1,52 +1,30 @@
 
-#/***************************************************************************
-# Quantum CAD
-# 
-# Selezione di layer attraverso gli oggetti grafici
-#                             -------------------
-#        begin                : 2012-01-12
-#        copyright            : (C) 2012 by Roberto Poltini
-#        email                : roberto.poltini@irenacquagas.it
-# ***************************************************************************/
-# 
-#/***************************************************************************
-# *                                                                         *
-# *   This program is free software; you can redistribute it and/or modify  *
-# *   it under the terms of the GNU General Public License as published by  *
-# *   the Free Software Foundation; either version 2 of the License, or     *
-# *   (at your option) any later version.                                   *
-# *                                                                         *
-# ***************************************************************************/
-
-# Makefile for a PyQGIS plugin 
-
-PLUGINNAME = qad
-
-PY_FILES = qad.py qad_dialog.py __init__.py
-
-EXTRAS = icon.png 
-
-UI_FILES = ui_qad.py
-
-RESOURCE_FILES = resources.py
-
-default: compile
-
-compile: $(UI_FILES) $(RESOURCE_FILES)
-
-%.py : %.qrc
-	pyrcc4 -o $@  $<
-
-%.py : %.ui
-	pyuic4 -o $@ $<
-
-# The deploy  target only works on unix like operating system where
-# the Python plugin directory is located at:
-# $HOME/.qgis/python/plugins
-deploy: compile
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(PY_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(UI_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(RESOURCE_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(EXTRAS) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-
+###### EDIT ##################### 
+ 
+ 
+#UI files to compile
+UI_FILES = qad.ui qad_dsettings.ui
+#Qt resource files to compile
+RESOURCES = qad.qrc qad_dsettings.qrc 
+ 
+ 
+#################################
+# DO NOT EDIT FOLLOWING
+ 
+COMPILED_UI = $(UI_FILES:%.ui=%_ui.py)
+COMPILED_RESOURCES = $(RESOURCES:%.qrc=%_rc.py)
+ 
+all : resources ui 
+ 
+resources : $(COMPILED_RESOURCES) 
+ 
+ui : $(COMPILED_UI)
+ 
+%_ui.py : %.ui
+	pyuic4 $< -o $@
+ 
+%_rc.py : %.qrc
+	pyrcc4 $< -o $@
+ 
+clean : 
+	$(RM) $(COMPILED_UI) $(COMPILED_RESOURCES) $(COMPILED_UI:.py=.pyc) $(COMPILED_RESOURCES:.py=.pyc)  

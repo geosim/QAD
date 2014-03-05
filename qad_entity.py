@@ -31,6 +31,7 @@ from qgis.gui import *
 
 
 import qad_debug
+import qad_utils
 
 
 #===============================================================================
@@ -100,11 +101,7 @@ class QadEntity():
       if self.isInitialized() == False:
          return None
       
-      feature = QgsFeature()
-      if self.layer.featureAtId(self.featureId, feature, True, True) == True:
-         return feature
-      else:
-         return None    
+      return qad_utils.getFeatureById(self.layer, self.featureId)
       
 
    def exists(self):
@@ -135,19 +132,19 @@ class QadEntity():
       return feature.attributes()[:] # fa una copia
 
 
-   def selectOnLayer(self, emitSignal, incremental = True):
+   def selectOnLayer(self, incremental = True):
       if self.isInitialized() == True:
          if incremental == False:
-            self.layer.removeSelection(False)
+            self.layer.removeSelection()
 
-         self.layer.select(self.featureId, emitSignal)
+         self.layer.select(self.featureId)
 
 
-   def deselectOnLayer(self, emitSignal):
+   def deselectOnLayer(self):
       if self.isInitialized() == False:
          return False
 
-      self.layer.deselect(self.featureId, emitSignal)
+      self.layer.deselect(self.featureId)
    
       
 #===============================================================================
@@ -212,12 +209,7 @@ class QadLayerEntitySet():
    def getFeature(self, featureId):
       if self.isInitialized() == False:
          return None
-
-      feature = QgsFeature()
-      if self.layer.featureAtId(featureId, feature, True, True) == True:
-         return feature
-      else:
-         return None    
+      return qad_utils.getFeatureById(self.layer, featureId)
    
 
    def getGeometry(self, featureId):
@@ -264,27 +256,32 @@ class QadLayerEntitySet():
             result.append(g)
       return result
 
+
+   def getFeatureCollection(self,):
+      result = []
+      for featureId in self.featureIds:
+         f = self.getFeature(featureId)
+         if f is not None:                    
+            result.append(f)
+      return result
+
    
-   def selectOnLayer(self, emitSignal, incremental = True):
+   def selectOnLayer(self, incremental = True):
       if self.isInitialized() == True:            
          if len(self.featureIds) > 0:
             if incremental == False:
-               self.layer.removeSelection(False)
+               self.layer.removeSelection()
             
-            for featureId in self.featureIds:
-               self.layer.select(featureId, False)
-            self.layer.select(featureId, emitSignal)
+            self.layer.select(self.featureIds)
          else:
             if incremental == False:
-               self.layer.removeSelection(emitSignal)
+               self.layer.removeSelection()
                
 
-   def deselectOnLayer(self, emitSignal):
+   def deselectOnLayer(self):
       if self.isInitialized() == True:
          if len(self.featureIds) > 0:
-            for featureId in self.featureIds:
-               self.layer.deselect(featureId, False)
-            self.layer.deselect(featureId, emitSignal)
+            self.layer.deselect(self.featureIds)
 
    
    def containsFeature(self, feature):
@@ -461,6 +458,13 @@ class QadEntitySet():
          return self.findLayerEntitySet(layer.layer)     
 
 
+   def getLayerList(self):
+      layerList = []
+      for layerEntitySet in self.layerEntitySetList:
+         layerList.append(layerEntitySet.layer)
+      return layerList
+   
+
    def getGeometryCollection(self, destCRS = None):
       result = []
       for layerEntitySet in self.layerEntitySetList:
@@ -468,16 +472,26 @@ class QadEntitySet():
          if partial is not None:
             result.extend(partial)
       return result
+   
 
-
-   def selectOnLayer(self, emitSignal, incremental = True):
+   def getFeatureCollection(self):
+      result = []
       for layerEntitySet in self.layerEntitySetList:
-         layerEntitySet.selectOnLayer(emitSignal, incremental)
+         partial = layerEntitySet.getFeatureCollection()
+         if partial is not None:
+            result.extend(partial)
+      return result
 
 
-   def deselectOnLayer(self, emitSignal):
+   def selectOnLayer(self, incremental = True):
       for layerEntitySet in self.layerEntitySetList:
-         layerEntitySet.deselectOnLayer(emitSignal)
+         layerEntitySet.selectOnLayer(incremental)
+
+
+   def deselectOnLayer(self):
+      #qad_debug.breakPoint()
+      for layerEntitySet in self.layerEntitySetList:
+         layerEntitySet.deselectOnLayer()
 
 
    def containsEntity(self, entity):
@@ -566,6 +580,13 @@ class QadEntitySet():
          if layerEntitySet.layer.isEditable() == False:
             del self.layerEntitySetList[i]
                   
+
+   def removeGeomType(self, type):
+      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):    
+         layerEntitySet = self.layerEntitySetList[i]
+         if layerEntitySet.layer.geometryType() == type:
+            del self.layerEntitySetList[i]
+
 
    def purge(self):
       # rimuove i layer con zero oggetti

@@ -38,19 +38,19 @@ from qad_msg import QadMsg
 class QadIDCommandClass(QadCommandClass):
 
    def getName(self):
-      return QadMsg.get(3) # "ID"
+      return QadMsg.translate("Command_list", "ID")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runIDCommand)
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(99)
+      return QadMsg.translate("Command_ID", "Visualizza le coordinate di una posizione.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
         
-   def run(self, msgMapTool = False, msg = None):     
+   def run(self, msgMapTool = False, msg = None):           
       if self.step == 0: # inizio del comando
          self.waitForPoint() # si appresta ad attendere un punto
          self.step = self.step + 1

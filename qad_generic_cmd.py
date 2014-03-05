@@ -37,9 +37,10 @@ from qad_getpoint import *
 
 # Classe che gestisce un comando generico
 class QadCommandClass():
-   plugIn       = None
-   PointMapTool = None
-   step         = 0
+   plugIn               = None
+   PointMapTool         = None
+   step                 = 0
+   isValidPreviousInput = True
 
    def showMsg(self, msg, displayPrompt = False):
       if self.plugIn is not None:
@@ -72,32 +73,38 @@ class QadCommandClass():
          self.plugIn.canvas.setMapTool(mapTool)
          self.plugIn.mainAction.setChecked(True)     
 
-   def waitForPoint(self, msg = QadMsg.get(4)): # "Specificare punto: "
+   def waitForPoint(self, msg = QadMsg.translate("QAD", "Specificare punto: "), \
+                    default = None, inputMode = QadInputModeEnum.NOT_NULL):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.POINT2D)
+      self.showInputMsg(msg, QadInputTypeEnum.POINT2D, default, "", inputMode)
 
-   def waitForString(self, msg, default = None):
+   def waitForString(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.STRING, default)
+      self.showInputMsg(msg, QadInputTypeEnum.STRING, default, "", inputMode)
 
-   def waitForInt(self, msg, default = None):
+   def waitForInt(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.INT, default)
+      self.showInputMsg(msg, QadInputTypeEnum.INT, default, "", inputMode)
 
-   def waitForlong(self, msg, default = None):
+   def waitForlong(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.LONG, default)
+      self.showInputMsg(msg, QadInputTypeEnum.LONG, default, "", inputMode)
 
-   def waitForFloat(self, msg, default = None):
+   def waitForFloat(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.FLOAT, default)
+      self.showInputMsg(msg, QadInputTypeEnum.FLOAT, default, "", inputMode)
 
-   def waitForBool(self, msg, default = None):
+   def waitForBool(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
-      self.showInputMsg(msg, QadInputTypeEnum.BOOL, default)
+      self.showInputMsg(msg, QadInputTypeEnum.BOOL, default, "", inputMode)
 
-   def waitForSelSet(self, msg = QadMsg.get(131)): # "Selezionare oggetti: "
+   def waitForSelSet(self, msg = QadMsg.translate("QAD", "Selezionare oggetti: ")):
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
@@ -105,8 +112,7 @@ class QadCommandClass():
 
    def waitFor(self, msg, inputType, default = None, keyWords = "", \
                inputMode = QadInputModeEnum.NOT_NULL):
-      if inputType & QadInputTypeEnum.POINT2D:
-         self.setMapTool(self.getPointMapTool())
+      self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, inputType, default, keyWords, inputMode)
 
@@ -188,3 +194,9 @@ class QadCommandClass():
             pt = msg
             
          return True
+
+   def mapToLayerCoordinates(self, layer, point):
+      # transform point coordinates from output CRS to layer's CRS 
+      if self.plugIn is None:
+         return None
+      return self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point)

@@ -52,8 +52,7 @@ class Ui_QadTextWindow(object):
         QtCore.QMetaObject.connectSlotsByName(QadTextWindow)
 
     def retranslateUi(self, QadTextWindow):
-       # "Finestra di testo Qad"
-       QadTextWindow.setWindowTitle(QadMsg.get(1))
+       QadTextWindow.setWindowTitle(QadMsg.translate("Text_window", "Finestra di testo QAD"))
 
 class Ui_QadCmdSuggestWindow(object):
     def setupUi(self, QadCmdSuggestWindow):

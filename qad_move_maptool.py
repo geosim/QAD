@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -57,39 +58,24 @@ class Qad_move_maptool(QadGetPoint):
                         
       self.basePt = None
       self.entitySet = QadEntitySet()
-      self.__movedRubberBand = None   
-      self.__movedRubberBandPolygon = None   
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__movedRubberBand is not None:
-         self.__movedRubberBand.hide()
-      if self.__movedRubberBandPolygon is not None:
-         self.__movedRubberBandPolygon.hide()         
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__movedRubberBand is not None:
-         self.__movedRubberBand.show()
-      if self.__movedRubberBandPolygon is not None:
-         self.__movedRubberBandPolygon.show()         
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__movedRubberBand is not None:
-         self.__movedRubberBand.hide()
-         del self.__movedRubberBand
-         self.__movedRubberBand = None
-      if self.__movedRubberBandPolygon is not None:
-         self.__movedRubberBandPolygon.hide()
-         del self.__movedRubberBandPolygon
-         self.__movedRubberBandPolygon = None
+      self.__rubberBand.reset()
       self.mode = None    
    
    def addMovedGeometries(self, newPt):
       #qad_debug.breakPoint()      
-      self.__movedRubberBand = QgsRubberBand(self.canvas, False)
-      self.__movedRubberBandPolygon = QgsRubberBand(self.canvas, True)
+      self.__rubberBand.reset()            
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
@@ -97,54 +83,35 @@ class Qad_move_maptool(QadGetPoint):
          transformedNewPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
-         geoms = layerEntitySet.getGeometryCollection()
-         if layer.geometryType() != QGis.Polygon:
-            for geom in geoms:
-               movedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
-               self.__movedRubberBand.addGeometry(movedGeom, layer)
-         else:
-            for geom in geoms:
-               movedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
-               self.__movedRubberBandPolygon.addGeometry(movedGeom, layer)
+         geoms = layerEntitySet.getGeometryCollection()            
+         
+         for geom in geoms:
+            movedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
+            self.__rubberBand.addGeometry(movedGeom, layer)
             
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
-      
-      if self.__movedRubberBand  is not None:
-         self.__movedRubberBand.hide()
-         del self.__movedRubberBand
-         self.__movedRubberBand = None
-      if self.__movedRubberBandPolygon  is not None:
-         self.__movedRubberBandPolygon.hide()
-         del self.__movedRubberBandPolygon
-         self.__movedRubberBandPolygon = None
-               
-      # noto il punto base si richiede il secondo punto per l'angolo di rotazione
+                     
+      # noto il punto base si richiede il secondo punto
       if self.mode == Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT:
          self.addMovedGeometries(self.tmpPoint)                           
          
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__movedRubberBand is not None:
-         self.__movedRubberBand.show()
-      if self.__movedRubberBandPolygon is not None:
-         self.__movedRubberBandPolygon.show()
+      self.__rubberBand.show()          
 
    def deactivate(self):
       QadGetPoint.deactivate(self)
-      if self.__movedRubberBand is not None:
-         self.__movedRubberBand.hide()
-      if self.__movedRubberBandPolygon is not None:
-         self.__movedRubberBandPolygon.hide()
+      self.__rubberBand.hide()
 
    def setMode(self, mode):
       self.mode = mode
       # noto niente si richiede il punto base
       if self.mode == Qad_move_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-      # noto il punto base si richiede il secondo punto per l'angolo di rotazione
+      # noto il punto base si richiede il secondo punto
       elif self.mode == Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
          self.setStartPoint(self.basePt)

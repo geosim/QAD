@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -70,39 +71,24 @@ class Qad_scale_maptool(QadGetPoint):
       self.ReferenceLen = 0
       self.Pt1NewLen = None
       self.entitySet = QadEntitySet()
-      self.__scaledRubberBand = None   
-      self.__scaledRubberBandPolygon = None   
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__scaledRubberBand is not None:
-         self.__scaledRubberBand.hide()
-      if self.__scaledRubberBandPolygon is not None:
-         self.__scaledRubberBandPolygon.hide()         
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__scaledRubberBand is not None:
-         self.__scaledRubberBand.show()
-      if self.__scaledRubberBandPolygon is not None:
-         self.__scaledRubberBandPolygon.show()         
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__scaledRubberBand is not None:
-         self.__scaledRubberBand.hide()
-         del self.__scaledRubberBand
-         self.__scaledRubberBand = None
-      if self.__scaledRubberBandPolygon is not None:
-         self.__scaledRubberBandPolygon.hide()
-         del self.__scaledRubberBandPolygon
-         self.__scaledRubberBandPolygon = None
+      self.__rubberBand.reset()
       self.mode = None    
 
    def addScaledGeometries(self, scale):
       #qad_debug.breakPoint()      
-      self.__scaledRubberBand = QgsRubberBand(self.canvas, False)
-      self.__scaledRubberBandPolygon = QgsRubberBand(self.canvas, True)
+      self.__rubberBand.reset()            
       
       if scale <= 0:
          return
@@ -111,28 +97,15 @@ class Qad_scale_maptool(QadGetPoint):
          layer = layerEntitySet.layer
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
          geoms = layerEntitySet.getGeometryCollection()
-         if layer.geometryType() != QGis.Polygon:
-            for geom in geoms:
-               scaledGeom = qad_utils.scaleQgsGeometry(geom, transformedBasePt, scale)
-               self.__scaledRubberBand.addGeometry(scaledGeom, layer)
-         else:
-            for geom in geoms:
-               scaledGeom = qad_utils.scaleQgsGeometry(geom, transformedBasePt, scale)
-               self.__scaledRubberBandPolygon.addGeometry(scaledGeom, layer)
+         
+         for geom in geoms:
+            scaledGeom = qad_utils.scaleQgsGeometry(geom, transformedBasePt, scale)
+            self.__rubberBand.addGeometry(scaledGeom, layer)
             
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
-      
-      if self.__scaledRubberBand  is not None:
-         self.__scaledRubberBand.hide()
-         del self.__scaledRubberBand
-         self.__scaledRubberBand = None
-      if self.__scaledRubberBandPolygon  is not None:
-         self.__scaledRubberBandPolygon.hide()
-         del self.__scaledRubberBandPolygon
-         self.__scaledRubberBandPolygon = None
-               
+                     
       # noto il punto base si richiede il secondo punto per la scala
       if self.mode == Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT:
          scale = qad_utils.getDistance(self.basePt, self.tmpPoint)
@@ -152,17 +125,11 @@ class Qad_scale_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__scaledRubberBand is not None:
-         self.__scaledRubberBand.show()
-      if self.__scaledRubberBandPolygon is not None:
-         self.__scaledRubberBandPolygon.show()
+      self.__rubberBand.show()          
 
    def deactivate(self):
       QadGetPoint.deactivate(self)
-      if self.__scaledRubberBand is not None:
-         self.__scaledRubberBand.hide()
-      if self.__scaledRubberBandPolygon is not None:
-         self.__scaledRubberBandPolygon.hide()
+      self.__rubberBand.hide()
 
    def setMode(self, mode):
       self.mode = mode

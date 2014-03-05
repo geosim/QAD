@@ -36,13 +36,14 @@ from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_getpoint import *
 import qad_utils
+import qad_layer
 
 
 # Classe che gestisce il comando MPOLYGON
 class QadMPOLYGONCommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(166) # "MPOLYGON"
+      return QadMsg.translate("Command_list", "MPOLIGONO")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runMPOLYGONCommand)
@@ -51,14 +52,14 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       return QIcon(":/plugins/qad/icons/mpolygon.png")
 
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(167)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono è una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
-      # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-      # che non verrà salvata su un layer
+      # se questo flag = True il comando serve all'interno di un altro comando per disegnare un poligono
+      # che non verrà salvato su un layer
       self.virtualCmd = False
       self.PLINECommand = None
 
@@ -74,13 +75,13 @@ class QadMPOLYGONCommandClass(QadCommandClass):
            
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
 
       if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
-         currLayer = qad_utils.getCurrLayerEditable(self.plugIn.canvas, QGis.Polygon)
+         currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Polygon)
          if currLayer is None:
-            self.showMsg(QadMsg.get(53)) # "\nIl layer corrente non è valido\n"
+            self.showMsg(errMsg)
             return True # fine comando
 
       #=========================================================================
@@ -108,11 +109,11 @@ class QadMPOLYGONCommandClass(QadCommandClass):
                   # aggiungo un vertice con le stesse coordinate del primo
                   self.vertices.append(firstVertex)
                if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
-                  if qad_utils.addPolygonToLayer(self.plugIn, currLayer, self.vertices) == False:
-                     self.showMsg(QadMsg.get(168)) # "\nPoligono non valido.\n"
+                  if qad_layer.addPolygonToLayer(self.plugIn, currLayer, self.vertices) == False:                     
+                     self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPoligono non valido.\n"))
                      del self.vertices[:] # svuoto la lista
             else:
-               self.showMsg(QadMsg.get(168)) # "\nPoligono non valido.\n"
+               self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPoligono non valido.\n"))
                                
             del self.PLINECommand
             self.PLINECommand = None

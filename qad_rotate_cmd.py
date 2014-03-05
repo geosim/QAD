@@ -38,12 +38,13 @@ from qad_textwindow import *
 from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
+import qad_layer
 
 # Classe che gestisce il comando RUOTA
 class QadROTATECommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(179) # "RUOTA"
+      return QadMsg.translate("Command_list", "RUOTA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runROTATECommand)
@@ -52,8 +53,8 @@ class QadROTATECommandClass(QadCommandClass):
       return QIcon(":/plugins/qad/icons/rotate.png")
 
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(185)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_ROTATE", "Ruota gli oggetti selezionati rispetto ad un punto base.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -83,9 +84,11 @@ class QadROTATECommandClass(QadCommandClass):
 
    def RotateGeoms(self, angle):      
       #qad_debug.breakPoint()
+      self.plugIn.beginEditCommand("Feature rotated", self.entitySet.getLayerList())
+      
       for layerEntitySet in self.entitySet.layerEntitySetList:                        
          rotatedObjects = []
-         transformedBasePt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
+         transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          
          for featureId in layerEntitySet.featureIds:
             f = layerEntitySet.getFeature(featureId)
@@ -93,18 +96,26 @@ class QadROTATECommandClass(QadCommandClass):
             rotatedObjects.append(f)
 
          if self.copyFeatures == False:
-            qad_utils.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects)
+            # plugIn, layer, features, refresh, check_validity
+            if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
          else:             
-            qad_utils.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects)
+            # plugIn, layer, features, coordTransform, refresh, check_validity
+            if qad_layer.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects, None, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
+
+      self.plugIn.endEditCommand()
 
 
    def waitForRotation(self):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_ROTATION_PT)
 
-      keyWords = QadMsg.get(186) + " " + QadMsg.get(187) # "Copia" "Riferimento"
-      # "Specificare angolo di rotazione o [Copia/Riferimento] <{0}>: "
-      msg = QadMsg.get(181)            
+      keyWords = QadMsg.translate("Command_ROTATE", "Copia") + " " + \
+                  QadMsg.translate("Command_ROTATE", "Riferimento")
+      msg = QadMsg.translate("Command_ROTATE", "Specificare angolo di rotazione o [Copia/Riferimento] <{0}>: ")
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
@@ -119,8 +130,7 @@ class QadROTATECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.ASK_FOR_FIRST_PT_REFERENCE_ANG)
       
-      # "Specificare angolo di riferimento <{0}>: "
-      msg = QadMsg.get(183)                           
+      msg = QadMsg.translate("Command_ROTATE", "Specificare angolo di riferimento <{0}>: ")   
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(msg.format(str(qad_utils.toDegrees(self.plugIn.lastReferenceRot))), \
@@ -134,9 +144,8 @@ class QadROTATECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_ROTATION_PT)
       
-      keyWords = QadMsg.get(188) # "Punti"
-      # "Specificare nuovo angolo o [Punti] <{0}>: "
-      msg = QadMsg.get(184)                           
+      keyWords = QadMsg.translate("Command_ROTATE", "Punti")
+      msg = QadMsg.translate("Command_ROTATE", "Specificare nuovo angolo o [Punti] <{0}>: ")                          
       
       if self.plugIn.lastNewReferenceRot == 0:
          angle = self.plugIn.lastRot
@@ -153,7 +162,7 @@ class QadROTATECommandClass(QadCommandClass):
 
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
             
       #=========================================================================
@@ -176,7 +185,7 @@ class QadROTATECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
 
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(180)) # "Specificare punto base: "
+         self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare punto base: "))
                   
          self.step = 2     
          return False
@@ -229,13 +238,12 @@ class QadROTATECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(186): # "Copia"
+            if value == QadMsg.translate("Command_ROTATE", "Copia"):
                self.copyFeatures = True
-               # "\nRotazione di una copia degli oggetti selezionati.\n"
-               self.showMsg(QadMsg.get(182))
+               self.showMsg(QadMsg.translate("Command_ROTATE", "\nRotazione di una copia degli oggetti selezionati."))
                # si appresta ad attendere l'angolo di rotazione               
                self.waitForRotation()                
-            elif value == QadMsg.get(187): # "Riferimento"
+            elif value == QadMsg.translate("Command_ROTATE", "Riferimento"):
                # si appresta ad attendere l'angolo di riferimento                      
                self.waitForReferenceRot()
          elif type(value) == QgsPoint or type(value) == float: # se è stato inserito l'angolo di rotazione
@@ -281,7 +289,7 @@ class QadROTATECommandClass(QadCommandClass):
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT_REFERENCE_ANG)
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare secondo punto: "))
             self.step = 5           
             
          return False
@@ -333,11 +341,13 @@ class QadROTATECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(188): # "Punti"
+            if value == QadMsg.translate("Command_ROTATE", "Punti"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.ASK_FOR_FIRST_NEW_ROTATION_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(119)) # "Specificare primo punto: "
+               QadMsg.translate("Command_ROTATE", "Punti")
+               
+               self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare primo punto: "))
                self.step = 7
          elif type(value) == QgsPoint or type(value) == float: # se è stato inserito l'angolo di rotazione
             if type(value) == QgsPoint: # se è stato inserito l'angolo di rotazione con un punto                        
@@ -376,7 +386,7 @@ class QadROTATECommandClass(QadCommandClass):
          self.getPointMapTool().Pt1NewAng = self.Pt1NewAng
          self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_NEW_ROTATION_PT)
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+         self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare secondo punto: "))
          self.step = 8
             
          return False

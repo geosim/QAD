@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -67,39 +68,24 @@ class Qad_offset_maptool(QadGetPoint):
       self.offSet = 0
       self.lastOffSetOnLeftSide = 0
       self.lastOffSetOnRightSide = 0
-      self.gapType = 0
-      self.__offsetRubberBand = None   
-      self.__offsetRubberBandPolygon = None   
+      self.gapType = 0     
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__offsetRubberBand is not None:
-         self.__offsetRubberBand.hide()
-      if self.__offsetRubberBandPolygon is not None:
-         self.__offsetRubberBandPolygon.hide()         
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__offsetRubberBand is not None:
-         self.__offsetRubberBand.show()
-      if self.__offsetRubberBandPolygon is not None:
-         self.__offsetRubberBandPolygon.show()         
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__offsetRubberBand is not None:
-         self.__offsetRubberBand.hide()
-         del self.__offsetRubberBand
-         self.__offsetRubberBand = None
-      if self.__offsetRubberBandPolygon is not None:
-         self.__offsetRubberBandPolygon.hide()
-         del self.__offsetRubberBandPolygon
-         self.__offsetRubberBandPolygon = None
+      self.__rubberBand.reset()
       self.mode = None    
    
    def addOffSetGeometries(self, newPt):
-      self.__offsetRubberBand = QgsRubberBand(self.canvas, False)
-      self.__offsetRubberBandPolygon = QgsRubberBand(self.canvas, True)
+      self.__rubberBand.reset()            
             
       transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.layer, newPt)
       
@@ -124,40 +110,31 @@ class Qad_offset_maptool(QadGetPoint):
             offSetDistance = offSetDistance + self.lastOffSetOnRightSide         
       
       #qad_debug.breakPoint() 
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get("TOLERANCE2APPROXCURVE"), \
+      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
                                                                   self.layer)
-      lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), \
+      epsg = self.layer.crs().authid()      
+      lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
                                        self.gapType, \
                                        tolerance2ApproxCurve)
-            
+
       for line in lines:
          if self.layer.geometryType() == QGis.Polygon:
-            offsetGeom = QgsGeometry.fromPolygon([line])
+            if line[0] == line[-1]: # se è una linea chiusa
+               offsetGeom = QgsGeometry.fromPolygon([line])
+            else:
+               offsetGeom = QgsGeometry.fromPolyline(line)
          else:
             offsetGeom = QgsGeometry.fromPolyline(line)
 
-         if offsetGeom.isGeosValid():      
-            if self.layer.geometryType() != QGis.Polygon:
-               self.__offsetRubberBand.addGeometry(offsetGeom, self.layer)
-            else:
-               self.__offsetRubberBandPolygon.addGeometry(offsetGeom, self.layer)
+         self.__rubberBand.addGeometry(offsetGeom, self.layer)
             
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__offsetRubberBand  is not None:
-         self.__offsetRubberBand.hide()
-         del self.__offsetRubberBand
-         self.__offsetRubberBand = None
-      if self.__offsetRubberBandPolygon  is not None:
-         self.__offsetRubberBandPolygon.hide()
-         del self.__offsetRubberBandPolygon
-         self.__offsetRubberBandPolygon = None
-
       # nota la distanza di offset si richiede il punto per stabilire da che parte
       if self.mode == Qad_offset_maptool_ModeEnum.OFFSET_KNOWN_ASK_FOR_SIDE_PT:
          self.addOffSetGeometries(self.tmpPoint)                           
@@ -168,17 +145,11 @@ class Qad_offset_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__offsetRubberBand is not None:
-         self.__offsetRubberBand.show()
-      if self.__offsetRubberBandPolygon is not None:
-         self.__offsetRubberBandPolygon.show()
+      self.__rubberBand.show()          
 
    def deactivate(self):
       QadGetPoint.deactivate(self)
-      if self.__offsetRubberBand is not None:
-         self.__offsetRubberBand.hide()
-      if self.__offsetRubberBandPolygon is not None:
-         self.__offsetRubberBandPolygon.hide()
+      self.__rubberBand.hide()
 
    def setMode(self, mode):
       self.clear()
@@ -207,5 +178,9 @@ class Qad_offset_maptool(QadGetPoint):
       # si richiede la selezione di un oggetto
       elif self.mode == Qad_offset_maptool_ModeEnum.ASK_FOR_ENTITY_SELECTION:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+         # scarto la selezione di punti
+         self.checkPointLayer = False
+         self.checkLineLayer = True
+         self.checkPolygonLayer = True         
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
          self.onlyEditableLayers = True

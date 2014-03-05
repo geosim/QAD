@@ -44,7 +44,7 @@ from qad_msg import QadMsg
 class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
 
    def getName(self):
-      return QadMsg.get(49) # "SETCURRLAYERDAGRAFICA"
+      return QadMsg.translate("Command_list", "SETCURRLAYERDAGRAFICA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETCURRLAYERBYGRAPHCommand)
@@ -53,8 +53,8 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
       return QIcon(":/plugins/qad/icons/setcurrlayerbygraph.png")
    
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(101)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Seleziona un layer di un oggetto grafico.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -73,8 +73,7 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
       if self.EntSelClass is not None:
          del self.EntSelClass            
       self.EntSelClass = QadEntSelClass(self.plugIn)
-      # "Selezionare l'oggetto il cui layer diventerà quello corrente: "
-      self.EntSelClass.msg = QadMsg.get(50)
+      self.EntSelClass.msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Selezionare l'oggetto il cui layer diventerà quello corrente: ")
       self.getPointMapTool().setSnapType(QadSnapTypeEnum.DISABLE)
       self.EntSelClass.run(msgMapTool, msg)
         
@@ -92,13 +91,13 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
                   self.plugIn.canvas.currentLayer() != layer:                              
                   self.plugIn.canvas.setCurrentLayer(layer)
                   self.plugIn.iface.setActiveLayer(layer) # lancia evento di deactivate e activate dei plugin
-                  self.plugIn.iface.refreshLegend(layer)
-                  msg = QadMsg.get(51) # "\nIl layer {0} è attivo."
-                  self.showMsg(msg.format(slayer.name()))
+                  self.plugIn.iface.legendInterface().refreshLayerSymbology(layer)
+                  msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "\nIl layer corrente è {0}.")
+                  self.showMsg(msg.format(layer.name()))
                del self.EntSelClass
                return True
-            else:
-               self.showMsg(QadMsg.get(52)) # "Non ci sono geometrie in questa posizione."
+            else:               
+               self.showMsg(QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Non ci sono geometrie in questa posizione."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
          
@@ -107,7 +106,7 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
 class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
 
    def getName(self):
-      return QadMsg.get(74) # "SETCURRMODIFLAYERDAGRAFICA"
+      return QadMsg.translate("Command_list", "SETCURRMODIFLAYERDAGRAFICA")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETCURRUPDATEABLELAYERBYGRAPHCommand)
@@ -116,8 +115,8 @@ class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
       return QIcon(":/plugins/qad/icons/setcurrupdateablelayerbygraph.png")
    
    def getNote(self):
-      # impostare le note esplicative del comando
-      return QadMsg.get(102)
+      # impostare le note esplicative del comando      
+      return QadMsg.translate("Command_SETCURRUPDATEABLELAYERBYGRAPH", "Seleziona un layer di un oggetto grafico e lo rende modificabile.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -137,7 +136,7 @@ class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
    def run(self, msgMapTool = False, msg = None):     
       if self.step == 0: # inizio del comando   
          if self.firstTime == True:
-            self.showMsg(QadMsg.get(176)) # "\nSelezionare gli oggetti i cui layer diventeranno editabili: "
+            self.showMsg(QadMsg.translate("Command_SETCURRUPDATEABLELAYERBYGRAPH", "\nSelezionare gli oggetti i cui layer diventeranno editabili: "))
             self.firstTime = False
             
          if self.SSGetClass.run(msgMapTool, msg) == True:
@@ -152,8 +151,8 @@ class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
             layer = layerEntitySet.layer       
             if layer.isEditable() == False:
                if layer.startEditing() == True:
-                  self.plugIn.iface.refreshLegend(layer)
-                  msg = QadMsg.get(177) # "\nIl layer {0} è editabile."
+                  self.plugIn.iface.legendInterface().refreshLayerSymbology(layer)
+                  msg = QadMsg.translate("Command_SETCURRUPDATEABLELAYERBYGRAPH", "\nIl layer {0} è editabile.")
                   self.showMsg(msg.format(layer.name()))
 
          if len(self.SSGetClass.entitySet.layerEntitySetList) == 1:
@@ -162,8 +161,8 @@ class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
                self.plugIn.canvas.currentLayer() != layer:               
                self.plugIn.canvas.setCurrentLayer(layer)
                self.plugIn.iface.setActiveLayer(layer) # lancia evento di deactivate e activate dei plugin
-               self.plugIn.iface.refreshLegend(layer)
-               msg = QadMsg.get(51) # "\nIl layer {0} è attivo."
+               self.plugIn.iface.legendInterface().refreshLayerSymbology(layer)
+               msg = QadMsg.translate("Command_SETCURRUPDATEABLELAYERBYGRAPH", "\nIl layer corrente è {0}.")
                self.showMsg(msg.format(layer.name()))
          
          return True

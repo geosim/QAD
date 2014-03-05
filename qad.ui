@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>Qad</class>
- <widget class="QDialog" name="Qad" >
+ <class>QAD</class>
+ <widget class="QDialog" name="QAD" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Qad</string>
+   <string>QAD</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox" >
    <property name="geometry" >
@@ -34,7 +34,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Qad</receiver>
+   <receiver>QAD</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -50,7 +50,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Qad</receiver>
+   <receiver>QAD</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

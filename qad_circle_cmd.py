@@ -37,13 +37,14 @@ from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_entity import *
 import qad_utils
+import qad_layer
 
 
 # Classe che gestisce il comando PLINE
 class QadCIRCLECommandClass(QadCommandClass):
    
    def getName(self):
-      return QadMsg.get(76) # "CERCHIO"
+      return QadMsg.translate("Command_list", "CERCHIO")
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runCIRCLECommand)
@@ -53,15 +54,16 @@ class QadCIRCLECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.get(96)
+      return QadMsg.translate("Command_CIRCLE", "Disegna un cerchio mediante diversi metodi.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
-      # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-      # che non verrà salvata su un layer
+      # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
+      # che non verrà salvato su un layer
       self.virtualCmd = False
       self.centerPt = None
       self.radius = None
+      self.area = 100      
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
@@ -72,29 +74,33 @@ class QadCIRCLECommandClass(QadCommandClass):
          return None
          
    def run(self, msgMapTool = False, msg = None):
+      self.isValidPreviousInput = True # per gestire il comando anche in macro
+
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.get(128)) # "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate\n"
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
 
-      if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
-         currLayer = qad_utils.getCurrLayerEditable(self.plugIn.canvas, QGis.Polygon)
+      currLayer = None
+      if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
+         # il layer corrente deve essere editabile e di tipo linea o poligono
+         currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, [QGis.Line, QGis.Polygon])
          if currLayer is None:
-            self.showMsg(QadMsg.get(53)) # "\nIl layer corrente non è valido\n"
+            self.showMsg(errMsg)
             return True # fine comando
+         self.getPointMapTool().geomType = QGis.Line if currLayer.geometryType() == QGis.Line else QGis.Polygon                                   
 
       #=========================================================================
       # RICHIESTA PRIMO PUNTO o CENTRO
       if self.step == 0: # inizio del comando
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_CENTER_PT)        
-         
-         keyWords = QadMsg.get(78) + " " + QadMsg.get(79) + " " + QadMsg.get(80) # "3P" "2P" "Ttr"
-         # "Specificare punto centrale del cerchio o [3P/2P/Ttr (tangente tangente raggio)]: "
-         msg = QadMsg.get(77)            
-         
+         keyWords = QadMsg.translate("Command_CIRCLE", "3P") + " " + \
+                    QadMsg.translate("Command_CIRCLE", "2P") + " " + \
+                    QadMsg.translate("Command_CIRCLE", "Ttr")
+
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(msg, \
+         self.waitFor(QadMsg.translate("Command_CIRCLE", "Specificare punto centrale del cerchio o [3P/2P/Ttr (tangente tangente raggio)]: "), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)
@@ -128,23 +134,23 @@ class QadCIRCLECommandClass(QadCommandClass):
                return True # fine comando
 
          if type(value) == unicode:
-            if value == QadMsg.get(78): # "3P"
+            if value == QadMsg.translate("Command_CIRCLE", "3P"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(84)) # "Specificare primo punto sul cerchio: "
+               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare primo punto sul cerchio: "))
                self.step = 4           
-            elif value == QadMsg.get(79): # "2P"
+            elif value == QadMsg.translate("Command_CIRCLE", "2P"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(87)) # "Specificare prima estremità del diametro del cerchio: "
+               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare prima estremità del diametro del cerchio: "))
                self.step = 7     
-            elif value == QadMsg.get(80): # "Ttr"
+            elif value == QadMsg.translate("Command_CIRCLE", "Ttr"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_TAN)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(89)) # "Specificare oggetto per la prima tangente del cerchio: "
+               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
                self.step = 9     
          elif type(value) == QgsPoint: # se è stato inserito il centro del cerchio           
             self.centerPt = value
@@ -154,8 +160,9 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().centerPt = self.centerPt
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_RADIUS)                                
            
-            keyWords = QadMsg.get(82) # "Diametro"
-            msg = QadMsg.get(81) # "Specificare raggio del cerchio o [Diametro]: "          
+            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + " " + \
+                       QadMsg.translate("Command_CIRCLE", "Area")
+            msg = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [Diametro/Area]: ")          
             
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
@@ -170,7 +177,7 @@ class QadCIRCLECommandClass(QadCommandClass):
          return False
 
       #=========================================================================
-      # RISPOSTA ALLA RICHIESTA RAGGIO O DIAMETRO
+      # RISPOSTA ALLA RICHIESTA RAGGIO O DIAMETRO O AREA
       elif self.step == 2: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
@@ -189,12 +196,21 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.get(82): # "Diametro"
+            if value == QadMsg.translate("Command_CIRCLE", "Diametro"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_DIAM)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.get(83)) # "Specificare diametro del cerchio: "
+               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "))
                self.step = 3           
+            elif value == QadMsg.translate("Command_CIRCLE", "Area"):
+               msg = QadMsg.translate("Command_CIRCLE", "Digitare l'area del cerchio in unità correnti <{0}>: ")
+               # si appresta ad attendere un numero reale         
+               # msg, inputType, default, keyWords, valori positivi
+               self.waitFor(msg.format(str(self.area)), QadInputTypeEnum.FLOAT, \
+                            self.area, "", \
+                            QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
+               self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_CENTER_PT)
+               self.step = 13         
          elif type(value) == QgsPoint or type(value) == float: # se è stato inserito il raggio del cerchio            
             if type(value) == QgsPoint: # se è stato inserito il raggio del cerchio con un punto                        
                self.radius = qad_utils.getDistance(self.centerPt, value)
@@ -207,12 +223,16 @@ class QadCIRCLECommandClass(QadCommandClass):
             circle.set(self.centerPt, self.radius)
             points = circle.asPolyline()
             if points is not None:
-               if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-                  qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)               
+               if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer
+                  if currLayer.geometryType() == QGis.Line:
+                     qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+                  else:
+                     qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
             
-            keyWords = QadMsg.get(82) # "Diametro"
-            msg = QadMsg.get(81) # "Specificare raggio del cerchio o [Diametro]: "          
+            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + " " + \
+                       QadMsg.translate("Command_CIRCLE", "Area")
+            msg = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [Diametro/Area]: ")          
             
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
@@ -220,7 +240,7 @@ class QadCIRCLECommandClass(QadCommandClass):
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
-                  
+            self.isValidPreviousInput = False # per gestire il comando anche in macro                       
          return False
 
       #=========================================================================
@@ -250,11 +270,15 @@ class QadCIRCLECommandClass(QadCommandClass):
          points = circle.asPolyline()
          if points is not None:
             if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-               qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)               
+               if currLayer.geometryType() == QGis.Line:
+                  qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+               else:
+                  qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
             return True # fine comando
       
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(83)) # "Specificare diametro del cerchio: "
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "))
+         self.isValidPreviousInput = False # per gestire il comando anche in macro     
          return False
       
       #=========================================================================
@@ -295,8 +319,8 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().firstPt = self.firstPt
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)
    
-         # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(85)) # "Specificare secondo punto sul cerchio: "
+         # si appresta ad attendere un punto         
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare secondo punto sul cerchio: "))
          
          self.step = 5
          return False
@@ -340,7 +364,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT)
    
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(86)) # "Specificare terzo punto sul cerchio: "
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare terzo punto sul cerchio: "))
          
          self.step = 6
          return False
@@ -424,11 +448,15 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.centerPt = circle.center
             self.radius = circle.radius           
             if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-               qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)               
+               if currLayer.geometryType() == QGis.Line:
+                  qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+               else:
+                  qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
             return True # fine comando
          
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(86)) # "Specificare terzo punto sul cerchio: "
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare terzo punto sul cerchio: "))
+         self.isValidPreviousInput = False # per gestire il comando anche in macro     
          return False
 
       #=========================================================================
@@ -468,8 +496,8 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().firstDiamPt = self.firstDiamPt
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT)
    
-         # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(88)) # "Specificare seconda estremità del diametro del cerchio: "
+         # si appresta ad attendere un punto         
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremità del diametro del cerchio: "))
          
          self.step = 8
          return False
@@ -528,11 +556,15 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.centerPt = circle.center
             self.radius = circle.radius
             if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-               qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)             
+               if currLayer.geometryType() == QGis.Line:
+                  qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+               else:
+                  qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)             
             return True # fine comand         
          
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(88)) # "Specificare seconda estremità del diametro del cerchio: "
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremità del diametro del cerchio: "))
+         self.isValidPreviousInput = False # per gestire il comando anche in macro     
          return False
 
                  
@@ -554,20 +586,22 @@ class QadCIRCLECommandClass(QadCommandClass):
             entity = self.getPointMapTool().entity
          else: # il punto arriva come parametro della funzione
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(89)) # "Specificare oggetto per la prima tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro     
             return False
 
          if not entity.isInitialized(): # se non è stata selezionata una entità
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(89)) # "Specificare oggetto per la prima tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro     
             return False
          
          wkbType = entity.getGeometry().wkbType()
          if wkbType == QGis.WKBPoint or wkbType == QGis.WKBMultiPoint:     
-            # "\nSelezionare un cerchio, un arco o una linea."
-            self.showErr(QadMsg.get(94))
+            self.showErr(QadMsg.translate("Command_CIRCLE", "\nSelezionare un cerchio, un arco o una linea."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(89)) # "Specificare oggetto per la prima tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro
             return False
          
          self.tanGeom1 = QgsGeometry(entity.getGeometry())         
@@ -580,8 +614,8 @@ class QadCIRCLECommandClass(QadCommandClass):
          self.getPointMapTool().tanPt1 = self.tanPt1
          self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_TAN)
       
-         # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.get(90)) # "Specificare oggetto per la seconda tangente del cerchio: "
+         # si appresta ad attendere un punto         
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la seconda tangente del cerchio: "))
          self.step = 10
          return False
          
@@ -603,20 +637,22 @@ class QadCIRCLECommandClass(QadCommandClass):
             entity = self.getPointMapTool().entity
          else: # il punto arriva come parametro della funzione
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(90)) # "Specificare oggetto per la seconda tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la seconda tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro
             return False
 
          if not entity.isInitialized(): # se non è stata selezionata una entità
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(90)) # "Specificare oggetto per la seconda tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la seconda tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro
             return False
 
          wkbType = entity.getGeometry().wkbType()
          if wkbType == QGis.WKBPoint or wkbType == QGis.WKBMultiPoint:     
-            # "\nSelezionare un cerchio, un arco o una linea."
-            self.showErr(QadMsg.get(94))
+            self.showErr(QadMsg.translate("Command_CIRCLE", "\nSelezionare un cerchio, un arco o una linea."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(90)) # "Specificare oggetto per la seconda tangente del cerchio: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la seconda tangente del cerchio: "))
+            self.isValidPreviousInput = False # per gestire il comando anche in macro
             return False
          
          self.tanGeom2 = QgsGeometry(entity.getGeometry())
@@ -631,8 +667,7 @@ class QadCIRCLECommandClass(QadCommandClass):
       
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, valori positivi
-         # "Specificare raggio del cerchio <{0}>: "
-         msg = QadMsg.get(91)
+         msg = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio <{0}>: ")
          self.waitFor(msg.format(str(self.plugIn.lastRadius)), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                       self.plugIn.lastRadius, "", \
@@ -667,7 +702,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_SECOND_TAN_FIRSTPTRADIUS_KNOWN_ASK_FOR_SECONDPTRADIUS)
          
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.get(93)) # "Specificare secondo punto: "
+            self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare secondo punto: "))
             self.step = 12
             return False            
          else:
@@ -681,9 +716,12 @@ class QadCIRCLECommandClass(QadCommandClass):
                   self.centerPt = circle.center
                   self.radius = circle.radius
                   if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-                     qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)               
+                     if currLayer.geometryType() == QGis.Line:
+                        qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+                     else:
+                        qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
                else:
-                  self.showErr(QadMsg.get(92)) # "\nIl cerchio non esiste."
+                  self.showErr(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
             return True # fine comando
 
       #=========================================================================
@@ -716,9 +754,48 @@ class QadCIRCLECommandClass(QadCommandClass):
                self.centerPt = circle.center
                self.radius = circle.radius
                if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
-                  qad_utils.addPolygonToLayer(self.plugIn, currLayer, points)               
+                  if currLayer.geometryType() == QGis.Line:
+                     qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+                  else:
+                     qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
             else:
-               self.showMsg(QadMsg.get(92)) # "\nIl cerchio non esiste."
+               self.showMsg(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
          else:
-            self.showMsg(QadMsg.get(92)) # "\nIl cerchio non esiste."
+            self.showMsg(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
          return True # fine comando
+
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA AREA DEL CERCHIO (da step = 2)
+      elif self.step == 13: # dopo aver atteso un numero si riavvia il comando
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # è stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+               if self.getPointMapTool().rightButton != True: # se NON usato il tasto destro del mouse
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == float: # è stata inserita l'area
+            self.area = value
+      
+            circle = QadCircle()         
+            circle.fromCenterArea(self.centerPt, self.area)
+            self.radius = circle.radius 
+            self.plugIn.setLastRadius(self.radius)     
+            points = circle.asPolyline()
+            if points is not None:
+               if self.virtualCmd == False: # se si vuole veramente salvare il cerchio in un layer   
+                  if currLayer.geometryType() == QGis.Line:
+                     qad_layer.addLineToLayer(self.plugIn, currLayer, points)
+                  else:
+                     qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
+               return True # fine comando
+
+         self.isValidPreviousInput = False # per gestire il comando anche in macro      
+         return False
