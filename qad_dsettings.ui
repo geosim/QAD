@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>DSettings_Dialog</class>
  <widget class="QDialog" name="DSettings_Dialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -32,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -497,7 +500,7 @@ p, li { white-space: pre-wrap; }
       </layout>
      </widget>
     </widget>
-    <widget class="QCheckBox" name="checkBox_IsOnapON">
+    <widget class="QCheckBox" name="checkBox_IsOsnapON">
      <property name="geometry">
       <rect>
        <x>10</x>

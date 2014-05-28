@@ -76,6 +76,7 @@ class QadFILLETCommandClass(QadCommandClass):
       self.filletMode = plugIn.filletMode # modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       self.radius = QadVariables.get(QadMsg.translate("Environment variables", "FILLETRAD"))
       self.multi = False
+      self.nOperationsToUndo = 0
             
    
    def __del__(self):
@@ -181,6 +182,8 @@ class QadFILLETCommandClass(QadCommandClass):
          return False
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+      
       return True
    
 
@@ -287,6 +290,8 @@ class QadFILLETCommandClass(QadCommandClass):
             return False
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+
       return True
       
 
@@ -414,7 +419,12 @@ class QadFILLETCommandClass(QadCommandClass):
 
          if type(value) == unicode:
             if value == QadMsg.translate("Command_FILLET", "aNnulla"):
-               self.plugIn.undoEditCommand()
+               if self.nOperationsToUndo > 0: 
+                  self.nOperationsToUndo = self.nOperationsToUndo - 1
+                  self.plugIn.undoEditCommand()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+                  
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
             elif value == QadMsg.translate("Command_FILLET", "Polilinea"):
                self.WaitForPolyline()
@@ -538,6 +548,7 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()
             self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
       
       #=========================================================================
@@ -578,6 +589,7 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()
             self.WaitForPolyline()
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
       
       #=========================================================================
@@ -677,4 +689,5 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()      
             self.waitForSecondEntSel() # si appresta ad attendere la selezione del secondo oggetto
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando

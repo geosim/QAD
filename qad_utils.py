@@ -327,6 +327,26 @@ def normalizeAngle(angle, norm = math.pi * 2):
 
 
 #===============================================================================
+# getIntDecParts
+#===============================================================================
+def getIntDecParts(n):
+   """
+   Restituisce la parte intera e decimale di un numero senza segno
+   """
+   if type(n) == int or type(n) == float:
+      nStr = str(n)
+      if "." in nStr:
+         parts = nStr.split(".")
+         return abs(int(parts[0])), int(parts[1])
+      else:
+         return n, 0
+   else:
+      return None
+   
+
+
+
+#===============================================================================
 # distMapToLayerCoordinates
 #===============================================================================
 def distMapToLayerCoordinates(dist, canvas, layer):
@@ -602,6 +622,88 @@ def getFeatureById(layer, id):
    else:
       return None
 
+   
+#===============================================================================
+# isGeomInPickBox
+#===============================================================================
+def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
+                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                    onlyBoundary = True):
+   """
+   dato un punto (in screen coordinates) e un QgsMapTool, 
+   la funzione verifica se la geometria è dentro il quadrato
+   di dimensioni PICKBOX centrato sul punto
+   geom = geometria da verificare
+   crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
+   checkPointLayer = opzionale, considera la geometria di tipo punto
+   checkLineLayer = opzionale, considera la geometria di tipo linea
+   checkPolygonLayer = opzionale, considera la geometria di tipo poligono
+   onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   Restituisce True se la geometria è nel quadrato di PickBox altrimenti False 
+   """   
+   if geom is None:
+      return False
+   if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
+      return False
+      
+   Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
+   
+   #qad_debug.breakPoint()
+   # considero solo la geometria filtrata per tipo
+   if ((geom.type() == QGis.Point and checkPointLayer == True) or \
+       (geom.type() == QGis.Line and checkLineLayer == True) or \
+       (geom.type() == QGis.Polygon and checkPolygonLayer == True)):      
+      mapPoint = mQgsMapTool.toMapCoordinates(point)
+      mapGeom = QgsGeometry(geom)
+      if crs is not None and mQgsMapTool.canvas.mapRenderer().destinationCrs() != crs:
+         # trasformo le coord della geometria in map coordinates
+         coordTransform = QgsCoordinateTransform(crs, mQgsMapTool.canvas.mapRenderer().destinationCrs())          
+         mapGeom.transform(coordTransform)      
+         
+      ToleranceInMapUnits = Tolerance * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()    
+      selectRect = QgsRectangle(mapPoint.x() - ToleranceInMapUnits, mapPoint.y() - ToleranceInMapUnits, \
+                                mapPoint.x() + ToleranceInMapUnits, mapPoint.y() + ToleranceInMapUnits)
+                                           
+      # se è una geometria poligono allora verifico se considerare solo i bordi
+      if onlyBoundary == False or geom.type() != QGis.Polygon:
+         if mapGeom.intersects(selectRect):
+            return True
+      else:
+         # considero solo i bordi della geometria e non lo spazio interno del poligono
+         # Riduco la geometria in point o polyline
+         geoms = asPointOrPolyline(mapGeom)
+         for g in geoms:
+            if g.intersects(selectRect):
+               return True
+   
+   return False
+
+   
+#===============================================================================
+# getGeomInPickBox
+#===============================================================================
+def getGeomInPickBox(point, mQgsMapTool, geoms, crs = None, \
+                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                    onlyBoundary = True):
+   """
+   dato un punto (in screen coordinates) e un QgsMapTool, 
+   la funzione cerca la prima geometria dentro il quadrato
+   di dimensioni PICKBOX centrato sul punto
+   geoms = lista di geometrie da verificare
+   crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
+   checkPointLayer = opzionale, considera la geometria di tipo punto
+   checkLineLayer = opzionale, considera la geometria di tipo linea
+   checkPolygonLayer = opzionale, considera la geometria di tipo poligono
+   onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   Restituisce la geometria che è nel quadrato di PickBox altrimenti None 
+   """   
+   if geoms is None:
+      return False
+   for geom in geoms:
+      if isGeomInPickBox(point, mQgsMapTool, geom, crs, checkPointLayer, checkLineLayer, checkPolygonLayer, onlyBoundary):
+         return geom
+   return None
+
 
 #===============================================================================
 # getActualSingleSelection
@@ -828,7 +930,7 @@ def appendUniquePointToList(pointList, point):
    Resituisce True se l'inserimento è avvenuto False se il punto c'era già.
    """
    for iPoint in pointList:
-      if iPoint == point:
+      if ptNear(iPoint, point):
          return False
 
    pointList.append(point)
@@ -1027,9 +1129,9 @@ def getPerpendicularPointOnInfinityLine(p1, p2, pt):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if diffX == 0: # se la retta passante per p1 e p2 è verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 è verticale
       return QgsPoint(p1.x(), pt.y())
-   elif diffY == 0: # se la retta passante per p1 e p2 è orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 è orizzontale
       return QgsPoint(pt.x(), p1.y())
    else:
       coeff = diffY / diffX
@@ -1086,6 +1188,7 @@ def getBisectorInfinityLine(pt1, pt2, pt3, acuteMode = True):
       else:
          return pt2, ptProj
 
+
 #===============================================================================
 # getXOnInfinityLine
 #===============================================================================
@@ -1098,9 +1201,9 @@ def getXOnInfinityLine(p1, p2, y):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if diffX == 0: # se la retta passante per p1 e p2 è verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 è verticale
       return p1.x()
-   elif diffY == 0: # se la retta passante per p1 e p2 è orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 è orizzontale
       return None # infiniti punti
    else:
       coeff = diffY / diffX
@@ -1119,9 +1222,9 @@ def getYOnInfinityLine(p1, p2, x):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if diffX == 0: # se la retta passante per p1 e p2 è verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 è verticale
       return None # infiniti punti
-   elif diffY == 0: # se la retta passante per p1 e p2 è orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 è orizzontale
       return p1.y()
    else:
       coeff = diffY / diffX
@@ -1383,12 +1486,12 @@ def getAngleBy2Pts(p1, p2):
    """
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
-   if diffX == 0: # se la retta passante per p1 e p2 è verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 è verticale
       if p1.y() < p2.y():
          angle = math.pi / 2
       else :
          angle = math.pi * 3 / 2
-   elif diffY == 0: # se la retta passante per p1 e p2 è orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 è orizzontale
       if p1.x() <= p2.x():
          angle = 0.0
       else:
@@ -1535,20 +1638,20 @@ def getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2):
    line1DiffY = line1P2.y() - line1P1.y()
 
    line2DiffX = line2P2.x() - line2P1.x()
-   line2DiffY = line2P2.y() - line2P1.y()
+   line2DiffY = line2P2.y() - line2P1.y()   
    
-   if line1DiffX == 0 and line2DiffX == 0: # se la retta1 e la retta2 sono verticale
+   if doubleNear(line1DiffX, 0) and doubleNear(line2DiffX, 0): # se la retta1 e la retta2 sono verticale
       return None # sono parallele
-   elif line1DiffY == 0 and line2DiffY == 0: # se la retta1 e la retta2 sono orizzonatali
+   elif doubleNear(line1DiffY, 0) and doubleNear(line2DiffY, 0): # se la retta1 e la retta2 sono orizzonatali
       return None # sono parallele
 
-   if line1DiffX == 0: # se la retta1 è verticale
+   if doubleNear(line1DiffX, 0): # se la retta1 è verticale
       return QgsPoint(line1P2.x(), getYOnInfinityLine(line2P1, line2P2, line1P2.x()))
-   if line1DiffY == 0: # se la retta1 è orizzontale
+   if doubleNear(line1DiffY, 0): # se la retta1 è orizzontale
       return QgsPoint(getXOnInfinityLine(line2P1, line2P2, line1P2.y()), line1P2.y())
-   if line2DiffX == 0: # se la retta2 è verticale
+   if doubleNear(line2DiffX, 0): # se la retta2 è verticale
       return QgsPoint(line2P2.x(), getYOnInfinityLine(line1P1, line1P2, line2P2.x()))
-   if line2DiffY == 0: # se la retta2 è orizzontale
+   if doubleNear(line2DiffY, 0): # se la retta2 è orizzontale
       return QgsPoint(getXOnInfinityLine(line1P1, line1P2, line2P2.y()), line2P2.y())
 
    line1Coeff = line1DiffY / line1DiffX
@@ -1574,7 +1677,7 @@ def getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2):
 def getIntersectionPointOn2Segments(line1P1, line1P2, line2P1, line2P2):
    """
    la funzione ritorna il punto di intersezione tra il segmento1 avente come estremi line1P1-line1P2 e
-   la il segmento2 avente come estremi line2P1-line2P2.
+    il segmento2 avente come estremi line2P1-line2P2.
    """
    ptInt = getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2)
    if ptInt is not None: # se non sono parallele
@@ -1631,6 +1734,9 @@ def getNearestPoints(point, points, tolerance = 0):
    return result
 
 
+#===============================================================================
+# getPolarPointByPtAngle
+#===============================================================================
 def getPolarPointByPtAngle(p1, angle, dist):
    """
    la funzione ritorna il punto sulla retta passante per p1 con angolo <angle> che
@@ -1641,6 +1747,9 @@ def getPolarPointByPtAngle(p1, angle, dist):
    return QgsPoint(p1.x() + x, p1.y() + y)
 
 
+#===============================================================================
+# asPointOrPolyline
+#===============================================================================
 def asPointOrPolyline(geom):
    """
    la funzione ritorna una lista di geometrie di punti e/o polilinee in cui viene ridotta la geometria. 
@@ -1676,6 +1785,9 @@ def asPointOrPolyline(geom):
    return result
 
 
+#===============================================================================
+# leftOfLineCoords
+#===============================================================================
 def leftOfLineCoords(x, y, x1, y1, x2, y2):
    """
    la funzione ritorna una numero < 0 se il punto x,y è alla sinistra della linea x1,y1 -> x2,y2
@@ -1690,6 +1802,9 @@ def leftOfLine(pt, pt1, pt2):
    return leftOfLineCoords(pt.x(), pt.y(), pt1.x(), pt1.y(), pt2.x(), pt2.y())
 
 
+#===============================================================================
+# ptNear
+#===============================================================================
 def ptNear(pt1, pt2, epsilon = 1.e-9):
    """
    la funzione compara 2 punti (ma permette una differenza)
@@ -1697,6 +1812,9 @@ def ptNear(pt1, pt2, epsilon = 1.e-9):
    return getDistance(pt1, pt2) <= epsilon
 
 
+#===============================================================================
+# doubleNear
+#===============================================================================
 def doubleNear(a, b, epsilon = 1.e-9):
    """
    la funzione compara 2 float (ma permette una differenza)
@@ -1705,6 +1823,9 @@ def doubleNear(a, b, epsilon = 1.e-9):
    return diff > -epsilon and diff <= epsilon
 
 
+#===============================================================================
+# TanDirectionNear
+#===============================================================================
 def TanDirectionNear(a, b, epsilon = 1.e-9):
    """
    la funzione compara 2 direzini di tangenti (ma permette una differenza)
@@ -1720,6 +1841,9 @@ def TanDirectionNear(a, b, epsilon = 1.e-9):
       return arc.totalAngle() <= epsilon
 
 
+#===============================================================================
+# numericListAvg
+#===============================================================================
 def numericListAvg(dblList):
    """
    la funzione calcola la media di una lista di numeri
@@ -1733,6 +1857,9 @@ def numericListAvg(dblList):
    return sum / len(dblList)
 
 
+#===============================================================================
+# sqrDistToSegment
+#===============================================================================
 def sqrDistToSegment(point, x1, y1, x2, y2, epsilon):
    """
    la funzione ritorna una lista con 
@@ -1770,6 +1897,9 @@ def sqrDistToSegment(point, x1, y1, x2, y2, epsilon):
    return (dist, minDistPoint)
 
 
+#===============================================================================
+# sqrDistToArc
+#===============================================================================
 def sqrDistToArc(point, arc):
    """
    la funzione ritorna una lista con 
@@ -1932,6 +2062,46 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
    return (-1, None, None, None)
 
 
+
+#===============================================================================
+# getBoundingPtsOnOnInfinityLine
+#===============================================================================
+def getBoundingPtsOnOnInfinityLine(linePt1, linePt2, pts):
+   """
+   Data una linea infinita passante per <linePt1> e <linePt2> e una lista di punti <pts> non ordinati sulla linea,
+   la funzione ritorna i due punti estremi al fascio di punti (i due punti più lontani tra di loro).
+   """
+   tot = len(pts)
+   if tot < 3:
+      return pts[:] # copio la lista
+   
+   result = []  
+   # elaboro i tratti intermedi
+   # calcolo la direzione dal primo punto al secondo punto  
+   angle = getAngleBy2Pts(pts[0], pts[1]) 
+   # ciclo su tutti i punti considerando solo quelli che hanno la stessa direzione con il punto precedente (boundingPt1)
+   i = 2
+   boundingPt1 = pts[1]
+   while i < tot:
+      pt2 = pts[i]
+      if TanDirectionNear(angle, getAngleBy2Pts(boundingPt1, pt2)):
+         boundingPt1 = pt2
+      i = i + 1
+
+   # calcolo la direzione dal secondo punto al primo punto  
+   angle = getAngleBy2Pts(pts[1], pts[0]) 
+   # ciclo su tutti i punti considerando solo quelli che hanno la stessa direzione con il punto precedente (boundingPt2)
+   i = 2
+   boundingPt2 = pts[0]
+   while i < tot:
+      pt2 = pts[i]
+      if TanDirectionNear(angle, getAngleBy2Pts(boundingPt1, pt2)):
+         boundingPt2 = pt2
+      i = i + 1
+
+   return [QgsPoint(boundingPt1), QgsPoint(boundingPt2)]
+
+
 #===============================================================================
 # rotatePoint
 #===============================================================================
@@ -2083,7 +2253,7 @@ def scaleQgsGeometry(geom, basePt, scale):
 #===============================================================================
 def movePoint(point, offSetX, offSetY):
    """
-   la funzione sposta un punto QgsPoint secondo un offset X uno Y
+   la funzione sposta un punto QgsPoint secondo un offset X e uno Y
    """
    return QgsPoint(point.x() + offSetX, point.y() + offSetY)
 
@@ -2596,7 +2766,7 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
 #===============================================================================
 # stretchQgsGeometry
 #===============================================================================
-def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):
+def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):   
    wkbType = geom.wkbType()
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
       if containerGeom.contains(geom):
@@ -2668,16 +2838,17 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
             obj.center.setY(obj.center.y() + offSetY)
             return QgsGeometry.fromPolyline(obj.asPolyline(tolerance2ApproxCurve))
 
+   #qad_debug.breakPoint()
    stretchedGeom = QgsGeometry(geom)
    snapper = QadSnapper()
    points = snapper.getEndPoints(stretchedGeom)
    del snapper
+
+   linearObjectListToStretch = QadLinearObjectList()
+   linearObjectListToStretch.fromPolyline(geom.asPolyline())
    
    for point in points:
-      if containerGeom.contains(point): # punto interno a containerGeom   
-         linearObjectListToStretch = QadLinearObjectList()
-         linearObjectListToStretch.fromPolyline(geom.asPolyline())
-               
+      if containerGeom.contains(point): # punto interno a containerGeom                  
          atPart = linearObjectListToStretch.containsPt(point)
          while atPart >= 0:
             linearObject = linearObjectListToStretch.getLinearObjectAt(atPart)
@@ -2739,8 +2910,8 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
                   
             atPart = linearObjectListToStretch.containsPt(point, atPart + 1)
             
-         pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
-         stretchedGeom = QgsGeometry.fromPolyline(pts)    
+   pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
+   stretchedGeom = QgsGeometry.fromPolyline(pts)    
       
    return stretchedGeom   
            
@@ -4081,10 +4252,10 @@ def getFilletArcsBetweenCircleLine(circle, line, radius):
       # creo una retta parallela a <line> ad una distanza <radius> verso il centro di <circle>  
       linePar = []
       angle = line.getTanDirectionOnStartPt()
-      if leftOfLine < 0:
+      if leftOfLine < 0: # a sinistra
          linePar.append(getPolarPointByPtAngle(line.getStartPt(), angle + math.pi / 2, radius))
          linePar.append(getPolarPointByPtAngle(line.getEndPt(), angle + math.pi / 2, radius))
-      else:
+      else :# a destra
          linePar.append(getPolarPointByPtAngle(line.getStartPt(), angle - math.pi / 2, radius))
          linePar.append(getPolarPointByPtAngle(line.getEndPt(), angle - math.pi / 2, radius))
          
@@ -5450,7 +5621,6 @@ def dualClipping(partList, untrimmedOffsetPartList, untrimmedReversedOffsetPartL
             
       i = i + 1
 
-   #qad_debug.breakPoint()
    isClosedPolyline = dualClippedPartList.isClosed() # verifico se polilinea chiusa
    splittedParts = QadLinearObjectList()
    circle = QadCircle()
@@ -6425,7 +6595,7 @@ class QadLinearObject():
       la funzione ritorna l'oggetto QadArc.
       """
       if self.isArc() == False:
-         return False
+         return None
       return self.defList[0]
 
    
@@ -6498,7 +6668,7 @@ class QadLinearObject():
 
       afterVertex = dummy[2]
       # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
-      subGeom = getSubGeomAtVertex(geom, afterVertex)
+      subGeom = getSubGeomAtVertex(geom, afterVertex)[0]
       dummy = closestSegmentWithContext(pt, subGeom)
       afterVertex = dummy[2]
       points = subGeom.asPolyline()
@@ -6605,7 +6775,7 @@ class QadLinearObject():
       """
       la funzione ritorna il punto iniziale e finale dell'oggetto.
       """
-      return [self.getStartPt(startPt), self.getEndPt(endPt)]
+      return [self.getStartPt(), self.getEndPt()]
 
    
    #============================================================================
@@ -6667,7 +6837,22 @@ class QadLinearObject():
       else: # arco
          return self.getArc().length()
       
-      
+
+   #============================================================================
+   # move
+   #============================================================================
+   def move(self, offSetX, offSetY):
+      """
+      la funzione sposta le parti secondo un offset X e uno Y
+      """
+      if self.isInitialized():
+         if self.isSegment(): # segmento
+            self.defList[0].set(self.defList[0].x() + offSetX, self.defList[0].y() + offSetY)
+            self.defList[1].set(self.defList[1].x() + offSetX, self.defList[1].y() + offSetY)
+         else: # arco
+            self.getArc().center.set(self.getArc().center.x() + offSetX, self.getArc().center.y() + offSetY)
+            
+            
    #============================================================================
    # getIntersectionPtsWithLinearObject
    #============================================================================
@@ -6687,7 +6872,6 @@ class QadLinearObject():
             else:
                return []         
          else: # arco
-            qad_debug.breakPoint()
             return linearObject.getArc().getIntersectionPointsWithSegment(self.getStartPt(), self.getEndPt())
       else: # arco
          if linearObject.isSegment(): # segmento
@@ -7051,7 +7235,7 @@ class QadLinearObjectList():
    def set(self, linearObjectList):
       self.removeAll()
       for linearObject in linearObjectList.defList:            
-         self.append(QadLinearObject(linearObject))
+         self.append(linearObject)
 
 
    #============================================================================
@@ -7129,18 +7313,23 @@ class QadLinearObjectList():
       elif partAt >= self.qty(): # inserisco parte in fondo
          self.append([self.getEndPt(), pt])
       else:
-         linearObject = self.getLinearObjectAt(i)
-         startPt = QgsPoint(linearObject.getArc().getStartPt())
-         endPt = QgsPoint(linearObject.getArc().getEndPt())
+         #qad_debug.breakPoint()
+         linearObject = self.getLinearObjectAt(partAt)
 
          if linearObject.isArc():
             arc = QadArc()
-            if arc.fromStartEndPtsAngle(startPt, pt, \
-                                        linearObject.getArc().totalAngle()) == False:
-               return
+            if linearObject.isInverseArc():
+               if arc.fromStartEndPtsAngle(pt, linearObject.getArc().getEndPt(), \
+                                           linearObject.getArc().totalAngle()) == False:
+                  return
+            else:
+               if arc.fromStartEndPtsAngle(linearObject.getArc().getStartPt(), pt, \
+                                           linearObject.getArc().totalAngle()) == False:
+                  return
+               
             self.insert(partAt, [arc, linearObject.isInverseArc()])               
          else:
-            self.insert(partAt, [startPt, pt])
+            self.insert(partAt, [linearObject.getStartPt(), pt])
             
          linearObject = self.getLinearObjectAt(partAt + 1)
          linearObject.set([pt, linearObject.getEndPt()])
@@ -7410,6 +7599,17 @@ class QadLinearObjectList():
 
 
    #============================================================================
+   # move
+   #============================================================================
+   def move(self, offSetX, offSetY):
+      """
+      la funzione sposta le parti secondo un offset X e uno Y
+      """
+      for linearObject in self.defList:
+         linearObject.move(offSetX, offSetY)
+
+
+   #============================================================================
    # qty
    #============================================================================
    def qty(self):
@@ -7448,7 +7648,10 @@ class QadLinearObjectList():
       """
       la funzione restituisce True se la polilinea (lista di parti segmenti-archi) è chiusa.
       """
-      return True if ptNear(self.getStartPt(), self.getEndPt()) else False
+      if len(self.defList) == 0:
+         return False
+      else:
+         return True if ptNear(self.getStartPt(), self.getEndPt()) else False
 
 
    #============================================================================

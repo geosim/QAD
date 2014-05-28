@@ -97,8 +97,8 @@ class Qad_mbuffer_maptool(QadGetPoint):
          
          self.__bufferRubberBand = createRubberBand(self.canvas, self.geomType)
          for layerEntitySet in self.entitySet.layerEntitySetList:
-            transformedPt1 = self.mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
-            transformedPt2 = self.mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
+            transformedPt1 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
+            transformedPt2 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
             width = qad_utils.getDistance(transformedPt1, transformedPt2)
             tolerance = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                             self.canvas,\

@@ -72,7 +72,7 @@ def getCurrLayerEditable(canvas, geomType = None):
    """
    vLayer = canvas.currentLayer()
    if vLayer is None:
-      return None
+      return None, QadMsg.translate("QAD", "\nNessun layer corrente.\n")
    
    if (vLayer.type() != vLayer.VectorLayer):
       return None, QadMsg.translate("QAD", "\nIl layer corrente non è di tipo vettoriale.\n")
@@ -128,9 +128,14 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   provider = layer.dataProvider()
    fields = layer.pendingFields()
    f.setFields(fields)
+
+   # assegno i valori di default
+   provider = layer.dataProvider()
+   for field in fields.toList():
+      i = fields.indexFromName(field.name())
+      f[field.name()] = provider.defaultValue(i)
 
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -178,9 +183,14 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   provider = layer.dataProvider()
    fields = layer.pendingFields()
    f.setFields(fields)
+
+   # assegno i valori di default
+   provider = layer.dataProvider()
+   for field in fields.toList():
+      i = fields.indexFromName(field.name())
+      f[field.name()] = provider.defaultValue(i)
 
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -228,9 +238,14 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   provider = layer.dataProvider()
    fields = layer.pendingFields()
    f.setFields(fields)
+
+   # assegno i valori di default
+   provider = layer.dataProvider()
+   for field in fields.toList():
+      i = fields.indexFromName(field.name())
+      f[field.name()] = provider.defaultValue(i)
 
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -270,9 +285,14 @@ def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, c
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   provider = layer.dataProvider()
    fields = layer.pendingFields()
    f.setFields(fields)
+
+   # assegno i valori di default
+   provider = layer.dataProvider()
+   for field in fields.toList():
+      i = fields.indexFromName(field.name())
+      f[field.name()] = provider.defaultValue(i)
 
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -499,6 +519,7 @@ def get_symbolRotationFieldName(layer):
    """
    return rotation field name (or empty string if not set or not supported by renderer) 
    """
+   #qad_debug.breakPoint()
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return ""
    
@@ -519,141 +540,13 @@ def get_symbolScaleFieldName(layer):
 
 
 #===============================================================================
-# get_tokenListFromLblFieldName ausilio di getTokenListFromLblFieldName
-#===============================================================================
-def getToken(expr, start, endChar = None):
-   """
-   ritorna una parola dentro la stringa expr che inizia nella posizione start e che termina con il carattere
-   endChar. Se endChar <> None allora due endChar consecutivi valgono uno es. 'a''a' = a'a 
-   """
-   token = ""
-   tot = len(expr)
-   i = start
-   if endChar is None:
-      separators = "()+-*/%^=><|, \"'"
-      while i < tot:
-         ch = expr[i]      
-         if separators.find(ch) >= 0:
-            return token, i
-         token = token + ch
-         i = i + 1
-   else:
-      #qad_debug.breakPoint()
-      
-      while i < tot:
-         ch = expr[i]      
-         if ch != endChar:
-            token = token + ch
-         elif i + 1 < tot: # se c'è un carattere successivo
-            if expr[i + 1] == endChar: # se il carattere successivo = endChar
-               token = token + ch
-               i = i + 1
-            else:
-               return token, i
-         i = i + 1
-   
-   return token, i
-            
-
-#===============================================================================
-# getTokenListFromLblFieldName ausilio di get_labelFieldNames
-#===============================================================================
-def getTokenListFromLblFieldName(expr):
-   """
-   ritorna una lista di token escluse le stringhe,  dall'espressione passata come parametro 
-   """
-   result = []
-   i = 0
-   tot = len(expr)
-   while i < tot:
-      ch = expr[i]
-      if ch == "\"": # se inizia un nome di campo
-         token, i = getToken(expr, i + 1, "\"")
-         if len(token) > 0:
-            result.append(token)
-      elif ch == "'": # se inizia una stringa
-         token, i = getToken(expr, i + 1, "'")
-      else:
-         token, i = getToken(expr, i)
-         if len(token) > 0:
-            result.append(token)
-         
-      i = i + 1
-   
-   return result
-
-
-#===============================================================================
-# get_scaleFieldName
-#===============================================================================
-def get_labelFieldNames(layer):
-   """
-   return rotation field name (or empty string if not set or not supported by renderer) 
-   """
-   result = []
-      
-   if layer.type() == QgsMapLayer.VectorLayer:
-      palyr = QgsPalLayerSettings()
-      palyr.readFromLayer(layer)
-      if palyr.enabled:
-         lblFieldName = palyr.fieldName
-         if palyr.isExpression: # Is this label made from a expression string eg FieldName || 'mm'.   
-            # estraggo i token
-            tokenList = getTokenListFromLblFieldName(lblFieldName)
-                     
-            fields = layer.label().fields()
-            for field in fields:
-               if field.name() in tokenList:
-                  if field.name() not in result: # evito duplicati
-                     result.append(field.name())
-         else:
-            result.append(lblFieldName)         
-               
-   return result
-
-
-#===============================================================================
-# get_labelRotationFieldName
-#===============================================================================
-def get_labelRotationFieldName(layer):
-   """
-   return rotation field name for label (or empty string if not set or not supported by renderer) 
-   """
-   if layer.type() != QgsMapLayer.VectorLayer:
-      return ""
-   palyr = QgsPalLayerSettings()
-   palyr.readFromLayer(layer)
-   dataDefined = palyr.dataDefinedProperty(QgsPalLayerSettings.Rotation)
-   if dataDefined.isActive():    
-      return dataDefined.field()   
-   return ""
-
-
-#===============================================================================
-# get_labelSizeFieldName
-#===============================================================================
-def get_labelSizeFieldName(layer):
-   """
-   return size field name for label (or empty string if not set or not supported by renderer) 
-   """
-   if layer.type() != QgsMapLayer.VectorLayer:
-      return ""
-   palyr = QgsPalLayerSettings()
-   palyr.readFromLayer(layer)
-   dataDefined = palyr.dataDefinedProperty(QgsPalLayerSettings.Size)
-   if dataDefined.isActive():    
-      return dataDefined.field()   
-   return ""
-
-
-
-#===============================================================================
 # isTextLayer
 #===============================================================================
 def isTextLayer(layer):
    """
    return True se il layer è di tipo testo 
-   """   
+   """
+   #qad_debug.breakPoint()
    # deve essere un VectorLayer di tipo puntuale
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return False
@@ -784,375 +677,4 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
         
    return True
-
-
-#===============================================================================
-# QadUndoRecordTypeEnum class.
-#===============================================================================
-class QadUndoRecordTypeEnum():
-   NONE     = 0     # nessuno
-   COMMAND  = 1     # singolo comando
-   BEGIN    = 2     # inizio di un gruppo di comandi
-   END      = 3     # fine di un gruppo di comandi
-   BOOKMARK = 4     # flag di segnalibro, significa che si tratta di un segno a cui
-                     # si può ritornare
-
-
-#===============================================================================
-# QadUndoRecord classe x gestire un registrazione di UNDO
-#===============================================================================
-class QadUndoRecord():
-
-
-   def __init__(self):
-      self.text = "" # descrizione operazione
-      self.undoType = QadUndoRecordTypeEnum.NONE # tipo di undo (vedi QadUndoRecordTypeEnum)
-      self.layerList = None # lista di layer coinvolti nel comando di editazione
-
-      
-   def setUndoType(self, text = "", undoType = QadUndoRecordTypeEnum.NONE):
-      # si sta impostando una tipologia di marcatore di undo
-      self.text = text
-      self.layerList = None # lista di layer coinvolti nel comando di editazione
-      self.undoType = undoType
-
-
-   def layerAt(self, layerId):
-      # ritorna la posizione nella lista 0-based), -1 se non trovato
-      if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for j in xrange(0, len(self.layerList), 1):
-            if self.layerList[j].id() == layerId:
-               return j
-      return -1
-
-
-   def clearByLayer(self, layerId):
-      # elimino dalla lista il layer <layerId>
-      pos = self.layerAt(layerId)
-      if pos >= 0:
-         del self.layerList[pos]
-
-
-   def beginEditCommand(self, text, layerList):
-      # si sta iniziando un comando che coinvolge una lista di layer
-      self.text = text # descrizione operazione     
-      self.undoType = QadUndoRecordTypeEnum.COMMAND
-      # <parameter> contiene la lista dei layer coinvolti nel comando di editazione
-      self.layerList = []
-      for layer in layerList: # copio la lista
-         if self.layerAt(layer.id()) == -1: # non ammetto duplicazioni di layer
-            layer.beginEditCommand(text)
-            self.layerList.append(layer)
-               
-               
-   def destroyEditCommand(self):
-      # si sta distruggendo un comando che coinvolge una lista di layer
-      if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for layer in self.layerList:
-            layer.destroyEditCommand()
-         return True
-      else:
-         return False
-
-
-   def endEditCommand(self, canvas):
-      # si sta concludendo un comando che coinvolge una lista di layer
-      if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for layer in self.layerList:
-            layer.endEditCommand()
-            #layer.updateExtents() # non serve
-         canvas.refresh()
-  
-      
-   def undoEditCommand(self, canvas = None):
-      # si sta facendo un UNDO di un comando che coinvolge una lista di layer
-      if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for layer in self.layerList:
-            layer.undoStack().undo()
-         if canvas is not None:
-            canvas.refresh()
- 
-      
-   def redoEditCommand(self, canvas = None):
-      # si sta facendo un REDO di un comando che coinvolge una lista di layer
-      if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for layer in self.layerList:
-            layer.undoStack().redo()
-         if canvas is not None:
-            canvas.refresh()
-
-     
-   def addLayer(self, layer):
-      # si sta aggiungendo un layer al comando corrente
-      if self.undoType != QadUndoRecordTypeEnum.COMMAND: # si deve trattare di un comando
-         return False
-      if self.layerAt(layer.id()) == -1: # non ammetto duplicazioni di layer
-         layer.beginEditCommand(self.text)
-         self.layerList.append(layer)
-
-
-#===============================================================================
-# QadUndoStack classe x gestire lo stack delle operazioni
-#===============================================================================
-class QadUndoStack():
-
-    
-   def __init__(self):
-      self.UndoRecordList = [] # lista di record di undo
-      self.index = -1
- 
-   
-   def clear(self):
-      del self.UndoRecordList[:] # svuoto la lista
-      self.index = -1
-
-
-   def clearByLayer(self, layerId):
-      # elimino il layer <layerId> dalla lista dei record di undo
-      for i in xrange(len(self.UndoRecordList) - 1, -1, -1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
-            UndoRecord.clearByLayer(layerId)      
-            if len(UndoRecord.layerList) == 0:
-               # elimino la lista dei layer (vuota) coinvolta nel comando di editazione
-               del self.UndoRecordList[i]
-               if self.index >= i: # aggiorno il puntatore
-                  self.index = self.index - 1
-
-
-   def insertBeginGroup(self, text):
-      UndoRecord = QadUndoRecord()
-      UndoRecord.setUndoType(text, QadUndoRecordTypeEnum.BEGIN)
-      self.UndoRecordList.append(UndoRecord)
-      self.index = len(self.UndoRecordList) - 1
-      return True
-
-
-   def getOpenGroupPos(self, endGroupPos):
-      # dalla posizione di fine gruppo <endgroupPos> cerca la posizione di inizio gruppo
-      # -1 se non trovato
-      openFlag = 0
-      for i in xrange(endGroupPos, -1, -1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN:
-            openFlag = openFlag + 1
-            if openFlag >= 0:
-               return i
-         elif UndoRecord.undoType == QadUndoRecordTypeEnum.END:
-            openFlag = openFlag - 1
-      return -1
-
-
-   def getEndGroupPos(self, beginGroupPos):
-      # dalla posizione di inizio gruppo <endgroupPos> cerca la posizione di inizio gruppo
-      # -1 se non trovato
-      closeFlag = 0
-      for i in xrange(beginGroupPos, len(self.UndoRecordList), 1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN:
-            closeFlag = closeFlag - 1
-         elif UndoRecord.undoType == QadUndoRecordTypeEnum.END:
-            closeFlag = closeFlag + 1
-            if closeFlag >= 0:
-               return i
-      return -1
-   
-
-   def insertEndGroup(self):
-      # non si può inserire un end gruppo se non si è rimasto aperto un gruppo
-      openGroupPos = self.getOpenGroupPos(len(self.UndoRecordList) - 1)
-      if openGroupPos == -1:
-         return False
-
-      UndoRecord = QadUndoRecord()
-      UndoRecord.setUndoType(self.UndoRecordList[openGroupPos].text, QadUndoRecordTypeEnum.END)
-      self.UndoRecordList.append(UndoRecord)
-      self.index = len(self.UndoRecordList) - 1
-      return True
-
-      
-   def beginEditCommand(self, text, layerList):
-      #qad_debug.breakPoint()
-      tot = len(self.UndoRecordList)
-      if tot > 0 and self.index < tot - 1:
-         del self.UndoRecordList[self.index + 1 :] # cancello fino alla fine
-         
-      UndoRecord = QadUndoRecord()
-      UndoRecord.beginEditCommand(text, layerList)
-      self.UndoRecordList.append(UndoRecord)
-      self.index = len(self.UndoRecordList) - 1
-
-      
-   def destroyEditCommand(self):
-      if len(self.UndoRecordList) > 0:
-         UndoRecord = self.UndoRecordList[-1]
-         if UndoRecord.destroyEditCommand():
-            del self.UndoRecordList[-1]
-            #qad_debug.breakPoint()
-            self.index = self.index - 1
-
-
-   def endEditCommand(self, canvas):
-      #qad_debug.breakPoint()
-      if len(self.UndoRecordList) > 0:
-         UndoRecord = self.UndoRecordList[-1]
-         UndoRecord.endEditCommand(canvas)
-
-
-   def moveOnFirstUndoRecord(self):
-      # sposta il cursore dalla posizione attuale fino l'inizio
-      # e si ferma quando trova un record di tipo END o COMMAND
-      while self.index >= 0:
-         UndoRecord = self.UndoRecordList[self.index]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.END or \
-            UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
-            return True
-         self.index = self.index - 1
-      return False 
-         
-   def undoEditCommand(self, canvas = None, nTimes = 1):
-      #qad_debug.breakPoint()
-      for i in xrange(0, nTimes, 1):
-         # cerco il primo record in cui ha senso fare UNDO
-         if self.moveOnFirstUndoRecord() == False:
-            break
-         UndoRecord = self.UndoRecordList[self.index]
-         # se incontro un end-group devo andare fino al begin-group
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.END:
-            openGroupPos = self.getOpenGroupPos(self.index)           
-            while self.index >= openGroupPos:
-               UndoRecord.undoEditCommand(None) # senza fare refresh
-               self.index = self.index - 1
-               if self.moveOnFirstUndoRecord() == False:
-                  break
-               UndoRecord = self.UndoRecordList[self.index]
-         else:
-            UndoRecord.undoEditCommand(None)
-            #qad_debug.breakPoint()
-            self.index = self.index - 1
-      
-      if canvas is not None:   
-         canvas.refresh()
-
-
-   def moveOnFirstRedoRecord(self):
-      # sposta il cursore dalla posizione attuale fino alla fine
-      # e si ferma quando trova un record di tipo BEGIN o COMMAND
-      tot = len(self.UndoRecordList) - 1 
-      while self.index < tot:
-         self.index = self.index + 1                  
-         UndoRecord = self.UndoRecordList[self.index]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN or \
-            UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
-            return True
-      return False     
-      
-   def redoEditCommand(self, canvas = None, nTimes = 1):
-      #qad_debug.breakPoint()
-      for i in xrange(0, nTimes, 1):         
-         # cerco il primo record in cui ha senso fare REDO
-         if self.moveOnFirstRedoRecord() == False:
-            break
-         UndoRecord = self.UndoRecordList[self.index]
-         # se incontro un begin-group devo andare fino al end-group
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN:
-            endGroupPos = self.getEndGroupPos(self.index)           
-            while self.index <= endGroupPos:
-               UndoRecord.redoEditCommand(None) # senza refresh
-               if self.moveOnFirstRedoRecord() == False:
-                  break
-               UndoRecord = self.UndoRecordList[self.index]
-         else:            
-            UndoRecord.redoEditCommand(None)
-
-      if canvas is not None:   
-         canvas.refresh()
-
-     
-   def addLayerToLastEditCommand(self, text, layer):
-      if len(self.UndoRecordList) > 0:     
-         self.UndoRecordList[-1].addLayer(layer)
-
-
-   def isUndoAble(self):
-      # cerca un record di tipo COMMAND dalla posizione attuale fino l'inizio
-      i = self.index
-      while i >= 0:
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
-            return True
-         i = i - 1
-      return False
-
-
-   def isRedoAble(self):
-      # cerca un record di tipo COMMAND dalla posizione attuale fino alla fine
-      i = self.index + 1
-      tot = len(self.UndoRecordList)
-      while i < tot:
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
-            return True
-         i = i + 1
-      return False
-
-   #===============================================================================
-   # BOOKMARK - INIZIO
-   #===============================================================================
-   
-   def undoUntilBookmark(self, canvas):
-      #qad_debug.breakPoint()
-      if self.index == -1:
-         return
-      for i in xrange(self.index, -1, -1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
-            break
-         
-         UndoRecord.undoEditCommand(None) # senza refresh         
-      self.index = i - 1        
-      
-      canvas.refresh()
-
-
-   def redoUntilBookmark(self, canvas):
-      #qad_debug.breakPoint()
-      for i in xrange(self.index + 1, len(self.UndoRecordList), 1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
-            break
-         UndoRecord.redoEditCommand(None) # senza refresh         
-      self.index = i         
-      
-      canvas.refresh()
-
-
-   def getPrevBookmarkPos(self, pos):
-      # dalla posizione <pos> cerca la posizione di bookmark precedente
-      # -1 se non trovato
-      for i in xrange(pos - 1, -1, -1):
-         UndoRecord = self.UndoRecordList[i]
-         if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
-            return i
-      return -1
- 
-      
-   def insertBookmark(self, text):
-      #qad_debug.breakPoint()
-      # non si può inserire un bookmark all'interno di un gruppo begin-end
-      if self.getOpenGroupPos(self.index) >= 0:
-         return False  
-      
-      tot = len(self.UndoRecordList)
-      if tot > 0 and self.index < tot - 1:
-         del self.UndoRecordList[self.index + 1 :] # cancello fino alla fine
-      
-      UndoRecord = QadUndoRecord()
-      UndoRecord.setUndoType(text, QadUndoRecordTypeEnum.BOOKMARK)
-      self.UndoRecordList.append(UndoRecord)
-      self.index = len(self.UndoRecordList) - 1
-      return True
-
-   #===============================================================================
-   # BOOKMARK - FINE
-   #===============================================================================       
+       

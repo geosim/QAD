@@ -184,7 +184,8 @@ class QadBREAKCommandClass(QadCommandClass):
                
                keyWords = QadMsg.translate("Command_BREAK", "Primo")
                
-               self.step = 2      
+               self.step = 2
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
                # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione o [Primo punto]: "), \

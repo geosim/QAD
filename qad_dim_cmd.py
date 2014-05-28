@@ -30,6 +30,7 @@ from qgis.core import *
 
 
 import qad_debug
+from qad_dim import *
 from qad_dim_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -60,9 +61,18 @@ class QadDIMLINEARCommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.EntSelClass = None      
-      self.firstPt = QgsPoint()
-      self.secondPt = QgsPoint()
+      self.dimPt1 = QgsPoint()
+      self.dimPt2 = QgsPoint()
       self.textRot = 0.0
+      self.measure = None
+      self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
+      # leggo lo stile di quotatura corrente (path completa del file di stile)
+      dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
+      self.dimStyle = QadDimStyle()
+      if self.dimStyle.load(dimStyleName) == False:
+         self.dimStyle = None
+      else:
+         self.dimStyle.dimType = QadDimTypeEnum.LINEAR
       
 
    def __del__(self):
@@ -84,7 +94,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
 
 
    #============================================================================
-   # waitForBasePt
+   # getStartEndPointClosestPartWithContext
    #============================================================================
    def getStartEndPointClosestPartWithContext(self, entity, point):
       # legge il punto iniziale e finale della parte più vicina al punto di selezione (in map coordinate)
@@ -113,12 +123,21 @@ class QadDIMLINEARCommandClass(QadCommandClass):
 
    
    #============================================================================
+   # addDimToLayers
+   #============================================================================
+   def addDimToLayers(self, linePosPt):
+      return self.dimStyle.addLinearDimToLayers(self.plugIn, self.dimPt1, self.dimPt2, \
+                                                linePosPt, self.measure, self.preferredAlignment)
+   
+   
+   #============================================================================
    # waitForFirstPt
    #============================================================================
    def waitForFirstPt(self):
+      #qad_debug.breakPoint()
       self.step = 1
       # imposto il map tool
-      self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
 
       msg = QadMsg.translate("Command_DIM", "Specificare l'origine della prima linea di estensione o <seleziona oggetto>: ")
       
@@ -136,8 +155,8 @@ class QadDIMLINEARCommandClass(QadCommandClass):
    def waitForSecondPt(self):
       self.step = 3
       # imposto il map tool
-      self.getPointMapTool().firstPt = self.firstPt
-      self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
+      self.getPointMapTool().dimPt1 = self.dimPt1
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
       # si appresta ad attendere un punto
       self.waitForPoint(QadMsg.translate("Command_DIM", "Specificare l'origine della seconda linea di estensione: "))
 
@@ -162,7 +181,13 @@ class QadDIMLINEARCommandClass(QadCommandClass):
    # waitForDimensionLinePos
    #============================================================================
    def waitForDimensionLinePos(self):
-      self.step = 4        
+      self.step = 4
+      # imposto il map tool
+      self.getPointMapTool().dimPt2 = self.dimPt2
+      self.getPointMapTool().preferredAlignment = self.preferredAlignment
+      self.getPointMapTool().dimStyle = self.dimStyle      
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS)                                
+      
       # si appresta ad attendere un punto o una parola chiave
       keyWords = QadMsg.translate("Command_DIM", "Testo") + " " + \
                  QadMsg.translate("Command_DIM", "Angolo") + " " + \
@@ -186,10 +211,41 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
          return True # fine comando
+
+      if self.dimStyle is None:
+         self.showMsg(QadMsg.translate("QAD", "\nStile di quotatura corrente non valido.\nVerificare il valore della variabile DIMSTYLE.\n"))
+         return True # fine comando
+         
+      errMsg = self.dimStyle.getInValidErrMsg()
+      if errMsg is not None:
+         self.showMsg(errMsg)
+         return True # fine comando
+      
+      errMsg = self.dimStyle.getNotGraphEditableErrMsg()
+      if errMsg is not None:
+         self.showMsg(errMsg)
+         return True # fine comando
             
+                  
       #=========================================================================
       # RICHIESTA SELEZIONE ORIGINE PRIMA LINEA DI ESTENSIONE
       if self.step == 0: # inizio del comando
+#          layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr("quote_testi"))
+#          
+#          g = QgsGeometry.fromPoint(QgsPoint(0,0))
+#          f = QgsFeature()
+#          f.setGeometry(g)
+#          # Add attribute fields to feature.
+#          provider = layerList[0].dataProvider()
+#          fields = layerList[0].pendingFields()
+#          f.setFields(fields)
+# 
+#          f.setAttribute("text", "abc")
+#          f.setAttribute("htext", 10)
+#          f.setAttribute("rot", 1)
+#          
+#          w, h = qad_label.calculateLabelSize(layerList[0], f, self.plugIn.canvas)
+         
          self.waitForFirstPt()
          return False
       
@@ -215,6 +271,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          if value is None:
             self.waitForEntsel(msgMapTool, msg)
          else:
+            self.dimPt1.set(value.x(), value.y())
             self.waitForSecondPt()
 
          return False
@@ -225,7 +282,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          #qad_debug.breakPoint()         
          if self.EntSelClass.run(msgMapTool, msg) == True:
             if self.EntSelClass.entity.isInitialized():
-               self.firstPt, self.secondPt = getStartEndPointClosestPartWithContext(self.EntSelClass.entity, \
+               self.dimPt1, self.dimPt2 = getStartEndPointClosestPartWithContext(self.EntSelClass.entity, \
                                                                                     self.EntSelClass.point)
                self.waitForDimensionLinePos()
                return False
@@ -258,10 +315,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             return True
 
          if type(value) == QgsPoint: # se è stato inserito il secondo punto
-            self.secondPt.set(value.x(), value.y())
-
-            # imposto il map tool
-            self.getPointMapTool().secondPt = self.secondPt           
+            self.dimPt2.set(value.x(), value.y())
             self.waitForDimensionLinePos()
          
          return False 
@@ -298,11 +352,11 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_DIM", "Ruotato"):
                pass
          elif type(value) == QgsPoint: # se è stato inserito il punto di posizionamento linea quota
-            pass
+            self.preferredAlignment = self.getPointMapTool().preferredAlignment
+            self.addDimToLayers(value)
+            return True # fine comando
             
          return False
-
-
       
       
 # Classe che gestisce il comando DIMALIGNED
@@ -323,8 +377,8 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
-      self.firstPt = QgsPoint()
-      self.secondPt = QgsPoint()
+      self.dimPt1 = QgsPoint()
+      self.dimPt2 = QgsPoint()
       
 
    def __del__(self):
@@ -338,3 +392,13 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       else:
          return None
       
+      
+def aaa(f):
+   layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr("quote_testi"))   
+   g = QgsGeometry.fromPoint(QgsPoint(0,0))
+   f.setGeometry(g)
+
+   f.setAttribute("text", "abc")
+   f.setAttribute("htext", 10)
+   f.setAttribute("rot", 1)
+   return

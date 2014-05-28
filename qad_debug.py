@@ -22,7 +22,7 @@
  ***************************************************************************/
 """
 
-DEBUG = False # True
+DEBUG = True # False # True
 
 if DEBUG == True:
    import os.path

@@ -121,6 +121,8 @@ class QadCOPYCommandClass(QadCommandClass):
                   copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), deltaX, deltaY))
                   self.featureCache.append([layer, copiedFeature])
                   self.addFeatureToRubberBand(layer, copiedFeature)
+                  # per lo snap aggiungo questa geometria temporanea
+                  self.getPointMapTool().appendTmpGeometry(copiedFeature.geometry(), layer.crs())                  
                   added = True           
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY     
@@ -129,6 +131,8 @@ class QadCOPYCommandClass(QadCommandClass):
                copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), offSetX, offSetY))
                self.featureCache.append([layer, copiedFeature])
                self.addFeatureToRubberBand(layerEntitySet.layer, copiedFeature)            
+               # per lo snap aggiungo questa geometria temporanea
+               self.getPointMapTool().appendTmpGeometry(copiedFeature.geometry(), layer.crs())                  
                added = True           
       
       if added:
@@ -149,6 +153,8 @@ class QadCOPYCommandClass(QadCommandClass):
             del self.featureCache[-1] # cancello feature
             i = i - 1
          self.refreshRubberBand()
+         self.setTmpGeometriesToMapTool()
+
             
    #============================================================================
    # addFeatureToRubberBand
@@ -173,6 +179,19 @@ class QadCOPYCommandClass(QadCommandClass):
             self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
          else:
             self.rubberBand.addGeometry(feature.geometry(), layer)            
+
+
+   #============================================================================
+   # setTmpGeometriesToMapTool
+   #============================================================================
+   def setTmpGeometriesToMapTool(self):
+      self.getPointMapTool().clearTmpGeometries()
+      for f in self.featureCache:
+         layer = f[0]
+         feature = f[1]
+         # per lo snap aggiungo questa geometria temporanea
+         self.getPointMapTool().appendTmpGeometry(feature.geometry(), layer.crs())
+
 
    #============================================================================
    # copyGeoms
@@ -271,8 +290,7 @@ class QadCOPYCommandClass(QadCommandClass):
                       keyWords, QadInputModeEnum.NONE)
       else:
          keyWords = QadMsg.translate("Command_COPY", "Serie")
-         # "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento>: "
-         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento>: ")         
+         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento dal punto di origine 0,0>: ")         
                    
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
@@ -334,6 +352,7 @@ class QadCOPYCommandClass(QadCommandClass):
 
          self.getPointMapTool().entitySet.set(self.entitySet)
          self.waitForBasePt()
+         self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che può essere variato dal maptool di selezione entità                     
          return False
          
       #=========================================================================
@@ -364,7 +383,7 @@ class QadCOPYCommandClass(QadCommandClass):
                self.getPointMapTool().basePt = self.basePt
                self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)                                
                # si appresta ad attendere un punto
-               msg = QadMsg.translate("Command_COPY", "Specificare lo spostamento <{0}, {1}>: ")
+               msg = QadMsg.translate("Command_COPY", "Specificare lo spostamento dal punto di origine 0,0 <{0}, {1}>: ")
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                             QadInputTypeEnum.POINT2D, \

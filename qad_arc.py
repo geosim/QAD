@@ -67,7 +67,7 @@ class QadArc():
       """Transform this geometry as described by CRS."""
       if (sourceCRS is not None) and (destCRS is not None) and sourceCRS != destCRS:       
          coordTransform = QgsCoordinateTransform(sourceCRS, destCRS) # trasformo le coord
-         self.center =  coordTransform.transform(self.center)
+         self.center = coordTransform.transform(self.center)
       
    def __eq__(self, arc):
       """self == other"""

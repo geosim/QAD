@@ -41,6 +41,7 @@ def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = Fals
    la funzione crea un rubber band di tipo <geometryType> con le impostazioni di QGIS.
    Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
    """
+   #qad_debug.breakPoint()
    settings = QSettings()
    width = int(settings.value( "/qgis/digitizing/line_width", 1))
    color = QColor(int(settings.value( "/qgis/digitizing/line_color_red", 1)), \
@@ -88,6 +89,23 @@ class QadRubberBand():
          self.__rubberBandLine.addGeometry(geom, layer)
       elif geomType == QGis.Polygon:      
          self.__rubberBandPolygon.addGeometry(geom, layer)
+      
+   def addGeometries(self, geoms, layer):
+      for g in geoms:
+         self.addGeometry(g, layer)
+
+      
+   def setLine(self, points, layer):
+      self.__rubberBandLine.reset(QGis.Line)
+      tot = len(points) - 1
+      i = 0
+      while i <= tot:
+         if i < tot:
+            self.__rubberBandLine.addPoint(points[i], False)
+         else: # ultimo punto
+            self.__rubberBandLine.addPoint(points[i], True)
+         i = i + 1
+
 
    def reset(self):
       self.__rubberBandPoint.reset(QGis.Point)

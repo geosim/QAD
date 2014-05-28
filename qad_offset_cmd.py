@@ -612,7 +612,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                   # si appresta ad attendere la selezione di un oggetto
                   self.waitForObjectSel()
                elif value == QadMsg.translate("Command_OFFSET", "Segmento"):
-                  self.OnlySegment = True                  
+                  self.OnlySegment = True   
                   linearObject = qad_utils.QadLinearObject()
                   if linearObject.setByClosestSegmentOfGeom(self.subGeomSelectedPt, self.subGeom) == True:
                      self.subGeom = QgsGeometry.fromPolyline(linearObject.asPolyline())

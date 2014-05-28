@@ -76,7 +76,7 @@ class Qad_copy_maptool(QadGetPoint):
       self.mode = None    
    
    def setCopiedGeometries(self, newPt):
-      qad_debug.breakPoint()      
+      #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
       for layerEntitySet in self.entitySet.layerEntitySetList:

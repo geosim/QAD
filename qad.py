@@ -40,6 +40,7 @@ from qad_textwindow import *
 from qad_commands import *
 from qad_entity import *
 import qad_layer
+import qad_undoredo
 
 class Qad:
    """
@@ -248,7 +249,7 @@ class Qad:
       # Lista dei comandi
       self.QadCommands = QadCommandsClass(self)
       # Gestore di Undo/Redo
-      self.undoStack = qad_layer.QadUndoStack()
+      self.undoStack = qad_undoredo.QadUndoStack()
 
    def initGui(self):
                   
@@ -262,6 +263,7 @@ class Qad:
       self.menu = QMenu(QadMsg.translate("QAD", "QAD"))
       self.menu.addAction(self.mainAction)
 
+      self.menu.addAction(self.u_action)
       self.menu.addAction(self.undo_action)
       self.menu.addAction(self.redo_action)
 
@@ -317,7 +319,7 @@ class Qad:
       self.toolBar.addAction(self.trim_action)
       self.toolBar.addAction(self.rectangle_action)
       self.toolBar.addAction(self.mirror_action)
-      self.toolBar.addAction(self.undo_action)
+      self.toolBar.addAction(self.u_action)
       self.toolBar.addAction(self.redo_action)
       self.toolBar.addAction(self.insert_action)
       self.toolBar.addAction(self.text_action)
@@ -533,6 +535,11 @@ class Qad:
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ANNULLA"))
       self.undo_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       cmd.connectQAction(self.undo_action)
+      # UNDO OF ONLY ONE OPERATION (MACRO)
+      self.u_action = QAction(QIcon(":/plugins/qad/icons/u.png"), \
+                                    QadMsg.translate("Command_UNDO", "Annulla l'ultima operazione eseguita"), \
+                                    self.iface.mainWindow())
+      QObject.connect(self.u_action, SIGNAL("triggered()"), self.runU_Command)
       
       # REDO
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "RIPRISTINA"))
@@ -725,6 +732,7 @@ class Qad:
    
    def enableUndoRedoButtons(self):
       self.undo_action.setEnabled(self.undoStack.isUndoAble())
+      self.u_action.setEnabled(self.undoStack.isUndoAble())
       self.redo_action.setEnabled(self.undoStack.isRedoAble())
       
    def layerAdded(self, layer):
@@ -892,6 +900,9 @@ class Qad:
    
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
       self.QadCommands.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
+   
+   def refreshCommandMapToolSnapType(self):
+      self.QadCommands.refreshCommandMapToolSnapType()
    
    def getCurrenPointFromCommandMapTool(self):
       return self.QadCommands.getCurrenPointFromCommandMapTool()
@@ -1172,6 +1183,11 @@ class Qad:
       
    def runUNDOCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ANNULLA"))
+   def runU_Command(self): # MACRO
+      # nome comando + argomenti
+      args = [QadMsg.translate("Command_list", "ANNULLA"), \
+              QadMsg.translate("Command_UNDO", "1")]
+      self.runMacroAbortingTheCurrent(args)
       
    def runREDOCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "RIPRISTINA"))

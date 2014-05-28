@@ -110,6 +110,7 @@ class QadSnapper():
       self.__distToExcludeNea = 0.0 # distanza entro la quale se ci sono dei punti di snap
                                     # diversi da nearest questi hanno priorità su nearest
                                     # altrimenti nearest vincerebbe sempre
+      self.tmpGeometries = [] # lista di geometria non ancora esistenti ma da contare per i punti di osnap (in map coordinates)
 
 
    #============================================================================
@@ -121,7 +122,7 @@ class QadSnapper():
       """            
       if self.__snapType != snapType:
          self.__snapType = snapType
-         self.__clearCacheSnapPoints()
+         self.clearCacheSnapPoints()
          self.removeReferenceLines()         
    def getSnapType(self):
       """
@@ -224,7 +225,7 @@ class QadSnapper():
       Imposta i layer da considerare nello snapping
       """      
       self.__snapLayers = snapLayers
-      self.__clearCacheSnapPoints()
+      self.clearCacheSnapPoints()
    def getSnapLayers(self):
       """
       Restituisce la lista dei layer da considerare per lo snapping
@@ -242,7 +243,7 @@ class QadSnapper():
       """      
       if self.__snapPointCRS != snapPointCRS:
          self.__snapPointCRS = snapPointCRS
-         self.__clearCacheSnapPoints()
+         self.clearCacheSnapPoints()
    def getSnapPointCRS(self):
       """
       Restituisce il sistema di coordinate in cui memorizzare i punti di snap
@@ -336,18 +337,44 @@ class QadSnapper():
       self.__toleranceExtParlines = tolerance
       
 
+   #============================================================================
+   # tmpGeometries
+   #============================================================================
+   def clearTmpGeometries(self):      
+      del self.tmpGeometries[:] # svuoto la lista
+
+   def setTmpGeometry(self, geom, CRS = None):      
+      self.clearTmpGeometries()
+      self.appendTmpGeometry(geom)
+
+   def appendTmpGeometry(self, geom, CRS = None):
+      if geom is None:
+         return
+      if CRS is not None:
+         g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+         self.tmpGeometries.append(g)
+      else:
+         self.tmpGeometries.append(geom)
+
+   def setTmpGeometries(self, geoms, CRS = None):      
+      self.clearTmpGeometries()
+      for g in geoms:
+         self.appendTmpGeometry(g, CRS)
+
+
    #===========================================================================
    # getSnapPoint
    #===========================================================================
-   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None):
+   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None, isTemporaryGeom = False):
       """
       Data una geometria ed un punto (posizione del cursore) nel sistema di coordinate CRS 
-      ottiene i punti di snap (ìcon esclusione dei punti in excludePoints.
+      ottiene i punti di snap (con esclusione dei punti in excludePoints).
       Resituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       - CRS = sistema di coordinate in cui è espressa la geom e il punto (QgsCoordinateReferenceSystem)
       - excludePoints = lista di punti da escludere espressa in __snapPointCRS
       - polarAng angolo in radianti per il puntamento polare
+      - isTemporaryGeom flag che indica se geom è un oggetto temporaneo che ancora non esiste
       """
 
       p = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto in coord dei punti di snap
@@ -357,7 +384,7 @@ class QadSnapper():
       if geom is not None:
          staticSnapPoints = self.__getCacheSnapPoints(g)
          if staticSnapPoints is None:
-            staticSnapPoints = self.getStaticSnapPoints(g)
+            staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom)
             self.__setCacheSnapPoints(g, staticSnapPoints)
       else:
          staticSnapPoints = dict()
@@ -370,6 +397,7 @@ class QadSnapper():
          allSnapPoints[item[0]] = item[1]
          
       # puntamento polare
+      #qad_debug.breakPoint()
       if (self.__startPoint is not None) and (polarAng is not None):
          allSnapPoints[QadSnapTypeEnum.POLAR] = self.getPolarCoord(point, polarAng)
 
@@ -391,7 +419,7 @@ class QadSnapper():
    #============================================================================
    # CacheSnapPoints
    #============================================================================
-   def __clearCacheSnapPoints(self):  
+   def clearCacheSnapPoints(self):  
       del self.__cacheSnapPoints[:] # svuota la cache
    def __getCacheSnapPoints(self, geom):      
        # cerca i punti di snap per una geometria
@@ -407,13 +435,14 @@ class QadSnapper():
    #============================================================================
    # getStaticSnapPoints
    #============================================================================
-   def getStaticSnapPoints(self, geom, CRS = None):
+   def getStaticSnapPoints(self, geom, CRS = None, isTemporaryGeom = False):
       """
       Data una geometria ottiene i punti di snap statici che non dipendono dalla 
       posizione del cursore.
       Resituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       - CRS = sistema di coordinate in cui è espressa la geom  (QgsCoordinateReferenceSystem)
+      - isTemporaryGeom flag che indica se geom è un oggetto temporaneo che ancora non esiste      
       """
      
       result = dict()
@@ -432,11 +461,11 @@ class QadSnapper():
       if self.__snapType & QadSnapTypeEnum.QUA:
          result[QadSnapTypeEnum.QUA] = self.getQuaPoints(geom, CRS)
       if self.__snapType & QadSnapTypeEnum.INT:
-         result[QadSnapTypeEnum.INT] = self.getIntPoints(geom, CRS)
+         result[QadSnapTypeEnum.INT] = self.getIntPoints(geom, CRS, isTemporaryGeom)
       if self.__snapType & QadSnapTypeEnum.INS:
          result[QadSnapTypeEnum.INS] = self.getNodPoint(geom, CRS)
       if self.__snapType & QadSnapTypeEnum.APP:
-         result[QadSnapTypeEnum.APP] = self.getIntPoints(geom, CRS)
+         result[QadSnapTypeEnum.APP] = self.getIntPoints(geom, CRS, isTemporaryGeom)
                
       return result
  
@@ -667,10 +696,11 @@ class QadSnapper():
    #============================================================================
    # getIntPoints
    #============================================================================
-   def getIntPoints(self, geom, CRS = None):
+   def getIntPoints(self, geom, CRS = None, isTemporaryGeom = False):
       """
       Cerca i punti di intersezione di un oggetto.
       - CRS = sistema di coordinate in cui è espressa la geom (QgsCoordinateReferenceSystem)
+      - isTemporaryGeom flag che indica se geom è un oggetto temporaneo che ancora non esiste
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -702,7 +732,23 @@ class QadSnapper():
                   for point in intersectionPoints:
                      # trasformo il punto in coord layer
                      self.__appendUniquePoint(result, point) # senza duplicazione
+                     
+      if isTemporaryGeom:
+         intersectionPoints = qad_utils.getIntersectionPoints(g, g)
+         if intersectionPoints is not None:
+            for point in intersectionPoints:
+               # trasformo il punto in coord layer
+               self.__appendUniquePoint(result, point) # senza duplicazione
 
+      #qad_debug.breakPoint()
+      # lista di geometria non ancora esistenti ma da contare per i punti di osnap (in map coordinates)
+      for tmpGeometry in self.tmpGeometries:
+         intersectionPoints = qad_utils.getIntersectionPoints(g, tmpGeometry)
+         if intersectionPoints is not None:
+            for point in intersectionPoints:
+               # trasformo il punto in coord layer
+               self.__appendUniquePoint(result, point) # senza duplicazione
+         
       return result
             
 
@@ -1122,6 +1168,8 @@ class QadSnapper():
       
       # Cerco il vertice più vicino
       points = qad_utils.getNearestPoints(p, Vertexes)
+      if len(points) == 0:
+         return result
       nearestPoint = points[0]
       points = g.asPolyline() # vettore di punti
       i = 0

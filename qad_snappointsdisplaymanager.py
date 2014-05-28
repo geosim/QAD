@@ -51,7 +51,7 @@ class QadSnapPointsDisplayManager():
       self.__iconSize = 13 # size
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width 
-      self.__lineMarkers = [] # lista dei QgsRubberBand visualizzati
+      self.__lineMarkers = [] # lista dei RubberBand visualizzati
    
    #============================================================================
    # __del__

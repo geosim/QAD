@@ -199,8 +199,13 @@ class QadCIRCLECommandClass(QadCommandClass):
             if value == QadMsg.translate("Command_CIRCLE", "Diametro"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_DIAM)
-               # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "))
+               # si appresta ad attendere un punto o un numero reale   
+               # msg, inputType, default, keyWords, valori positivi
+               self.waitFor(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "), \
+                            QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
+                            None, \
+                            "", \
+                            QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 3           
             elif value == QadMsg.translate("Command_CIRCLE", "Area"):
                msg = QadMsg.translate("Command_CIRCLE", "Digitare l'area del cerchio in unità correnti <{0}>: ")
@@ -245,7 +250,7 @@ class QadCIRCLECommandClass(QadCommandClass):
 
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA DIAMETRO DEL CERCHIO (da step = 2)
-      elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
+      elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # è stato attivato un altro plugin che ha disattivato Qad
@@ -262,7 +267,11 @@ class QadCIRCLECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         self.radius = qad_utils.getDistance(self.centerPt, value) / 2
+         if type(value) == QgsPoint: # se è stato inserito un punto          
+            self.radius = qad_utils.getDistance(self.centerPt, value) / 2
+         elif type(value) == float: # se è stato inserito unnumero reale
+            self.radius = value
+
          self.plugIn.setLastRadius(self.radius)     
       
          circle = QadCircle()         
@@ -276,8 +285,13 @@ class QadCIRCLECommandClass(QadCommandClass):
                   qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
             return True # fine comando
       
-         # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "))
+         # si appresta ad attendere un punto o un numero reale   
+         # msg, inputType, default, keyWords, valori positivi
+         self.waitFor(QadMsg.translate("Command_CIRCLE", "Specificare diametro del cerchio: "), \
+                      QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
+                      None, \
+                      "", \
+                      QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
          self.isValidPreviousInput = False # per gestire il comando anche in macro     
          return False
       
@@ -721,7 +735,10 @@ class QadCIRCLECommandClass(QadCommandClass):
                      else:
                         qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
                else:
-                  self.showErr(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
+                  self.showMsg(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
+            else:
+               self.showMsg(QadMsg.translate("Command_CIRCLE", "\nIl cerchio non esiste."))
+                  
             return True # fine comando
 
       #=========================================================================

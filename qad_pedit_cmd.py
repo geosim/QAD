@@ -73,7 +73,8 @@ class QadPEDITCommandClass(QadCommandClass):
       self.joinMode = plugIn.joinMode
 
       self.editVertexMode = None
-            
+      self.nOperationsToUndo = 0
+         
       self.firstPt = QgsPoint()
       self.vertexAt = 0
       self.secondVertexAt = 0
@@ -259,6 +260,7 @@ class QadPEDITCommandClass(QadCommandClass):
                return
    
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
       
 
    #============================================================================
@@ -308,6 +310,7 @@ class QadPEDITCommandClass(QadCommandClass):
                return
    
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
       
 
    #============================================================================
@@ -421,9 +424,7 @@ class QadPEDITCommandClass(QadCommandClass):
                                                                      tolerance2ApproxCurve, \
                                                                      self.joinToleranceDist, self.joinMode))
             i = i + 1
-              
-      vectorLayer.endEditCommand()
-         
+                       
       self.plugIn.beginEditCommand("Feature edited", self.entitySet.getLayerList())
 
       if self.entity.isInitialized(): # selezionato solo un oggetto
@@ -458,6 +459,7 @@ class QadPEDITCommandClass(QadCommandClass):
             return      
    
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -507,6 +509,7 @@ class QadPEDITCommandClass(QadCommandClass):
                return
    
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -518,12 +521,12 @@ class QadPEDITCommandClass(QadCommandClass):
       tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
                                                                   self.entity.layer)                              
+      #qad_debug.breakPoint()
       f = self.entity.getFeature()
       geom = f.geometry() 
 
       newPt = self.mapToLayerCoordinates(layer, pt)
 
-      #qad_debug.breakPoint()
       if self.after: # dopo
          if self.vertexAt == self.linearObjectList.qty() and self.linearObjectList.isClosed():            
             self.linearObjectList.insertPoint(0, newPt)
@@ -549,6 +552,7 @@ class QadPEDITCommandClass(QadCommandClass):
          return
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -582,6 +586,7 @@ class QadPEDITCommandClass(QadCommandClass):
          return
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -636,6 +641,7 @@ class QadPEDITCommandClass(QadCommandClass):
          return
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -686,6 +692,7 @@ class QadPEDITCommandClass(QadCommandClass):
 
       self.linearObjectList.fromPolyline(line1.asPolyline())
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -875,6 +882,7 @@ class QadPEDITCommandClass(QadCommandClass):
    #============================================================================
    def waitForNewVertex(self):      
       # imposto il map tool
+      #qad_debug.breakPoint()
       self.getPointMapTool().setVertexAt(self.vertexAt, self.after)            
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_NEW_VERTEX)
 
@@ -996,6 +1004,7 @@ class QadPEDITCommandClass(QadCommandClass):
                self.waitForEntsel()
             else:
                self.WaitForMainMenu()
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
          return False
       
       #=========================================================================
@@ -1043,7 +1052,12 @@ class QadPEDITCommandClass(QadCommandClass):
          elif value == QadMsg.translate("Command_PEDIT", "Inverti"):
             self.reverse()
          elif value == QadMsg.translate("Command_PEDIT", "ANnulla"):
-            self.plugIn.undoEditCommand()
+            if self.nOperationsToUndo > 0: 
+               self.nOperationsToUndo = self.nOperationsToUndo - 1           
+               self.plugIn.undoEditCommand()
+            else:
+               self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+            
             if self.entity.isInitialized(): # selezionato solo un oggetto
                if self.atSubGeom is not None:
                   # ricarico la geometria ripristinata dall'annulla
@@ -1275,6 +1289,7 @@ class QadPEDITCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
          
+         #qad_debug.breakPoint()
          self.insertVertexAt(value)
          self.vertexAt = self.vertexAt + (1 if self.after else -1)
          self.WaitForVertexEditingMenu()

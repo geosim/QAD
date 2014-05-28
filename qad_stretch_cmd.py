@@ -110,7 +110,6 @@ class QadSTRETCHCommandClass(QadCommandClass):
                coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), \
                                                        layer.crs())          
                g.transform(coordTransform)
-               
                transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
                transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
                offSetX = transformedNewPt.x() - transformedBasePt.x()
@@ -194,9 +193,9 @@ class QadSTRETCHCommandClass(QadCommandClass):
                  QadMsg.translate("Command_STRETCH", "Elimina")
 
       if self.AddOnSelection == True:
-         msg = QadMsg.translate("Command_STRETCH", "Selezionare oggetti")
+         msg = QadMsg.translate("Command_STRETCH", "Selezionare i vertici")
       else:
-         msg = QadMsg.translate("Command_STRETCH", "Rimuovere oggetti")
+         msg = QadMsg.translate("Command_STRETCH", "Rimuovere i vertici")
       msg = msg + QadMsg.translate("Command_STRETCH", " da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: ")
 
       # si appresta ad attendere un punto o enter o una parola chiave         
@@ -321,6 +320,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
 
             # si appresta ad attendere la selezione degli oggetti da stirare
             self.waitForObjectSel()                                 
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di mpolygon                     
          return False
 
       #=========================================================================
@@ -395,7 +395,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             self.getPointMapTool().basePt = self.basePt
             self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)                                
             # si appresta ad attendere un punto
-            msg = QadMsg.translate("Command_STRETCH", "Specificare lo spostamento <{0}, {1}>: ")
+            msg = QadMsg.translate("Command_STRETCH", "Specificare lo spostamento dal punto di origine 0,0 <{0}, {1}>: ")
             # msg, inputType, default, keyWords, nessun controllo
             self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                          QadInputTypeEnum.POINT2D, \
@@ -411,7 +411,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             
             # si appresta ad attendere un punto o enter o una parola chiave         
             # msg, inputType, default, keyWords, nessun controllo
-            self.waitFor(QadMsg.translate("Command_STRETCH", "Specificare secondo punto oppure <Utilizza primo punto come spostamento>: "), \
+            self.waitFor(QadMsg.translate("Command_STRETCH", "Specificare secondo punto oppure <Utilizza primo punto come spostamento dal punto di origine 0,0>: "), \
                          QadInputTypeEnum.POINT2D, \
                          None, \
                          "", QadInputModeEnum.NONE)      

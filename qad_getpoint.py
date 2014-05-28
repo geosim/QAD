@@ -65,6 +65,9 @@ class QadCursorTypeEnum():
    CROSS = 1     # una croce usata per selezionare un punto
 
 
+from qad_dsettings_dlg import QadDSETTINGSDialog
+
+
 #===============================================================================
 # QadGetPoint get point class
 #===============================================================================
@@ -81,6 +84,7 @@ class QadGetPoint(QgsMapTool):
       self.__oldSnapProgrDist = None
       self.__geometryTypesAccordingToSnapType = (False, False, False)
       self.__startPoint = None
+      self.tmpGeometries = [] # lista di geometria non ancora esistenti ma da contare per i punti di osnap (in map coordinates)
       # opzioni per limitare l'oggetto da selezionare
       self.onlyEditableLayers = False
       self.checkPointLayer = True
@@ -211,7 +215,38 @@ class QadGetPoint(QgsMapTool):
       self.__oldSnapType = None
       self.__oldSnapProgrDist = None
       self.__startPoint = None
+      self.clearTmpGeometries()
 
+
+   #============================================================================
+   # tmpGeometries
+   #============================================================================
+   def clearTmpGeometries(self):      
+      del self.tmpGeometries[:] # svuoto la lista
+      self.__QadSnapper.clearTmpGeometries()
+
+   def setTmpGeometry(self, geom, CRS = None):
+      #qad_debug.breakPoint()      
+      self.clearTmpGeometries()
+      self.appendTmpGeometry(geom, CRS)
+            
+   def appendTmpGeometry(self, geom, CRS = None):
+      if geom is None:
+         return
+      if CRS is not None:
+         g = QgsGeometry(geom)
+         coordTransform = QgsCoordinateTransform(CRS, self.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+         self.tmpGeometries.append(g.transform(coordTransform))
+      else:
+         self.tmpGeometries.append(geom)
+      self.__QadSnapper.appendTmpGeometry(geom)
+      
+
+   def setTmpGeometries(self, geoms, CRS = None):      
+      self.clearTmpGeometries()
+      for g in geoms:
+         self.appendTmpGeometry(g, CRS)
+      
 
    #============================================================================
    # SnapType
@@ -254,7 +289,10 @@ class QadGetPoint(QgsMapTool):
       self.setSnapType(snapType)
 
    def refreshSnapType(self):
-      self.setSnapType()
+      self.__oldSnapType = None
+      self.__oldSnapProgrDist = None
+      self.__QadSnapper.setProgressDistance(QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE")))
+      self.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
 
 
    #============================================================================
@@ -395,13 +433,13 @@ class QadGetPoint(QgsMapTool):
                                       self.__geometryTypesAccordingToSnapType[2], \
                                       True, \
                                       self.onlyEditableLayers)
-
+      
       if result is not None:
          feature = result[0]
          layer = result[1]
          entity = QadEntity()     
          entity.set(layer, feature.id())
-         geometry = feature.geometry()    
+         geometry = feature.geometry()
          point = self.toLayerCoordinates(layer, event.pos())
 
          # se è stata selezionata una geometria diversa da quella selezionata precedentemente
@@ -420,15 +458,39 @@ class QadGetPoint(QgsMapTool):
          self.tmpEntity.set(layer, feature.id())                                  
       else:
          point = self.toMapCoordinates(event.pos())
-         
-         oSnapPoints = self.__QadSnapper.getSnapPoint(None, point, \
-                                                      self.canvas.mapRenderer().destinationCrs(), \
-                                                      None, \
-                                                      self.__PolarAng)
-                                    
-         self.__prevGeom = None
-         self.__stopTimer = True
-         self.tmpEntity.clear()         
+
+         # se non è stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nel pickbox
+         tmpGeometry = qad_utils.getGeomInPickBox(event.pos(),
+                                                  self, \
+                                                  self.tmpGeometries, \
+                                                  None, \
+                                                  self.__geometryTypesAccordingToSnapType[0], \
+                                                  self.__geometryTypesAccordingToSnapType[1], \
+                                                  self.__geometryTypesAccordingToSnapType[2], \
+                                                  True)
+         if tmpGeometry is not None:
+            # se è stata selezionata una geometria diversa da quella selezionata precedentemente
+            if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
+               self.__prevGeom = QgsGeometry(tmpGeometry)
+               runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, point, self.canvas.mapRenderer().destinationCrs())
+               self.__stopTimer = False
+               self.__timer.singleShot(500, runToggleReferenceLines)
+            #qad_debug.breakPoint()
+            self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perchè tmpGeometry può essere variato
+            oSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, point, \
+                                                         self.canvas.mapRenderer().destinationCrs(), \
+                                                         None, \
+                                                         self.__PolarAng,
+                                                         True)            
+         else:         
+            oSnapPoints = self.__QadSnapper.getSnapPoint(None, point, \
+                                                         self.canvas.mapRenderer().destinationCrs(), \
+                                                         None, \
+                                                         self.__PolarAng)
+                                       
+            self.__prevGeom = None
+            self.__stopTimer = True
+            self.tmpEntity.clear()         
                   
       # visualizzo il punto di snap
       self.__QadSnapPointsDisplayManager.show(oSnapPoints, \
@@ -469,8 +531,12 @@ class QadGetPoint(QgsMapTool):
       # volevo mettere questo evento nel canvasReleaseEvent
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
-         # self.clear() da rivedere
-         self.rightButton = True
+         # Se è stato premuto il tasto CTRL (o META)
+         if ((event.modifiers() & Qt.ControlModifier) or (event.modifiers() & Qt.MetaModifier)):
+            self.displayPopupMenu(event.pos())                  
+         else:
+            # self.clear() da rivedere
+            self.rightButton = True
       elif event.button() == Qt.LeftButton:
          self.__QadSnapper.removeReferenceLines()
          self.__QadSnapPointsDisplayManager.hide()
@@ -554,3 +620,214 @@ class QadGetPoint(QgsMapTool):
    def isEditTool(self):
       return True
       
+
+   #============================================================================
+   # dispalyPopupMenu
+   #============================================================================
+   def displayPopupMenu(self, pos):
+      #qad_debug.breakPoint()
+      self.popupMenu = QMenu()
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Inizio / Fine")
+      icon = QIcon(":/plugins/qad/icons/osnap_endLine.png")
+      if icon is None:
+         addEndLineSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addEndLineSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addEndLineSnapTypeAction, SIGNAL("triggered()"), self.addEndLineSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addEndLineSnapTypeAction)
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Inizio / Fine segmento")
+      icon = QIcon(":/plugins/qad/icons/osnap_end.png")
+      if icon is None:
+         addEndSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addEndSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addEndSnapTypeAction, SIGNAL("triggered()"), self.addEndSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addEndSnapTypeAction)
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Punto medio")
+      icon = QIcon(":/plugins/qad/icons/osnap_mid.png")
+      if icon is None:
+         addMidSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addMidSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addMidSnapTypeAction, SIGNAL("triggered()"), self.addMidSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addMidSnapTypeAction)
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Intersezione")
+      icon = QIcon(":/plugins/qad/icons/osnap_int.png")
+      if icon is None:
+         addIntSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addIntSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addIntSnapTypeAction, SIGNAL("triggered()"), self.addIntSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addIntSnapTypeAction)
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Intersezione su estensione")
+      icon = QIcon(":/plugins/qad/icons/osnap_extInt.png")
+      if icon is None:
+         addExtIntSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addExtIntSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addExtIntSnapTypeAction, SIGNAL("triggered()"), self.addExtIntSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addExtIntSnapTypeAction)
+      
+      msg = QadMsg.translate("DSettings_Dialog", "Estensione")
+      icon = QIcon(":/plugins/qad/icons/osnap_ext.png")
+      if icon is None:
+         addExtSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addExtSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addExtSnapTypeAction, SIGNAL("triggered()"), self.addExtSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addExtSnapTypeAction)
+
+      self.popupMenu.addSeparator()
+     
+      msg = QadMsg.translate("DSettings_Dialog", "Centro")
+      icon = QIcon(":/plugins/qad/icons/osnap_cen.png")
+      if icon is None:
+         addCenSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addCenSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addCenSnapTypeAction, SIGNAL("triggered()"), self.addCenSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addCenSnapTypeAction)
+     
+      msg = QadMsg.translate("DSettings_Dialog", "Quadrante")
+      icon = QIcon(":/plugins/qad/icons/osnap_qua.png")
+      if icon is None:
+         addQuaSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addQuaSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addQuaSnapTypeAction, SIGNAL("triggered()"), self.addQuaSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addQuaSnapTypeAction)
+     
+      msg = QadMsg.translate("DSettings_Dialog", "Tangente")
+      icon = QIcon(":/plugins/qad/icons/osnap_tan.png")
+      if icon is None:
+         addTanSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addTanSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addTanSnapTypeAction, SIGNAL("triggered()"), self.addTanSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addTanSnapTypeAction)
+
+      self.popupMenu.addSeparator()
+
+      msg = QadMsg.translate("DSettings_Dialog", "Perpendicolare")
+      icon = QIcon(":/plugins/qad/icons/osnap_per.png")
+      if icon is None:
+         addPerSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addPerSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addPerSnapTypeAction, SIGNAL("triggered()"), self.addPerSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addPerSnapTypeAction)     
+
+      msg = QadMsg.translate("DSettings_Dialog", "Parallelo")
+      icon = QIcon(":/plugins/qad/icons/osnap_par.png")
+      if icon is None:
+         addParSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addParSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addParSnapTypeAction, SIGNAL("triggered()"), self.addParSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addParSnapTypeAction)     
+
+      msg = QadMsg.translate("DSettings_Dialog", "Nodo")
+      icon = QIcon(":/plugins/qad/icons/osnap_nod.png")
+      if icon is None:
+         addNodSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addNodSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addNodSnapTypeAction, SIGNAL("triggered()"), self.addNodSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addNodSnapTypeAction)     
+
+      msg = QadMsg.translate("DSettings_Dialog", "Vicino")
+      icon = QIcon(":/plugins/qad/icons/osnap_nea.png")
+      if icon is None:
+         addNeaSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addNeaSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addNeaSnapTypeAction, SIGNAL("triggered()"), self.addNeaSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addNeaSnapTypeAction)     
+
+      msg = QadMsg.translate("DSettings_Dialog", "Progressivo")
+      icon = QIcon(":/plugins/qad/icons/osnap_pr.png")
+      if icon is None:
+         addPrSnapTypeAction = QAction(msg, self.popupMenu)
+      else:
+         addPrSnapTypeAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(addPrSnapTypeAction, SIGNAL("triggered()"), self.addPrSnapTypeByPopupMenu)      
+      self.popupMenu.addAction(addPrSnapTypeAction)     
+
+      msg = QadMsg.translate("DSettings_Dialog", "Nessuno")
+      icon = QIcon(":/plugins/qad/icons/osnap_disable.png")
+      if icon is None:
+         setSnapTypeToDisableAction = QAction(msg, self.popupMenu)
+      else:
+         setSnapTypeToDisableAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(setSnapTypeToDisableAction, SIGNAL("triggered()"), self.setSnapTypeToDisableByPopupMenu)      
+      self.popupMenu.addAction(setSnapTypeToDisableAction)     
+
+      self.popupMenu.addSeparator()
+
+      msg = QadMsg.translate("DSettings_Dialog", "Impostazioni snap ad oggetto...")
+      icon = QIcon(":/plugins/qad/icons/dsettings.png")
+      if icon is None:
+         DSettingsAction = QAction(msg, self.popupMenu)
+      else:
+         DSettingsAction = QAction(icon, msg, self.popupMenu)        
+      QObject.connect(DSettingsAction, SIGNAL("triggered()"), self.showDSettingsByPopUpMenu)      
+      self.popupMenu.addAction(DSettingsAction)     
+            
+      self.popupMenu.popup(self.plugIn.iface.mapCanvas().mapToGlobal(pos))
+         
+
+   #============================================================================
+   # addSnapTypeByPopupMenu
+   #============================================================================
+   def addSnapTypeByPopupMenu(self, _snapType):
+      value = QadVariables.get(QadMsg.translate("Environment variables", "OSMODE"))
+      if value & QadSnapTypeEnum.DISABLE:
+         value =  value - QadSnapTypeEnum.DISABLE      
+      QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), value | _snapType)
+      QadVariables.save()      
+      self.refreshSnapType()
+         
+   def addEndLineSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.END_PLINE)
+   def addEndSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.END)
+   def addMidSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.MID)
+   def addIntSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.INT)      
+   def addExtIntSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.EXT_INT)
+   def addExtSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.EXT)   
+   def addCenSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.CEN)      
+   def addQuaSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.QUA)
+   def addTanSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.TAN)
+   def addPerSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.PER)
+   def addParSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.PAR)
+   def addNodSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.NOD)
+   def addNeaSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.NEA)
+   def addPrSnapTypeByPopupMenu(self):
+      self.addSnapTypeByPopupMenu(QadSnapTypeEnum.PR)
+
+   def setSnapTypeToDisableByPopupMenu(self):
+      value = QadVariables.get(QadMsg.translate("Environment variables", "OSMODE"))
+      QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), value | QadSnapTypeEnum.DISABLE)
+      QadVariables.save()      
+      self.refreshSnapType()
+
+   def showDSettingsByPopUpMenu(self):
+      d = QadDSETTINGSDialog(self.plugIn.iface.mainWindow())
+      d.exec_()
+      self.refreshSnapType()

@@ -55,6 +55,8 @@ class QadUNDOCommandClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
          
    def run(self, msgMapTool = False, msg = None):
+      self.isValidPreviousInput = True # per gestire il comando anche in macro
+
       if self.step == 0: # inizio del comando
          keyWords = QadMsg.translate("Command_UNDO", "INIzio") + " " + \
                     QadMsg.translate("Command_UNDO", "Fine") + " " + \

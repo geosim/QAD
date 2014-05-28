@@ -83,13 +83,15 @@ class QadLINECommandClass(QadCommandClass):
       self.vertices.append(point)     
       self.addPointToRubberBand(point)            
       self.plugIn.setLastPointAndSegmentAng(self.vertices[-1])            
-
+      self.setTmpGeometriesToMapTool()
+      
    def delLastVertex(self):
       if len(self.vertices) > 0:
          del self.vertices[-1] # cancello ultimo vertice
          self.removeLastPointToRubberBand()
          if len(self.vertices) > 0:
-            self.plugIn.setLastPointAndSegmentAng(self.vertices[-1])           
+            self.plugIn.setLastPointAndSegmentAng(self.vertices[-1])
+         self.setTmpGeometriesToMapTool()      
          
 
    #============================================================================
@@ -120,7 +122,20 @@ class QadLINECommandClass(QadCommandClass):
          qad_layer.addLineToLayer(self.plugIn, layer,
                                   [self.vertices[i - 1], self.vertices[i]])
          i = i + 1
-         
+
+
+   #============================================================================
+   # setTmpGeometriesToMapTool
+   #============================================================================
+   def setTmpGeometriesToMapTool(self):
+      self.getPointMapTool().clearTmpGeometries()
+      i = 1
+      while i < len(self.vertices):                     
+         # per lo snap aggiungo questa geometria temporanea
+         self.getPointMapTool().appendTmpGeometry(QgsGeometry.fromPolyline([self.vertices[i - 1], self.vertices[i]]))
+         i = i + 1
+
+            
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))

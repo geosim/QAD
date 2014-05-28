@@ -33,6 +33,7 @@ import qad_debug
 import qad_utils
 from qad_generic_cmd import QadCommandClass
 import qad_layer
+import qad_label
 from qad_getpoint import *
 from qad_getdist_cmd import QadGetDistClass
 from qad_getangle_cmd import QadGetAngleClass
@@ -92,19 +93,24 @@ class QadTEXTCommandClass(QadCommandClass):
       f = QgsFeature()
       f.setGeometry(g)
       # Add attribute fields to feature.
-      provider = layer.dataProvider()
       fields = layer.pendingFields()
       f.setFields(fields)
       
-      # se l'altezza testo dipende da un campo 
-      sizeFldName = qad_layer.get_labelSizeFieldName(layer)
-      if len(sizeFldName) > 0:
-         f.setAttribute(sizeFldName, self.hText)
+      # assegno i valori di default
+      provider = layer.dataProvider()
+      for field in fields.toList():
+         i = fields.indexFromName(field.name())
+         f[field.name()] = provider.defaultValue(i)
       
-      # se la rotazione dipende da un campo 
-      rotFldName = qad_layer.get_labelRotationFieldName(layer)
-      if len(rotFldName) > 0:
-         f.setAttribute(rotFldName, qad_utils.toDegrees(self.rot))
+      # se l'altezza testo dipende da un solo campo 
+      sizeFldNames = qad_label.get_labelSizeFieldNames(layer)
+      if len(sizeFldNames) == 1 and len(sizeFldNames[0]) > 0:
+         f.setAttribute(sizeFldNames[0], self.hText)
+      
+      # se la rotazione dipende da un solo campo
+      rotFldNames = qad_label.get_labelRotationFieldNames(layer)
+      if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
+         f.setAttribute(rotFldNames[0], qad_utils.toDegrees(self.rot))
          
       # setto i valori degli attributi che compongono l'etichetta
       i = 0
@@ -117,7 +123,7 @@ class QadTEXTCommandClass(QadCommandClass):
 
    def initLabelFields(self, layer):
       #qad_debug.breakPoint()     
-      labelFieldNames = qad_layer.get_labelFieldNames(layer)
+      labelFieldNames = qad_label.get_labelFieldNames(layer)
       if len(labelFieldNames) > 0:
          self.labelFields = QgsFields()         
          for field in layer.dataProvider().fields():   
@@ -161,7 +167,9 @@ class QadTEXTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isTextLayer(currLayer) == False:
-         self.showMsg(QadMsg.translate("QAD", "\nIl layer corrente non è valido\n"))
+         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non è di tipo testo.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
+         self.showMsg(errMsg)         
          return True # fine comando
 
                
@@ -194,9 +202,9 @@ class QadTEXTCommandClass(QadCommandClass):
          self.insPt = QgsPoint(pt)
          self.plugIn.setLastPoint(self.insPt)
          
-         # se l'altezza testo dipende da un campo
-         scaleFldName = qad_layer.get_labelSizeFieldName(currLayer)
-         if len(scaleFldName) > 0:
+         # se l'altezza testo dipende da un solo campo 
+         sizeFldNames = qad_label.get_labelSizeFieldNames(currLayer)
+         if len(sizeFldNames) == 1 and len(sizeFldNames[0]) > 0:
             # si appresta ad attendere la scala                      
             self.GetDistClass = QadGetDistClass(self.plugIn)
             prompt = QadMsg.translate("Command_TEXT", "Specificare l'altezza testo <{0}>: ")
@@ -208,9 +216,9 @@ class QadTEXTCommandClass(QadCommandClass):
             self.GetDistClass.run(msgMapTool, msg)
             return False
          else: 
-            # se la rotazione dipende da un campo 
-            rotFldName = qad_layer.get_labelRotationFieldName(currLayer)
-            if len(rotFldName) > 0:
+            # se la rotazione dipende da un solo campo
+            rotFldNames = qad_label.get_labelRotationFieldNames(currLayer)
+            if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
                # si appresta ad attendere l'angolo di rotazione                      
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
                prompt = QadMsg.translate("Command_TEXT", "Specificare la rotazione del testo <{0}>: ")
@@ -238,9 +246,9 @@ class QadTEXTCommandClass(QadCommandClass):
                del self.GetDistClass
                self.GetDistClass = None
                 
-               # se la rotazione dipende da un campo 
-               rotFldName = qad_layer.get_labelRotationFieldName(currLayer)
-               if len(rotFldName) > 0:
+               # se la rotazione dipende da un solo campo
+               rotFldNames = qad_label.get_labelRotationFieldNames(currLayer)
+               if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
                   # si appresta ad attendere l'angolo di rotazione                      
                   self.GetAngleClass = QadGetAngleClass(self.plugIn)
                   prompt = QadMsg.translate("Command_TEXT", "Specificare la rotazione del testo <{0}>: ")

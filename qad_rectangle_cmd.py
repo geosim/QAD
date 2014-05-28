@@ -292,6 +292,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                   self.gapType = 1 # 1 = Raccorda i segmenti
 
             self.WaitForFirstCorner()
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
 
       #=========================================================================
@@ -312,6 +313,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.GetDistClass.run(msgMapTool, msg)  
             else:   
                self.WaitForFirstCorner()
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                                 
          return False # fine comando
  
       #=========================================================================
@@ -326,6 +328,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                   self.gapType = 2 # 2 = Cima i segmenti
                                    
             self.WaitForFirstCorner()
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
  
       #=========================================================================
@@ -511,3 +514,4 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.rot = self.GetAngleClass.angle
                self.plugIn.setLastRot(self.rot)
                self.WaitForSecondCorner(currLayer)
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di rotazione                     

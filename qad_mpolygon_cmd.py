@@ -87,7 +87,8 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       #=========================================================================
       # RICHIESTA PRIMO PUNTO PER SELEZIONE OGGETTI
       if self.step == 0:
-         self.PLINECommand = QadPLINECommandClass(self.plugIn)
+         # asToolForMPolygon = True per rubberband tipo poligono
+         self.PLINECommand = QadPLINECommandClass(self.plugIn, True)
          # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
          # che non verrà salvata su un layer
          self.PLINECommand.virtualCmd = True   
@@ -101,7 +102,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
          if self.PLINECommand.run(msgMapTool, msg) == True:
             #qad_debug.breakPoint()
             verticesLen = len(self.PLINECommand.vertices)
-            if verticesLen > 2:
+            if verticesLen > 3:
                self.vertices = self.PLINECommand.vertices[:] # copio la lista
                firstVertex = self.vertices[0]
                # se l'ultimo vertice non è uguale al primo

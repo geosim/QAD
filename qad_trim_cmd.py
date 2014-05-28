@@ -66,6 +66,7 @@ class QadTRIMCommandClass(QadCommandClass):
       self.limitEntitySet = QadEntitySet() # entità che fanno da limiti
       self.edgeMode = QadVariables.get(QadMsg.translate("Environment variables", "EDGEMODE"))
       self.defaultValue = None # usato per gestire il tasto dx del mouse
+      self.nOperationsToUndo = 0
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -188,6 +189,7 @@ class QadTRIMCommandClass(QadCommandClass):
                               return
 
       self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
                                                       
       
    #============================================================================
@@ -230,9 +232,9 @@ class QadTRIMCommandClass(QadCommandClass):
       if self.step == 0: # inizio del comando
          CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
          if self.edgeMode == 0: # 0 = nessuna estensione
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Spigolo = Estensione")         
-         else:
             CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Spigolo = Nessuna estensione")         
+         else:
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Spigolo = Estensione")         
                   
          self.showMsg(CurrSettingsMsg)         
          self.showMsg(QadMsg.translate("Command_TRIM", "\nSelezionare i limiti di taglio..."))         
@@ -315,8 +317,11 @@ class QadTRIMCommandClass(QadCommandClass):
                self.step = 5               
                return False               
             elif value == QadMsg.translate("Command_TRIM", "Annulla"):
-               #qad_debug.breakPoint()
-               self.plugIn.undoEditCommand()
+               if self.nOperationsToUndo > 0: 
+                  self.nOperationsToUndo = self.nOperationsToUndo - 1
+                  self.plugIn.undoEditCommand()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
          elif type(value) == QgsPoint: # se è stato selezionato un punto
             self.entitySet.clear()
             #qad_debug.breakPoint()
@@ -368,7 +373,9 @@ class QadTRIMCommandClass(QadCommandClass):
             self.PLINECommand = None
 
             # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
-            self.waitForObjectSel()                                 
+            self.waitForObjectSel()
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di pline                     
+                                             
          return False
 
       #=========================================================================
@@ -392,6 +399,7 @@ class QadTRIMCommandClass(QadCommandClass):
 
             # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
             self.waitForObjectSel()                                 
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di rectangle                     
          return False
 
       #=========================================================================

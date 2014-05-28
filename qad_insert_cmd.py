@@ -91,6 +91,12 @@ class QadINSERTCommandClass(QadCommandClass):
       fields = layer.pendingFields()
       f.setFields(fields)
       
+      # assegno i valori di default
+      provider = layer.dataProvider()
+      for field in fields.toList():
+         i = fields.indexFromName(field.name())
+         f[field.name()] = provider.defaultValue(i)
+      
       # se la scala dipende da un campo 
       scaleFldName = qad_layer.get_symbolScaleFieldName(layer)
       if len(scaleFldName) > 0:
@@ -115,7 +121,9 @@ class QadINSERTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isSymbolLayer(currLayer) == False:
-         self.showMsg(QadMsg.translate("QAD", "\nIl layer corrente non è valido\n"))
+         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non è di tipo simbolo.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo è un layer vettoriale di tipo punto senza etichetta.\n")
+         self.showMsg(errMsg)         
          return True # fine comando
 
                

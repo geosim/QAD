@@ -112,6 +112,7 @@ class QadMOVECommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
             return self.run(msgMapTool, msg)
       
       #=========================================================================
@@ -161,7 +162,7 @@ class QadMOVECommandClass(QadCommandClass):
             self.getPointMapTool().basePt = self.basePt
             self.getPointMapTool().setMode(Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)                                
             # si appresta ad attendere un punto
-            msg = QadMsg.translate("Command_MOVE", "Specificare lo spostamento <{0}, {1}>: ")
+            msg = QadMsg.translate("Command_MOVE", "Specificare lo spostamento dal punto di origine 0,0 <{0}, {1}>: ")
             # msg, inputType, default, keyWords, nessun controllo
             self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                          QadInputTypeEnum.POINT2D, \
@@ -177,7 +178,7 @@ class QadMOVECommandClass(QadCommandClass):
             
             # si appresta ad attendere un punto o enter o una parola chiave         
             # msg, inputType, default, keyWords, nessun controllo
-            self.waitFor(QadMsg.translate("Command_MOVE", "Specificare secondo punto oppure <Utilizza primo punto come spostamento>: "), \
+            self.waitFor(QadMsg.translate("Command_MOVE", "Specificare secondo punto oppure <Utilizza primo punto come spostamento dal punto di origine 0,0>: "), \
                          QadInputTypeEnum.POINT2D, \
                          None, \
                          "", QadInputModeEnum.NONE)      

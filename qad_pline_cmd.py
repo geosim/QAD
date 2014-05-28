@@ -41,6 +41,7 @@ import qad_utils
 import qad_layer
 from qad_rubberband import createRubberBand
 
+
 # Classe che gestisce il comando PLINE
 class QadPLINECommandClass(QadCommandClass):
    
@@ -57,13 +58,19 @@ class QadPLINECommandClass(QadCommandClass):
       # impostare le note esplicative del comando      
       return QadMsg.translate("Command_PLINE", "Disegna una polilinea mediante diversi metodi.\n\nUna polilinea è una sequenza di segmenti retti,\narchi o una combinazione dei due.")
    
-   def __init__(self, plugIn):
+   def __init__(self, plugIn, asToolForMPolygon = False):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
       self.realVerticesIndexes = [] # posizioni in vertices dei vertici reali 
                                     # (l'arco è approssimato a tanti segmenti)
       self.firstVertex = True
-      self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
+      
+      self.asToolForMPolygon = asToolForMPolygon
+      if self.asToolForMPolygon:
+         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Polygon)
+      else:
+         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
+         
       self.ArcPointMapTool = None
       self.mode = "LINE"
       self.EntSelClass = None
@@ -333,6 +340,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.delLastRealVertex() # cancello ultimo vertice reale
                   self.getPointMapTool().clear()
                   self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   self.getPointMapTool().setStartPoint(self.vertices[-1])
             elif value == QadMsg.translate("Command_PLINE", "CHiudi"):
                newPt = self.vertices[0]
@@ -347,7 +355,8 @@ class QadPLINECommandClass(QadCommandClass):
 
          elif type(value) == QgsPoint:
             self.addRealVertex(value) # aggiungo un nuovo vertice reale
-            self.getPointMapTool().setStartPoint(value)        
+            self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
+            self.getPointMapTool().setStartPoint(value)
          
          self.WaitForLineMenu()        
          if self.firstVertex:
@@ -382,6 +391,7 @@ class QadPLINECommandClass(QadCommandClass):
          newPt = qad_utils.getPolarPointByPtAngle(self.vertices[-1], self.getLastSegmentAng(), dist)
          self.addRealVertex(newPt) # aggiungo un nuovo vertice reale
 
+         self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
          self.getPointMapTool().setStartPoint(newPt)
          
          self.WaitForLineMenu()        
@@ -394,8 +404,10 @@ class QadPLINECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA "Selezionare l'oggetto nel punto finale di ricalco: " (da step = 1)
       elif self.step == 3:
+         entSelected = False
          if self.EntSelClass.run(msgMapTool, msg) == True:
             if self.EntSelClass.entity.isInitialized() and self.EntSelClass.point is not None:
+               entSelected = True
                # qad_debug.breakPoint()
                ptEnd = self.EntSelClass.point
                # cerco tutte le geometrie passanti per quel punto saltando i layer puntuali
@@ -425,7 +437,10 @@ class QadPLINECommandClass(QadCommandClass):
                self.EntSelClass = None
 
          self.WaitForLineMenu()
+         if entSelected:
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                              
          self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
+         self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
          self.getPointMapTool().setStartPoint(self.vertices[-1])
          
          return False
@@ -509,6 +524,7 @@ class QadPLINECommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_PLINE", "Linea"):
                self.mode = "LINE"
                #qad_debug.breakPoint()
+               self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che può essere variato dal maptool dell'arco
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                self.getPointMapTool().setStartPoint(self.vertices[-1])      
                self.WaitForLineMenu()              
@@ -536,6 +552,7 @@ class QadPLINECommandClass(QadCommandClass):
                if len(self.vertices) >= 2:
                   self.delLastRealVertex() # cancello ultimo vertice reale
                   self.getPointMapTool().clear()
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                   self.WaitForArcMenu()
          elif type(value) == QgsPoint: # è stato inserito il punto finale dell'arco
@@ -547,7 +564,8 @@ class QadPLINECommandClass(QadCommandClass):
                   if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
-                     self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+                     self.addArcVertices(points, True) # aggiungo i punti in ordine inverso
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea 
                                        
             self.WaitForArcMenu()
                        
@@ -642,6 +660,7 @@ class QadPLINECommandClass(QadCommandClass):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
                      self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                       
                   self.WaitForArcMenu()
                   return False
@@ -686,6 +705,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      
@@ -811,6 +831,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      
@@ -919,6 +940,7 @@ class QadPLINECommandClass(QadCommandClass):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
                      self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                      
                   self.WaitForArcMenu()
                   return False      
@@ -968,6 +990,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      
@@ -1015,6 +1038,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      
@@ -1091,6 +1115,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      
@@ -1224,6 +1249,7 @@ class QadPLINECommandClass(QadCommandClass):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
                      self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+                  self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                      
             self.WaitForArcMenu()
                        
@@ -1302,6 +1328,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                
                self.WaitForArcMenu()
                return False      
@@ -1379,6 +1406,7 @@ class QadPLINECommandClass(QadCommandClass):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
                   self.addArcVertices(points, True) # aggiungo i punti in ordine inverso 
+               self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   
                self.WaitForArcMenu()
                return False      

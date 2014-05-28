@@ -64,7 +64,10 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = int(0)     
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORSIZE")
-      self.__VariableValuesDict[VariableName] = int(5)
+      self.__VariableValuesDict[VariableName] = int(5)      
+      # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente (path completa del file di stile)
+      VariableName = QadMsg.translate("Environment variables", "DIMSTYLE")
+      self.__VariableValuesDict[VariableName] = ""      
       # EDGEMODE (int): Controlla i comandi ESTENDI e TAGLIA.
       # O = Vengono usate le dimensioni reali degli oggetti di riferimento
       # 1 = Vengono usate le estensioni  degli oggetti di riferimento (es. un arco viene considerato cerchio)
@@ -179,9 +182,11 @@ class QadVariablesClass():
       if Path == "":
          # Se la path non è indicata uso il file "qad.ini" in 
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
-         if not QDir(Path).exists():
-            os.makedirs(Path)
          Path = Path + "qad.ini"
+      
+      dir = QFileInfo(Path).absoluteDir()
+      if not dir.exists():
+         os.makedirs(dir.absolutePath())
        
       file = open(Path, "w") # apre il file in scrittura
       for VarName in self.__VariableValuesDict.keys():

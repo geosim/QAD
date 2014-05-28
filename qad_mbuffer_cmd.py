@@ -176,6 +176,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
             return self.run(msgMapTool, msg)
       
       #=========================================================================

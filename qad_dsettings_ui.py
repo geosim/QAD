@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Wed Mar 05 08:56:49 2014
+# Created: Fri Apr 04 15:28:08 2014
 #      by: PyQt4 UI code generator 4.8.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,6 +17,7 @@ except AttributeError:
 class Ui_DSettings_Dialog(object):
     def setupUi(self, DSettings_Dialog):
         DSettings_Dialog.setObjectName(_fromUtf8("DSettings_Dialog"))
+        DSettings_Dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         DSettings_Dialog.resize(441, 455)
         DSettings_Dialog.setMouseTracking(True)
         DSettings_Dialog.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
@@ -180,9 +181,9 @@ class Ui_DSettings_Dialog(object):
         self.checkBox_NEARP.setTristate(False)
         self.checkBox_NEARP.setObjectName(_fromUtf8("checkBox_NEARP"))
         self.gridLayout_2.addWidget(self.checkBox_NEARP, 6, 1, 1, 1)
-        self.checkBox_IsOnapON = QtGui.QCheckBox(self.tab_1)
-        self.checkBox_IsOnapON.setGeometry(QtCore.QRect(10, 10, 126, 17))
-        self.checkBox_IsOnapON.setObjectName(_fromUtf8("checkBox_IsOnapON"))
+        self.checkBox_IsOsnapON = QtGui.QCheckBox(self.tab_1)
+        self.checkBox_IsOsnapON.setGeometry(QtCore.QRect(10, 10, 126, 17))
+        self.checkBox_IsOsnapON.setObjectName(_fromUtf8("checkBox_IsOsnapON"))
         self.tabWidget.addTab(self.tab_1, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -216,7 +217,7 @@ class Ui_DSettings_Dialog(object):
         self.horizontalLayout.addWidget(self.pushButton_HELP)
 
         self.retranslateUi(DSettings_Dialog)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), DSettings_Dialog.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), DSettings_Dialog.ButtonBOX_Accepted)
         QtCore.QObject.connect(self.pushButton_DeSelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonDeselectALL_Pressed)
@@ -326,7 +327,7 @@ class Ui_DSettings_Dialog(object):
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Vicino: punto di un segmento in prossimità della posizione del cursore.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NEARP.png\" /></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_NEARP.setText(QtGui.QApplication.translate("DSettings_Dialog", "Vicino", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox_IsOnapON.setText(QtGui.QApplication.translate("DSettings_Dialog", "Snap ad oggetto (F3)", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_IsOsnapON.setText(QtGui.QApplication.translate("DSettings_Dialog", "Snap ad oggetto (F3)", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), QtGui.QApplication.translate("DSettings_Dialog", "Snap ad oggetto", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_PolarPickPoint.setText(QtGui.QApplication.translate("DSettings_Dialog", "Puntamento polare (F10)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("DSettings_Dialog", "Impostazioni angoli polari", None, QtGui.QApplication.UnicodeUTF8))

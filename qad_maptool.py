@@ -145,7 +145,7 @@ class QadMapTool(QgsMapTool):
                if icon is None:
                   lastCmdAction = QAction(msg, self.popupMenu)
                else:
-                  lastCmdAction = QAction(cmd.getIcon(), msg, self.popupMenu)
+                  lastCmdAction = QAction(icon, msg, self.popupMenu)
                cmd.connectQAction(lastCmdAction)      
                self.popupMenu.addAction(lastCmdAction)     
             else:
@@ -157,7 +157,7 @@ class QadMapTool(QgsMapTool):
                if icon is None:
                   recentCmdAction = QAction(cmd.getName(), recentCmdsMenu)
                else:
-                  recentCmdAction = QAction(cmd.getIcon(), cmd.getName(), recentCmdsMenu)                  
+                  recentCmdAction = QAction(icon, cmd.getName(), recentCmdsMenu)                  
                cmd.connectQAction(recentCmdAction)      
                recentCmdsMenu.addAction(recentCmdAction)
       
