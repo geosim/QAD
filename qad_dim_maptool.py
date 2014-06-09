@@ -48,12 +48,13 @@ class Qad_dim_maptool_ModeEnum():
    NONE_KNOWN_ASK_FOR_FIRST_PT = 1     
    # noto il primo punto si richiede il secondo punto di quotatura
    FIRST_PT_KNOWN_ASK_FOR_SECOND_PT = 2     
-   # noto i punti di quotatura si richiede la posizione della linea di quota
+   # noto i punti di quotatura si richiede la posizione della linea di quota lineare
    FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS = 3     
-   # noto il primo e il secondo punto si richiede il terzo punto
-   FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT = 6
-   # noto niente si richiede il primo punto di estremità diam
-   NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT = 7
+   # si richiede il testo di quota
+   ASK_FOR_TEXT = 6
+   # noto i punti di quotatura si richiede la posizione della linea di quota allineata
+   FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS = 7
+
    # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
    FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT = 8
    # noto niente si richiede l'entita del primo punto di tangenza
@@ -77,8 +78,13 @@ class Qad_dim_maptool(QadGetPoint):
       dimStyle = None
       self.dimPt1 = None
       self.dimPt2 = None
-      self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
-      self.measure = None # calcolato dalla grafica
+      self.dimCircle = None
+      
+      self.forcedTextRot = None # rotazione del testo di quota
+      self.measure = None # misura della quota (se None viene calcolato)
+      self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL # allineamento della linea di quota
+      self.forcedDimLineAlignment = None # allineamento della linea di quota forzato
+      self.forcedDimLineRot = 0.0 # rotazione della linea di quota forzato
       
       self.__rubberBand = QadRubberBand(self.canvas)      
                               
@@ -106,6 +112,85 @@ class Qad_dim_maptool(QadGetPoint):
       self.__rubberBand.reset()
       self.mode = None    
             
+
+   def seDimLineAlignment(self, LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2):
+      # < 0 se a sinistra della linea
+      sxOfHorizLine1 = True if qad_utils.leftOfLine(LinePosPt, horizLine1[0], horizLine1[1]) < 0 else False
+      sxOfHorizLine2 = True if qad_utils.leftOfLine(LinePosPt, horizLine2[0], horizLine2[1]) < 0 else False
+      
+      sxOfVerticalLine1 = True if qad_utils.leftOfLine(LinePosPt, verticalLine1[0], verticalLine1[1]) < 0 else False
+      sxOfVerticalLine2 = True if qad_utils.leftOfLine(LinePosPt, verticalLine2[0], verticalLine2[1]) < 0 else False
+      
+      # se LinePosPt è tra le linee di limite orizzontale e non è tra le linee di limite verticale      
+      if sxOfHorizLine1 != sxOfHorizLine2 and sxOfVerticalLine1 == sxOfVerticalLine2:
+         self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
+      # se LinePosPt non è tra le linee di limite orizzontale ed è tra le linee di limite verticale      
+      elif sxOfHorizLine1 == sxOfHorizLine2 and sxOfVerticalLine1 != sxOfVerticalLine2:
+         self.preferredAlignment = QadDimStyleAlignmentEnum.VERTICAL
+      
+      return
+            
+
+   #============================================================================
+   # setLinearDimPtsAndDimLineAlignmentOnCircle
+   #============================================================================
+   def setLinearDimPtsAndDimLineAlignmentOnCircle(self, LinePosPt, circle):
+      pt1 = qad_utils.getPolarPointByPtAngle(circle.center, self.forcedDimLineRot, circle.radius)
+      pt2 = qad_utils.getPolarPointByPtAngle(pt1, self.forcedDimLineRot + math.pi / 2, circle.radius)
+      horizLine1 = [pt1, pt2]
+      
+      pt1 = qad_utils.getPolarPointByPtAngle(circle.center, self.forcedDimLineRot, -1 * circle.radius)
+      pt2 = qad_utils.getPolarPointByPtAngle(pt1, self.forcedDimLineRot + math.pi / 2, circle.radius)
+      horizLine2 = [pt1, pt2]
+      
+      pt1 = qad_utils.getPolarPointByPtAngle(circle.center, self.forcedDimLineRot + math.pi / 2, circle.radius)
+      pt2 = qad_utils.getPolarPointByPtAngle(pt1, self.forcedDimLineRot, circle.radius)
+      verticalLine1 = [pt1, pt2]
+      
+      pt1 = qad_utils.getPolarPointByPtAngle(circle.center, self.forcedDimLineRot + math.pi / 2, -1 * circle.radius)
+      pt2 = qad_utils.getPolarPointByPtAngle(pt1, self.forcedDimLineRot, circle.radius)
+      verticalLine2 = [pt1, pt2]
+      
+      # se non è stato impostato un allineamento forzato, lo calcolo in automatico
+      if self.forcedDimLineAlignment is None:         
+         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+      else:
+         self.preferredAlignment = self.forcedDimLineAlignment
+         
+      if self.preferredAlignment == QadDimStyleAlignmentEnum.HORIZONTAL:
+         self.dimPt1 = horizLine1[0]
+         self.dimPt2 = horizLine2[0]
+      else:
+         self.dimPt1 = verticalLine1[0]
+         self.dimPt2 = verticalLine2[0]
+         
+
+   #============================================================================
+   # setLinearDimLineAlignmentOnDimPts
+   #============================================================================
+   def setLinearDimLineAlignmentOnDimPts(self, LinePosPt):      
+      # se non è stato impostato un allineamento forzato, lo calcolo in automatico
+      if self.forcedDimLineAlignment is None:         
+         pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt1, self.forcedDimLineRot + math.pi / 2, 1)
+         horizLine1 = [self.dimPt1, pt2]
+         
+         pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt2, self.forcedDimLineRot + math.pi / 2, 1)
+         horizLine2 = [self.dimPt2, pt2]
+         
+         pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt1, self.forcedDimLineRot, 1)
+         verticalLine1 = [self.dimPt1, pt2]
+         
+         pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt2, self.forcedDimLineRot, 1)
+         verticalLine2 = [self.dimPt2, pt2]
+         
+         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+      else:
+         self.preferredAlignment = self.forcedDimLineAlignment
+            
+            
+   #============================================================================
+   # canvasMoveEvent
+   #============================================================================
    def canvasMoveEvent(self, event):
       #qad_debug.breakPoint()
       QadGetPoint.canvasMoveEvent(self, event)
@@ -120,43 +205,35 @@ class Qad_dim_maptool(QadGetPoint):
       extLineFeatures = [None, None]
       txtLeaderLineFeature = None
       
-      # noto i punti di quotatura si richiede la posizione della linea di quota
+      # noti i punti di quotatura si richiede la posizione della linea di quota lineare
       if self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS:
-         if self.dimPt1.x() < self.dimPt2.x():
-            minX = self.dimPt1.x()
-            maxX = self.dimPt2.x()
+         if self.dimCircle is not None:
+            self.setLinearDimPtsAndDimLineAlignmentOnCircle(self.tmpPoint, self.dimCircle)
          else:
-            maxX = self.dimPt1.x()
-            minX = self.dimPt2.x()
-            
-         if self.dimPt1.y() < self.dimPt2.y():
-            minY = self.dimPt1.y()
-            maxY = self.dimPt2.y()
-         else:
-            maxY = self.dimPt1.y()
-            minY = self.dimPt2.y()
-
-         #qad_debug.breakPoint()
-         if (self.tmpPoint.x() > minX and self.tmpPoint.x() < maxX) and \
-            (self.tmpPoint.y() > maxY or self.tmpPoint.y() < minY):
-            self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
-         elif (self.tmpPoint.x() > maxX or self.tmpPoint.x() < minX) and \
-              (self.tmpPoint.y() > minY and self.tmpPoint.y() < maxY):
-            self.preferredAlignment = QadDimStyleAlignmentEnum.VERTICAL
-         elif minY == maxY: # linea di quota orizzontale
-            self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
-         elif minX == maxX: # linea di quota verticale
-            self.preferredAlignment = QadDimStyleAlignmentEnum.VERTICAL
-         
+            self.setLinearDimLineAlignmentOnDimPts(self.tmpPoint)
+                     
          dimPtFeatures, dimLineFeatures, textFeatureGeom, \
          blockFeatures, extLineFeatures, txtLeaderLineFeature = self.dimStyle.getLinearDimFeatures(self.canvas, \
                                                                                                    self.dimPt1, \
                                                                                                    self.dimPt2, \
                                                                                                    self.tmpPoint, \
                                                                                                    self.measure, \
-                                                                                                   self.preferredAlignment)
+                                                                                                   self.preferredAlignment, \
+                                                                                                   self.forcedDimLineRot)
          textFeature = textFeatureGeom[0]
          textRectGeom = textFeatureGeom[1]
+      # noti i punti di quotatura si richiede la posizione della linea di quota allineata
+      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:                     
+         dimPtFeatures, dimLineFeatures, textFeatureGeom, \
+         blockFeatures, extLineFeatures, txtLeaderLineFeature = self.dimStyle.getAlignedDimFeatures(self.canvas, \
+                                                                                                    self.dimPt1, \
+                                                                                                    self.dimPt2, \
+                                                                                                    self.tmpPoint, \
+                                                                                                    self.measure)
+         textFeature = textFeatureGeom[0]
+         textRectGeom = textFeatureGeom[1]
+
+         
       # punti di quotatura
       if dimPtFeatures[0] is not None:
          items.append([dimPtFeatures[0].geometry(), self.dimStyle.symbolLayer])
@@ -214,9 +291,14 @@ class Qad_dim_maptool(QadGetPoint):
       # noto i punti di quotatura si richiede la posizione della linea di quota
       elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
-      # noto il primo e il secondo punto si richiede il terzo punto
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT:     
+      # si richiede il testo di quota
+      elif self.mode == Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
+      # noti i punti di quotatura si richiede la posizione della linea di quota allineata
+      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:
+         self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
+         
+         
       # noto niente si richiede il primo punto di estremità diam
       elif self.mode == Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)                 

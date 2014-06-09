@@ -75,6 +75,46 @@
         <source>Specificare punto iniziale dell&apos;arco: </source>
         <translation>Specify the start point of the arc: </translation>
     </message>
+    <message>
+        <source>Arco passante per 3 punti</source>
+        <translation>Arc passing through 3 points</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e finale</source>
+        <translation>Arc defined by start, central and final points</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e angolo</source>
+        <translation>Arc defined by start, central points and angle</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e lunghezza corda</source>
+        <translation>Arc defined by start, central points and cord length</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e angolo</source>
+        <translation>Arc defined by start, final points and angle</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e direzione tangente</source>
+        <translation>Arc defined by start, final points and tangent</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e raggio</source>
+        <translation>Arc defined by start, final points and radius</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e finale</source>
+        <translation>Arc defined by central, start and final points</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e angolo</source>
+        <translation>Arc defined by central, start points and angle</translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e lunghezza corda</source>
+        <translation>Arc defined by central, start points and cord length</translation>
+    </message>
 </context>
 <context>
     <name>Command_BREAK</name>
@@ -196,6 +236,30 @@ The circle doesn&apos;t exist.</translation>
         <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
         <translation>Enter circle area in current unit &lt;{0}&gt;: </translation>
     </message>
+    <message>
+        <source>Cerchio definito da un punto centrale e un raggio</source>
+        <translation>Circle defined by central point and radius</translation>
+    </message>
+    <message>
+        <source>Cerchio definito da un punto centrale e un diametro</source>
+        <translation>Circle defined by central point and diameter</translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 2 punti</source>
+        <translation>Circle defined by 2 points</translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 3 punti</source>
+        <translation>Circle defined by 3 points</translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 2 punti di tangenza e un raggio</source>
+        <translation>Circle defined by 2 tangent points and radius</translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 3 punti di tangenza</source>
+        <translation>Circle defined by 3 tangent points</translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -244,20 +308,12 @@ The circle doesn&apos;t exist.</translation>
         <translation>Specify second point or [Array/Exit/Undo] &lt;Exit&gt;: </translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento&gt;: </source>
-        <translation>Specify second point or [Array] &lt;use first point as displacement&gt;: </translation>
-    </message>
-    <message>
         <source>Adatta</source>
         <translation>Fit</translation>
     </message>
     <message>
         <source>Specificare il secondo punto o [{0}]: </source>
         <translation>Specify second point or [{0}]: </translation>
-    </message>
-    <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
-        <translation>Specify displacement &lt;{0}, {1}&gt;: </translation>
     </message>
     <message>
         <source>Singola</source>
@@ -284,6 +340,14 @@ The value must be between 2 and 32767.</translation>
     <message>
         <source>Copia modalità = Singola</source>
         <translation>Copy mode = Single</translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
+    </message>
+    <message>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <translation>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;:</translation>
     </message>
 </context>
 <context>
@@ -335,6 +399,54 @@ The value must be between 2 and 32767.</translation>
     <message>
         <source>Crea una quota allineata.</source>
         <translation>Creates an aligned linear dimension.</translation>
+    </message>
+    <message>
+        <source>Digitare il testo di quota &lt;{0}&gt;: </source>
+        <translation>Enter dimension text &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo del testo di quota &lt;{0}&gt;: </source>
+        <translation>Specify angle of dimension text &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo della linea di quota &lt;{0}&gt;: </source>
+        <translation>Specify angle of dimension line &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della linea di quota o [Testo/Angolo]: </source>
+        <translation>Specify dimension line location or [Text/Angle]: </translation>
+    </message>
+    <message>
+        <source>Crea una quota per la lunghezza di un arco.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare l&apos;arco da quotare: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parziale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direttrice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nessuna direttrice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare un arco.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -593,12 +705,12 @@ I punti devono essere distinti.</source>
         <translation>Specify base point or [Displacement] &lt;Displacement&gt;: </translation>
     </message>
     <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
-        <translation>Specify displacement &lt;{0}, {1}&gt;: </translation>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <translation>Specify the displacement fom the origin point 0,0 &lt;{0}, {1}&gt;: </translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento&gt;: </source>
-        <translation>Specify second point or &lt;use first point as displacement&gt;: </translation>
+        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation>Specify the second point or &lt;use first point as displacement from the origin point 0,0&gt;:</translation>
     </message>
 </context>
 <context>
@@ -1413,14 +1525,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Remove</translation>
     </message>
     <message>
-        <source>Selezionare oggetti</source>
-        <translation>Select Objects</translation>
-    </message>
-    <message>
-        <source>Rimuovere oggetti</source>
-        <translation>Remove objects</translation>
-    </message>
-    <message>
         <source> da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: </source>
         <translation> to stretch crossed by a selection window or [polygon/Add/Remove]: </translation>
     </message>
@@ -1441,12 +1545,20 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Window not correct.</translation>
     </message>
     <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
-        <translation>Specify displacement &lt;{0}, {1}&gt;: </translation>
+        <source>Selezionare i vertici</source>
+        <translation>Select vertices</translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento&gt;: </source>
-        <translation>Specify second point or &lt;use first point as displacement&gt;: </translation>
+        <source>Rimuovere i vertici</source>
+        <translation>Remove vertices</translation>
+    </message>
+    <message>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <translation>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;:</translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
     </message>
 </context>
 <context>
@@ -1568,6 +1680,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
         <translation>Reverses the effects of previous UNDO.</translation>
+    </message>
+    <message>
+        <source>Annulla l&apos;ultima operazione eseguita</source>
+        <translation>Undo last operation</translation>
     </message>
 </context>
 <context>
@@ -1695,6 +1811,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     <message>
         <source>DIMALLINEATA</source>
         <translation>DIMALIGNED</translation>
+    </message>
+    <message>
+        <source>ARCOQUOTA</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2005,6 +2125,64 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Intersection on extension OSnap: intersection point of the extensions of two segments.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
+    <message>
+        <source>Nessuno</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <source>Impostazioni snap ad oggetto...</source>
+        <translation>Object snap settings...</translation>
+    </message>
+</context>
+<context>
+    <name>Dimension</name>
+    <message>
+        <source>
+Lo stile di quotatura &quot;{0}&quot; </source>
+        <translation>Th dimension style &quot;{0}&quot; </translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per i testi delle quote.
+</source>
+        <translation>has not the textual layer for dimension.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote che non è di tipo testo.</source>
+        <translation>has the textual layer for dimension which is not a textual layer.</translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per i simboli delle quote.
+</source>
+        <translation>has not the symbol layer for dimension.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote che non è di tipo simbolo.</source>
+        <translation>has the symbol layer for dimension which is not a symbol layer.</translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per le linee delle quote.
+</source>
+        <translation>has not the linear layer for dimension.</translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote che non è di tipo linea.</source>
+        <translation>has the linear layer for dimension which is not a linear layer.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote non modificabile.
+</source>
+        <translation>has the textual layer not editable.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote non modificabile.
+</source>
+        <translation>has the symbol layer not editable.</translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote non modificabile.
+</source>
+        <translation>has the linear layer not editable.</translation>
+    </message>
 </context>
 <context>
     <name>Environment variables</name>
@@ -2088,6 +2266,14 @@ p, li { white-space: pre-wrap; }
         <source>TOLERANCE2APPROXCURVE</source>
         <translation>TOLERANCE2APPROXCURVE</translation>
     </message>
+    <message>
+        <source>SUPPORTPATH</source>
+        <translation>SUPPORTPATH</translation>
+    </message>
+    <message>
+        <source>DIMSTYLE</source>
+        <translation>DIMSTYLE</translation>
+    </message>
 </context>
 <context>
     <name>Popup_menu_graph_window</name>
@@ -2102,14 +2288,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QAD</name>
-    <message>
-        <source>
-Il layer corrente non è valido
-</source>
-        <translation>
-The current layer is not valid
-</translation>
-    </message>
     <message>
         <source>
 Comando sconosciuto &quot;{0}&quot;.</source>
@@ -2360,6 +2538,114 @@ Il layer corrente non è modificabile.
         <translation>
 The current layer is not editable.
 </translation>
+    </message>
+    <message>
+        <source>Disegna</source>
+        <translation>Draw</translation>
+    </message>
+    <message>
+        <source>Edita</source>
+        <translation>Edit</translation>
+    </message>
+    <message>
+        <source>Strumenti</source>
+        <translation>Tools</translation>
+    </message>
+    <message>
+        <source>Quotatura</source>
+        <translation>Dimension</translation>
+    </message>
+    <message>
+        <source>QAD - Quotatura</source>
+        <translation>QAD - Dimension</translation>
+    </message>
+    <message>
+        <source>
+&lt;Snap attivato&gt;</source>
+        <translation>
+&lt;Snap on&gt;</translation>
+    </message>
+    <message>
+        <source>
+&lt;Snap disattivato&gt;</source>
+        <translation>
+&lt;Snap off&gt;</translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità ortogonale attivata&gt;</source>
+        <translation>
+&lt;Ortho on&gt;</translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità ortogonale disattivata&gt;</source>
+        <translation>
+&lt;Ortho off&gt;</translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità polare attivata&gt;</source>
+        <translation>
+&lt;Polar on&gt;</translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità polare disattivata&gt;</source>
+        <translation>
+&lt;Polar off&gt;</translation>
+    </message>
+    <message>
+        <source>
+Un layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+</source>
+        <translation>
+A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.
+</translation>
+    </message>
+    <message>
+        <source>
+Un layer simbolo è un layer vettoriale di tipo punto senza etichetta.
+</source>
+        <translation>
+A symbol layer is a vectorial punctual layer without label.
+</translation>
+    </message>
+    <message>
+        <source>
+Stile di quotatura corrente non valido.
+Verificare il valore della variabile DIMSTYLE.
+</source>
+        <translation>
+Dimension style not valid.
+Verify the value of DIMSTYLE variable.
+</translation>
+    </message>
+    <message>
+        <source>
+Il comando è stato completamente annullato.</source>
+        <translation>
+The command has been completely undone.</translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non è di tipo simbolo.</source>
+        <translation>
+Current layer is not a symbol layer.</translation>
+    </message>
+    <message>
+        <source>
+Nessun layer corrente.
+</source>
+        <translation>
+No current layer.
+</translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non è di tipo testo.</source>
+        <translation>
+Current layer is not a textual layer.</translation>
     </message>
 </context>
 <context>

@@ -95,6 +95,7 @@ class QadEntity():
       #qad_debug.breakPoint()  
       self.layer = layer # il layer non si può copiare
       self.featureId = featureId # copio l'identificativo di feature
+      return self
 
 
    def getFeature(self):
@@ -124,6 +125,16 @@ class QadEntity():
       return feature.setGeometry(geom)
 
 
+   def getAttribute(self, attribName):
+      feature = self.getFeature()
+      if feature is None:
+         return None
+      try:
+         return feature.attribute(attribName)
+      except:
+         return None
+
+   
    def getAttributes(self):
       feature = self.getFeature()
       if feature is None:
@@ -449,12 +460,16 @@ class QadEntitySet():
 
 
    def findLayerEntitySet(self, layer):
-      if type(layer) == QgsVectorLayer:
+      if layer is None:
+         return None
+      if type(layer) == QgsVectorLayer: # layer
+         return self.findLayerEntitySet(layer.id())     
+      elif type(layer) == unicode: # id del layer
          for layerEntitySet in self.layerEntitySetList:
-            if layerEntitySet.layerId() == layer.id():
+            if layerEntitySet.layerId() == layer:
                return layerEntitySet
          return None
-      else:
+      else: # QadEntitySet
          return self.findLayerEntitySet(layer.layer)     
 
 

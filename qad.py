@@ -36,13 +36,14 @@ import qad_debug
 import qad_utils
 from qad_maptool import QadMapTool
 from qad_variables import *
+from qad_dim import *
 from qad_textwindow import *
 from qad_commands import *
 from qad_entity import *
 import qad_layer
 import qad_undoredo
 
-class Qad:
+class Qad(QObject):
    """
    Classe plug in di Qad
    """
@@ -100,8 +101,14 @@ class Qad:
    # modalità di raccordo in comando raccordo
    filletMode = 1 # 1=Taglia-estendi, 2=Non taglia-estendi
 
-   # flag per identificare se la modifica ad un layer è fatta fuori da QAD
-   isQadCmdActive = False
+   # flag per identificare se un comando di QAD è attivo oppure no
+   isQadActive = False
+   
+   # Quotatura
+   dimStyles = QadDimStyles()                 # lista degli stili di quotatura
+   dimTextEntitySetRecodeOnSave = QadLayerEntitySet() # entity set dei testi delle quote da riallineare in salvataggio
+   beforeCommitChangesDimLayer = None         # layer da cui è scaturito il salvataggio delle quotature
+   isSaveControlledByQAD = False
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
       # memorizzo il coeff angolare ultimo segmento e l'ultimo punto selezionato
@@ -223,8 +230,9 @@ class Qad:
    # __init__
    #============================================================================
    def __init__(self, iface):
-      QadVariables.load()
-
+      
+      QObject.__init__(self)      
+      
       # Save reference to the QGIS interface
       self.iface = iface
       
@@ -246,13 +254,18 @@ class Qad:
                   
       self.canvas = self.iface.mapCanvas()
       self.tool = QadMapTool(self)
+      
+      # carico le variabili d'ambiente
+      QadVariables.load()
+      # carico gli stili di quotatura
+      self.dimStyles.load()
+      
       # Lista dei comandi
       self.QadCommands = QadCommandsClass(self)
       # Gestore di Undo/Redo
       self.undoStack = qad_undoredo.QadUndoStack()
 
    def initGui(self):
-                  
       # creao tutte le azioni e le collego ai comandi
       self.initActions()
 
@@ -726,6 +739,109 @@ class Qad:
 
 
    #============================================================================
+   # INIZIO - Gestione Layer
+   #============================================================================
+
+
+   def layerAdded(self, layer):
+      #qad_debug.breakPoint()
+      QObject.connect(layer, SIGNAL("layerModified()"), self.layerModified)
+      QObject.connect(layer, SIGNAL("beforeCommitChanges()"), self.beforeCommitChanges)
+      QObject.connect(layer, SIGNAL("committedFeaturesAdded(QString, QgsFeatureList)"), self.committedFeaturesAdded)
+      # vedi qgsvectorlayer.cpp funzione QgsVectorLayer::commitChanges()
+      # devo predere l'ultimo segnale vhe viene emesso dal salvataggio QGIS
+      # questo segnale arriva alla fine del salvataggio di un layer dalla versione 2.3 di QGIS
+      #QObject.connect(layer, SIGNAL("repaintRequested()"), self.repaintRequested)
+      # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
+      QObject.connect(layer, SIGNAL("editingStopped()"), self.editingStopped)      
+     
+      
+   def removeLayer(self, layerId):
+      # viene rimosso un layer quindi lo tolgo dallo stack
+      self.undoStack.clearByLayer(layerId)
+      self.enableUndoRedoButtons()
+
+
+   def editingStopped(self):
+      # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
+      # se bisogna fare la ricodifica delle quote
+      if self.dimTextEntitySetRecodeOnSave.isEmpty() == False:
+         qad_debug.breakPoint()
+         # ricavo lo stile di quotatura
+         _dimStyle = self.dimStyles.getDimByLayer(self.dimTextEntitySetRecodeOnSave.layer)
+         # salvo gli oggetti di quello stile di quotatura aggiornando i reference
+         dimStyle = QadDimStyle(_dimStyle) # lo copio così inizializzo i layer
+         self.isSaveControlledByQAD = True
+         # ricodifica          
+         dimStyle.updateTextReferencesOnSave(self, self.dimTextEntitySetRecodeOnSave.getFeatureCollection())
+         self.dimTextEntitySetRecodeOnSave.clear()
+         # salvataggio
+         dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+         self.beforeCommitChangesDimLayer = None
+         self.isSaveControlledByQAD = False
+         dimStyle.startEditing()
+
+
+   def repaintRequested(self):
+      # questo segnale arriva alla fine del salvataggio di un layer dalla versione 2.3 di QGIS
+      # se bisogna fare la ricodifica delle quote
+      if self.dimTextEntitySetRecodeOnSave.isEmpty() == False:
+         #qad_debug.breakPoint()
+         # ricavo lo stile di quotatura
+         _dimStyle = self.dimStyles.getDimByLayer(self.dimTextEntitySetRecodeOnSave.layer)
+         # salvo gli oggetti di quello stile di quotatura aggiornando i reference
+         dimStyle = QadDimStyle(_dimStyle) # lo copio così inizializzo i layer
+         self.isSaveControlledByQAD = True
+         # ricodifica          
+         dimStyle.updateTextReferencesOnSave(self, self.dimTextEntitySetRecodeOnSave.getFeatureCollection())
+         self.dimTextEntitySetRecodeOnSave.clear()
+         # salvataggio
+         dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+         self.beforeCommitChangesDimLayer = None
+         self.isSaveControlledByQAD = False
+         dimStyle.startEditing()
+
+      
+   def beforeCommitChanges(self):
+      if self.isSaveControlledByQAD == False:      
+         layer = self.sender()
+         # verifico se il layer che si sta per salvare appartiene ad uno stile di quotatura
+         _dimStyle = self.dimStyles.getDimByLayer(layer)
+         if _dimStyle is not None:
+            dimStyle = QadDimStyle(_dimStyle) # lo copio così inizializzo i layer
+            if dimStyle.textLayer.id() != layer.id(): # se non si tratta del layer dei testi di quota
+               self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui è scaturito il salvataggio delle quotature
+               self.isSaveControlledByQAD = True
+               #qad_debug.breakPoint()
+               dimStyle.textCommitChangesOnSave() # salvo i testi delle quote per ricodifica ID
+               dimStyle.startEditing()
+               self.isSaveControlledByQAD = False
+
+      
+   def committedFeaturesAdded(self, layerId, addedFeatures):
+      #qad_debug.breakPoint()
+      layer = qad_layer.getLayerById(layerId)    
+      # verifico se il layer che è stato salvato appartiene ad uno stile di quotatura
+      _dimStyle = self.dimStyles.getDimByLayer(layer)
+      if _dimStyle is not None:
+         dimStyle = QadDimStyle(_dimStyle) # lo copio così inizializzo i layer
+         # se si tratta del layer testuale delle quote
+         if dimStyle.textLayer.id() == layerId:
+            # mi memorizzo le features testuali da riallineare 
+            self.dimTextEntitySetRecodeOnSave.set(dimStyle.textLayer, addedFeatures)
+
+
+   def layerModified(self):
+      if self.isQadActive == False:
+         #qad_debug.breakPoint()
+         # la modifica fatta su quel layer è stata fatta dall'esterno di QAD
+         # quindi ho perso la sincronizzazione con lo stack di undo di QAD che
+         # viene svuotato perchè ormai inutilizzabile
+         self.undoStack.clear()
+         self.enableUndoRedoButtons()
+   
+
+   #============================================================================
    # INIZIO - Gestione UNDO e REDO
    #============================================================================
 
@@ -734,25 +850,7 @@ class Qad:
       self.undo_action.setEnabled(self.undoStack.isUndoAble())
       self.u_action.setEnabled(self.undoStack.isUndoAble())
       self.redo_action.setEnabled(self.undoStack.isRedoAble())
-      
-   def layerAdded(self, layer):
-      #qad_debug.breakPoint()
-      QObject.connect(layer, SIGNAL("layerModified()"), self.layerModified)
 
-   def removeLayer(self, layerId):
-      # viene rimosso un layer quindi lo tolgo dallo stack
-      self.undoStack.clearByLayer(layerId)
-      self.enableUndoRedoButtons()
-
-   def layerModified(self):
-      if self.isQadCmdActive == False:
-         #qad_debug.breakPoint()
-         # la modifica fatta su quel layer è stata fatta dall'esterno di QAD
-         # quindi ho perso la sincronizzazione con lo stack di undo di QAD che
-         # viene svuotato perchè ormai inutilizzabile
-         self.undoStack.clear()
-         self.enableUndoRedoButtons()
-   
    def beginEditCommand(self, text, layerList):
       if type(layerList) == list or type(layerList) == tuple:
          # layerList è una lista di layer
@@ -762,27 +860,27 @@ class Qad:
          self.undoStack.beginEditCommand(text, [layerList])
          
    def destroyEditCommand(self):
-      self.isQadCmdActive = True
+      self.isQadActive = True
       self.undoStack.destroyEditCommand()
-      self.isQadCmdActive = False
+      self.isQadActive = False
       self.enableUndoRedoButtons()
       
    def endEditCommand(self):
-      self.isQadCmdActive = True
+      self.isQadActive = True
       self.undoStack.endEditCommand(self.canvas)
-      self.isQadCmdActive = False
+      self.isQadActive = False
       self.enableUndoRedoButtons()
       
    def undoEditCommand(self, nTimes = 1):      
-      self.isQadCmdActive = True
+      self.isQadActive = True
       self.undoStack.undoEditCommand(self.canvas, nTimes)
-      self.isQadCmdActive = False
+      self.isQadActive = False
       self.enableUndoRedoButtons()
       
    def redoEditCommand(self, nTimes = 1):      
-      self.isQadCmdActive = True
+      self.isQadActive = True
       self.undoStack.redoEditCommand(self.canvas, nTimes)
-      self.isQadCmdActive = False
+      self.isQadActive = False
       self.enableUndoRedoButtons()
 
    def addLayerToLastEditCommand(self, text, layer):
@@ -801,9 +899,9 @@ class Qad:
       return self.undoStack.getPrevBookmarkPos(self.undoStack.index)
    
    def undoUntilBookmark(self):
-      self.isQadCmdActive = True
+      self.isQadActive = True
       self.undoStack.undoUntilBookmark(self.canvas)
-      self.isQadCmdActive = False
+      self.isQadActive = False
       self.enableUndoRedoButtons()
 
       

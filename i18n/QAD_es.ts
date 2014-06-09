@@ -75,6 +75,46 @@
         <source>Specificare punto iniziale dell&apos;arco: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Arco passante per 3 punti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e finale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e angolo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, centrale e lunghezza corda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e angolo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e direzione tangente</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto iniziale, finale e raggio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e finale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e angolo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arco definito da un punto centrale, iniziale e lunghezza corda</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_BREAK</name>
@@ -195,6 +235,30 @@ Il cerchio non esiste.</source>
         <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cerchio definito da un punto centrale e un raggio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cerchio definito da un punto centrale e un diametro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 2 punti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 3 punti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 2 punti di tangenza e un raggio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cerchio definito da 3 punti di tangenza</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -243,19 +307,11 @@ Il cerchio non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Adatta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Specificare il secondo punto o [{0}]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -281,6 +337,14 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
     </message>
     <message>
         <source>Copia modalità = Singola</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -332,6 +396,54 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
     </message>
     <message>
         <source>Crea una quota allineata.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare il testo di quota &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo del testo di quota &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo della linea di quota &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della linea di quota o [Testo/Angolo]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Crea una quota per la lunghezza di un arco.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare l&apos;arco da quotare: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parziale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direttrice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nessuna direttrice</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare un arco.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -589,11 +701,11 @@ I punti devono essere distinti.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento&gt;: </source>
+        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1396,14 +1508,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rimuovere oggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1424,11 +1528,19 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lo spostamento &lt;{0}, {1}&gt;: </source>
+        <source>Selezionare i vertici</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento&gt;: </source>
+        <source>Rimuovere i vertici</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1550,6 +1662,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annulla l&apos;ultima operazione eseguita</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1677,6 +1793,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>DIMALLINEATA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARCOQUOTA</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1918,6 +2038,64 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Nessuno</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Impostazioni snap ad oggetto...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Dimension</name>
+    <message>
+        <source>
+Lo stile di quotatura &quot;{0}&quot; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per i testi delle quote.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote che non è di tipo testo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per i simboli delle quote.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote che non è di tipo simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>non ha impostato il layer per le linee delle quote.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote che non è di tipo linea.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote non modificabile.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote non modificabile.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote non modificabile.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Environment variables</name>
@@ -2001,6 +2179,14 @@ p, li { white-space: pre-wrap; }
         <source>TOLERANCE2APPROXCURVE</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>SUPPORTPATH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIMSTYLE</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Popup_menu_graph_window</name>
@@ -2015,12 +2201,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QAD</name>
-    <message>
-        <source>
-Il layer corrente non è valido
-</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>
 Comando sconosciuto &quot;{0}&quot;.</source>
@@ -2235,6 +2415,96 @@ Il tipo di geometria del layer corrente è {0} e non è valido.
         <source>
 Il layer corrente non è modificabile.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disegna</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edita</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strumenti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quotatura</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Quotatura</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Snap attivato&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Snap disattivato&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità ortogonale attivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità ortogonale disattivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità polare attivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;Modalità polare disattivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Un layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Un layer simbolo è un layer vettoriale di tipo punto senza etichetta.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Stile di quotatura corrente non valido.
+Verificare il valore della variabile DIMSTYLE.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il comando è stato completamente annullato.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non è di tipo simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Nessun layer corrente.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non è di tipo testo.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

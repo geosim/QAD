@@ -125,6 +125,7 @@ class QadCircle():
       return qad_utils.doubleNear(self.radius, dist)
 
    def getQuadrantPoints(self):
+      # ritorna i punti quadranti: pt in alto, pt in basso, a destra, a sinistra del centro
       pt1 = QgsPoint(self.center.x(), self.center.y() + self.radius)
       pt2 = QgsPoint(self.center.x(), self.center.y()- self.radius)
       pt3 = QgsPoint(self.center.x() + self.radius, self.center.y())

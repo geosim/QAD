@@ -173,6 +173,8 @@ class QadINSERTCommandClass(QadCommandClass):
             # se la rotazione dipende da un campo 
             rotFldName = qad_layer.get_symbolRotationFieldName(currLayer)
             if len(rotFldName) > 0:
+               if self.GetAngleClass is not None:
+                  del self.GetAngleClass                  
                # si appresta ad attendere l'angolo di rotazione                      
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
                prompt = QadMsg.translate("Command_INSERT", "Specificare la rotazione del simbolo <{0}>: ")
@@ -200,6 +202,8 @@ class QadINSERTCommandClass(QadCommandClass):
                # se la rotazione dipende da un campo 
                rotFldName = qad_layer.get_symbolRotationFieldName(currLayer)
                if len(rotFldName) > 0:
+                  if self.GetAngleClass is not None:
+                     del self.GetAngleClass                  
                   # si appresta ad attendere l'angolo di rotazione                      
                   self.GetAngleClass = QadGetAngleClass(self.plugIn)
                   prompt = QadMsg.translate("Command_INSERT", "Specificare la rotazione del simbolo <{0}>: ")

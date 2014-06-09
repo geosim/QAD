@@ -65,7 +65,7 @@ class QadVariablesClass():
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORSIZE")
       self.__VariableValuesDict[VariableName] = int(5)      
-      # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente (path completa del file di stile)
+      # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente
       VariableName = QadMsg.translate("Environment variables", "DIMSTYLE")
       self.__VariableValuesDict[VariableName] = ""      
       # EDGEMODE (int): Controlla i comandi ESTENDI e TAGLIA.
@@ -140,6 +140,9 @@ class QadVariablesClass():
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi)
       VariableName = QadMsg.translate("Environment variables", "POLARANG")
       self.__VariableValuesDict[VariableName] = float(90.0)
+      # SUPPORTPATH (str): Path di ricerca per i files di supporto
+      VariableName = QadMsg.translate("Environment variables", "SUPPORTPATH")
+      self.__VariableValuesDict[VariableName] = "" # rosso
       # SHOWTEXTWINDOW (bool): Visualizza la finestra di testo all'avvio
       VariableName = QadMsg.translate("Environment variables", "SHOWTEXTWINDOW")
       self.__VariableValuesDict[VariableName] = True 

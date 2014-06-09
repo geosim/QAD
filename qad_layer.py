@@ -503,13 +503,25 @@ def getLayersByName(regularExprName):
    #qad_debug.breakPoint()
    result = []
    regExprCompiled = re.compile(regularExprName)
-   layermap = QgsMapLayerRegistry.instance().mapLayers()
-   for name, layer in layermap.iteritems():
+   for layer in QgsMapLayerRegistry.instance().mapLayers().values():
       if re.match(regExprCompiled, layer.name()):
          if layer.isValid():
             result.append(layer)
 
    return result
+
+
+#===============================================================================
+# getLayerById
+#===============================================================================
+def getLayerById(id):
+   """
+   Ritorna il layer con id noto
+   """
+   for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+      if layer.id() == id:
+         return layer
+   return None
 
 
 #===============================================================================
@@ -677,4 +689,5 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
         
    return True
-       
+      
+          

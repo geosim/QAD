@@ -327,17 +327,17 @@ def normalizeAngle(angle, norm = math.pi * 2):
 
 
 #===============================================================================
-# getIntDecParts
+# getStrIntDecParts
 #===============================================================================
-def getIntDecParts(n):
+def getStrIntDecParts(n):
    """
-   Restituisce la parte intera e decimale di un numero senza segno
+   Restituisce due stringhe rappresentanti la parte intera senza segno e la parte decimale di un numero
    """
    if type(n) == int or type(n) == float:
       nStr = str(n)
       if "." in nStr:
          parts = nStr.split(".")
-         return abs(int(parts[0])), int(parts[1])
+         return str(abs(int(parts[0]))), parts[1]
       else:
          return n, 0
    else:
@@ -1805,40 +1805,60 @@ def leftOfLine(pt, pt1, pt2):
 #===============================================================================
 # ptNear
 #===============================================================================
-def ptNear(pt1, pt2, epsilon = 1.e-9):
+def ptNear(pt1, pt2, tolerance = 1.e-9):
    """
-   la funzione compara 2 punti (ma permette una differenza)
+   la funzione compara 2 punti (ma permette una tolleranza)
    """
-   return getDistance(pt1, pt2) <= epsilon
+   return getDistance(pt1, pt2) <= tolerance
 
 
 #===============================================================================
 # doubleNear
 #===============================================================================
-def doubleNear(a, b, epsilon = 1.e-9):
+def doubleNear(a, b, tolerance = 1.e-9):
    """
-   la funzione compara 2 float (ma permette una differenza)
+   la funzione compara 2 float (ma permette una tolleranza)
    """
    diff = a - b
-   return diff > -epsilon and diff <= epsilon
+   return diff > -tolerance and diff <= tolerance
+
+
+#===============================================================================
+# doubleGreater
+#===============================================================================
+def doubleGreater(a, b, tolerance = 1.e-9):
+   """
+   la funzione compara 2 float (ma permette una tolleranza)
+   """
+   return a > b and not doubleNear(a, b, tolerance)
+
+
+#===============================================================================
+# doubleSmaller
+#===============================================================================
+def doubleSmaller(a, b, tolerance = 1.e-9):
+   """
+   la funzione compara 2 float (ma permette una tolleranza)
+   """
+   return a < b and not doubleNear(a, b, tolerance)
 
 
 #===============================================================================
 # TanDirectionNear
 #===============================================================================
-def TanDirectionNear(a, b, epsilon = 1.e-9):
+def TanDirectionNear(a, b, tolerance = 1.e-9):
    """
-   la funzione compara 2 direzini di tangenti (ma permette una differenza)
+   la funzione compara 2 direzini di tangenti (ma permette una tolleranza)
    """
    if doubleNear(a, b):
       return True
    arc = QadArc()
    arc.set(QgsPoint(0,0), 1, a, b)
-   if arc.totalAngle() <= epsilon:
+   if arc.totalAngle() <= tolerance:
       return True
    else:
       arc.set(QgsPoint(0,0), 1, b, a)
-      return arc.totalAngle() <= epsilon
+      return arc.totalAngle() <= tolerance
 
 
 #===============================================================================
@@ -2095,7 +2115,7 @@ def getBoundingPtsOnOnInfinityLine(linePt1, linePt2, pts):
    boundingPt2 = pts[0]
    while i < tot:
       pt2 = pts[i]
-      if TanDirectionNear(angle, getAngleBy2Pts(boundingPt1, pt2)):
+      if TanDirectionNear(angle, getAngleBy2Pts(boundingPt2, pt2)):
          boundingPt2 = pt2
       i = i + 1
 
