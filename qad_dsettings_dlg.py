@@ -43,12 +43,27 @@ import qad_utils
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
 class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
-   def __init__(self, iface):
-      QDialog.__init__(self, iface)
-      self.iface = iface
+   def __init__(self, plugIn):
+      self.plugIn = plugIn
+      self.iface = self.plugIn.iface.mainWindow()
+      QDialog.__init__(self, self.iface)
       self.setupUi(self)
       
-      # Inizializzazione della TAB 1 (index 0) che riguarda gli SNAP
+      # Inizializzazione del TAB che riguarda gli SNAP ad oggetto
+      self.init_osnap_tab()
+      
+      # Inizializzazione del TAB che riguarda il puntamento polare
+      self.init_polar_tab()
+
+      # Inizializzazione del TAB che riguarda la quotatura
+      self.init_dimension_tab()
+      
+      self.tabWidget.setCurrentIndex(0)
+            
+
+   def init_osnap_tab(self):
+      # Inizializzazione del TAB che riguarda gli SNAP ad oggetto
+      
       # Memorizzo il valore dell'OSMODE per determinare gli osnap impostati
       OsMode = QadVariables.get(QadMsg.translate("Environment variables", "OSMODE"))
       self.checkBox_CENP.setChecked(OsMode & QadSnapTypeEnum.CEN)
@@ -69,8 +84,16 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.checkBox_EXT_INT.setChecked(OsMode & QadSnapTypeEnum.EXT_INT)
       self.checkBox_TANP.setChecked(OsMode & QadSnapTypeEnum.TAN)
       self.checkBox_IsOsnapON.setChecked(not(OsMode & QadSnapTypeEnum.DISABLE))
+
+      ProgrDistance = QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"))
+      stringA = str(ProgrDistance)
+      self.lineEdit_ProgrDistance.setText(stringA)
+      self.lineEdit_ProgrDistance.setValidator(QDoubleValidator(self.lineEdit_ProgrDistance))
+      self.lineEdit_ProgrDistance.installEventFilter(self)
       
-      # Inizializzazione della TAB 2 (index 1) che riguarda il puntamento polare
+
+   def init_polar_tab(self):
+      # Inizializzazione del TAB che riguarda il puntamento polare
       UserAngle = QadVariables.get(QadMsg.translate("Environment variables", "POLARANG"))
       angoliDef = ["90", "45", "30", "22.5", "18", "15", "10", "5"]
       self.comboBox_increment_angle.addItems(angoliDef)
@@ -78,17 +101,27 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.comboBox_increment_angle.lineEdit().setText(stringA)
       self.comboBox_increment_angle.installEventFilter(self)
       
-      self.tabWidget.setCurrentIndex(0)
-      
       AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
       self.checkBox_PolarPickPoint.setChecked(AutoSnap & 8)
-      
-      ProgrDistance = QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"))
-      stringA = str(ProgrDistance)
-      self.lineEdit_ProgrDistance.setText(stringA)
-      self.lineEdit_ProgrDistance.setValidator(QDoubleValidator(self.lineEdit_ProgrDistance))
-      self.lineEdit_ProgrDistance.installEventFilter(self)
 
+
+   def init_dimension_tab(self):
+      # Inizializzazione del TAB che riguarda la quotatura
+      #qad_debug.breakPoint()
+      
+      for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
+         self.comboBox_current_dim_style.addItem(dimStyle.name, dimStyle)
+
+      # sort
+      self.comboBox_current_dim_style.model().sort(0)
+      
+      # leggo lo stile di quotatura corrente
+      currentDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
+      currDimStyle = self.plugIn.dimStyles.findDimStyle(currentDimStyleName)     
+      if currDimStyle is not None:
+         self.comboBox_current_dim_style.setCurrentIndex(self.comboBox_current_dim_style.findText(currDimStyle.name))
+         
+         
    def eventFilter(self, obj, event):
       if event is not None:
          if event.type() == QEvent.FocusOut:
@@ -185,7 +218,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          AutoSnap = AutoSnap - 8
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), AutoSnap)
       
-      ' Memorizzo il valore di PolarANG'
+      # Memorizzo il valore di PolarANG
       SUserAngle = self.comboBox_increment_angle.currentText()
       UserAngle = qad_utils.str2float(SUserAngle)
       QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
@@ -193,7 +226,13 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       SProgrDist = self.lineEdit_ProgrDistance.text()
       ProgrDist = qad_utils.str2float(SProgrDist)
       QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
+      
+      # Quotatura
+      if self.comboBox_current_dim_style.currentText() != "":
+         QadVariables.set(QadMsg.translate("Environment variables", "DIMSTYLE"), self.comboBox_current_dim_style.currentText())
+       
       QadVariables.save()
+
       
       self.close()
       return True

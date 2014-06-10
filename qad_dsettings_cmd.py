@@ -59,6 +59,6 @@ class QadDSETTINGSCommandClass(QadCommandClass):
             
    def run(self, msgMapTool = False, msg = None):
       #qad_debug.breakPoint()
-      Form = QadDSETTINGSDialog(self.plugIn.iface.mainWindow())
+      Form = QadDSETTINGSDialog(self.plugIn)
       Form.exec_()
       return True

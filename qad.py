@@ -105,7 +105,7 @@ class Qad(QObject):
    isQadActive = False
    
    # Quotatura
-   dimStyles = QadDimStyles()                 # lista degli stili di quotatura
+   dimStyles = QadDimStyles()                 # lista degli stili di quotatura caricati
    dimTextEntitySetRecodeOnSave = QadLayerEntitySet() # entity set dei testi delle quote da riallineare in salvataggio
    beforeCommitChangesDimLayer = None         # layer da cui è scaturito il salvataggio delle quotature
    isSaveControlledByQAD = False

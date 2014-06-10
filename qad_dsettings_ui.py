@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Fri Apr 04 15:28:08 2014
+# Created: Tue Jun 10 10:39:25 2014
 #      by: PyQt4 UI code generator 4.8.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -201,6 +201,16 @@ class Ui_DSettings_Dialog(object):
         self.comboBox_increment_angle.setEditable(True)
         self.comboBox_increment_angle.setObjectName(_fromUtf8("comboBox_increment_angle"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
+        self.tab_3 = QtGui.QWidget()
+        self.tab_3.setObjectName(_fromUtf8("tab_3"))
+        self.comboBox_current_dim_style = QtGui.QComboBox(self.tab_3)
+        self.comboBox_current_dim_style.setGeometry(QtCore.QRect(160, 20, 241, 22))
+        self.comboBox_current_dim_style.setInsertPolicy(QtGui.QComboBox.InsertAlphabetically)
+        self.comboBox_current_dim_style.setObjectName(_fromUtf8("comboBox_current_dim_style"))
+        self.label_current_dim_style = QtGui.QLabel(self.tab_3)
+        self.label_current_dim_style.setGeometry(QtCore.QRect(10, 20, 141, 16))
+        self.label_current_dim_style.setObjectName(_fromUtf8("label_current_dim_style"))
+        self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
         self.layoutWidget3 = QtGui.QWidget(DSettings_Dialog)
         self.layoutWidget3.setGeometry(QtCore.QRect(110, 420, 239, 25))
         self.layoutWidget3.setObjectName(_fromUtf8("layoutWidget3"))
@@ -217,7 +227,7 @@ class Ui_DSettings_Dialog(object):
         self.horizontalLayout.addWidget(self.pushButton_HELP)
 
         self.retranslateUi(DSettings_Dialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), DSettings_Dialog.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), DSettings_Dialog.ButtonBOX_Accepted)
         QtCore.QObject.connect(self.pushButton_DeSelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonDeselectALL_Pressed)
@@ -333,6 +343,8 @@ class Ui_DSettings_Dialog(object):
         self.groupBox_2.setTitle(QtGui.QApplication.translate("DSettings_Dialog", "Impostazioni angoli polari", None, QtGui.QApplication.UnicodeUTF8))
         self.label_12.setText(QtGui.QApplication.translate("DSettings_Dialog", "Angolo incremento:", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("DSettings_Dialog", "Puntamento polare", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_current_dim_style.setText(QtGui.QApplication.translate("DSettings_Dialog", "Stile di quotatura corrente:", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("DSettings_Dialog", "Quotatura", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_HELP.setText(QtGui.QApplication.translate("DSettings_Dialog", "?", None, QtGui.QApplication.UnicodeUTF8))
 
 import qad_dsettings_rc

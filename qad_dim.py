@@ -48,7 +48,7 @@ Il layer testo deve avere tutte le caratteristiche del layer testo di QAD ed in 
 - la dimensione del testo in unità mappa (la dimensione varia a seconda dello zoom).
 - dimStyleFieldName = "dim_style"; nome del campo che contiene il nome dello stile di quota (opzionale)
 - dimStyleFieldName = "dim_type"; nome del campo che contiene il tipo dello stile di quota (opzionale)
-- l'opzioone "Mostra etichette capovolte" deve essere su "sempre" nel tab "Etichette"->"Visualizzazione"
+- l'opzione "Mostra etichette capovolte" deve essere su "sempre" nel tab "Etichette"->"Visualizzazione"
 - rotFieldName = "rot"; nome del campo che contiene la rotazione del simbolo (opzionale)
 - la rotazione deve essere letta dal campo indicato da rotFieldName
 
@@ -578,7 +578,7 @@ class QadDimStyle():
          return prefix + QadMsg.translate("Dimension", "non ha impostato il layer per i simboli delle quote.\n")
       if qad_layer.isSymbolLayer(self.symbolLayer) == False:
          errMsg = prefix + QadMsg.translate("Dimension", "ha il layer per i simboli delle quote che non è di tipo simbolo.")         
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo è un layer vettoriale di tipo punto senza etichetta.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\n   \n")
          return errMsg
 
       if self.lineLayer is None:
@@ -2631,9 +2631,10 @@ class QadDimStyles():
       fileNames = os.listdir(_dir)
       for fileName in fileNames:
          if fileName.endswith(".dim"):
-            path = _dir + fileName
+            path = _dir + fileName            
             if dimStyle.load(path) == True:
-               self.addDimStyle(dimStyle)
+               if self.findDimStyle(dimStyle.name) is None:              
+                  self.addDimStyle(dimStyle)
                
       return True
 
