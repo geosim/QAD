@@ -39,6 +39,9 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
 import qad_layer
+import qad_label
+from qad_dim import *
+
 
 # Classe che gestisce il comando RUOTA
 class QadROTATECommandClass(QadCommandClass):
@@ -82,27 +85,84 @@ class QadROTATECommandClass(QadCommandClass):
          else:
             return None
 
-   def RotateGeoms(self, angle):      
+
+   #============================================================================
+   # rotate
+   #============================================================================
+   def rotate(self, f, basePt, angle, rotFldName, layerEntitySet, entitySet, dimStyle):
       #qad_debug.breakPoint()
-      self.plugIn.beginEditCommand("Feature rotated", self.entitySet.getLayerList())
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
       
-      for layerEntitySet in self.entitySet.layerEntitySetList:                        
-         rotatedObjects = []
-         transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
-         
-         for featureId in layerEntitySet.featureIds:
-            f = layerEntitySet.getFeature(featureId)
-            f.setGeometry(qad_utils.rotateQgsGeometry(f.geometry(), transformedBasePt, angle))
-            rotatedObjects.append(f)
+      if dimEntity is None:
+         # ruoto la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.rotateQgsGeometry(f.geometry(), basePt, angle))
+         if rotFldName is not None:
+            rotValue = f.attribute(rotFldName)
+            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione è in gradi nel campo della feature
+            rotValue = rotValue + angle
+            f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
 
          if self.copyFeatures == False:
-            # plugIn, layer, features, refresh, check_validity
-            if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects, False, False) == False:
+            # plugIn, layer, feature, refresh, check_validity
+            if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
                self.plugIn.destroyEditCommand()
-               return
+               return False
          else:             
             # plugIn, layer, features, coordTransform, refresh, check_validity
-            if qad_layer.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, rotatedObjects, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return False
+         del layerEntitySet.featureIds[0]
+      else:
+         # ruoto la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         if self.copyFeatures == False:
+            if dimEntity.deleteToLayers(self.plugIn) == False:
+               return False                      
+         dimEntity.rotate(self.plugIn, basePt, angle)
+         if dimEntity.addToLayers(self.plugIn) == False:
+            return False             
+         entitySet.subtract(dimEntitySet)
+            
+      return True
+
+
+   def RotateGeoms(self, angle):      
+      #qad_debug.breakPoint()
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+      
+      self.plugIn.beginEditCommand("Feature rotated", entitySet.getLayerList())
+      
+      for layerEntitySet in entitySet.layerEntitySetList:
+         layer = layerEntitySet.layer
+         
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+                                 
+         transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
+
+         rotFldName = None
+         if qad_layer.isTextLayer(layer):
+            # se la rotazione dipende da un solo campo
+            rotFldNames = qad_label.get_labelRotationFieldNames(layer)
+            if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
+               rotFldName = rotFldNames[0]         
+         elif qad_layer.isSymbolLayer(layer):
+            rotFldName = qad_layer.get_symbolRotationFieldName(layer)
+                     
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)
+
+            if self.rotate(f, transformedBasePt, angle, rotFldName, layerEntitySet, entitySet, dimStyle) == False:  
                self.plugIn.destroyEditCommand()
                return
 

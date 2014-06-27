@@ -37,6 +37,8 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_rubberband import QadRubberBand
+from qad_dim import *
+from qad_entity import *
 
 
 #===============================================================================
@@ -74,40 +76,75 @@ class Qad_copy_maptool(QadGetPoint):
       QadGetPoint.clear(self)
       self.__rubberBand.reset()
       self.mode = None    
+
+   
+   #============================================================================
+   # move
+   #============================================================================
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # sposto la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
+         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         del layerEntitySet.featureIds[0]
+      else:
+         # sposto la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         dimEntity.move(offSetX, offSetY)
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entitySet.subtract(dimEntitySet)
+   
    
    def setCopiedGeometries(self, newPt):
       #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
-      for layerEntitySet in self.entitySet.layerEntitySetList:
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+      
+      for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
+         
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+         
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
          transformedNewPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
-         geoms = layerEntitySet.getGeometryCollection()
-         
-         if self.seriesLen > 0: # devo fare una serie
-            #qad_debug.breakPoint()
-            
-            if self.adjust == True:
-               offSetX = offSetX / (self.seriesLen - 1)
-               offSetY = offSetY / (self.seriesLen - 1)
 
-            deltaX = offSetX
-            deltaY = offSetY
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)
+         
+            if self.seriesLen > 0: # devo fare una serie
+               #qad_debug.breakPoint()
                
-            for i in xrange(1, self.seriesLen, 1):
-               for geom in geoms:
-                  copiedGeom = qad_utils.moveQgsGeometry(geom, deltaX, deltaY)
-                  self.__rubberBand.addGeometry(copiedGeom, layer)
-                                    
-               deltaX = deltaX + offSetX
-               deltaY = deltaY + offSetY     
-         else:
-            for geom in geoms:
-               copiedGeom = qad_utils.moveQgsGeometry(geom, offSetX, offSetY)
-               self.__rubberBand.addGeometry(copiedGeom, layer)
+               if self.adjust == True:
+                  offSetX = offSetX / (self.seriesLen - 1)
+                  offSetY = offSetY / (self.seriesLen - 1)
+   
+               deltaX = offSetX
+               deltaY = offSetY
+                  
+               for i in xrange(1, self.seriesLen, 1):
+                  self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimStyle)                                       
+                  deltaX = deltaX + offSetX
+                  deltaY = deltaY + offSetY     
+            else:
+               self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle)
             
       
    def canvasMoveEvent(self, event):
@@ -123,8 +160,11 @@ class Qad_copy_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

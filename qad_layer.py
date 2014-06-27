@@ -74,7 +74,7 @@ def getCurrLayerEditable(canvas, geomType = None):
    if vLayer is None:
       return None, QadMsg.translate("QAD", "\nNessun layer corrente.\n")
    
-   if (vLayer.type() != vLayer.VectorLayer):
+   if (vLayer.type() != QgsMapLayer.VectorLayer):
       return None, QadMsg.translate("QAD", "\nIl layer corrente non è di tipo vettoriale.\n")
 
    if geomType is not None:
@@ -534,8 +534,13 @@ def get_symbolRotationFieldName(layer):
    #qad_debug.breakPoint()
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return ""
-   
-   return layer.rendererV2().rotationField()
+
+   try:
+      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.rendererV2().rotationField())
+      columns = expr.referencedColumns()
+      return columns[0] if len(columns) == 1 else ""
+   except:
+      return ""
 
 
 #===============================================================================
@@ -543,12 +548,18 @@ def get_symbolRotationFieldName(layer):
 #===============================================================================
 def get_symbolScaleFieldName(layer):
    """
-   return rotation field name (or empty string if not set or not supported by renderer) 
+   return symbol scale field name (or empty string if not set or not supported by renderer) 
    """
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return ""
    
-   return layer.rendererV2().sizeScaleField()
+   try:
+      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.rendererV2().sizeScaleField())
+      columns = expr.referencedColumns()
+      return columns[0] if len(columns) == 1 else ""
+   except:
+      return ""
+   
 
 
 #===============================================================================
@@ -585,6 +596,8 @@ def isSymbolLayer(layer):
    # deve essere un VectorLayer di tipo puntuale
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return False
+   # se la rotazione è letta da un campo ricordarsi che per i simboli la rotazione è in senso orario
+   # quindi usare l'espressione 360 - <campo rotazione>
    # se non è un layer di tipo testo è di tipo simbolo
    return False if isTextLayer(layer) else True 
 

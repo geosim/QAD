@@ -103,7 +103,7 @@ def getTokenListFromLblFieldName(expr):
 #===============================================================================
 def get_activeDataDefinedPropertyFieldNames(layer, dataDefinedProperty):
    """
-   riturna la lista dei nomi dei campi che determinano il valore della proprietà attiva
+   ritorna la lista dei nomi dei campi che determinano il valore della proprietà attiva
    """
    result = []
 

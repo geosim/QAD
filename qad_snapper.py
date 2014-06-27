@@ -712,7 +712,7 @@ class QadSnapper():
       
       #qad_debug.breakPoint()
       for iLayer in self.__snapLayers: # ciclo sui layer da controllare
-         if (iLayer.type() == iLayer.VectorLayer):
+         if (iLayer.type() == QgsMapLayer.VectorLayer):
             iLayerCRS = iLayer.crs()
             geom_iLayerCoords = QgsGeometry(g)
             if CRS is None: # se non c'è CRS la geom si intende nel sistema di coord dei punti di snap

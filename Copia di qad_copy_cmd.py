@@ -72,11 +72,15 @@ class QadCOPYCommandClass(QadCommandClass):
       self.copyMode = QadVariables.get(QadMsg.translate("Environment variables", "COPYMODE"))
       
       self.featureCache = [] # lista di (layer, feature)
-      self.nOperationsToUndo = 0
+      self.undoFeatureCacheIndexes = [] # posizioni in featureCache dei punti di undo
+      self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
+      self.rubberBandPolygon = createRubberBand(self.plugIn.canvas, QGis.Polygon)
 
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.SSGetClass
+      self.rubberBand.hide()
+      self.rubberBandPolygon.hide()
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0: # quando si è in fase di selezione entità
@@ -89,62 +93,20 @@ class QadCOPYCommandClass(QadCommandClass):
          else:
             return None
 
-
    #============================================================================
-   # move
+   # addFeatureCache
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
-      
-      if dimEntity is None:
-         # sposto la feature e la rimuovo da entitySet (è la prima)
-         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
-         # plugIn, layer, feature, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:  
-            return False
-         del layerEntitySet.featureIds[0]
-      else:
-         # sposto la quota e la rimuovo da entitySet
-         dimEntitySet = dimEntity.getEntitySet()
-         dimEntity.move(offSetX, offSetY)                               
-         if dimEntity.addToLayers(self.plugIn) == False:
-            return False             
-         entitySet.subtract(dimEntitySet)
-            
-      return True
-
-
-   #============================================================================
-   # copyGeoms
-   #============================================================================
-   def copyGeoms(self, newPt):
-      #qad_debug.breakPoint()
-      # copio entitySet
-      entitySet = QadEntitySet(self.entitySet)
-      
-      self.plugIn.beginEditCommand("Feature copied", entitySet.getLayerList())
-
-      for layerEntitySet in entitySet.layerEntitySetList:
+   def addFeatureCache(self, newPt):
+      featureCacheLen = len(self.featureCache)
+      added = False
+      for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
-         
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-         
          transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
          
-         while len(layerEntitySet.featureIds) > 0:
-            featureId = layerEntitySet.featureIds[0]
+         for featureId in layerEntitySet.featureIds:
             f = layerEntitySet.getFeature(featureId)
             
             if self.series and self.seriesLen > 0: # devo fare una serie
@@ -156,18 +118,153 @@ class QadCOPYCommandClass(QadCommandClass):
                deltaY = offSetY
                               
                for i in xrange(1, self.seriesLen, 1):
-                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimStyle) == False:  
-                     self.plugIn.destroyEditCommand()
-                     return
+                  copiedFeature = QgsFeature(f)
+                  copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), deltaX, deltaY))
+                  self.featureCache.append([layer, copiedFeature])
+                  self.addFeatureToRubberBand(layer, copiedFeature)
+                  # per lo snap aggiungo questa geometria temporanea
+                  self.getPointMapTool().appendTmpGeometry(copiedFeature.geometry(), layer.crs())                  
+                  added = True           
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY     
             else:
-               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle) == False:  
-                  self.plugIn.destroyEditCommand()
-                  return
-               
+               copiedFeature = QgsFeature(f)
+               copiedFeature.setGeometry(qad_utils.moveQgsGeometry(copiedFeature.geometry(), offSetX, offSetY))
+               self.featureCache.append([layer, copiedFeature])
+               self.addFeatureToRubberBand(layerEntitySet.layer, copiedFeature)            
+               # per lo snap aggiungo questa geometria temporanea
+               self.getPointMapTool().appendTmpGeometry(copiedFeature.geometry(), layer.crs())                  
+               added = True           
+      
+      if added:
+         self.undoFeatureCacheIndexes.append(featureCacheLen)
+
+   #============================================================================
+   # undoGeomsInCache
+   #============================================================================
+   def undoGeomsInCache(self):
+      #qad_debug.breakPoint()
+      tot = len(self.featureCache)
+      if tot > 0:
+         iEnd = self.undoFeatureCacheIndexes[-1]
+         i = tot - 1
+         
+         del self.undoFeatureCacheIndexes[-1] # cancello ultimo undo
+         while i >= iEnd:
+            del self.featureCache[-1] # cancello feature
+            i = i - 1
+         self.refreshRubberBand()
+         self.setTmpGeometriesToMapTool()
+
+            
+   #============================================================================
+   # addFeatureToRubberBand
+   #============================================================================
+   def addFeatureToRubberBand(self, layer, feature):
+      if layer.geometryType() == QGis.Polygon:
+         self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+      else:
+         self.rubberBand.addGeometry(feature.geometry(), layer)
+      
+      
+   #============================================================================
+   # refreshRubberBand
+   #============================================================================
+   def refreshRubberBand(self):
+      self.rubberBand.reset(QGis.Line)
+      self.rubberBandPolygon.reset(QGis.Polygon)
+      for f in self.featureCache:
+         layer = f[0]
+         feature = f[1]
+         if layer.geometryType() == QGis.Polygon:
+            self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
+         else:
+            self.rubberBand.addGeometry(feature.geometry(), layer)            
+
+
+   #============================================================================
+   # setTmpGeometriesToMapTool
+   #============================================================================
+   def setTmpGeometriesToMapTool(self):
+      self.getPointMapTool().clearTmpGeometries()
+      for f in self.featureCache:
+         layer = f[0]
+         feature = f[1]
+         # per lo snap aggiungo questa geometria temporanea
+         self.getPointMapTool().appendTmpGeometry(feature.geometry(), layer.crs())
+
+
+   #============================================================================
+   # copyGeoms
+   #============================================================================
+   def copyGeoms(self):
+      featuresLayers = [] # lista di (layer, features)
+      
+      for f in self.featureCache:
+         layer = f[0]
+         feature = f[1]
+         found = False
+         for featuresLayer in featuresLayers:
+            if featuresLayer[0].id() == layer.id():
+               found = True
+               featuresLayer[1].append(feature)
+               break
+         # se non c'era ancora il layer
+         if not found:
+            featuresLayers.append([layer, [feature]])
+
+      layerList = []
+      for featuresLayer in featuresLayers:
+         layerList.append(featuresLayer[0])
+
+      self.plugIn.beginEditCommand("Feature copied", layerList)
+ 
+      # ricodifico le quote
+      for dimEntity in self.dimEntityCache:
+         oldDimId = dimEntity.addToLayers(self.plugIn)
+         
+      
+#       entity = QadEntity()
+#       for featuresLayer in featuresLayers:
+#          layer = featuresLayer[0]
+#          # verifico se il layer che si sta per salvare appartiene ad uno stile di quotatura
+#          _dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+#          if _dimStyle is not None:
+#             dimStyle = QadDimStyle(_dimStyle) # lo copio così inizializzo i layer
+#             if dimStyle.textLayer.id() == layer.id(): # se si tratta del layer dei testi di quota
+#                qad_debug.breakPoint()   
+#                entity = QadEntity()
+#                for f in featuresLayer[1]:
+#                   entity.set(layer, f.id())
+#                   oldDimId = dimStyle.getDimIdByEntity(entity)
+#                   # prima di tutto inserisco il testo di quota per ricodificare la quotatura
+#                   # plugIn, layer, feature, coordTransform, refresh, check_validity
+#                   if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False) == False:
+#                      self.plugIn.destroyEditCommand()
+#                      return False
+#                   newDimId = f.id()
+#                   if dimStyle.setDimId(newDimId, [f], False) == False: # setto id
+#                      self.plugIn.destroyEditCommand()
+#                      return False
+#                   # plugIn, layer, feature, refresh, check_validity
+#                   if qad_layer.updateFeatureToLayer(self.plugIn, layer, f, False, False) == False:
+#                      self.plugIn.destroyEditCommand()
+#                      return
+# 
+#                   for _featuresLayer in featuresLayers:
+#                      if _featuresLayer[0].id() == dimStyle.lineLayer.id() or \
+#                         _featuresLayer[0].id() == dimStyle.symbolLayer.id():
+#                         # ricodifico gli altri componenti della quotatura   
+#                         dimStyle.recodeDimIdOnFeatures(oldDimId, newDimId, _featuresLayer[1], True)
+#                del featuresLayer[1][:] # svuoto la lista
+              
+      for featuresLayer in featuresLayers:
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeaturesToLayer(self.plugIn, featuresLayer[0], featuresLayer[1], None, False, False) == False:  
+            self.plugIn.destroyEditCommand()
+            return
+   
       self.plugIn.endEditCommand()
-      self.nOperationsToUndo = self.nOperationsToUndo + 1
 
 
    #============================================================================
@@ -341,7 +438,7 @@ class QadCOPYCommandClass(QadCommandClass):
                else:
                   default = QadMsg.translate("Command_COPY", "Singola")               
                              
-               # si appresta ad attendere enter o una parola chiave         
+               # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(msg.format(default), \
                             QadInputTypeEnum.KEYWORDS, \
@@ -389,24 +486,23 @@ class QadCOPYCommandClass(QadCommandClass):
                # utilizzare il primo punto come spostamento
                value = QgsPoint(self.basePt)
                self.basePt.set(0, 0)
-               self.copyGeoms(value)
+               self.addFeatureCache(value)
+               self.copyGeoms()
                return True # fine comando
          
          if type(value) == unicode:
             if value == QadMsg.translate("Command_COPY", "Serie"):
                self.waitForSeries()               
             elif value == QadMsg.translate("Command_COPY", "Esci"):
+               self.copyGeoms()
                return True # fine comando
             elif value == QadMsg.translate("Command_COPY", "Annulla"):
-               if self.nOperationsToUndo > 0: 
-                  self.nOperationsToUndo = self.nOperationsToUndo - 1
-                  self.plugIn.undoEditCommand()
-               else:
-                  self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+               self.undoGeomsInCache()
                self.waitForSecondPt()
          elif type(value) == QgsPoint: # se è stato inserito lo spostamento con un punto
-            self.copyGeoms(value)
+            self.addFeatureCache(value)
             if self.copyMode == 1: # "Singola" 
+               self.copyGeoms()
                return True # fine comando
             self.waitForSecondPt()
          
@@ -432,7 +528,8 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          self.plugIn.setLastOffsetPt(value)
-         self.copyGeoms(value)
+         self.addFeatureCache(value)
+         self.copyGeoms()
          return True # fine comando
 
 
@@ -520,8 +617,9 @@ class QadCOPYCommandClass(QadCommandClass):
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()
          elif type(value) == QgsPoint: # se è stato inserito lo spostamento con un punto
-            self.copyGeoms(value)
+            self.addFeatureCache(value)
             if self.copyMode == 1: # "Singola" 
+               self.copyGeoms()
                return True # fine comando            
             self.waitForSecondPt()
           

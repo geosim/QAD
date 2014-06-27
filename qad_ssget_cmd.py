@@ -67,6 +67,7 @@ class QadSSGetClass(QadCommandClass):
       self.checkPointLayer = True
       self.checkLineLayer = True
       self.checkPolygonLayer = True
+      self.checkDimLayers = True # include tutte le features che compongono le quotature selezionate
       
       self.help = False
       # se SingleSelection = True viene selezionato il primo oggetto o gruppo di oggetti indicato,
@@ -97,6 +98,27 @@ class QadSSGetClass(QadCommandClass):
          ptMapTool.setOrthoMode(0)
          return ptMapTool
 
+   
+   #============================================================================
+   # getLayersToCheck
+   #============================================================================
+   def getLayersToCheck(self):      
+      layerList = []
+      for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
+         # considero solo i layer vettoriali che sono filtrati per tipo
+         if (layer.type() == QgsMapLayer.VectorLayer) and \
+             ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
+              (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
+              (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
+              (self.onlyEditableLayers == False or layer.isEditable()):
+            # se devo includere i layers delle quotature
+            if self.checkDimLayers == True or \
+               self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               layerList.append(layer)
+         
+      return layerList
+
+
    #============================================================================
    # showMsgOnAddRemove
    #============================================================================
@@ -118,6 +140,10 @@ class QadSSGetClass(QadCommandClass):
          (self.checkPolygonLayer == False and entity.layer.geometryType() == QGis.Polygon):
          self.showMsgOnAddRemove(0)
          return
+      # controllo su layer delle quotature
+      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(layer) is not None:
+         self.showMsgOnAddRemove(0)
+         return
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
          # se il layer non è quello di entity
@@ -129,8 +155,17 @@ class QadSSGetClass(QadCommandClass):
       self.entitySet.deselectOnLayer()
       self.entitySet.clear()
       self.entitySet.addEntity(entity)
-      self.showMsgOnAddRemove(1)
-      self.entitySet.selectOnLayer( False) # incremental = False
+
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet()
+         dimEntitySet.addEntity(entity)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
+         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         self.entitySet.unite(dimEntitySet)
+
+      self.showMsgOnAddRemove(self.entitySet.count())
+      self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
     
@@ -146,7 +181,15 @@ class QadSSGetClass(QadCommandClass):
             layerEntitySet.deselectOnLayer()
             
       self.entitySet.set(selSet)
-      self.showMsgOnAddRemove(selSet.count())
+
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet(selSet)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
+         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         self.entitySet.unite(dimEntitySet)
+
+      self.showMsgOnAddRemove(self.entitySet.count())
       self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.set(selSet)
 
@@ -164,14 +207,31 @@ class QadSSGetClass(QadCommandClass):
          (self.checkPolygonLayer == False and entity.layer.geometryType() == QGis.Polygon):
          self.showMsgOnAddRemove(0)
          return
+      # controllo su layer delle quotature
+      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(layer) is not None:
+         self.showMsgOnAddRemove(0)
+         return
       
       self.entitySet.deselectOnLayer()
       if self.AddOnSelection == True: # aggiungi al gruppo di selezione
          self.entitySet.addEntity(entity)
       else: # rimuovi dal gruppo di selezione
          self.entitySet.removeEntity(entity)
+
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet()
+         dimEntitySet.addEntity(entity)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
+         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+            self.entitySet.unite(dimEntitySet)
+         else: # rimuovi dal gruppo di selezione
+            self.entitySet.subtract(dimEntitySet)
+         self.showMsgOnAddRemove(dimEntitySet.count())
+      else:
+         self.showMsgOnAddRemove(1)
          
-      self.showMsgOnAddRemove(1)
       self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
@@ -186,7 +246,20 @@ class QadSSGetClass(QadCommandClass):
       else: # rimuovi dal gruppo di selezione
          self.entitySet.subtract(selSet)
 
-      self.showMsgOnAddRemove(selSet.count())
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet()
+         dimEntitySet.addEntity(entity)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
+         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+            self.entitySet.unite(dimEntitySet)
+         else: # rimuovi dal gruppo di selezione
+            self.entitySet.subtract(dimEntitySet)
+         self.showMsgOnAddRemove(dimEntitySet.count())
+      else:
+         self.showMsgOnAddRemove(selSet.count())
+
       self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.set(selSet)
 
@@ -196,8 +269,7 @@ class QadSSGetClass(QadCommandClass):
    def AddRemoveSelSetByFence(self, points):
       if len(points) > 1:
          selSet = qad_utils.getSelSet("F", self.getPointMapTool(), points, \
-                                      None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                      self.onlyEditableLayers)
+                                      self.getLayersToCheck())
          self.AddRemoveSelSet(selSet)
 
    #============================================================================
@@ -206,8 +278,7 @@ class QadSSGetClass(QadCommandClass):
    def AddRemoveSelSetByPolygon(self, mode, points):
       if len(points) > 2:
          selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), points, \
-                                      None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                      self.onlyEditableLayers)
+                                      self.getLayersToCheck())
          self.AddRemoveSelSet(selSet)
 
    #============================================================================
@@ -216,16 +287,14 @@ class QadSSGetClass(QadCommandClass):
    def AddRemoveSelSetByGeometry(self, mode, geom):
       if type(geom) == QgsGeometry: # singola geometria
          selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), geom, \
-                                      None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                      self.onlyEditableLayers)
+                                      self.getLayersToCheck())
          self.AddRemoveSelSet(selSet)
       else: # lista di geometrie
          selSet = QadEntitySet()
          for g in geom:
             #qad_debug.breakPoint()
             partial = qad_utils.getSelSet(mode, self.getPointMapTool(), g, \
-                                          None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                          self.onlyEditableLayers)
+                                          self.getLayersToCheck())
             selSet.unite(partial)
          self.AddRemoveSelSet(selSet)
 
@@ -281,10 +350,8 @@ class QadSSGetClass(QadCommandClass):
       #qad_debug.breakPoint()      
       self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
-      self.getPointMapTool().onlyEditableLayers = self.onlyEditableLayers
-      self.getPointMapTool().checkPointLayer = self.checkPointLayer
-      self.getPointMapTool().checkLineLayer = self.checkLineLayer
-      self.getPointMapTool().checkPolygonLayer = self.checkPolygonLayer
+      # imposto i layer da controllare sul maptool
+      self.getPointMapTool().layersToCheck = self.getLayersToCheck()
       self.points = []
            
       # si appresta ad attendere un punto o enter o una parola chiave         
@@ -380,8 +447,7 @@ class QadSSGetClass(QadCommandClass):
             elif value == QadMsg.translate("Command_SSGET", "Tutto"):
                # Seleziona tutti gli oggetti 
                selSet = qad_utils.getSelSet("X", self.getPointMapTool(), None, \
-                                            None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                            self.onlyEditableLayers)
+                                            self.getLayersToCheck())
                self.SetSelSet(selSet)
                if self.SingleSelection == True and self.entitySet.count() > 0:
                   self.plugIn.setLastEntitySet(self.entitySet)
@@ -458,6 +524,9 @@ class QadSSGetClass(QadCommandClass):
                      entitySet.removeGeomType(QGis.Line)
                   if self.checkPolygonLayer == False:
                      entitySet.removeGeomType(QGis.Polygon)
+                  # controllo sulle quotature
+                  if self.checkDimLayers == False:
+                     self.plugIn.dimStyles.removeAllDimLayersFromEntitySet(entitySet)
                      
                   entitySet.removeNotExisting()
                   self.AddRemoveSelSet(entitySet)            
@@ -593,8 +662,7 @@ class QadSSGetClass(QadCommandClass):
                mode = "C"
                
             selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), self.points, \
-                                         None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                         self.onlyEditableLayers)
+                                         self.getLayersToCheck())
             #qad_debug.breakPoint()
             # se la selezione è avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
             if shiftKey or self.AddOnSelection == False:

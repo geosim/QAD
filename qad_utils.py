@@ -31,6 +31,8 @@ import math
 import sys
 import string
 from ctypes import *
+import ConfigParser
+import time
 
 
 import qad_debug
@@ -543,7 +545,7 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
 # getEntSel
 #===============================================================================
 def getEntSel(point, mQgsMapTool, \
-              layers = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+              layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
               onlyBoundary = True, onlyEditableLayers = False):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
@@ -567,16 +569,16 @@ def getEntSel(point, mQgsMapTool, \
    #qad_debug.breakPoint()
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
-   if layers is None:
+   if layersToCheck is None:
       # Tutti i layer visibili visibili
       _layers = mQgsMapTool.canvas.layers()
    else:
       # solo la lista passata come parametro
-      _layers = layers
+      _layers = layersToCheck
       
    for layer in _layers: # ciclo sui layer
       # considero solo i layer vettoriali che sono filtrati per tipo
-      if (layer.type() == layer.VectorLayer) and \
+      if (layer.type() == QgsMapLayer.VectorLayer) and \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
            (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
@@ -716,7 +718,7 @@ def getActualSingleSelection(layers):
    selFeature = []
 
    for layer in layers: # ciclo sui layer
-      if (layer.type() == layer.VectorLayer):
+      if (layer.type() == QgsMapLayer.VectorLayer):
          selectedFeatureCount = layer.selectedFeaturCount()
          if selectedFeatureCount == 1:
             selFeature = layer.selectedFeatures()
@@ -737,13 +739,16 @@ def deselectAll(layers):
    """
    selFeatureIds = []
    for layer in layers: # ciclo sui layer
-      if (layer.type() == layer.VectorLayer):
+      if (layer.type() == QgsMapLayer.VectorLayer):
          if layer.selectedFeaturesIds() > 0:
             layer.setSelectedFeatures(selFeatureIds)
 
 
+#===============================================================================
+# getSelSet
+#===============================================================================
 def getSelSet(mode, mQgsMapTool, points = None, \
-              layers = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+              layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
               onlyEditableLayers = False):
    """
    dato un QgsMapTool, una modalità di selezione e una lista opzionale di punti (in map coordinates),
@@ -771,16 +776,16 @@ def getSelSet(mode, mQgsMapTool, points = None, \
    
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
-   if layers is None:
+   if layersToCheck is None:
       # Tutti i layer visibili visibili
       _layers = mQgsMapTool.canvas.layers()
    else:
       # solo la lista passata come parametro
-      _layers = layers
+      _layers = layersToCheck
       
    for layer in _layers: # ciclo sui layer
       # considero solo i layer vettoriali che sono filtrati per tipo
-      if (layer.type() == layer.VectorLayer) and \
+      if (layer.type() == QgsMapLayer.VectorLayer) and \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
            (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
@@ -2786,13 +2791,21 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
 #===============================================================================
 # stretchQgsGeometry
 #===============================================================================
+def stretchPoint(point, containerGeom, offSetX, offSetY):   
+   if containerGeom.contains(point):
+      return movePoint(point, offSetX, offSetY)
+   
+   return None
+
+
+#===============================================================================
+# stretchQgsGeometry
+#===============================================================================
 def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):   
    wkbType = geom.wkbType()
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
-      if containerGeom.contains(geom):
-         pt = geom.asPoint() # un punto
-         pt.setX(pt.x() + offSetX)
-         pt.setY(pt.y() + offSetY)
+      pt = stretchPoint(geom.asPoint(), containerGeom, offSetX, offSetY)
+      if pt is not None:
          return QgsGeometry.fromPoint(pt)
             
    if wkbType == QGis.WKBMultiPoint:
@@ -8794,3 +8807,61 @@ def getFilletLinearObjectList(poly1, partAt1, pointAt1, poly2, partAt2, pointAt2
       return None
    
    return res[0], whatToDoPoly1, whatToDoPoly2
+
+
+#============================================================================
+# QadRawConfigParser class
+#============================================================================
+class QadRawConfigParser(ConfigParser.RawConfigParser):
+
+   def __init__(self, defaults=None, dict_type=ConfigParser._default_dict,
+                 allow_no_value=False):
+      ConfigParser.RawConfigParser.__init__(self, defaults, dict_type, allow_no_value)
+      
+   def get(self, section, option, default = None):
+      try:
+         return ConfigParser.RawConfigParser.get(self, section, option)
+      except:
+         return default
+
+   def getint(self, section, option, default = None):
+      try:
+         return ConfigParser.RawConfigParser.getint(self, section, option)
+      except:
+         return default
+
+   def getfloat(self, section, option, default = None):
+      try:
+         return ConfigParser.RawConfigParser.getfloat(self, section, option)
+      except:
+         return default
+
+   def getboolean(self, section, option, default = None):
+      try:
+         return ConfigParser.RawConfigParser.getboolean(self, section, option)
+      except:
+         return default
+
+
+
+#===============================================================================
+# Timer class for profiling
+#===============================================================================
+class Timer(object):
+   # da usare:
+   # with qad_utils.Timer() as t:
+   #    ...
+   # elasped = t.secs
+   def __init__(self, verbose=False):
+      self.verbose = verbose
+
+   def __enter__(self):
+      self.start = time.time()
+      return self
+
+   def __exit__(self, *args):
+      self.end = time.time()
+      self.secs = self.end - self.start
+      self.msecs = self.secs * 1000  # millisecs
+      if self.verbose:
+         print 'elapsed time: %f ms' % self.msecs

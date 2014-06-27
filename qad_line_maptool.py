@@ -141,9 +141,12 @@ class Qad_line_maptool(QadGetPoint):
          self.__lineRubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__lineRubberBand is not None:
-         self.__lineRubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__lineRubberBand is not None:
+            self.__lineRubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

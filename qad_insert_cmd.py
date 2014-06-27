@@ -102,7 +102,7 @@ class QadINSERTCommandClass(QadCommandClass):
       if len(scaleFldName) > 0:
          f.setAttribute(scaleFldName, self.scale)
       
-      # se la rotazione dipende da un campo 
+      # se la rotazione dipende da un campo
       rotFldName = qad_layer.get_symbolRotationFieldName(layer)
       if len(rotFldName) > 0:
          f.setAttribute(rotFldName, qad_utils.toDegrees(self.rot))

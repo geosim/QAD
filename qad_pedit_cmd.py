@@ -64,6 +64,7 @@ class QadPEDITCommandClass(QadCommandClass):
       self.SSGetClass.onlyEditableLayers = True
       self.SSGetClass.checkPointLayer = False # scarto i punto
       self.SSGetClass.checkLineLayer = True
+      self.SSGetClass.checkDimLayers = False # scarto le quote
       
       self.entitySet = QadEntitySet()
       self.entity = QadEntity()
@@ -700,6 +701,7 @@ class QadPEDITCommandClass(QadCommandClass):
    #============================================================================
    def waitForEntsel(self):      
       # imposto il map tool
+      self.step = 1
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_ENTITY_SEL)
                         
       keyWords = QadMsg.translate("Command_PEDIT", "Ultimo") + " " + \
@@ -711,7 +713,6 @@ class QadPEDITCommandClass(QadCommandClass):
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NOT_NULL)      
-      self.step = 1
       
 
    #============================================================================
@@ -973,15 +974,20 @@ class QadPEDITCommandClass(QadCommandClass):
                                      self.getPointMapTool().entity.featureId, value) == True:
                   self.WaitForMainMenu()
                   return False
-            else:
-               # cerco se ci sono entità nel punto indicato saltando i layer punto
-               # e considerando solo layer editabili       
+            else:               
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari o poligono editabili che non appartengano a quote
+               layerList = []
+               for layer in self.plugIn.canvas.layers():
+                  if layer.type() == QgsMapLayer.VectorLayer and \
+                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+                     layer.isEditable():
+                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        layerList.append(layer)
+               
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            False, True, True, \
-                                            True, \
-                                            True)
+                                            layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point
                   if self.setEntityInfo(result[1], result[0].id(), result[2]) == True:

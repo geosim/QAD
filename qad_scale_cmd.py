@@ -39,6 +39,9 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
 import qad_layer
+import qad_label
+from qad_dim import *
+
 
 # Classe che gestisce il comando SCALA
 class QadSCALECommandClass(QadCommandClass):
@@ -82,27 +85,87 @@ class QadSCALECommandClass(QadCommandClass):
          else:
             return None
 
-   def scaleGeoms(self, scale):      
-      #qad_debug.breakPoint()
-      self.plugIn.beginEditCommand("Feature scaled", self.entitySet.getLayerList())
-      
-      for layerEntitySet in self.entitySet.layerEntitySetList:                        
-         scaledObjects = []
-         transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
-         
-         for featureId in layerEntitySet.featureIds:
-            f = layerEntitySet.getFeature(featureId)
-            f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), transformedBasePt, scale))
-            scaledObjects.append(f)
 
+   #============================================================================
+   # scale
+   #============================================================================
+   def scale(self, f, basePt, scale, sizeFldName, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # scalo la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
+         if sizeFldName is not None:
+            sizeValue = f.attribute(sizeFldName)
+            if sizeValue is None:
+               sizeValue = 1
+            sizeValue = sizeValue * scale
+            f.setAttribute(sizeFldName, sizeValue)                           
+         
          if self.copyFeatures == False:
-            # plugIn, layer, features, refresh, check_validity
-            if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects, False, False) == False:
+            # plugIn, layer, feature, refresh, check_validity
+            if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
                self.plugIn.destroyEditCommand()
-               return
+               return False
          else:             
             # plugIn, layer, features, coordTransform, refresh, check_validity
-            if qad_layer.addFeaturesToLayer(self.plugIn, layerEntitySet.layer, scaledObjects, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return False
+
+         del layerEntitySet.featureIds[0]
+      else:
+         # scalo la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         if self.copyFeatures == False:
+            if dimEntity.deleteToLayers(self.plugIn) == False:
+               return False                      
+         dimEntity.scale(self.plugIn,basePt, scale)
+         if dimEntity.addToLayers(self.plugIn) == False:
+            return False             
+         entitySet.subtract(dimEntitySet)
+
+
+   def scaleGeoms(self, scale):      
+      #qad_debug.breakPoint()
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+      
+      self.plugIn.beginEditCommand("Feature scaled", self.entitySet.getLayerList())
+      
+      for layerEntitySet in entitySet.layerEntitySetList:
+         layer = layerEntitySet.layer
+         
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+                              
+         transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
+         
+         sizeFldName = None
+         if qad_layer.isTextLayer(layer):
+            # se l'altezza testo dipende da un solo campo 
+            sizeFldNames = qad_label.get_labelSizeFieldNames(layer)
+            if len(sizeFldNames) == 1 and len(sizeFldNames[0]) > 0:
+                sizeFldName = sizeFldNames[0]
+         elif qad_layer.isSymbolLayer(layer):
+            # se la scala dipende da un campo 
+            sizeFldName = qad_layer.get_symbolScaleFieldName(layer)
+            if len(sizeFldName) == 0:
+               sizeFldName = None
+
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)
+
+            if self.scale(f, transformedBasePt, scale, sizeFldName, layerEntitySet, entitySet, dimStyle) == False:  
                self.plugIn.destroyEditCommand()
                return
 

@@ -90,6 +90,7 @@ class QadGetPoint(QgsMapTool):
       self.checkPointLayer = True
       self.checkLineLayer = True
       self.checkPolygonLayer = True
+      self.layersToCheck = None
             
       self.__RubberBand = None
       self.__prevGeom = None
@@ -162,6 +163,7 @@ class QadGetPoint(QgsMapTool):
       if selectionMode == QadGetPointSelectionModeEnum.POINT_SELECTION:
          self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
+         self.entity.clear() # entità selezionata 
          self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entità
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
          self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare un guppo di entità   
@@ -211,6 +213,7 @@ class QadGetPoint(QgsMapTool):
       self.checkPointLayer = True # usato solo per ENTITY_SELECTION
       self.checkLineLayer = True # usato solo per ENTITY_SELECTION
       self.checkPolygonLayer = True # usato solo per ENTITY_SELECTION
+      self.layersToCheck = None
       
       self.__oldSnapType = None
       self.__oldSnapProgrDist = None
@@ -221,7 +224,8 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # tmpGeometries
    #============================================================================
-   def clearTmpGeometries(self):      
+   def clearTmpGeometries(self):
+      #qad_debug.breakPoint()
       del self.tmpGeometries[:] # svuoto la lista
       self.__QadSnapper.clearTmpGeometries()
 
@@ -233,12 +237,14 @@ class QadGetPoint(QgsMapTool):
    def appendTmpGeometry(self, geom, CRS = None):
       if geom is None:
          return
-      if CRS is not None:
+      if CRS is not None and CRS != self.canvas.mapRenderer().destinationCrs():
          g = QgsGeometry(geom)
          coordTransform = QgsCoordinateTransform(CRS, self.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
-         self.tmpGeometries.append(g.transform(coordTransform))
+         g.transform(coordTransform)
+         self.tmpGeometries.append(g)
       else:
          self.tmpGeometries.append(geom)
+
       self.__QadSnapper.appendTmpGeometry(geom)
       
 
@@ -423,7 +429,10 @@ class QadGetPoint(QgsMapTool):
       #qad_debug.breakPoint()   
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
          result = qad_utils.getEntSel(event.pos(), self, \
-                                      None, self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
+                                      self.layersToCheck, \
+                                      self.checkPointLayer, \
+                                      self.checkLineLayer, \
+                                      self.checkPolygonLayer, \
                                       True, self.onlyEditableLayers)  
       else:
          result = qad_utils.getEntSel(event.pos(), self, \
@@ -435,6 +444,7 @@ class QadGetPoint(QgsMapTool):
                                       self.onlyEditableLayers)
       
       if result is not None:
+         #qad_debug.breakPoint()
          feature = result[0]
          layer = result[1]
          entity = QadEntity()     
@@ -458,7 +468,7 @@ class QadGetPoint(QgsMapTool):
          self.tmpEntity.set(layer, feature.id())                                  
       else:
          point = self.toMapCoordinates(event.pos())
-
+         #qad_debug.breakPoint()
          # se non è stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nel pickbox
          tmpGeometry = qad_utils.getGeomInPickBox(event.pos(),
                                                   self, \
@@ -611,8 +621,10 @@ class QadGetPoint(QgsMapTool):
       self.showPointMapToolMarkers()
 
    def deactivate(self):
-      self.hidePointMapToolMarkers()
-      #qad_debug.breakPoint() 
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         self.hidePointMapToolMarkers()
+      except:
+         pass
 
    def isTransient(self):
       return False
@@ -828,6 +840,6 @@ class QadGetPoint(QgsMapTool):
       self.refreshSnapType()
 
    def showDSettingsByPopUpMenu(self):
-      d = QadDSETTINGSDialog(self.plugIn.iface.mainWindow())
+      d = QadDSETTINGSDialog(self.plugIn)
       d.exec_()
       self.refreshSnapType()

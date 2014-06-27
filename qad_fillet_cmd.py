@@ -454,14 +454,19 @@ class QadFILLETCommandClass(QadCommandClass):
                   self.waitForSecondEntSel() # si appresta ad attendere la selezione del secondo oggetto
                   return False
             else:
-               # cerco se ci sono entità nel punto indicato saltando i layer punto
-               # e considerando solo layer editabili       
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari o poligono editabili che non appartengano a quote
+               layerList = []
+               for layer in self.plugIn.canvas.layers():
+                  if layer.type() == QgsMapLayer.VectorLayer and \
+                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+                     layer.isEditable():
+                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        layerList.append(layer)
+               
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            False, True, True, \
-                                            True, \
-                                            True)
+                                            layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point
                   if self.setEntityInfo(True, result[1], result[0].id(), result[2]) == True:
@@ -517,14 +522,19 @@ class QadFILLETCommandClass(QadCommandClass):
                   else:
                      return True
             else:
-               # cerco se ci sono entità nel punto indicato saltando i layer punto
-               # e considerando solo layer editabili       
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari o poligono editabili che non appartengano a quote
+               layerList = []
+               for layer in self.plugIn.canvas.layers():
+                  if layer.type() == QgsMapLayer.VectorLayer and \
+                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+                     layer.isEditable():
+                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        layerList.append(layer)
+
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            False, True, True, \
-                                            True, \
-                                            True)
+                                            layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point
                   if self.setEntityInfo(True, result[1], result[0].id(), result[2]) == True:
@@ -654,14 +664,19 @@ class QadFILLETCommandClass(QadCommandClass):
                   else:
                      return True
             else:
-               # cerco se ci sono entità nel punto indicato saltando i layer punto
-               # e considerando solo layer editabili       
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari o poligono editabili che non appartengano a quote
+               layerList = []
+               for layer in self.plugIn.canvas.layers():
+                  if layer.type() == QgsMapLayer.VectorLayer and \
+                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+                     layer.isEditable():
+                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        layerList.append(layer)
+
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            False, True, True, \
-                                            True, \
-                                            True)
+                                            layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point
                   if self.setEntityInfo(False, result[1], result[0].id(), result[2]) == True:

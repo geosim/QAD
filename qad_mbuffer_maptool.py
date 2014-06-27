@@ -118,9 +118,12 @@ class Qad_mbuffer_maptool(QadGetPoint):
          self.__bufferRubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__bufferRubberBand is not None:
-         self.__bufferRubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__bufferRubberBand is not None:
+            self.__bufferRubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

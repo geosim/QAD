@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_dim import *
 from qad_rubberband import QadRubberBand
 
 
@@ -86,17 +87,58 @@ class Qad_rotate_maptool(QadGetPoint):
       self.__rubberBand.reset()
       self.mode = None    
    
+   
+   #============================================================================
+   # rotate
+   #============================================================================
+   def rotate(self, f, basePt, angle, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # ruoto la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.rotateQgsGeometry(f.geometry(), basePt, angle))
+         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         del layerEntitySet.featureIds[0]
+      else:
+         # ruoto la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         dimEntity.rotate(self.plugIn, basePt, angle)
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entitySet.subtract(dimEntitySet)
+   
+   
+   #============================================================================
+   # addRotatedGeometries
+   #============================================================================
    def addRotatedGeometries(self, angle):
       #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
-      for layerEntitySet in self.entitySet.layerEntitySetList:
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+      
+      for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
+
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+         
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
-         geoms = layerEntitySet.getGeometryCollection()
-         for geom in geoms:
-            rotatedGeom = qad_utils.rotateQgsGeometry(geom, transformedBasePt, angle)
-            self.__rubberBand.addGeometry(rotatedGeom, layer)
+         
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)        
+            self.rotate(f, transformedBasePt, angle, layerEntitySet, entitySet, dimStyle)
             
       
    def canvasMoveEvent(self, event):
@@ -124,8 +166,11 @@ class Qad_rotate_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

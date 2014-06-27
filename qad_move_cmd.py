@@ -39,6 +39,8 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
 import qad_layer
+from qad_dim import *
+
 
 # Classe che gestisce il comando MOVE
 class QadMOVECommandClass(QadCommandClass):
@@ -78,26 +80,72 @@ class QadMOVECommandClass(QadCommandClass):
          else:
             return None
 
+
+
+   #============================================================================
+   # move
+   #============================================================================
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # sposto la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
+         # plugIn, layer, feature, refresh, check_validity
+         if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
+            return False
+         del layerEntitySet.featureIds[0]
+      else:
+         # sposto la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         if dimEntity.deleteToLayers(self.plugIn) == False:
+            return False                     
+         if dimEntity.move(offSetX, offSetY) == False:
+            return False             
+         if dimEntity.addToLayers(self.plugIn) == False:
+            return False             
+         entitySet.subtract(dimEntitySet)
+            
+      return True
+
+
+   #============================================================================
+   # moveGeoms
+   #============================================================================
    def moveGeoms(self, newPt):      
       #qad_debug.breakPoint()
-      self.plugIn.beginEditCommand("Feature moved", self.entitySet.getLayerList())
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
       
-      for layerEntitySet in self.entitySet.layerEntitySetList:                        
+      self.plugIn.beginEditCommand("Feature moved", entitySet.getLayerList())
+      
+      for layerEntitySet in entitySet.layerEntitySetList:                        
+         layer = layerEntitySet.layer
+         
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+
          movedObjects = []
          transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layerEntitySet.layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
-         for featureId in layerEntitySet.featureIds:
+         
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
-            movedFeature = QgsFeature(f)
-            movedFeature.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
-            movedObjects.append(movedFeature)
-                    
-         # plugIn, layer, features, refresh, check_validity
-         if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, movedObjects, False, False) == False:
-            self.plugIn.destroyEditCommand()
-            return
+            
+            if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle) == False:  
+               self.plugIn.destroyEditCommand()
+               return
    
       self.plugIn.endEditCommand()
 

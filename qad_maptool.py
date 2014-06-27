@@ -106,12 +106,14 @@ class QadMapTool(QgsMapTool):
       self.plugIn.QadCommands.continueCommandFromMapTool()
    
    def deactivate(self):
-      if self.popupMenu is not None:
-         #qad_debug.breakPoint()
-         self.popupMenu.clear()
-         del self.popupMenu
-         self.popupMenu = None
-      pass
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         if self.popupMenu is not None:
+            #qad_debug.breakPoint()
+            self.popupMenu.clear()
+            del self.popupMenu
+            self.popupMenu = None
+      except:
+         pass
       
    def isTransient(self):
       return False

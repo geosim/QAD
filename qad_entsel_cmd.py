@@ -52,12 +52,34 @@ class QadEntSelClass(QadCommandClass):
       self.checkPointLayer = True
       self.checkLineLayer = True
       self.checkPolygonLayer = True
+      self.checkDimLayers = True # include tutte le features che compongono le quotature selezionate      
       self.msg = QadMsg.translate("QAD", "Selezionare oggetto: ")
       
    def __del__(self):
       QadCommandClass.__del__(self)
       if self.entity.isInitialized():
          self.entity.deselectOnLayer()      
+
+
+   #============================================================================
+   # getLayersToCheck
+   #============================================================================
+   def getLayersToCheck(self):      
+      layerList = []
+      for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
+         # considero solo i layer vettoriali che sono filtrati per tipo
+         if (layer.type() == QgsMapLayer.VectorLayer) and \
+             ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
+              (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
+              (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
+              (self.onlyEditableLayers == False or layer.isEditable()):
+            # se devo includere i layers delle quotature
+            if self.checkDimLayers == True or \
+               self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               layerList.append(layer)
+         
+      return layerList
+
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
@@ -69,10 +91,8 @@ class QadEntSelClass(QadCommandClass):
       if self.step == 0: # inizio del comando
          # imposto il map tool
          self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         self.getPointMapTool().onlyEditableLayers = self.onlyEditableLayers
-         self.getPointMapTool().checkPointLayer = self.checkPointLayer
-         self.getPointMapTool().checkLineLayer = self.checkLineLayer
-         self.getPointMapTool().checkPolygonLayer = self.checkPolygonLayer
+         # imposto i layer da controllare sul maptool
+         self.getPointMapTool().layersToCheck = self.getLayersToCheck()
                   
          keyWords = QadMsg.translate("Command_ENTSEL", "Ultimo")
                   
@@ -117,17 +137,22 @@ class QadEntSelClass(QadCommandClass):
                # Seleziona l'ultima entità inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:
-                  self.entity.set(lastEnt.layer, lastEnt.featureId)
-                  self.entity.selectOnLayer()
+                  # controllo sul layer
+                  if self.onlyEditableLayers == False or lastEnt.layer.isEditable() == True:
+                     # controllo sul tipo
+                     if (self.checkPointLayer == True and entity.layer.geometryType() == QGis.Point) or \
+                        (self.checkLineLayer == True and entity.layer.geometryType() == QGis.Line) or \
+                        (self.checkPolygonLayer == True and entity.layer.geometryType() == QGis.Polygon):
+                        # controllo su layer delle quotature
+                        if self.checkDimLayers == True or self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                           self.entity.set(lastEnt.layer, lastEnt.featureId)
+                           self.entity.selectOnLayer()
          elif type(value) == QgsPoint:
             if entity is None:
                # cerco se ci sono entità nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            self.checkPointLayer, self.checkLineLayer, self.checkPolygonLayer, \
-                                            True, \
-                                            self.onlyEditableLayers)
+                                            self.getLayersToCheck())
                if result is not None:
                   feature = result[0]
                   layer = result[1]

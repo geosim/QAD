@@ -31,6 +31,7 @@ from qgis.gui import *
 
 
 import qad_debug
+from qad_entity import *
 
 
 #===============================================================================
@@ -93,8 +94,8 @@ class QadRubberBand():
    def addGeometries(self, geoms, layer):
       for g in geoms:
          self.addGeometry(g, layer)
-
-      
+         
+         
    def setLine(self, points, layer):
       self.__rubberBandLine.reset(QGis.Line)
       tot = len(points) - 1

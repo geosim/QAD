@@ -206,9 +206,12 @@ class Qad_arc_maptool(QadGetPoint):
          self.__arcRubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__arcRubberBand is not None:
+            self.__arcRubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

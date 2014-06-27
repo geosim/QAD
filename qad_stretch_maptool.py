@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_dim import *
 from qad_rubberband import QadRubberBand
 
 
@@ -77,14 +78,58 @@ class Qad_stretch_maptool(QadGetPoint):
       self.__rubberBand.reset()
       self.mode = None    
    
+   
+   #============================================================================
+   # stretch
+   #============================================================================
+   def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # stiro la feature e la rimuovo da entitySet (è la prima)
+         stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
+                                                      offSetX, offSetY, \
+                                                      tolerance2ApproxCurve)
+         
+         if stretchedGeom is not None:
+            f.setGeometry(stretchedGeom)
+            self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         del layerEntitySet.featureIds[0]
+      else:
+         # stiro la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         dimEntity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entitySet.subtract(dimEntitySet)
+
+   
+   #============================================================================
+   # addStretchedGeometries
+   #============================================================================
    def addStretchedGeometries(self, newPt):
       self.__rubberBand.reset()            
 
       for SSGeom in self.SSGeomList:
-         entitySet = SSGeom[0]
+         # copio entitySet
+         entitySet = QadEntitySet(SSGeom[0])
          geomSel = SSGeom[1]
+
          for layerEntitySet in entitySet.layerEntitySetList:
             layer = layerEntitySet.layer
+
+            # verifico se il layer appartiene ad uno stile di quotatura
+            dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+            
             tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                         self.canvas,\
                                                                         layer)                              
@@ -103,15 +148,11 @@ class Qad_stretch_maptool(QadGetPoint):
             else:
                offSetX = newPt.x() - self.basePt.x()
                offSetY = newPt.y() - self.basePt.y()
-                              
-            geoms = layerEntitySet.getGeometryCollection()
-            
-            for geom in geoms:
-               stretchedGeom = qad_utils.stretchQgsGeometry(geom, g, \
-                                                            offSetX, offSetY, \
-                                                            tolerance2ApproxCurve)
-               if stretchedGeom is not None:       
-                  self.__rubberBand.addGeometry(stretchedGeom, layer)
+
+            while len(layerEntitySet.featureIds) > 0:
+               featureId = layerEntitySet.featureIds[0]
+               f = layerEntitySet.getFeature(featureId)        
+               self.stretch(f, g, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle)
             
       
    def canvasMoveEvent(self, event):
@@ -127,8 +168,11 @@ class Qad_stretch_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

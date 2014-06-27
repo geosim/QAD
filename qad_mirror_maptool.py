@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_dim import *
 from qad_rubberband import QadRubberBand
 
 
@@ -73,19 +74,57 @@ class Qad_mirror_maptool(QadGetPoint):
       self.__rubberBand.reset()
       self.mode = None    
    
+
+   #============================================================================
+   # mirror
+   #============================================================================
+   def mirror(self, f, pt1, pt2, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # specchio la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.mirrorQgsGeometry(f.geometry(), pt1, pt2))
+         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         del layerEntitySet.featureIds[0]
+      else:
+         # specchio la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()         
+         dimEntity.mirror(self.plugIn, pt1, qad_utils.getAngleBy2Pts(pt1, pt2))
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entitySet.subtract(dimEntitySet)
+   
+   
    def setMirroredGeometries(self, newPt):
       #qad_debug.breakPoint()
-      self.__rubberBand.reset()            
-      for layerEntitySet in self.entitySet.layerEntitySetList:
+      self.__rubberBand.reset()
+
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+                
+      for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
+
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+         
          transformedFirstMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.firstMirrorPt)
          transformedNewPtMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
-         geoms = layerEntitySet.getGeometryCollection()
-         
-         for geom in geoms:
-            mirroredGeom = qad_utils.mirrorQgsGeometry(geom, transformedFirstMirrorPt, transformedNewPtMirrorPt)
-            self.__rubberBand.addGeometry(mirroredGeom, layer)
-            
+
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)        
+            self.mirror(f, transformedFirstMirrorPt, transformedNewPtMirrorPt, layerEntitySet, entitySet, dimStyle)
+                     
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
@@ -100,8 +139,11 @@ class Qad_mirror_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

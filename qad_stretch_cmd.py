@@ -83,6 +83,49 @@ class QadSTRETCHCommandClass(QadCommandClass):
          else:
             return None
 
+
+
+
+   #============================================================================
+   # rotate
+   #============================================================================
+   def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # stiro la feature e la rimuovo da entitySet (è la prima)
+         stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
+                                                      offSetX, offSetY, \
+                                                      tolerance2ApproxCurve)
+         
+         if stretchedGeom is not None:
+            f.setGeometry(stretchedGeom)
+            # plugIn, layer, feature, refresh, check_validity
+            if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return False
+         del layerEntitySet.featureIds[0]
+      else:
+         # ruoto la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         if dimEntity.deleteToLayers(self.plugIn) == False:
+            return False                      
+         dimEntity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
+         if dimEntity.addToLayers(self.plugIn) == False:
+            return False             
+         entitySet.subtract(dimEntitySet)
+            
+      return True
+
+
    #============================================================================
    # stretchFeatures
    #============================================================================
@@ -96,10 +139,15 @@ class QadSTRETCHCommandClass(QadCommandClass):
       del entitySet
       
       for SSGeom in self.SSGeomList:
-         entitySet = SSGeom[0]
+         # copio entitySet
+         entitySet = QadEntitySet(SSGeom[0])
          geomSel = SSGeom[1]
          for layerEntitySet in entitySet.layerEntitySetList:
             layer = layerEntitySet.layer
+         
+            # verifico se il layer appartiene ad uno stile di quotatura
+            dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+            
             tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                         self.plugIn.canvas,\
                                                                         layer)                              
@@ -118,23 +166,16 @@ class QadSTRETCHCommandClass(QadCommandClass):
                offSetX = newPt.x() - self.basePt.x()
                offSetY = newPt.y() - self.basePt.y()
                            
-            for featureId in layerEntitySet.featureIds:
-               f = qad_utils.getFeatureById(layer, featureId)               
-               newGeom = qad_utils.stretchQgsGeometry(f.geometry(), g, \
-                                                      offSetX, offSetY, \
-                                                      tolerance2ApproxCurve)
-               if newGeom is not None:
-                  # aggiorno la feature con la geometria stirata
-                  stretchedFeature = QgsFeature(f)
-                  stretchedFeature.setGeometry(newGeom)
-                  # plugIn, layer, feature, refresh, check_validity
-                  if qad_layer.updateFeatureToLayer(self.plugIn, layer, stretchedFeature, False, False) == False:
-                     self.plugIn.destroyEditCommand()
-                     return
+            while len(layerEntitySet.featureIds) > 0:
+               featureId = layerEntitySet.featureIds[0]
+               f = layerEntitySet.getFeature(featureId)        
+               if self.stretch(f, g, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle) == False:
+                  self.plugIn.destroyEditCommand()
+                  return
 
       self.plugIn.endEditCommand()
-                                                      
-
+                           
+                           
    #============================================================================
    # setEntitySetGeom
    #============================================================================

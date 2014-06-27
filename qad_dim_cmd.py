@@ -102,12 +102,12 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       self.forcedDimLineRot = 0.0 # rotazione della linea di quota forzato
       
       #qad_debug.breakPoint()
-      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)
-      if _dimStyle is None:
-         self.dimStyle = None
-      else:
-         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia locale così aggiorno i layer
+      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
+      if _dimStyle is not None:
+         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchè può venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.LINEAR
+      else:
+         self.dimStyle = None
       
 
    def __del__(self):
@@ -467,12 +467,12 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       self.measure = None # misura della quota (se None viene calcolato)
       # leggo lo stile di quotatura corrente
       dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
-      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)
-      if _dimStyle is None:
-         self.dimStyle = None
-      else:
-         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia locale così aggiorno i layer
+      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
+      if _dimStyle is not None:
+         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchè può venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.ALIGNED
+      else:
+         self.dimStyle = None
       
 
    def __del__(self):
@@ -785,11 +785,8 @@ class QadDIMARCCommandClass(QadCommandClass):
       self.leader = False
       # leggo lo stile di quotatura corrente
       dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
-      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)
-      if _dimStyle is None:
-         self.dimStyle = None
-      else:
-         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia locale così aggiorno i layer
+      self.dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)
+      if self.dimStyle is not None:
          self.dimStyle.dimType = QadDimTypeEnum.ALIGNED
       
 

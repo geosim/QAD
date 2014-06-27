@@ -148,8 +148,11 @@ class Qad_offset_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.clear()
@@ -178,9 +181,15 @@ class Qad_offset_maptool(QadGetPoint):
       # si richiede la selezione di un oggetto
       elif self.mode == Qad_offset_maptool_ModeEnum.ASK_FOR_ENTITY_SELECTION:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         # scarto la selezione di punti
-         self.checkPointLayer = False
-         self.checkLineLayer = True
-         self.checkPolygonLayer = True         
+         # solo layer lineari o poligono editabili che non appartengano a quote
+         layerList = []
+         for layer in self.plugIn.canvas.layers():
+            if layer.type() == QgsMapLayer.VectorLayer and \
+               (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+               layer.isEditable():
+               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                  layerList.append(layer)
+         
+         self.layersToCheck = layerList
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
          self.onlyEditableLayers = True

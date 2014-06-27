@@ -199,10 +199,15 @@ class QadTRIMCommandClass(QadCommandClass):
       self.step = 2      
       # imposto il map tool
       self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-      # scarto la selezione di punti e poligoni
-      self.getPointMapTool().checkPointLayer = False
-      self.getPointMapTool().checkLineLayer = True
-      self.getPointMapTool().checkPolygonLayer = False         
+      # solo layer lineari editabili che non appartengano a quote
+      layerList = []
+      for layer in self.plugIn.canvas.layers():
+         if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+            if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               layerList.append(layer)
+            
+      #qad_debug.breakPoint()
+      self.getPointMapTool().layersToCheck = layerList
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
       self.getPointMapTool().onlyEditableLayers = True
       
@@ -330,14 +335,17 @@ class QadTRIMCommandClass(QadCommandClass):
                ToExtend = True if self.getPointMapTool().shiftKey == True else False
                self.trimFeatures(QgsGeometry.fromPoint(value), ToExtend)
             else:
-               # cerco se ci sono entità nel punto indicato saltando i layer punto e poligono
-               # e considerando solo layer editabili       
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari editabili che non appartengano a quote
+               layerList = []
+               for layer in self.plugIn.canvas.layers():
+                  if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        layerList.append(layer)
+               
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
-                                            None, \
-                                            False, True, False, \
-                                            True, \
-                                            True)
+                                            layerList)
                if result is not None:
                   feature = result[0]
                   layer = result[1]

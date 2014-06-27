@@ -121,9 +121,12 @@ class Qad_rectangle_maptool(QadGetPoint):
          self.__rectangleRubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__rectangleRubberBand is not None:
-         self.__rectangleRubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__rectangleRubberBand is not None:
+            self.__rectangleRubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

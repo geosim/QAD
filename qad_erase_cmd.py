@@ -84,9 +84,8 @@ class QadERASECommandClass(QadCommandClass):
       #=========================================================================
       # CANCELLAZIONE OGGETTI
       elif self.step == 1:
-         #qad_debug.breakPoint()
          self.plugIn.beginEditCommand("Feature deleted", self.SSGetClass.entitySet.getLayerList())
-         
+              
          for layerEntitySet in self.SSGetClass.entitySet.layerEntitySetList:
             # plugIn, layer, featureIds, refresh
             if qad_layer.deleteFeaturesToLayer(self.plugIn, layerEntitySet.layer, \

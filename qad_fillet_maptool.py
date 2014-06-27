@@ -200,8 +200,11 @@ class Qad_fillet_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode
@@ -211,10 +214,15 @@ class Qad_fillet_maptool(QadGetPoint):
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_FIRST_LINESTRING or \
          self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         self.onlyEditableLayers = True
-         self.checkPointLayer = False
-         self.checkLineLayer = True
-         self.checkPolygonLayer = False
+
+         # solo layer lineari editabili che non appartengano a quote
+         layerList = []
+         for layer in self.plugIn.canvas.layers():
+            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                  layerList.append(layer)
+         
+         self.layersToCheck = layerList
          self.setSnapType(QadSnapTypeEnum.DISABLE)
       # non si richiede niente
       elif self.mode == Qad_fillet_maptool_ModeEnum.NONE:
@@ -223,8 +231,15 @@ class Qad_fillet_maptool(QadGetPoint):
       # si richiede la selezione della polilinea
       elif self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_POLYLINE:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         self.onlyEditableLayers = True
-         self.checkPointLayer = False
-         self.checkLineLayer = True
-         self.checkPolygonLayer = True
+
+         # solo layer lineari o poligono editabili che non appartengano a quote
+         layerList = []
+         for layer in self.plugIn.canvas.layers():
+            if layer.type() == QgsMapLayer.VectorLayer and \
+               (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+               layer.isEditable():
+               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                  layerList.append(layer)
+         
+         self.layersToCheck = layerList
          self.setSnapType(QadSnapTypeEnum.DISABLE)

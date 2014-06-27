@@ -36,6 +36,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
+from qad_dim import *
 from qad_rubberband import QadRubberBand
 
 
@@ -86,21 +87,61 @@ class Qad_scale_maptool(QadGetPoint):
       self.__rubberBand.reset()
       self.mode = None    
 
+
+   #============================================================================
+   # scale
+   #============================================================================
+   def scale(self, f, basePt, scale, layerEntitySet, entitySet, dimStyle):
+      #qad_debug.breakPoint()
+      if dimStyle is not None:
+         entity = QadEntity()
+         entity.set(layerEntitySet.layer, f.id())
+         dimEntity = QadDimEntity()
+         if dimEntity.initByEntity(dimStyle, entity) == False:
+            dimEntity = None
+      else:
+         dimEntity = None
+      
+      if dimEntity is None:
+         # scalo la feature e la rimuovo da entitySet (è la prima)
+         f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
+         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         del layerEntitySet.featureIds[0]
+      else:
+         # scalo la quota e la rimuovo da entitySet
+         dimEntitySet = dimEntity.getEntitySet()
+         dimEntity.scale(self.plugIn, basePt, scale)
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entitySet.subtract(dimEntitySet)
+
+   
+   #============================================================================
+   # addScaledGeometries
+   #============================================================================
    def addScaledGeometries(self, scale):
       #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
+      # copio entitySet
+      entitySet = QadEntitySet(self.entitySet)
+      
       if scale <= 0:
          return
       
-      for layerEntitySet in self.entitySet.layerEntitySetList:
+      for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
+
+         # verifico se il layer appartiene ad uno stile di quotatura
+         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
-         geoms = layerEntitySet.getGeometryCollection()
-         
-         for geom in geoms:
-            scaledGeom = qad_utils.scaleQgsGeometry(geom, transformedBasePt, scale)
-            self.__rubberBand.addGeometry(scaledGeom, layer)
+
+         while len(layerEntitySet.featureIds) > 0:
+            featureId = layerEntitySet.featureIds[0]
+            f = layerEntitySet.getFeature(featureId)        
+            self.scale(f, transformedBasePt, scale, layerEntitySet, entitySet, dimStyle)
             
       
    def canvasMoveEvent(self, event):
@@ -128,8 +169,11 @@ class Qad_scale_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode

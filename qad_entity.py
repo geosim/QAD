@@ -248,7 +248,7 @@ class QadLayerEntitySet():
 
                # roby
                # Per un baco sconosciuto quando trasformo la geometria se poi ne faccio un buffer
-               # il calcolo da un risultato sbagliato quando la geometria è nuova o modificata
+               # il calcolo dà un risultato sbagliato quando la geometria è nuova o modificata
                # (in cache del layer) e il sistema di coordinate è diverso de quello della mappa corrente 
                wkbType = g.wkbType()
                if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:               
@@ -268,7 +268,7 @@ class QadLayerEntitySet():
       return result
 
 
-   def getFeatureCollection(self,):
+   def getFeatureCollection(self):
       result = []
       for featureId in self.featureIds:
          f = self.getFeature(featureId)
@@ -469,7 +469,7 @@ class QadEntitySet():
             if layerEntitySet.layerId() == layer:
                return layerEntitySet
          return None
-      else: # QadEntitySet
+      else: # QadLayerEntitySet
          return self.findLayerEntitySet(layer.layer)     
 
 
@@ -532,7 +532,7 @@ class QadEntitySet():
       return layerEntitySet.removeFeature(entity.featureId)
       
       
-   def removeLayerEntitySet(self, layerEntitySet):
+   def removeLayerEntitySet(self, layer):
       i = 0
       for layerEntitySet in self.layerEntitySetList:
          if layerEntitySet.id() == layer.id():

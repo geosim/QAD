@@ -197,13 +197,7 @@ class Qad_dim_maptool(QadGetPoint):
       
       self.__rubberBand.reset()            
          
-      items = []
-      dimPtFeatures = [None, None]
-      dimLineFeatures = [None, None]
-      textFeature = None
-      blockFeatures = [None, None]
-      extLineFeatures = [None, None]
-      txtLeaderLineFeature = None
+      dimEntity = None
       
       # noti i punti di quotatura si richiede la posizione della linea di quota lineare
       if self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS:
@@ -212,72 +206,43 @@ class Qad_dim_maptool(QadGetPoint):
          else:
             self.setLinearDimLineAlignmentOnDimPts(self.tmpPoint)
                      
-         dimPtFeatures, dimLineFeatures, textFeatureGeom, \
-         blockFeatures, extLineFeatures, txtLeaderLineFeature = self.dimStyle.getLinearDimFeatures(self.canvas, \
-                                                                                                   self.dimPt1, \
-                                                                                                   self.dimPt2, \
-                                                                                                   self.tmpPoint, \
-                                                                                                   self.measure, \
-                                                                                                   self.preferredAlignment, \
-                                                                                                   self.forcedDimLineRot)
-         textFeature = textFeatureGeom[0]
-         textRectGeom = textFeatureGeom[1]
+         dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(self.canvas, \
+                                                                        self.dimPt1, \
+                                                                        self.dimPt2, \
+                                                                        self.tmpPoint, \
+                                                                        self.measure, \
+                                                                        self.preferredAlignment, \
+                                                                        self.forcedDimLineRot)
       # noti i punti di quotatura si richiede la posizione della linea di quota allineata
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:                     
-         dimPtFeatures, dimLineFeatures, textFeatureGeom, \
-         blockFeatures, extLineFeatures, txtLeaderLineFeature = self.dimStyle.getAlignedDimFeatures(self.canvas, \
-                                                                                                    self.dimPt1, \
-                                                                                                    self.dimPt2, \
-                                                                                                    self.tmpPoint, \
-                                                                                                    self.measure)
-         textFeature = textFeatureGeom[0]
-         textRectGeom = textFeatureGeom[1]
+      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:
+         dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(self.canvas, \
+                                                                         self.dimPt1, \
+                                                                         self.dimPt2, \
+                                                                         self.tmpPoint, \
+                                                                         self.measure)
 
+      if dimEntity is not None:
+         # testo di quota
+         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), self.dimStyle.getTextualLayer()) # geom e layer
+         self.__rubberBand.addGeometry(textOffsetRect, self.dimStyle.getTextualLayer()) # geom e layer
+         for g in dimEntity.getLinearGeometryCollection():
+            self.__rubberBand.addGeometry(g, self.dimStyle.getLinearLayer()) # geom e layer
+         for g in dimEntity.getSymbolGeometryCollection():
+            self.__rubberBand.addGeometry(g, self.dimStyle.getSymbolLayer()) # geom e layer
          
-      # punti di quotatura
-      if dimPtFeatures[0] is not None:
-         items.append([dimPtFeatures[0].geometry(), self.dimStyle.symbolLayer])
-      if dimPtFeatures[1] is not None:
-         items.append([dimPtFeatures[1].geometry(), self.dimStyle.symbolLayer])
-      # linee di quota
-      if dimLineFeatures[0] is not None:
-         items.append([dimLineFeatures[0].geometry(), self.dimStyle.lineLayer])
-      if dimLineFeatures[1] is not None:
-         items.append([dimLineFeatures[1].geometry(), self.dimStyle.lineLayer])
-      # testo di quota
-      if textFeature is not None:
-         items.append([textFeature.geometry(), self.dimStyle.textLayer])
-         items.append([textRectGeom, self.dimStyle.textLayer])
-      # simboli di quota
-      if blockFeatures[0] is not None:
-         items.append([blockFeatures[0].geometry(), self.dimStyle.symbolLayer])
-      if blockFeatures[1] is not None:
-         items.append([blockFeatures[1].geometry(), self.dimStyle.symbolLayer])
-      # linee di estensione della quota
-      if extLineFeatures[0] is not None:
-         items.append([extLineFeatures[0].geometry(), self.dimStyle.lineLayer])
-      if extLineFeatures[1] is not None:
-         items.append([extLineFeatures[1].geometry(), self.dimStyle.lineLayer])
-      # linea leader del testo di quota   
-      if txtLeaderLineFeature is not None:
-         items.append([txtLeaderLineFeature.geometry(), self.dimStyle.lineLayer])
-         
-      # noto il centro del cerchio si richiede il diametro
-      #elif self.mode == Qad_dim_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_DIAM:
-      #   pass
-      
-      for item in items:         
-         self.__rubberBand.addGeometry(item[0], item[1]) # geom e layer
-    
+          
    def activate(self):
       QadGetPoint.activate(self)            
       if self.__rubberBand is not None:
          self.__rubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__rubberBand is not None:
-         self.__rubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__rubberBand is not None:
+            self.__rubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode
@@ -296,32 +261,4 @@ class Qad_dim_maptool(QadGetPoint):
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
       # noti i punti di quotatura si richiede la posizione della linea di quota allineata
       elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:
-         self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
-         
-         
-      # noto niente si richiede il primo punto di estremità diam
-      elif self.mode == Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT:     
-         self.setDrawMode(QadGetPointDrawModeEnum.NONE)                 
-      # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-      # noto niente si richiede l'entita del primo punto di tangenza
-      elif self.mode == Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_TAN:     
-         self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         self.forceSnapTypeOnce(QadSnapTypeEnum.TAN_DEF)         
-      # nota l'entita del primo punto di tangenza si richiede quella del secondo punto di tangenza
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_TAN:     
-         self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
-         self.forceSnapTypeOnce(QadSnapTypeEnum.TAN_DEF)         
-      # note la prima e la seconda entita dei punti di tangenza si richiede il raggio
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_TAN_KNOWN_ASK_FOR_RADIUS:     
-         self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         # siccome il puntatore era stato variato in ENTITY_SELECTION dalla selez precedente
-         self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)         
-      # noto note la prima, la seconda entita dei punti di tangenza e il primo punto per misurare il raggio
-      # si richiede il secondo punto per misurare il raggio
-      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_TAN_FIRSTPTRADIUS_KNOWN_ASK_FOR_SECONDPTRADIUS:     
-         self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
-         self.setStartPoint(self.startPtForRadius)

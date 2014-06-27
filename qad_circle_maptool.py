@@ -166,9 +166,12 @@ class Qad_circle_maptool(QadGetPoint):
          self.__circleRubberBand.show()
 
    def deactivate(self):
-      QadGetPoint.deactivate(self)
-      if self.__circleRubberBand is not None:
-         self.__circleRubberBand.hide()
+      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         if self.__circleRubberBand is not None:
+            self.__circleRubberBand.hide()
+      except:
+         pass
 
    def setMode(self, mode):
       self.mode = mode
