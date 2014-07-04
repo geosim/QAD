@@ -246,19 +246,7 @@ class QadSSGetClass(QadCommandClass):
       else: # rimuovi dal gruppo di selezione
          self.entitySet.subtract(selSet)
 
-      if self.checkDimLayers == True:
-         dimEntitySet = QadEntitySet()
-         dimEntitySet.addEntity(entity)
-         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
-         # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
-         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
-         if self.AddOnSelection == True: # aggiungi al gruppo di selezione
-            self.entitySet.unite(dimEntitySet)
-         else: # rimuovi dal gruppo di selezione
-            self.entitySet.subtract(dimEntitySet)
-         self.showMsgOnAddRemove(dimEntitySet.count())
-      else:
-         self.showMsgOnAddRemove(selSet.count())
+      self.showMsgOnAddRemove(selSet.count())
 
       self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.set(selSet)

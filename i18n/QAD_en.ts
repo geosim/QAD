@@ -418,35 +418,35 @@ The value must be between 2 and 32767.</translation>
     </message>
     <message>
         <source>Crea una quota per la lunghezza di un arco.</source>
-        <translation type="unfinished"></translation>
+        <translation>Creates an arc length dimension.</translation>
     </message>
     <message>
         <source>Selezionare l&apos;arco da quotare: </source>
-        <translation type="unfinished"></translation>
+        <translation>Select arc or polyline arc segment: </translation>
     </message>
     <message>
         <source>Parziale</source>
-        <translation type="unfinished"></translation>
+        <translation>Partial</translation>
     </message>
     <message>
         <source>Direttrice</source>
-        <translation type="unfinished"></translation>
+        <translation>Leader</translation>
     </message>
     <message>
         <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: </source>
-        <translation type="unfinished"></translation>
+        <translation>Specify arc length dimension location or [Text/Angle/Partial/Leader]: </translation>
     </message>
     <message>
         <source>Nessuna direttrice</source>
-        <translation type="unfinished"></translation>
+        <translation>No leader</translation>
     </message>
     <message>
         <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: </source>
-        <translation type="unfinished"></translation>
+        <translation>Specify arc length dimension location or [Text/Angle/Partial/No leader]: </translation>
     </message>
     <message>
         <source>Selezionare un arco.</source>
-        <translation type="unfinished"></translation>
+        <translation>Select an arc.</translation>
     </message>
 </context>
 <context>
@@ -688,6 +688,10 @@ No perpendicular possible</translation>
         <source>
 I punti devono essere distinti.</source>
         <translation>The points must be different.</translation>
+    </message>
+    <message>
+        <source>Cancellare gli oggetti sorgente? [Sì/No] &lt;{0}&gt;: </source>
+        <translation>Erase source objects [Yes/No] &lt;{0}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1814,7 +1818,7 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>ARCOQUOTA</source>
-        <translation type="unfinished"></translation>
+        <translation>DIMARC</translation>
     </message>
 </context>
 <context>
@@ -2133,6 +2137,14 @@ p, li { white-space: pre-wrap; }
         <source>Impostazioni snap ad oggetto...</source>
         <translation>Object snap settings...</translation>
     </message>
+    <message>
+        <source>Quotatura</source>
+        <translation>Dimension</translation>
+    </message>
+    <message>
+        <source>Stile di quotatura corrente:</source>
+        <translation>Current dimension style:</translation>
+    </message>
 </context>
 <context>
     <name>Dimension</name>
@@ -2182,6 +2194,10 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <source>ha il layer per le linee delle quote non modificabile.
 </source>
         <translation>has the linear layer not editable.</translation>
+    </message>
+    <message>
+        <source>non ha impostato i layer con lo stesso sistema di coordinate.</source>
+        <translation>has not the layers with the same coordinate reference system.</translation>
     </message>
 </context>
 <context>
@@ -2646,6 +2662,20 @@ No current layer.
 Il layer corrente non è di tipo testo.</source>
         <translation>
 Current layer is not a textual layer.</translation>
+    </message>
+    <message>
+        <source>
+   
+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
+</source>
+        <translation>
+Current layer is a layer referenced to {0} dimension style. and it is not valid.
+</translation>
     </message>
 </context>
 <context>

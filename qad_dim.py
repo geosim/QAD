@@ -355,6 +355,7 @@ class QadDimStyle():
    # getLayer
    #============================================================================
    def getLayer(self, layerName):
+      #qad_debug.breakPoint()
       layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 1:
          return layerList[0]
@@ -639,7 +640,7 @@ class QadDimStyle():
          return prefix + QadMsg.translate("Dimension", "non ha impostato il layer per i simboli delle quote.\n")
       if qad_layer.isSymbolLayer(self.getSymbolLayer()) == False:
          errMsg = prefix + QadMsg.translate("Dimension", "ha il layer per i simboli delle quote che non è di tipo simbolo.")         
-         errMsg = errMsg + QadMsg.translate("QAD", "\n   \n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo è un layer vettoriale di tipo punto senza etichetta.\n")
          return errMsg
 
       if self.getLinearLayer() is None:
@@ -1128,8 +1129,7 @@ class QadDimStyle():
       isBlock1 = se True si tratta del blocco1 altrimenti del blocco2
       textLinearDimComponentOn = indica il componente della quota dove è situato il testo di quota (QadDimComponentEnum)
       sourceCrs = sistema di coordinate di insPt
-      """
-      
+      """            
       # se non c'è il simbolo di quota
       if insPt is None or rot is None:
          return None     
@@ -1214,6 +1214,7 @@ class QadDimStyle():
       isDimPt1 = se True si tratta del punto di quotatura 1 altrimenti del punto di quotatura 2
       sourceCrs = sistema di coordinate di insPt
       """
+      #qad_debug.breakPoint()      
       f = QgsFeature(self.getSymbolFeaturePrototype())
       g = QgsGeometry.fromPoint(insPt)
            
@@ -2988,34 +2989,48 @@ class QadDimEntity():
    #============================================================================
    # getDimLinePosPt
    #============================================================================
-   def getDimLinePosPt(self):
-      dimLinePosPt = None
-   
+   def getDimLinePosPt(self, containerGeom = None):
+      """
+      Trova fra i vari punti possibili un punto che indichi dove si trova la linea di quota
+      se containerGeom <> None il punto deve essere contenuto in containerGeom
+      """
+      
       if len(self.dimStyle.componentFieldName) > 0:
          # prima cerco tra gli elementi lineari
          for f in self.linearFeatures:
             try:
                value = f.attribute(self.dimStyle.componentFieldName)
-               if value == QadDimComponentEnum.DIM_LINE1: # primo punto da quotare ("Dimension point 1")
-                  dimLinePosPt = f.geometry().asPolyline()[0] # punto iniziale della linea
-               elif value == QadDimComponentEnum.DIM_LINE2: # secondo punto da quotare ("Dimension point 2")
-                  dimLinePosPt = f.geometry().asPolyline()[0] # punto iniziale della linea
+               # primo punto da quotare ("Dimension point 1") o secondo punto da quotare ("Dimension point 2")
+               if value == QadDimComponentEnum.DIM_LINE1 or value == QadDimComponentEnum.DIM_LINE2:
+                  pts = f.geometry().asPolyline()
+                  if containerGeom is not None: # verifico che il punto iniziale sia interno a containerGeom
+                     if containerGeom.contains(pts[0]) == True:
+                        return pts[0]
+                     else:
+                        # verifico che il punto finale sia interno a containerGeom
+                        if containerGeom.contains(pts[-1]) == True:
+                           return pts[-1]
+                  else:
+                     return pts[0] # punto iniziale
+            except:
+               return None
+            
+         # poi cerco tra gli elementi puntuali
+         for f in self.symbolFeatures:
+            try:
+               value = f.attribute(self.dimStyle.componentFieldName)
+               # primo blocco della freccia ("Block 1") o secondo blocco della freccia ("Block 2")
+               if value == QadDimComponentEnum.BLOCK1 or value == QadDimComponentEnum.BLOCK2:
+                  dimLinePosPt = f.geometry().asPoint()
+                  if containerGeom is not None: # verifico che il punto sia interno a containerGeom
+                     if containerGeom.contains(dimLinePosPt) == True:
+                        return dimLinePosPt
+                  else:
+                     return dimLinePosPt
             except:
                return None
 
-         if dimLinePosPt is None:
-            # poi cerco tra gli elementi puntuali
-            for f in self.symbolFeatures:
-               try:
-                  value = f.attribute(self.dimStyle.componentFieldName)
-                  if value == QadDimComponentEnum.BLOCK1: # primo blocco della freccia ("Block 1")
-                     dimLinePosPt = f.geometry().asPoint()
-                  elif value == QadDimComponentEnum.BLOCK2: # secondo blocco della freccia ("Block 1")
-                     dimLinePosPt = f.geometry().asPoint()
-               except:
-                  return None
-      
-      return dimLinePosPt      
+      return None
 
 
    #============================================================================
@@ -3305,7 +3320,7 @@ class QadDimEntity():
       
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione
          dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         linePosPt = self.getDimLinePosPt(containerGeom)
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None):
 
@@ -3327,7 +3342,7 @@ class QadDimEntity():
             self.set(dimEntity)
       elif self.dimStyle.dimType == QadDimTypeEnum.LINEAR: # quota lineare con una linea di quota orizzontale o verticale
          dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         linePosPt = self.getDimLinePosPt(containerGeom)
          preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None) and \

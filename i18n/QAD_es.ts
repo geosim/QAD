@@ -685,6 +685,10 @@ Nessuna perpendicolare possibile</source>
 I punti devono essere distinti.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cancellare gli oggetti sorgente? [Sì/No] &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_MOVE</name>
@@ -2046,6 +2050,14 @@ p, li { white-space: pre-wrap; }
         <source>Impostazioni snap ad oggetto...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Quotatura</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stile di quotatura corrente:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Dimension</name>
@@ -2094,6 +2106,10 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     <message>
         <source>ha il layer per le linee delle quote non modificabile.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>non ha impostato i layer con lo stesso sistema di coordinate.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2505,6 +2521,18 @@ Nessun layer corrente.
     <message>
         <source>
 Il layer corrente non è di tipo testo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+   
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

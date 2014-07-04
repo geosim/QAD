@@ -44,6 +44,7 @@ import qad_utils
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
 class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
    def __init__(self, plugIn):
+      #qad_debug.breakPoint()
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
       QDialog.__init__(self, self.iface)

@@ -44,7 +44,6 @@ class QadMapTool(QgsMapTool):
       self.iface = self.plugIn.iface
       self.canvas = self.plugIn.iface.mapCanvas()      
       self.cursor = qad_utils.getGetPointCursor()
-      self.popupMenu = None
 
 
    #============================================================================
@@ -56,18 +55,18 @@ class QadMapTool(QgsMapTool):
       # volevo mettere questo evento nel canvasReleaseEvent
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
-         self.displayPopupMenu(event.pos())                  
-
+         self.displayPopupMenu(event.pos())
 
    def canvasDoubleClickEvent(self,event):
       pass
 
 
    def canvasMoveEvent(self,event):
+      #qad_debug.breakPoint()
       pass
 
 
-   def canvasReleaseEvent(self,event):
+   def canvasReleaseEvent(self, event):
       pass
 
    
@@ -82,7 +81,7 @@ class QadMapTool(QgsMapTool):
       self.plugIn.keyPressEvent(event)
 
 
-   def keyReleaseEvent(self,event):
+   def keyReleaseEvent(self, event):
       pass
 
 
@@ -106,14 +105,8 @@ class QadMapTool(QgsMapTool):
       self.plugIn.QadCommands.continueCommandFromMapTool()
    
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
-         if self.popupMenu is not None:
-            #qad_debug.breakPoint()
-            self.popupMenu.clear()
-            del self.popupMenu
-            self.popupMenu = None
-      except:
-         pass
+      #qad_debug.breakPoint()
+      pass
       
    def isTransient(self):
       return False
@@ -126,8 +119,7 @@ class QadMapTool(QgsMapTool):
    # dispalyPopupMenu
    #============================================================================
    def displayPopupMenu(self, pos):
-      #qad_debug.breakPoint()
-      self.popupMenu = QMenu()
+      popupMenu = QMenu(self.canvas)
       history = self.plugIn.getHistoryfromTxtWindow()
       isLastCmdToInsert = True
       isRecentMenuToInsert = True
@@ -145,15 +137,15 @@ class QadMapTool(QgsMapTool):
                msg = QadMsg.translate("Popup_menu_graph_window", "Ripeti ") + cmd.getName() # "Ripeti "
                icon = cmd.getIcon()
                if icon is None:
-                  lastCmdAction = QAction(msg, self.popupMenu)
+                  lastCmdAction = QAction(msg, popupMenu)
                else:
-                  lastCmdAction = QAction(icon, msg, self.popupMenu)
+                  lastCmdAction = QAction(icon, msg, popupMenu)
                cmd.connectQAction(lastCmdAction)      
-               self.popupMenu.addAction(lastCmdAction)     
+               popupMenu.addAction(lastCmdAction)     
             else:
                if isRecentMenuToInsert:
                   isRecentMenuToInsert = False
-                  recentCmdsMenu = self.popupMenu.addMenu(QadMsg.translate("Popup_menu_graph_window", "Comandi recenti "))
+                  recentCmdsMenu = popupMenu.addMenu(QadMsg.translate("Popup_menu_graph_window", "Comandi recenti "))
 
                icon = cmd.getIcon()
                if icon is None:
@@ -164,5 +156,5 @@ class QadMapTool(QgsMapTool):
                recentCmdsMenu.addAction(recentCmdAction)
       
       if isLastCmdToInsert == False: # menu non vuoto
-         self.popupMenu.popup(self.plugIn.iface.mapCanvas().mapToGlobal(pos))
+         popupMenu.popup(self.canvas.mapToGlobal(pos))
          

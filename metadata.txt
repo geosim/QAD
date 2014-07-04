@@ -5,13 +5,36 @@
 
 # This file should be included when you package your plugin.
 
+# Mandatory items:
+
+
 [general]
 name=QAD
-description=Comandi di editazione grafica in stile CAD
-version=0.1
 qgisMinimumVersion=2.0
-class_name=Qad
-website=
-[author]
-name=Iren Acqua Gas SpA
+qgisMaximumVersion=2.99
+description=Quantum Aided Design: cad like commands in QGIS
+version=2.4
+
+# end of mandatory metadata
+
+# Optional items:
+
+# Uncomment the following line and add your changelog entries:
+# changelog=
+
+# tags are comma separated with spaces allowed
+tags=cad,digitizing,vector
+
+homepage=http://geosim.iride-acquagas.it/index.htm
+tracker=https://github.com/geosim/QAD/issues
+repository=https://github.com/geosim/QAD/
+icon=icons/orthopoint.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version
+deprecated=False
+
+# Author contact information
+author=Iren Acqua Gas SpA
 email=geosim.dev@irenacquagas.it
