@@ -86,7 +86,7 @@ class QadARCCommandClass(QadCommandClass):
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_START_PT)        
          keyWords = QadMsg.translate("Command_ARC", "Centro")
-         prompt = QadMsg.translate("Command_ARC", "Specificare punto iniziale dell'arco o [Centro]: ")            
+         prompt = QadMsg.translate("Command_ARC", "Specificare punto iniziale dell'arco o [{0}]: ").format(keyWords)                 
          
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo di modo
@@ -132,13 +132,13 @@ class QadARCCommandClass(QadCommandClass):
             self.getPointMapTool().arcStartPt = self.startPt
             self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_KNOWN_ASK_FOR_SECOND_PT)
                                 
-            keyWords = QadMsg.translate("Command_ARC", "Centro") + " " + \
+            keyWords = QadMsg.translate("Command_ARC", "Centro") + "/" + \
                        QadMsg.translate("Command_ARC", "Fine")
-            msg = QadMsg.translate("Command_ARC", "Specificare secondo punto dell'arco [Centro/Fine]: ")          
+            prompt = QadMsg.translate("Command_ARC", "Specificare secondo punto dell'arco o [{0}]: ").format(keyWords)                 
             
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NONE)
@@ -264,12 +264,13 @@ class QadARCCommandClass(QadCommandClass):
          self.getPointMapTool().arcCenterPt = self.centerPt
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT)
          
-         keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
-                    QadMsg.translate("Command_ARC", "Lunghezza")         
-         msg = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [Angolo/Lunghezza corda]: ")                  
+         keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
+                    QadMsg.translate("Command_ARC", "Lunghezza corda")         
+         prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
+                         
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, valori nulli non ammessi
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)
@@ -336,12 +337,13 @@ class QadARCCommandClass(QadCommandClass):
                   qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                   return True # fine comando
             
-            keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
-                       QadMsg.translate("Command_ARC", "Lunghezza")
-            msg = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [Angolo/Lunghezza corda]: ")                   
+            keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
+                       QadMsg.translate("Command_ARC", "Lunghezza corda")
+            prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
+
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori nulli non ammessi
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NOT_NULL)
@@ -466,13 +468,14 @@ class QadARCCommandClass(QadCommandClass):
          self.getPointMapTool().arcEndPt = self.endPt
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_CENTER)
       
-         keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
-                    QadMsg.translate("Command_ARC", "Direzione") + " " + \
+         keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
+                    QadMsg.translate("Command_ARC", "Direzione") + "/" + \
                     QadMsg.translate("Command_ARC", "Raggio")
-         msg = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [Angolo/Direzione/Raggio]: ")          
+         prompt = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [{0}]: ").format(keyWords)                 
+
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, valori nulli non ammessi
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)
@@ -548,13 +551,14 @@ class QadARCCommandClass(QadCommandClass):
                   qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                   return True # fine comando
             
-            keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
-                       QadMsg.translate("Command_ARC", "Direzione") + " " + \
+            keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
+                       QadMsg.translate("Command_ARC", "Direzione") + "/" + \
                        QadMsg.translate("Command_ARC", "Raggio")
-            msg = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [Angolo/Direzione/Raggio]: ")          
+            prompt = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [{0}]: ").format(keyWords)                 
+                      
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, isNullable
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NOT_NULL)
@@ -760,11 +764,12 @@ class QadARCCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT)
          
          keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
-                    QadMsg.translate("Command_ARC", "Lunghezza")
-         msg = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [Angolo/Lunghezza corda]: ")                   
+                    QadMsg.translate("Command_ARC", "Lunghezza corda")
+         prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
+                           
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, isNullable
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)

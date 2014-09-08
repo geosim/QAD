@@ -376,15 +376,15 @@ class QadLINECommandClass(QadCommandClass):
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
 
          if len(self.vertices) > 2:
-            keyWords = QadMsg.translate("Command_LINE", "Chiudi") + " " + QadMsg.translate("Command_LINE", "Annulla")
-            msg = QadMsg.translate("Command_LINE", "Specificare punto successivo o [Chiudi/Annulla]: ")          
+            keyWords = QadMsg.translate("Command_LINE", "Chiudi") + "/" + \
+                       QadMsg.translate("Command_LINE", "Annulla")
          else:
             keyWords = QadMsg.translate("Command_LINE", "Annulla")
-            msg = QadMsg.translate("Command_LINE", "Specificare punto successivo o [Annulla]: ")          
+         prompt = QadMsg.translate("Command_LINE", "Specificare punto successivo o [{0}]: ").format(keyWords)
             
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)

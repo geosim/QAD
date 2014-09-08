@@ -704,12 +704,13 @@ class QadPEDITCommandClass(QadCommandClass):
       self.step = 1
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_ENTITY_SEL)
                         
-      keyWords = QadMsg.translate("Command_PEDIT", "Ultimo") + " " + \
+      keyWords = QadMsg.translate("Command_PEDIT", "Ultimo") + "/" + \
                  QadMsg.translate("Command_PEDIT", "Multiplo")
+      prompt = QadMsg.translate("Command_PEDIT", "Selezionare polilinea o [{0}]: ").format(QadMsg.translate("Command_PEDIT", "Multiplo"))
                
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(QadMsg.translate("Command_PEDIT", "Selezionare polilinea o [Multiplo]: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NOT_NULL)      
@@ -735,41 +736,32 @@ class QadPEDITCommandClass(QadCommandClass):
       if line == True: # se ci sono dei layer linea
          if self.entity.isInitialized(): # selezionato solo un oggetto
             if self.linearObjectList.isClosed(): # se è chiusa
-               keyWords = QadMsg.translate("Command_PEDIT", "Apri") + " "
-               msg = QadMsg.translate("Command_PEDIT", "Apri") + "/"
+               keyWords = QadMsg.translate("Command_PEDIT", "Apri") + "/"
             else:
-               keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + " "
-               msg = QadMsg.translate("Command_PEDIT", "Chiudi") + "/"
+               keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/"
          else: # selezionati più oggetti
-            keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + " " + \
-                       QadMsg.translate("Command_PEDIT", "Apri") + " "
-            msg = QadMsg.translate("Command_PEDIT", "Chiudi") + "/" + \
-                  QadMsg.translate("Command_PEDIT", "Apri") + "/"
+            keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/" + \
+                       QadMsg.translate("Command_PEDIT", "Apri") + "/"
                   
-         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Unisci") + " "
-         msg = msg + QadMsg.translate("Command_PEDIT", "Unisci") + "/"
+         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Unisci") + "/"
       else: # se non ci sono dei layer linea
          keyWords = ""
          msg = ""
 
       if self.entity.isInitialized(): # selezionato solo un oggetto
-         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Edita") + " "
-         msg = msg + QadMsg.translate("Command_PEDIT", "Edita vertici") + "/"
+         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Edita vertici") + "/"
          
-      keyWords = keyWords + QadMsg.translate("Command_PEDIT", "ADatta") + " " + \
-                            QadMsg.translate("Command_PEDIT", "Rettifica") + " " + \
-                            QadMsg.translate("Command_PEDIT", "Inverti") + " " + \
-                            QadMsg.translate("Command_PEDIT", "ANnulla")
-      msg = msg + QadMsg.translate("Command_PEDIT", "ADatta") + "/" + \
-                  QadMsg.translate("Command_PEDIT", "Rettifica") + "/" + \
-                  QadMsg.translate("Command_PEDIT", "Inverti") + "/" + \
-                  QadMsg.translate("Command_PEDIT", "ANnulla")
+      keyWords = keyWords + QadMsg.translate("Command_PEDIT", "ADatta") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Rettifica") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Inverti") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "ANnulla")      
+      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione [{0}]: ").format(keyWords)
       
       self.step = 3
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.NONE)
       # si appresta ad attendere enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_PEDIT", "Digitare un'opzione [{0}]: ").format(msg), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)
@@ -800,12 +792,12 @@ class QadPEDITCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_FIRST_TOLERANCE_PT)
 
-      keyWords = QadMsg.translate("Command_PEDIT", "Tipo")                 
-      msg = QadMsg.translate("Command_PEDIT", "Specificare distanza di approssimazione o [Tipo unione] <{0}>: ")
+      keyWords = QadMsg.translate("Command_PEDIT", "Tipo unione")                 
+      prompt = QadMsg.translate("Command_PEDIT", "Specificare distanza di approssimazione o [{0}] <{1}>: ").format(keyWords, str(self.joinToleranceDist))
 
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg.format(str(self.joinToleranceDist)), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                    self.joinToleranceDist, \
                    keyWords, \
@@ -820,20 +812,20 @@ class QadPEDITCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.NONE)
 
-      keyWords = QadMsg.translate("Command_PEDIT", "Estendi") + " " + \
-                 QadMsg.translate("Command_PEDIT", "Aggiungi") + " " + \
+      keyWords = QadMsg.translate("Command_PEDIT", "Estendi") + "/" + \
+                 QadMsg.translate("Command_PEDIT", "Aggiungi") + "/" + \
                  QadMsg.translate("Command_PEDIT", "ENtrambe")
-      msg = QadMsg.translate("Command_PEDIT", "Specificare tipo di unione [Estendi/Aggiungi/ENtrambe] <{0}>: ")
       if self.joinMode == 1:
          default = QadMsg.translate("Command_PEDIT", "Estendi")
       elif self.joinMode == 2:
          default = QadMsg.translate("Command_PEDIT", "Aggiungi")
       elif self.joinMode == 3:
          default = QadMsg.translate("Command_PEDIT", "ENtrambe")
+      prompt = QadMsg.translate("Command_PEDIT", "Specificare tipo di unione [{0}] <{1}>: ").format(keyWords, default)
 
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg.format(default), QadInputTypeEnum.KEYWORDS, default, \
+      self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, default, \
                    keyWords, QadInputModeEnum.NOT_NULL)      
       self.step = 6
 
@@ -847,31 +839,25 @@ class QadPEDITCommandClass(QadCommandClass):
       
       self.displayVertexMarker(self.vertexAt)
       
-      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + " " + \
+      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + "/" + \
                  QadMsg.translate("Command_PEDIT", "Precedente")
-      msg = QadMsg.translate("Command_PEDIT", "Seguente") + "/" + \
-            QadMsg.translate("Command_PEDIT", "Precedente")
       
       if self.entity.layer.geometryType() == QGis.Line:
-         keyWords = keyWords + " "  + QadMsg.translate("Command_PEDIT", "Dividi")
-         msg = msg + "/" + QadMsg.translate("Command_PEDIT", "Dividi")
+         keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Dividi")
 
-      keyWords = keyWords + " "  + QadMsg.translate("Command_PEDIT", "Inserisci") + \
-                            " "  + QadMsg.translate("Command_PEDIT", "INserisci_prima") + \
-                            " "  + QadMsg.translate("Command_PEDIT", "SPosta") + \
-                            " "  + QadMsg.translate("Command_PEDIT", "Raddrizza") + \
-                            " "  + QadMsg.translate("Command_PEDIT", "esCi")
-      msg = msg + "/" + QadMsg.translate("Command_PEDIT", "Inserisci") + \
-                  "/" + QadMsg.translate("Command_PEDIT", "INserisci prima") + \
-                  "/" + QadMsg.translate("Command_PEDIT", "SPosta") + \
-                  "/" + QadMsg.translate("Command_PEDIT", "Raddrizza") + \
-                  "/" + QadMsg.translate("Command_PEDIT", "esCi")
+      keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Inserisci") + "/" + \
+                                 + QadMsg.translate("Command_PEDIT", "INserisci prima") + "/" + \
+                                 + QadMsg.translate("Command_PEDIT", "SPosta") + "/" + \
+                                 + QadMsg.translate("Command_PEDIT", "Raddrizza") + "/" + \
+                                 + QadMsg.translate("Command_PEDIT", "esCi")
+
+      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione di modifica vertici [{0}] <{1}>: ").format(keyWords, self.default)
                
       self.step = 8
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX)
       # si appresta ad attendere enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_PEDIT", "Digitare un'opzione di modifica vertici [{0}] <{1}>: ").format(msg, self.default), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    self.default, \
                    keyWords, QadInputModeEnum.NONE)
@@ -912,19 +898,16 @@ class QadPEDITCommandClass(QadCommandClass):
       #qad_debug.breakPoint()     
       self.displayVertexMarker(self.secondVertexAt)
       
-      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + " "  + \
-                 QadMsg.translate("Command_PEDIT", "Precedente") + " "  + \
-                 QadMsg.translate("Command_PEDIT", "Esegui") + " "  + \
+      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + "/"  + \
+                 QadMsg.translate("Command_PEDIT", "Precedente") + "/"  + \
+                 QadMsg.translate("Command_PEDIT", "Esegui") + "/"  + \
                  QadMsg.translate("Command_PEDIT", "esCi")
-      msg = QadMsg.translate("Command_PEDIT", "Seguente") + "/" + \
-            QadMsg.translate("Command_PEDIT", "Precedente") + "/" + \
-            QadMsg.translate("Command_PEDIT", "Esegui") + "/" + \
-            QadMsg.translate("Command_PEDIT", "esCi")
+      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione di selezione del secondo vertice [{0}] <{1}>: ").format(keyWords, self.default1)
                
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX)
       # si appresta ad attendere enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_PEDIT", "Digitare un'opzione di selezione del secondo vertice [{0}] <{1}>: ").format(msg, self.default1), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    self.default1, \
                    keyWords, QadInputModeEnum.NONE)

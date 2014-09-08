@@ -229,19 +229,19 @@ class QadSTRETCHCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.ASK_FOR_FIRST_PT_RECTANGLE)                                
       
-      keyWords = QadMsg.translate("Command_STRETCH", "Poligono") + " " + \
-                 QadMsg.translate("Command_STRETCH", "AGgiungi") + " " + \
+      keyWords = QadMsg.translate("Command_STRETCH", "Poligono") + "/" + \
+                 QadMsg.translate("Command_STRETCH", "AGgiungi") + "/" + \
                  QadMsg.translate("Command_STRETCH", "Elimina")
 
       if self.AddOnSelection == True:
-         msg = QadMsg.translate("Command_STRETCH", "Selezionare i vertici")
+         prompt = QadMsg.translate("Command_STRETCH", "Selezionare i vertici")
       else:
-         msg = QadMsg.translate("Command_STRETCH", "Rimuovere i vertici")
-      msg = msg + QadMsg.translate("Command_STRETCH", " da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: ")
+         prompt = QadMsg.translate("Command_STRETCH", "Rimuovere i vertici")
+      prompt = prompt + QadMsg.translate("Command_STRETCH", " da stirare tramite una finestra o [{0}]: ").format(keyWords)                        
 
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
+      self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)      
 
@@ -255,10 +255,11 @@ class QadSTRETCHCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
       
       keyWords = QadMsg.translate("Command_STRETCH", "Spostamento")
+      prompt = QadMsg.translate("Command_STRETCH", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)                        
          
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_STRETCH", "Specificare punto base o [Spostamento] <Spostamento>: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)      

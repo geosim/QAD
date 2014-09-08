@@ -264,17 +264,17 @@ class QadMIRRORCommandClass(QadCommandClass):
          
          self.secondMirrorPt.set(value.x(), value.y())
          
-         keyWords = QadMsg.translate("QAD", "Sì") + " " + \
+         keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                     QadMsg.translate("QAD", "No")                                       
-         msg = QadMsg.translate("Command_MIRROR", "Cancellare gli oggetti sorgente? [Sì/No] <{0}>: ")
          if self.copyFeatures == False:
             default = QadMsg.translate("QAD", "Sì")
          else: 
             default = QadMsg.translate("QAD", "No")
+         prompt = QadMsg.translate("Command_MIRROR", "Cancellare gli oggetti sorgente ? [{0}] <{1}>: ").format(keyWords, default)
              
          # si appresta ad attendere enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(msg.format(default), \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.KEYWORDS, \
                       default, \
                       keyWords, QadInputModeEnum.NONE)

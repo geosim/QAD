@@ -94,13 +94,14 @@ class QadCIRCLECommandClass(QadCommandClass):
       if self.step == 0: # inizio del comando
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_CENTER_PT)        
-         keyWords = QadMsg.translate("Command_CIRCLE", "3P") + " " + \
-                    QadMsg.translate("Command_CIRCLE", "2P") + " " + \
-                    QadMsg.translate("Command_CIRCLE", "Ttr")
+         keyWords = QadMsg.translate("Command_CIRCLE", "3P") + "/" + \
+                    QadMsg.translate("Command_CIRCLE", "2P") + "/" + \
+                    QadMsg.translate("Command_CIRCLE", "Ttr (tangente tangente raggio)")
+         prompt = QadMsg.translate("Command_CIRCLE", "Specificare punto centrale del cerchio o [{0}]: ").format(keyWords)
 
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(QadMsg.translate("Command_CIRCLE", "Specificare punto centrale del cerchio o [3P/2P/Ttr (tangente tangente raggio)]: "), \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)
@@ -160,13 +161,13 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.getPointMapTool().centerPt = self.centerPt
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_RADIUS)                                
            
-            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + " " + \
+            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + "/" + \
                        QadMsg.translate("Command_CIRCLE", "Area")
-            msg = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [Diametro/Area]: ")          
+            prompt = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [{0}]: ").format(keyWords)
             
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, \
@@ -235,13 +236,13 @@ class QadCIRCLECommandClass(QadCommandClass):
                      qad_layer.addPolygonToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
             
-            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + " " + \
+            keyWords = QadMsg.translate("Command_CIRCLE", "Diametro") + "/" + \
                        QadMsg.translate("Command_CIRCLE", "Area")
-            msg = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [Diametro/Area]: ")          
-            
+            prompt = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [{0}]: ").format(keyWords)
+                                 
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)

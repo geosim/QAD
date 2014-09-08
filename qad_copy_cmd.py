@@ -178,20 +178,20 @@ class QadCOPYCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
 
       if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
-         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + " " + \
+         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
                     QadMsg.translate("Command_COPY", "mOdalità")
-         msg = QadMsg.translate("Command_COPY", "Specificare il punto base o [Spostamento/mOdalità] <Spostamento>: ")
       else:
-         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + " " + \
-                    QadMsg.translate("Command_COPY", "mOdalità") + " " + \
-                    QadMsg.translate("Command_COPY", "MUltiplo")                    
-         msg = QadMsg.translate("Command_COPY", "Specificare il punto base o [Spostamento/mOdalità/MUltiplo] <Spostamento>: ")
+         keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
+                    QadMsg.translate("Command_COPY", "mOdalità") + "/" + \
+                    QadMsg.translate("Command_COPY", "MUltiplo")
+      default = QadMsg.translate("Command_COPY", "Spostamento")                   
+      prompt = QadMsg.translate("Command_COPY", "Specificare il punto base o [{0}] <{1}>: ").format(keyWords, default)
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                   QadMsg.translate("Command_COPY", "Spostamento"), \
+                   default, \
                    keyWords, QadInputModeEnum.NONE)      
       self.step = 2      
    
@@ -219,24 +219,25 @@ class QadCOPYCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)
                                       
       if len(self.featureCache) > 0:
-         keyWords = QadMsg.translate("Command_COPY", "Serie") + " " + \
-                    QadMsg.translate("Command_COPY", "Esci") + " " + \
+         keyWords = QadMsg.translate("Command_COPY", "Serie") + "/" + \
+                    QadMsg.translate("Command_COPY", "Esci") + "/" + \
                     QadMsg.translate("Command_COPY", "Annulla")
-         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie/Esci/Annulla] <Esci>: ")
+         default = QadMsg.translate("Command_COPY", "Esci")
+         prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}] <{1}>: ").format(keyWords, default)
    
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                      QadMsg.translate("Command_COPY", "Esci"), \
+                      default, \
                       keyWords, QadInputModeEnum.NONE)
       else:
          keyWords = QadMsg.translate("Command_COPY", "Serie")
-         msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [Serie] <utilizzare il primo punto come spostamento dal punto di origine 0,0>: ")         
+         prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}] <utilizzare il primo punto come spostamento dal punto di origine 0,0>: ").format(keyWords)
                    
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)      
@@ -251,11 +252,11 @@ class QadCOPYCommandClass(QadCommandClass):
          keyWords = QadMsg.translate("Command_COPY", "Adatta")
       else:
          keyWords = QadMsg.translate("Command_COPY", "Serie")
-      msg = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}]: ")
+      prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}]: ").format(keyWords)
 
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg.format(keyWords), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    "", \
                    keyWords, QadInputModeEnum.NOT_NULL)      
@@ -333,17 +334,17 @@ class QadCOPYCommandClass(QadCommandClass):
                             "", QadInputModeEnum.NONE)                                      
                self.step = 4
             elif value == QadMsg.translate("Command_COPY", "mOdalità"):
-               keyWords = QadMsg.translate("Command_COPY", "Singola") + " " + \
+               keyWords = QadMsg.translate("Command_COPY", "Singola") + "/" + \
                           QadMsg.translate("Command_COPY", "Multipla")
-               msg = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalità di copia [Singola/Multipla] <{0}>: ")
                if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                   default = QadMsg.translate("Command_COPY", "Multipla")
                else:
                   default = QadMsg.translate("Command_COPY", "Singola")               
-                             
+               prompt = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalità di copia [{0}] <{1}>: ").format(keyWords, default)
+
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
-               self.waitFor(msg.format(default), \
+               self.waitFor(prompt, \
                             QadInputTypeEnum.KEYWORDS, \
                             default, \
                             keyWords, QadInputModeEnum.NONE)

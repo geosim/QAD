@@ -207,14 +207,15 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS)                                
       
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + " " + \
-                 QadMsg.translate("Command_DIM", "Angolo") + " " + \
-                 QadMsg.translate("Command_DIM", "Orizzontale") + " " + \
-                 QadMsg.translate("Command_DIM", "Verticale") + " " + \
+      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
+                 QadMsg.translate("Command_DIM", "Angolo") + "/" + \
+                 QadMsg.translate("Command_DIM", "Orizzontale") + "/" + \
+                 QadMsg.translate("Command_DIM", "Verticale") + "/" + \
                  QadMsg.translate("Command_DIM", "Ruotato")      
-      msg = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [Testo/Angolo/Orizzontale/Verticale/Ruotato]: ")
+      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [{0}]: ").format(keyWords)
+      
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, \
@@ -568,11 +569,12 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS)                                
       
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + " " + \
+      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
                  QadMsg.translate("Command_DIM", "Angolo")      
-      msg = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [Testo/Angolo]: ")
+      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [{0}]: ").format(keyWords)
+      
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, \
@@ -853,18 +855,17 @@ class QadDIMARCCommandClass(QadCommandClass):
       
       # si appresta ad attendere un punto o una parola chiave
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + " " + \
-                 QadMsg.translate("Command_DIM", "Angolo") + " " + \
-                 QadMsg.translate("Command_DIM", "Parziale")
+      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
+                 QadMsg.translate("Command_DIM", "Angolo") + "/" + \
+                 QadMsg.translate("Command_DIM", "Parziale") + "/"
       if self.leader:
-         keyWords = keyWords + " " + QadMsg.translate("Command_DIM", "Direttrice")
-         msg = QadMsg.translate("Command_DIM", "Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: ")
+         keyWords = keyWords + QadMsg.translate("Command_DIM", "Direttrice")
       else:
-         keyWords = keyWords + " " + QadMsg.translate("Command_DIM", "Nessuna direttrice")
-         msg = QadMsg.translate("Command_DIM", "Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: ")
+         keyWords = keyWords + QadMsg.translate("Command_DIM", "Nessuna direttrice")
+      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della quota o [{0}]: ").format(keyWords)
 
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, \

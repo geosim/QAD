@@ -173,14 +173,14 @@ class QadROTATECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_ROTATION_PT)
 
-      keyWords = QadMsg.translate("Command_ROTATE", "Copia") + " " + \
-                  QadMsg.translate("Command_ROTATE", "Riferimento")
-      msg = QadMsg.translate("Command_ROTATE", "Specificare angolo di rotazione o [Copia/Riferimento] <{0}>: ")
+      keyWords = QadMsg.translate("Command_ROTATE", "Copia") + "/" + \
+                 QadMsg.translate("Command_ROTATE", "Riferimento")
+      prompt = QadMsg.translate("Command_ROTATE", "Specificare angolo di rotazione o [{0}] <{1}>: ").format(keyWords, \
+               str(qad_utils.toDegrees(self.plugIn.lastRot)))
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg.format(str(qad_utils.toDegrees(self.plugIn.lastRot))), \
-                   QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
+      self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                    self.plugIn.lastRot, \
                    keyWords, QadInputModeEnum.NONE)      
       self.step = 3      
@@ -204,16 +204,16 @@ class QadROTATECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_ROTATION_PT)
       
-      keyWords = QadMsg.translate("Command_ROTATE", "Punti")
-      msg = QadMsg.translate("Command_ROTATE", "Specificare nuovo angolo o [Punti] <{0}>: ")                          
-      
+      keyWords = QadMsg.translate("Command_ROTATE", "Punti")      
       if self.plugIn.lastNewReferenceRot == 0:
          angle = self.plugIn.lastRot
       else:
-         angle = self.plugIn.lastNewReferenceRot
+         angle = self.plugIn.lastNewReferenceRot         
+      prompt = QadMsg.translate("Command_ROTATE", "Specificare nuovo angolo o [{0}] <{1}>: ").format(keyWords, str(qad_utils.toDegrees(angle)))                        
+         
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg.format(str(qad_utils.toDegrees(angle))), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                    angle, \
                    keyWords, QadInputModeEnum.NOT_NULL)

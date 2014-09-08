@@ -302,37 +302,37 @@ class QadSSGetClass(QadCommandClass):
       # "AGgiungi" "Elimina"
       # "Precedente" "Annulla"
       # "AUto" "SIngolo" "Help"
-      keyWords = QadMsg.translate("Command_SSGET", "Finestra") + " " + \
-                 QadMsg.translate("Command_SSGET", "Ultimo") + " " + \
-                 QadMsg.translate("Command_SSGET", "Interseca") + " " + \
-                 QadMsg.translate("Command_SSGET", "Riquadro") + " " + \
-                 QadMsg.translate("Command_SSGET", "Tutto") + " " + \
-                 QadMsg.translate("Command_SSGET", "iNTercetta") + " " + \
-                 QadMsg.translate("Command_SSGET", "FPoligono") + " " + \
-                 QadMsg.translate("Command_SSGET", "IPoligono") + " " + \
-                 QadMsg.translate("Command_SSGET", "FCerchio") + " " + \
-                 QadMsg.translate("Command_SSGET", "ICerchio") + " " + \
-                 QadMsg.translate("Command_SSGET", "FOggetti") + " " + \
-                 QadMsg.translate("Command_SSGET", "IOggetti") + " " + \
-                 QadMsg.translate("Command_SSGET", "FBuffer") + " " + \
-                 QadMsg.translate("Command_SSGET", "IBuffer") + " " + \
-                 QadMsg.translate("Command_SSGET", "AGgiungi") + " " + \
-                 QadMsg.translate("Command_SSGET", "Elimina") + " " + \
-                 QadMsg.translate("Command_SSGET", "Precedente") + " " + \
-                 QadMsg.translate("Command_SSGET", "Annulla") + " " + \
-                 QadMsg.translate("Command_SSGET", "AUto") + " " + \
-                 QadMsg.translate("Command_SSGET", "SIngolo") + " " + \
+      keyWords = QadMsg.translate("Command_SSGET", "Finestra") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Ultimo") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Interseca") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Riquadro") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Tutto") + "/" + \
+                 QadMsg.translate("Command_SSGET", "iNTercetta") + "/" + \
+                 QadMsg.translate("Command_SSGET", "FPoligono") + "/" + \
+                 QadMsg.translate("Command_SSGET", "IPoligono") + "/" + \
+                 QadMsg.translate("Command_SSGET", "FCerchio") + "/" + \
+                 QadMsg.translate("Command_SSGET", "ICerchio") + "/" + \
+                 QadMsg.translate("Command_SSGET", "FOggetti") + "/" + \
+                 QadMsg.translate("Command_SSGET", "IOggetti") + "/" + \
+                 QadMsg.translate("Command_SSGET", "FBuffer") + "/" + \
+                 QadMsg.translate("Command_SSGET", "IBuffer") + "/" + \
+                 QadMsg.translate("Command_SSGET", "AGgiungi") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Elimina") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Precedente") + "/" + \
+                 QadMsg.translate("Command_SSGET", "Annulla") + "/" + \
+                 QadMsg.translate("Command_SSGET", "AUto") + "/" + \
+                 QadMsg.translate("Command_SSGET", "SIngolo") + "/" + \
                  QadMsg.translate("Command_SSGET", "Help")
                  
       if self.AddOnSelection == True:
-         msg = QadMsg.translate("Command_SSGET", "Selezionare oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "Selezionare oggetti")
       else:
-         msg = QadMsg.translate("Command_SSGET", "Rimuovere oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "Rimuovere oggetti")
                            
       if self.help == True:         
-         msg = msg + QadMsg.translate("Command_SSGET", " o [Finestra/Ultimo/Interseca/Riquadro/Tutto/iNTercetta/FPoligono/IPoligono/FCerchio/ICerchio/FOggetti/IOggetti/AGgiungi/Elimina/Precedente/ANnulla/AUto/SIngolo/Help]")
+         prompt = prompt + QadMsg.translate("Command_SSGET", " o [{0}]").format(keyWords)                        
          
-      msg = msg + QadMsg.translate("Command_SSGET", ": ")
+      prompt = prompt + QadMsg.translate("Command_SSGET", ": ")
             
       # imposto il map tool
       #qad_debug.breakPoint()      
@@ -344,7 +344,7 @@ class QadSSGetClass(QadCommandClass):
            
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)

@@ -187,15 +187,15 @@ class QadPLINECommandClass(QadCommandClass):
    # WaitForArcMenu
    #============================================================================
    def WaitForArcMenu(self):
-      keyWords = QadMsg.translate("Command_PLINE", "Angolo") + " " + \
-                 QadMsg.translate("Command_PLINE", "Centro") + " " + \
-                 QadMsg.translate("Command_PLINE", "CHiudi") +  " " + \
-                 QadMsg.translate("Command_PLINE", "Direzione") + " " + \
-                 QadMsg.translate("Command_PLINE", "Linea") + " " + \
-                 QadMsg.translate("Command_PLINE", "Raggio") +  " " + \
-                 QadMsg.translate("Command_PLINE", "Secondo") + " " + \
+      keyWords = QadMsg.translate("Command_PLINE", "Angolo") + "/" + \
+                 QadMsg.translate("Command_PLINE", "CEntro") + "/" + \
+                 QadMsg.translate("Command_PLINE", "CHiudi") +  "/" + \
+                 QadMsg.translate("Command_PLINE", "Direzione") + "/" + \
+                 QadMsg.translate("Command_PLINE", "LInea") + "/" + \
+                 QadMsg.translate("Command_PLINE", "Raggio") +  "/" + \
+                 QadMsg.translate("Command_PLINE", "Secondo punto") + "/" + \
                  QadMsg.translate("Command_PLINE", "ANNulla")
-      msg = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [Angolo/CEntro/CHiudi/Direzione/LInea/Raggio/Secondo punto/ANNulla]: ")
+      prompt = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)
 
       #qad_debug.breakPoint()      
       self.arcStartPt = self.vertices[-1] # ultimo vertice
@@ -210,7 +210,7 @@ class QadPLINECommandClass(QadCommandClass):
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)
@@ -222,23 +222,22 @@ class QadPLINECommandClass(QadCommandClass):
    #============================================================================
    def WaitForLineMenu(self):
       if self.firstVertex:
-         keyWords = QadMsg.translate("Command_PLINE", "Arco") + " " + \
-                    QadMsg.translate("Command_PLINE", "LUnghezza") + " " + \
-                    QadMsg.translate("Command_PLINE", "ANnulla") + " " + \
+         keyWords = QadMsg.translate("Command_PLINE", "Arco") + "/" + \
+                    QadMsg.translate("Command_PLINE", "LUnghezza") + "/" + \
+                    QadMsg.translate("Command_PLINE", "ANnulla") + "/" + \
                     QadMsg.translate("Command_PLINE", "Ricalca")
-         msg = QadMsg.translate("Command_PLINE", "Specificare punto successivo o [Arco/LUnghezza/ANnulla/Ricalca]: ")
       else:            
-         keyWords = QadMsg.translate("Command_PLINE", "Arco") + " " + \
-                    QadMsg.translate("Command_PLINE", "CHiudi") + " " + \
-                    QadMsg.translate("Command_PLINE", "LUnghezza") + " " + \
-                    QadMsg.translate("Command_PLINE", "ANnulla") + " " + \
+         keyWords = QadMsg.translate("Command_PLINE", "Arco") + "/" + \
+                    QadMsg.translate("Command_PLINE", "CHiudi") + "/" + \
+                    QadMsg.translate("Command_PLINE", "LUnghezza") + "/" + \
+                    QadMsg.translate("Command_PLINE", "ANnulla") + "/" + \
                     QadMsg.translate("Command_PLINE", "Ricalca")
-         msg = QadMsg.translate("Command_PLINE", "Specificare punto successivo o [Arco/CHiudi/LUnghezza/ANnulla/Ricalca]: ")           
+      prompt = QadMsg.translate("Command_PLINE", "Specificare punto successivo o [{0}]: ").format(keyWords)
          
       self.step = 1 # MENU PRINCIPLE
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)
@@ -487,7 +486,7 @@ class QadPLINECommandClass(QadCommandClass):
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
                self.step = 102
-            elif value == QadMsg.translate("Command_PLINE", "Centro"):
+            elif value == QadMsg.translate("Command_PLINE", "CEntro"):
                self.arcStartPt = self.vertices[-1]
                
                # imposto il map tool
@@ -521,7 +520,7 @@ class QadPLINECommandClass(QadCommandClass):
                             QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                             None, "", QadInputModeEnum.NOT_NULL)
                self.step = 112
-            elif value == QadMsg.translate("Command_PLINE", "Linea"):
+            elif value == QadMsg.translate("Command_PLINE", "LInea"):
                self.mode = "LINE"
                #qad_debug.breakPoint()
                self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che può essere variato dal maptool dell'arco
@@ -540,7 +539,7 @@ class QadPLINECommandClass(QadCommandClass):
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 114
-            elif value == QadMsg.translate("Command_PLINE", "Secondo"):
+            elif value == QadMsg.translate("Command_PLINE", "Secondo punto"):
                self.arcStartPt = self.vertices[-1]
                
                # imposto il map tool
@@ -600,12 +599,13 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().arcAngle = self.arcAngle
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_KNOWN_ASK_FOR_END_PT)
 
-         keyWords = QadMsg.translate("Command_PLINE", "Centro") + " " + \
+         keyWords = QadMsg.translate("Command_PLINE", "Centro") + "/" + \
                     QadMsg.translate("Command_PLINE", "Raggio")
-         msg = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [Centro/Raggio]: ")         
+         prompt = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)
+                    
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, isNullable
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)
@@ -665,12 +665,12 @@ class QadPLINECommandClass(QadCommandClass):
                   self.WaitForArcMenu()
                   return False
                
-            keyWords = QadMsg.translate("Command_PLINE", "Centro") + " " + \
+            keyWords = QadMsg.translate("Command_PLINE", "Centro") + "/" + \
                        QadMsg.translate("Command_PLINE", "Raggio")
-            msg = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [Centro/Raggio]: ")         
+            prompt = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, isNullable
-            self.waitFor(msg, \
+            self.waitFor(prompt, \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                          None, \
                          keyWords, QadInputModeEnum.NOT_NULL)
@@ -872,12 +872,12 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().arcCenterPt = self.arcCenterPt
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT)
 
-         keyWords = QadMsg.translate("Command_PLINE", "Angolo") + " " + \
-                    QadMsg.translate("Command_PLINE", "Lunghezza")
-         msg = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [Angolo/Lunghezza corda]: ")                   
+         keyWords = QadMsg.translate("Command_PLINE", "Angolo") + "/" + \
+                    QadMsg.translate("Command_PLINE", "Lunghezza corda")
+         prompt = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, isNullable
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)
@@ -945,12 +945,12 @@ class QadPLINECommandClass(QadCommandClass):
                   self.WaitForArcMenu()
                   return False      
             
-         keyWords = QadMsg.translate("Command_PLINE", "Angolo") + " " + \
-                    QadMsg.translate("Command_PLINE", "Lunghezza")
-         msg = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [Angolo/Lunghezza corda]: ")                   
+         keyWords = QadMsg.translate("Command_PLINE", "Angolo") + "/" + \
+                    QadMsg.translate("Command_PLINE", "Lunghezza corda")
+         prompt = QadMsg.translate("Command_PLINE", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, isNullable
-         self.waitFor(msg, \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NOT_NULL)

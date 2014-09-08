@@ -112,12 +112,13 @@ class QadRECTANGLECommandClass(QadCommandClass):
       self.step = 1         
       self.getPointMapTool().setMode(Qad_rectangle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_CORNER)
       
-      keyWords = QadMsg.translate("Command_RECTANGLE", "Cima") + " " + \
+      keyWords = QadMsg.translate("Command_RECTANGLE", "Cima") + "/" + \
                  QadMsg.translate("Command_RECTANGLE", "Raccordo")
+      prompt = QadMsg.translate("Command_RECTANGLE", "Specificare primo angolo o [{0}]: ").format(keyWords)
      
       # si appresta ad attendere un punto o enter
       #                        msg, inputType,              default, keyWords, nessun controllo         
-      self.waitFor(QadMsg.translate("Command_RECTANGLE", "Specificare primo angolo o [Cima/Raccordo]: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, keyWords, QadInputModeEnum.NONE)
          
@@ -134,13 +135,14 @@ class QadRECTANGLECommandClass(QadCommandClass):
       if layer is not None:
          self.getPointMapTool().geomType = layer.geometryType()
       
-      keyWords = QadMsg.translate("Command_RECTANGLE", "Area") + " " + \
-                 QadMsg.translate("Command_RECTANGLE", "Quote") + " " + \
+      keyWords = QadMsg.translate("Command_RECTANGLE", "Area") + "/" + \
+                 QadMsg.translate("Command_RECTANGLE", "Quote") + "/" + \
                  QadMsg.translate("Command_RECTANGLE", "Rotazione")
+      prompt = QadMsg.translate("Command_RECTANGLE", "Specificare angolo opposto o [{0}]: ").format(keyWords)
      
       # si appresta ad attendere un punto o enter
       #                        msg, inputType,              default, keyWords, nessun controllo         
-      self.waitFor(QadMsg.translate("Command_RECTANGLE", "Specificare angolo opposto o [Area/Quote/Rotazione]: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, keyWords, QadInputModeEnum.NONE)
          
@@ -258,12 +260,13 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.step = 10
                self.GetDistClass.run(msgMapTool, msg)              
             elif value == QadMsg.translate("Command_RECTANGLE", "Rotazione"):
-               keyWords = QadMsg.translate("Command_RECTANGLE", "SCegli")
+               keyWords = QadMsg.translate("Command_RECTANGLE", "SCegli punti")
                self.defaultValue = self.rot
-               msg = QadMsg.translate("Command_RECTANGLE", "Specificare l'angolo di rotazione o [SCegli punti] <{0}>: ")
+               prompt = QadMsg.translate("Command_RECTANGLE", "Specificare l'angolo di rotazione o [{0}] <{1}>: ").format(keyWords, str(qad_utils.toDegrees(self.rot)))
+               
                # si appresta ad attendere un punto o un numero reale         
                # msg, inputType, default, keyWords, valori non nulli
-               self.waitFor(msg.format(str(qad_utils.toDegrees(self.rot))), \
+               self.waitFor(prompt, \
                             QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                             self.rot, keyWords, \
                             QadInputModeEnum.NOT_NULL)
@@ -335,9 +338,9 @@ class QadRECTANGLECommandClass(QadCommandClass):
       # RISPOSTA ALLA RICHIESTA AREA RETTANGOLO (da step = 2)
       elif self.step == 6: # dopo aver atteso un punto si riavvia il comando
          #qad_debug.breakPoint()
-         keyWords = QadMsg.translate("Command_RECTANGLE", "Lunghezza") + " " + \
+         keyWords = QadMsg.translate("Command_RECTANGLE", "Lunghezza") + "/" + \
                     QadMsg.translate("Command_RECTANGLE", "lArghezza")
-         prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [Lunghezza/lArghezza] <Lunghezza>: ")
+         
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # è stato attivato un altro plugin che ha disattivato Qad
@@ -345,11 +348,13 @@ class QadRECTANGLECommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")      
+                  self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
+                  prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
+                        
                   # si appresta ad attendere una parola chiave         
                   # msg, inputType, default, keyWords, valori positivi
-                  self.waitFor(msg, QadInputTypeEnum.KEYWORDS, \
-                               QadMsg.translate("Command_RECTANGLE", "Lunghezza"), \
+                  self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, \
+                               self.defaultValue, \
                                keyWords, QadInputModeEnum.NONE)                  
                   
                   self.step = 7
@@ -364,7 +369,9 @@ class QadRECTANGLECommandClass(QadCommandClass):
 
          if type(value) == float: # è stata inserita l'area
             self.area = value
-            self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")      
+            self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
+            prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
+                  
             # si appresta ad attendere una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
             self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, \

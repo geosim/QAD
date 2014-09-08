@@ -12,16 +12,8 @@
         <translation>Center</translation>
     </message>
     <message>
-        <source>Specificare punto iniziale dell&apos;arco o [Centro]: </source>
-        <translation>Specify the start point of the arc or [Center]: </translation>
-    </message>
-    <message>
         <source>Fine</source>
         <translation>End</translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto dell&apos;arco [Centro/Fine]: </source>
-        <translation>Specify second point of the arc or [Center/End]: </translation>
     </message>
     <message>
         <source>Specificare centro dell&apos;arco: </source>
@@ -40,10 +32,6 @@
         <translation>Length</translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/Lunghezza corda]: </source>
-        <translation>Specify the final point of the arc or [Angle/chord Length]: </translation>
-    </message>
-    <message>
         <source>Specificare angolo inscritto: </source>
         <translation>Specify the included angle: </translation>
     </message>
@@ -58,10 +46,6 @@
     <message>
         <source>Raggio</source>
         <translation>Radius</translation>
-    </message>
-    <message>
-        <source>Specificare centro dell&apos;arco o [Angolo/Direzione/Raggio]: </source>
-        <translation>Specify the center point of the arc or [Angle/Direction/Radius]: </translation>
     </message>
     <message>
         <source>Specificare direzione tangente per il punto iniziale dell&apos;arco: </source>
@@ -115,6 +99,26 @@
         <source>Arco definito da un punto centrale, iniziale e lunghezza corda</source>
         <translation>Arc defined by central, start points and cord length</translation>
     </message>
+    <message>
+        <source>Specificare punto iniziale dell&apos;arco o [{0}]: </source>
+        <translation>Specify the start point of the arc or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto dell&apos;arco o [{0}]: </source>
+        <translation>Specify second point of the arc or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Lunghezza corda</source>
+        <translation>chord Length</translation>
+    </message>
+    <message>
+        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
+        <translation>Specify the final point of the arc or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare centro dell&apos;arco o [{0}]: </source>
+        <translation>Specify the center point of the arc or [{0}]: </translation>
+    </message>
 </context>
 <context>
     <name>Command_BREAK</name>
@@ -125,10 +129,6 @@
     <message>
         <source>Selezionare l&apos;oggetto da spezzare: </source>
         <translation>Select the object to break: </translation>
-    </message>
-    <message>
-        <source>Primo</source>
-        <translation>First</translation>
     </message>
     <message>
         <source>Non ci sono geometrie in questa posizione.</source>
@@ -143,8 +143,12 @@
         <translation>Specify second break point: </translation>
     </message>
     <message>
-        <source>Specificare secondo punto di interruzione o [Primo punto]: </source>
-        <translation>Specify second break point or [First point]: </translation>
+        <source>Primo punto</source>
+        <translation>First point</translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto di interruzione o [{0}]: </source>
+        <translation>Specify second break point or [{0}]: </translation>
     </message>
 </context>
 <context>
@@ -164,10 +168,6 @@
     <message>
         <source>Ttr</source>
         <translation>Ttr</translation>
-    </message>
-    <message>
-        <source>Specificare punto centrale del cerchio o [3P/2P/Ttr (tangente tangente raggio)]: </source>
-        <translation>Specify the center point of the circle or [3P/2P/Ttr (tangent tangent radius)]: </translation>
     </message>
     <message>
         <source>Specificare primo punto sul cerchio: </source>
@@ -229,10 +229,6 @@ The circle doesn&apos;t exist.</translation>
         <translation>Area</translation>
     </message>
     <message>
-        <source>Specificare raggio del cerchio o [Diametro/Area]: </source>
-        <translation>Specify the circle radius or (Diameter/Area]: </translation>
-    </message>
-    <message>
         <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
         <translation>Enter circle area in current unit &lt;{0}&gt;: </translation>
     </message>
@@ -260,6 +256,18 @@ The circle doesn&apos;t exist.</translation>
         <source>Cerchio definito da 3 punti di tangenza</source>
         <translation>Circle defined by 3 tangent points</translation>
     </message>
+    <message>
+        <source>Ttr (tangente tangente raggio)</source>
+        <translation>Ttr (tangent tangent radius)</translation>
+    </message>
+    <message>
+        <source>Specificare punto centrale del cerchio o [{0}]: </source>
+        <translation>Specify the center point of the circle or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare raggio del cerchio o [{0}]: </source>
+        <translation>Specify the circle radius or [{0}]: </translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -276,16 +284,8 @@ The circle doesn&apos;t exist.</translation>
         <translation>mOde</translation>
     </message>
     <message>
-        <source>Specificare il punto base o [Spostamento/mOdalità] &lt;Spostamento&gt;: </source>
-        <translation>Specify base point or [Displacement/mOde] &lt;Displacement&gt;: </translation>
-    </message>
-    <message>
         <source>MUltiplo</source>
         <translation>Multiple</translation>
-    </message>
-    <message>
-        <source>Specificare il punto base o [Spostamento/mOdalità/MUltiplo] &lt;Spostamento&gt;: </source>
-        <translation>Specify base point or [Displacement/mOde/Multiple] &lt;Displacement&gt;: </translation>
     </message>
     <message>
         <source>Digitare il numero di elementi da disporre in serie &lt;{0}&gt;: </source>
@@ -304,10 +304,6 @@ The circle doesn&apos;t exist.</translation>
         <translation>Undo</translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie/Esci/Annulla] &lt;Esci&gt;: </source>
-        <translation>Specify second point or [Array/Exit/Undo] &lt;Exit&gt;: </translation>
-    </message>
-    <message>
         <source>Adatta</source>
         <translation>Fit</translation>
     </message>
@@ -324,10 +320,6 @@ The circle doesn&apos;t exist.</translation>
         <translation>Multiple</translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di modalità di copia [Singola/Multipla] &lt;{0}&gt;: </source>
-        <translation>Enter a copy mode option [Single/Multiple] &lt;{0}&gt;: </translation>
-    </message>
-    <message>
         <source>
 Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation>
@@ -342,12 +334,24 @@ The value must be between 2 and 32767.</translation>
         <translation>Copy mode = Single</translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
-        <translation>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
-    </message>
-    <message>
         <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;:</translation>
+    </message>
+    <message>
+        <source>Specificare il punto base o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify base point or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify second point or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [{0}] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation>Specify second point or [{0}] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
+        <translation>Enter a copy mode option [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -389,10 +393,6 @@ The value must be between 2 and 32767.</translation>
         <translation>Rotated</translation>
     </message>
     <message>
-        <source>Specificare la posizione della linea di quota o [Testo/Angolo/Orizzontale/Verticale/Ruotato]: </source>
-        <translation>Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: </translation>
-    </message>
-    <message>
         <source>Non ci sono geometrie in questa posizione.</source>
         <translation>No geometries in this position.</translation>
     </message>
@@ -413,10 +413,6 @@ The value must be between 2 and 32767.</translation>
         <translation>Specify angle of dimension line &lt;{0}&gt;: </translation>
     </message>
     <message>
-        <source>Specificare la posizione della linea di quota o [Testo/Angolo]: </source>
-        <translation>Specify dimension line location or [Text/Angle]: </translation>
-    </message>
-    <message>
         <source>Crea una quota per la lunghezza di un arco.</source>
         <translation>Creates an arc length dimension.</translation>
     </message>
@@ -433,20 +429,20 @@ The value must be between 2 and 32767.</translation>
         <translation>Leader</translation>
     </message>
     <message>
-        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: </source>
-        <translation>Specify arc length dimension location or [Text/Angle/Partial/Leader]: </translation>
-    </message>
-    <message>
         <source>Nessuna direttrice</source>
         <translation>No leader</translation>
     </message>
     <message>
-        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: </source>
-        <translation>Specify arc length dimension location or [Text/Angle/Partial/No leader]: </translation>
-    </message>
-    <message>
         <source>Selezionare un arco.</source>
         <translation>Select an arc.</translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della linea di quota o [{0}]: </source>
+        <translation>Specify dimension line location or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [{0}]: </source>
+        <translation>Specify dimension location or [{0}]: </translation>
     </message>
 </context>
 <context>
@@ -493,10 +489,6 @@ The value must be between 2 and 32767.</translation>
         <translation>Undo</translation>
     </message>
     <message>
-        <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [iNTercetta/Interseca/Spigolo/Annulla]: </source>
-        <translation>Select the object to extend or shift-select to trim or [Fence/Crossing/Edge/Undo]:</translation>
-    </message>
-    <message>
         <source>Spigolo = Estensione</source>
         <translation>Edge = Extend</translation>
     </message>
@@ -518,8 +510,16 @@ Selezionare i limiti di estensione...</source>
         <translation>No</translation>
     </message>
     <message>
-        <source>Specificare una modalità di estensione spigoli [Estensione/Nessuna estensione] &lt;{0}&gt;: </source>
-        <translation>Specify an extension mode [Extend/No extend] &lt;{0}&gt;: </translation>
+        <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: </source>
+        <translation>Select the object to extend or shift-select to trim or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Nessuna estensione</source>
+        <translation>No extend</translation>
+    </message>
+    <message>
+        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify an extension mode [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -554,10 +554,6 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation>Multiple</translation>
     </message>
     <message>
-        <source>Selezionare il primo oggetto o [aNnulla/Polilinea/RAggio/Taglia/Multiplo]: </source>
-        <translation>Select first object or [Undo/Polyline/Radius/Trim/Multiple]: </translation>
-    </message>
-    <message>
         <source>Selezionare la polilinea o [Raggio]: </source>
         <translation>Select polyline or [Radius]: </translation>
     </message>
@@ -568,10 +564,6 @@ Il raccordo con raggio {0} non esiste.</source>
     <message>
         <source>NonTaglia</source>
         <translation>No</translation>
-    </message>
-    <message>
-        <source>Specificare modalità di taglio [Taglia-estendi/Non taglia-estendi] &lt;{0}&gt;: </source>
-        <translation>Specify trim mode [Trim-extend/No trim-extend] &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [RAggio]: </source>
@@ -592,6 +584,22 @@ Il raccordo con raggio {0} non esiste.</source>
     <message>
         <source>Specificare raggio di raccordo &lt;{0}&gt;: </source>
         <translation>Specify fillet radius &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Selezionare il primo oggetto o [{0}]: </source>
+        <translation>Select first object or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Taglia-estendi</source>
+        <translation>Trim-extend</translation>
+    </message>
+    <message>
+        <source>Non taglia-estendi</source>
+        <translation>No trim-extend</translation>
+    </message>
+    <message>
+        <source>Specificare modalità di taglio [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify trim mode [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -647,12 +655,8 @@ Nessuna perpendicolare possibile</source>
 No perpendicular possible</translation>
     </message>
     <message>
-        <source>Specificare punto successivo o [Chiudi/Annulla]: </source>
-        <translation>Specify next point or [Close/Undo]: </translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Annulla]: </source>
-        <translation>Specify next point or [Undo]: </translation>
+        <source>Specificare punto successivo o [{0}]: </source>
+        <translation>Specify next point or [{0}]: </translation>
     </message>
 </context>
 <context>
@@ -690,8 +694,8 @@ I punti devono essere distinti.</source>
         <translation>The points must be different.</translation>
     </message>
     <message>
-        <source>Cancellare gli oggetti sorgente? [Sì/No] &lt;{0}&gt;: </source>
-        <translation>Erase source objects [Yes/No] &lt;{0}&gt;: </translation>
+        <source>Cancellare gli oggetti sorgente ? [{0}] &lt;{1}&gt;: </source>
+        <translation>Erase source objects ? [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -705,16 +709,16 @@ I punti devono essere distinti.</source>
         <translation>Displacement</translation>
     </message>
     <message>
-        <source>Specificare punto base o [Spostamento] &lt;Spostamento&gt;: </source>
-        <translation>Specify base point or [Displacement] &lt;Displacement&gt;: </translation>
-    </message>
-    <message>
         <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation>Specify the displacement fom the origin point 0,0 &lt;{0}, {1}&gt;: </translation>
     </message>
     <message>
         <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
         <translation>Specify the second point or &lt;use first point as displacement from the origin point 0,0&gt;:</translation>
+    </message>
+    <message>
+        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
+        <translation>Specify base point or [{0}] &lt;{0}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -753,20 +757,12 @@ Polygon not valid.
         <translation>Erase</translation>
     </message>
     <message>
-        <source>Specificare distanza di offset o [Punto/Cancella] &lt;{0}&gt;: </source>
-        <translation>Specify the offset distance or [Through/Erase] &lt;{0}&gt;: </translation>
-    </message>
-    <message>
         <source>Esci</source>
         <translation>Exit</translation>
     </message>
     <message>
         <source>ANnulla</source>
         <translation>Undo</translation>
-    </message>
-    <message>
-        <source>Selezionare oggetto di cui eseguire l&apos;offset o [Esci/ANnulla] &lt;Esci&gt;: </source>
-        <translation>Select object to offset or [Exit/Undo] &lt;Exit&gt;: </translation>
     </message>
     <message>
         <source>MUltiplo</source>
@@ -789,10 +785,6 @@ Polygon not valid.
         <translation>Specify through point or [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
-        <source>Cancellare l&apos;oggetto sorgente dopo l&apos;offset? [Sì/No] &lt;{0}&gt;: </source>
-        <translation>Erase source object after offsetting? [Yes/No] &lt;{0}&gt;: </translation>
-    </message>
-    <message>
         <source>Specificare secondo punto: </source>
         <translation>Specify second point: </translation>
     </message>
@@ -813,25 +805,21 @@ Polygon not valid.
         <source> (cima i segmenti)</source>
         <translation>(chamfers the segments)</translation>
     </message>
+    <message>
+        <source>Specificare distanza di offset o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify the offset distance or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Selezionare oggetto di cui eseguire l&apos;offset o [{0}] &lt;{1}&gt;: </source>
+        <translation>Select object to offset or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Cancellare l&apos;oggetto sorgente dopo l&apos;offset ? [{0}] &lt;{1}&gt;: </source>
+        <translation>Erase source object after offsetting ? [{0}] &lt;{1}&gt;: </translation>
+    </message>
 </context>
 <context>
     <name>Command_PEDIT</name>
-    <message>
-        <source>Taglia-estendi</source>
-        <translation>Trim-extend</translation>
-    </message>
-    <message>
-        <source>Taglia</source>
-        <translation>Trim</translation>
-    </message>
-    <message>
-        <source>Non taglia-estendi</source>
-        <translation>No trim-extend</translation>
-    </message>
-    <message>
-        <source>NonTaglia</source>
-        <translation>No trim</translation>
-    </message>
     <message>
         <source>Modifica polilinee o poligoni esistenti.</source>
         <translation>Modifies existing polylines or polygon.</translation>
@@ -843,10 +831,6 @@ Polygon not valid.
     <message>
         <source>Multiplo</source>
         <translation>Multiple</translation>
-    </message>
-    <message>
-        <source>Selezionare polilinea o [Multiplo]: </source>
-        <translation>Select polyline or [Multiple]: </translation>
     </message>
     <message>
         <source>Apri</source>
@@ -907,10 +891,6 @@ Polygon not valid.
     <message>
         <source>Tipo</source>
         <translation>Type</translation>
-    </message>
-    <message>
-        <source>Specificare distanza di approssimazione o [Tipo unione] &lt;{0}&gt;: </source>
-        <translation>Specify gap tolerance or [Join type] &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Estendi</source>
@@ -985,8 +965,20 @@ Polygon not valid.
         <translation>Specify second point: </translation>
     </message>
     <message>
-        <source>Specificare tipo di unione [Estendi/Aggiungi/ENtrambe] &lt;{0}&gt;: </source>
-        <translation>Specify join type [Extend/Add/Both] &lt;{0}&gt;: </translation>
+        <source>Selezionare polilinea o [{0}]: </source>
+        <translation>Select polyline or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Tipo unione</source>
+        <translation>Join type</translation>
+    </message>
+    <message>
+        <source>Specificare distanza di approssimazione o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify gap tolerance or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare tipo di unione [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify join type [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1022,24 +1014,12 @@ and arc segments.</translation>
         <translation>Direction</translation>
     </message>
     <message>
-        <source>Linea</source>
-        <translation>Line</translation>
-    </message>
-    <message>
         <source>Raggio</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <source>Secondo</source>
-        <translation>Second</translation>
-    </message>
-    <message>
         <source>ANNulla</source>
         <translation>Undo</translation>
-    </message>
-    <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/CEntro/CHiudi/Direzione/LInea/Raggio/Secondo punto/ANNulla]: </source>
-        <translation>Specify the final point of the arc or [Angle/CEnter/Close/Direction/Line/Radius/Second point/Undo]: </translation>
     </message>
     <message>
         <source>Arco</source>
@@ -1056,14 +1036,6 @@ and arc segments.</translation>
     <message>
         <source>Ricalca</source>
         <translation>Trace</translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Arco/LUnghezza/ANnulla/Ricalca]: </source>
-        <translation>Specify next point or [Arc/Length/Undo/Trace]: </translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Arco/CHiudi/LUnghezza/ANnulla/Ricalca]: </source>
-        <translation>Specify next point or [Arc/Close/Length/Undo/Trace]: </translation>
     </message>
     <message>
         <source>Specificare punto iniziale: </source>
@@ -1094,10 +1066,6 @@ and arc segments.</translation>
         <translation>Specify second point of the arc: </translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Centro/Raggio]: </source>
-        <translation>Specify the final point of the arc or [Center/Radius]: </translation>
-    </message>
-    <message>
         <source>Specificare secondo punto: </source>
         <translation>Specify second point: </translation>
     </message>
@@ -1110,10 +1078,6 @@ and arc segments.</translation>
         <translation>Length</translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/Lunghezza corda]: </source>
-        <translation>Specify the final point of the arc or [Angle/chord Length]: </translation>
-    </message>
-    <message>
         <source>Specificare lunghezza della corda: </source>
         <translation>Specify the chord length: </translation>
     </message>
@@ -1124,6 +1088,30 @@ and arc segments.</translation>
     <message>
         <source>Specificare punto finale dell&apos;arco o [Angolo]: </source>
         <translation>Specify the final point of the arc or [Angle]: </translation>
+    </message>
+    <message>
+        <source>CEntro</source>
+        <translation>CEnter</translation>
+    </message>
+    <message>
+        <source>LInea</source>
+        <translation>Line</translation>
+    </message>
+    <message>
+        <source>Secondo punto</source>
+        <translation>second point</translation>
+    </message>
+    <message>
+        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
+        <translation>Specify the final point of the arc or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare punto successivo o [{0}]: </source>
+        <translation>Specify next point or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Lunghezza corda</source>
+        <translation>chord Length</translation>
     </message>
 </context>
 <context>
@@ -1141,10 +1129,6 @@ and arc segments.</translation>
         <translation>Fillet</translation>
     </message>
     <message>
-        <source>Specificare primo angolo o [Cima/Raccordo]: </source>
-        <translation>Specify first corner or [Chamfer/Fillet]: </translation>
-    </message>
-    <message>
         <source>Area</source>
         <translation>Area</translation>
     </message>
@@ -1155,10 +1139,6 @@ and arc segments.</translation>
     <message>
         <source>Rotazione</source>
         <translation>Rotation</translation>
-    </message>
-    <message>
-        <source>Specificare angolo opposto o [Area/Quote/Rotazione]: </source>
-        <translation>Specify other corner or [Area/Dimensions/Rotation]: </translation>
     </message>
     <message>
         <source>La finestra non è stata specificata correttamente.</source>
@@ -1185,10 +1165,6 @@ and arc segments.</translation>
         <translation>Points</translation>
     </message>
     <message>
-        <source>Specificare l&apos;angolo di rotazione o [SCegli punti] &lt;{0}&gt;: </source>
-        <translation>Specify rotation angle or [Points] &lt;{0}&gt;: </translation>
-    </message>
-    <message>
         <source>Specificare seconda distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
         <translation>Specify second chamfer distance for rectangle &lt;{0}&gt;: </translation>
     </message>
@@ -1201,10 +1177,6 @@ and arc segments.</translation>
         <translation>Width</translation>
     </message>
     <message>
-        <source>Calcolare le quote rettangolo in base alla [Lunghezza/lArghezza] &lt;Lunghezza&gt;: </source>
-        <translation>Calcolate the rectangle dimensions based on [Length/Width] &lt;Length&gt;: </translation>
-    </message>
-    <message>
         <source>Digitare la lunghezza rettangolo &lt;{0}&gt;: </source>
         <translation>Enter length for rectangle &lt;{0}&gt;: </translation>
     </message>
@@ -1215,6 +1187,26 @@ and arc segments.</translation>
     <message>
         <source>Specificare primo punto: </source>
         <translation>Specify first point: </translation>
+    </message>
+    <message>
+        <source>Specificare primo angolo o [{0}]: </source>
+        <translation>Specify first corner or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare angolo opposto o [{0}]: </source>
+        <translation>Specify other corner or [{0}]: </translation>
+    </message>
+    <message>
+        <source>SCegli punti</source>
+        <translation>Points</translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify rotation angle or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Calcolare le quote rettangolo in base alla [{0}] &lt;{1}&gt;: </source>
+        <translation>Calcolate the rectangle dimensions based on [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1232,20 +1224,12 @@ and arc segments.</translation>
         <translation>Reference</translation>
     </message>
     <message>
-        <source>Specificare angolo di rotazione o [Copia/Riferimento] &lt;{0}&gt;: </source>
-        <translation>Specify rotation angle or [Copy/Reference] &lt;{0}&gt;: </translation>
-    </message>
-    <message>
         <source>Specificare angolo di riferimento &lt;{0}&gt;: </source>
         <translation>Specify reference angle &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Punti</source>
         <translation>Points</translation>
-    </message>
-    <message>
-        <source>Specificare nuovo angolo o [Punti] &lt;{0}&gt;: </source>
-        <translation>Specify new angle or [Points] &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specificare punto base: </source>
@@ -1264,6 +1248,14 @@ Rotazione di una copia degli oggetti selezionati.</source>
         <source>Specificare primo punto: </source>
         <translation>Specify first point: </translation>
     </message>
+    <message>
+        <source>Specificare angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify rotation angle or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare nuovo angolo o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify new angle or [{0}] &lt;{1}&gt;: </translation>
+    </message>
 </context>
 <context>
     <name>Command_SCALE</name>
@@ -1280,20 +1272,12 @@ Rotazione di una copia degli oggetti selezionati.</source>
         <translation>Reference</translation>
     </message>
     <message>
-        <source>Specificare fattore di scala o [Copia/Riferimento]: </source>
-        <translation>Specify scale factor or [Copy/Reference]:</translation>
-    </message>
-    <message>
         <source>Specificare lunghezza di riferimento &lt;{0}&gt;: </source>
         <translation>Specify reference length &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Punti</source>
         <translation>Points</translation>
-    </message>
-    <message>
-        <source>Specificare nuova lunghezza o [Punti] &lt;{0}&gt;: </source>
-        <translation>Specify new length or [Points] &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specificare punto base: </source>
@@ -1311,6 +1295,14 @@ Scala di una copia degli oggetti selezionati.</source>
     <message>
         <source>Specificare primo punto: </source>
         <translation>Specify first point: </translation>
+    </message>
+    <message>
+        <source>Specificare fattore di scala o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify scale factor or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare nuova lunghezza o [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify new length or [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1490,10 +1482,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Remove objects</translation>
     </message>
     <message>
-        <source> o [Finestra/Ultimo/Interseca/Riquadro/Tutto/iNTercetta/FPoligono/IPoligono/FCerchio/ICerchio/FOggetti/IOggetti/AGgiungi/Elimina/Precedente/ANnulla/AUto/SIngolo/Help]</source>
-        <translation>or [Window/Last/Crossing/Box/All/Fence/WPolygon/CPolygon/WCircle/CCircle/WObjects/CObjects/Add/Remove/Previous/Undo/AUto/SIngle/Help]</translation>
-    </message>
-    <message>
         <source>: </source>
         <translation>: </translation>
     </message>
@@ -1508,6 +1496,10 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     <message>
         <source>La finestra non è stata specificata correttamente.</source>
         <translation>Window not correct.</translation>
+    </message>
+    <message>
+        <source> o [{0}]</source>
+        <translation> or [{0}]</translation>
     </message>
 </context>
 <context>
@@ -1529,16 +1521,8 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Remove</translation>
     </message>
     <message>
-        <source> da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: </source>
-        <translation> to stretch crossed by a selection window or [polygon/Add/Remove]: </translation>
-    </message>
-    <message>
         <source>Spostamento</source>
         <translation>Displacement</translation>
-    </message>
-    <message>
-        <source>Specificare punto base o [Spostamento] &lt;Spostamento&gt;: </source>
-        <translation>Specify base point or [Displacement] &lt;Displacement&gt;: </translation>
     </message>
     <message>
         <source>Specificare angolo opposto: </source>
@@ -1563,6 +1547,14 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     <message>
         <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
         <translation>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
+    </message>
+    <message>
+        <source> da stirare tramite una finestra o [{0}]: </source>
+        <translation> to stretch crossed by a selection window or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
+        <translation>Specify base point or [{0}] &lt;{0}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1607,10 +1599,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Undo</translation>
     </message>
     <message>
-        <source>Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [iNTercetta/Interseca/Spigolo/Annulla]: </source>
-        <translation>Select the object to trim or shift-select to extend or [Fence/Crossing/Edge/Undo]:</translation>
-    </message>
-    <message>
         <source>Spigolo = Estensione</source>
         <translation>Edge = Extend</translation>
     </message>
@@ -1632,8 +1620,16 @@ Selezionare i limiti di taglio...</source>
         <translation>No</translation>
     </message>
     <message>
-        <source>Specificare una modalità di estensione spigoli [Estensione/Nessuna estensione] &lt;{0}&gt;: </source>
-        <translation>Specify an extension mode [Extend/No extend] &lt;{0}&gt;: </translation>
+        <source>Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: </source>
+        <translation>Select the object to trim or shift-select to extend or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Nessuna estensione</source>
+        <translation>No extend</translation>
+    </message>
+    <message>
+        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
+        <translation>Specify an extension mode [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1659,10 +1655,6 @@ Selezionare i limiti di taglio...</source>
         <translation>Back</translation>
     </message>
     <message>
-        <source>Digitare il numero di operazioni da annullare o [INIzio/Fine/Segno/INDietro] &lt;1&gt;: </source>
-        <translation>Enter the number of operations to undo or [BEgin/End/Mark//Back] &lt;1&gt;: </translation>
-    </message>
-    <message>
         <source>
 Nessun gruppo è rimasto aperto.</source>
         <translation>No open group.</translation>
@@ -1671,10 +1663,6 @@ Nessun gruppo è rimasto aperto.</source>
         <source>
 Non è possibile inserire un segno dentro un gruppo.</source>
         <translation>A mark can&apos;t be inserted into a group.</translation>
-    </message>
-    <message>
-        <source>Questa operazione annullerà tutto. OK ? &lt;Sì&gt;: </source>
-        <translation>This will undo everything. OK ? &lt;Yes&gt;: </translation>
     </message>
     <message>
         <source>
@@ -1688,6 +1676,14 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     <message>
         <source>Annulla l&apos;ultima operazione eseguita</source>
         <translation>Undo last operation</translation>
+    </message>
+    <message>
+        <source>Digitare il numero di operazioni da annullare o [{0}] &lt;{1}&gt;: </source>
+        <translation>Enter the number of operations to undo or [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
+        <translation>This will undo everything. OK ? &lt;{0}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -2662,12 +2658,6 @@ No current layer.
 Il layer corrente non è di tipo testo.</source>
         <translation>
 Current layer is not a textual layer.</translation>
-    </message>
-    <message>
-        <source>
-   
-</source>
-        <translation></translation>
     </message>
     <message>
         <source>

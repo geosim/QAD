@@ -296,20 +296,17 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_FIRST_OFFSET_PT)
       self.getPointMapTool().gapType = self.gapType                        
 
-      keyWords = QadMsg.translate("Command_OFFSET", "Punto") + " " + \
-                 QadMsg.translate("Command_OFFSET", "Cancella")
-                 
-      msg = QadMsg.translate("Command_OFFSET", "Specificare distanza di offset o [Punto/Cancella] <{0}>: ")
+      keyWords = QadMsg.translate("Command_OFFSET", "Punto") + "/" + \
+                 QadMsg.translate("Command_OFFSET", "Cancella")                
       if self.offSet < 0:
-         msg = msg.format(QadMsg.translate("Command_OFFSET", "Punto"))
          default = QadMsg.translate("Command_OFFSET", "Punto")
       else:
-         msg = msg.format(str(self.offSet))
          default = self.offSet
+      prompt = QadMsg.translate("Command_OFFSET", "Specificare distanza di offset o [{0}] <{1}>: ").format(keyWords, str(default))
 
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                    default, \
                    keyWords, \
@@ -328,14 +325,16 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
       
       # "Esci" "ANnulla"      
-      keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+      keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
                  QadMsg.translate("Command_OFFSET", "ANnulla")
+      default = QadMsg.translate("Command_OFFSET", "Esci")
+      prompt = QadMsg.translate("Command_OFFSET", "Selezionare oggetto di cui eseguire l'offset o [{0}] <{1}>: ").format(keyWords, default)
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_OFFSET", "Selezionare oggetto di cui eseguire l'offset o [Esci/ANnulla] <Esci>: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                   QadMsg.translate("Command_OFFSET", "Esci"), \
+                   default, \
                    keyWords, QadInputModeEnum.NONE)      
       self.step = 2      
         
@@ -347,33 +346,26 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.OFFSET_KNOWN_ASK_FOR_SIDE_PT)                                
 
       if self.multi == False:
-         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
-                    QadMsg.translate("Command_OFFSET", "MUltiplo") + " " + \
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                    QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
-         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "ANnulla")           
          defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
          default = QadMsg.translate("Command_OFFSET", "Esci")
       else:
-         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
-         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
 
       if self.OnlySegment == False:
-         keyWords = keyWords + " " + \
+         keyWords = keyWords + "/" + \
                     QadMsg.translate("Command_OFFSET", "Segmento")
-         keyWordsMsg = keyWordsMsg + "/" + \
-                       QadMsg.translate("Command_OFFSET", "Segmento")
 
-      msg = QadMsg.translate("Command_OFFSET", "Specificare punto sul lato di cui eseguire l'offset o [{0}] <{1}>: ")
+      prompt = QadMsg.translate("Command_OFFSET", "Specificare punto sul lato di cui eseguire l'offset o [{0}] <{1}>: ")
 
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg.format(keyWordsMsg, defaultMsg), \
+      self.waitFor(prompt.format(keyWords, defaultMsg), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    default, \
                    keyWords, QadInputModeEnum.NONE)      
@@ -387,33 +379,26 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_offset_maptool_ModeEnum.ASK_FOR_PASSAGE_PT)                                
 
       if self.multi == False:
-         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
-                    QadMsg.translate("Command_OFFSET", "MUltiplo") + " " + \
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
+                    QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
-         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "MUltiplo") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
          default = QadMsg.translate("Command_OFFSET", "Esci")
       else:
-         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + " " + \
+         keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
-         keyWordsMsg = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
-                       QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
 
       if self.OnlySegment == False:
-         keyWords = keyWords + " " + \
+         keyWords = keyWords + "/" + \
                     QadMsg.translate("Command_OFFSET", "Segmento")
-         keyWordsMsg = keyWordsMsg + "/" + \
-                       QadMsg.translate("Command_OFFSET", "Segmento")
 
-      msg = QadMsg.translate("Command_OFFSET", "Specificare punto di passaggio o [{0}] <{1}>: ")
+      prompt = QadMsg.translate("Command_OFFSET", "Specificare punto di passaggio o [{0}] <{1}>: ")
 
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg.format(keyWordsMsg, defaultMsg), \
+      self.waitFor(prompt.format(keyWords, defaultMsg), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    default, \
                    keyWords, QadInputModeEnum.NONE)      
@@ -480,18 +465,18 @@ class QadOFFSETCommandClass(QadCommandClass):
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
             elif value == QadMsg.translate("Command_OFFSET", "Cancella"):
-               keyWords = QadMsg.translate("QAD", "Sì") + " " + \
+               keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                           QadMsg.translate("QAD", "No")                               
               
-               msg = QadMsg.translate("Command_OFFSET", "Cancellare l'oggetto sorgente dopo l'offset? [Sì/No] <{0}>: ")
                if self.eraseEntity == True:
                   default = QadMsg.translate("QAD", "Sì")
                else: 
                   default = QadMsg.translate("QAD", "No")
+               prompt = QadMsg.translate("Command_OFFSET", "Cancellare l'oggetto sorgente dopo l'offset ? [{0}] <{1}>: ").format(keyWords, default)
                    
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
-               self.waitFor(msg.format(default), \
+               self.waitFor(prompt, \
                             QadInputTypeEnum.KEYWORDS, \
                             default, \
                             keyWords, QadInputModeEnum.NONE)

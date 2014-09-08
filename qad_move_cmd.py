@@ -176,10 +176,11 @@ class QadMOVECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_move_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
    
          keyWords = QadMsg.translate("Command_MOVE", "Spostamento")
+         prompt = QadMsg.translate("Command_MOVE", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)
          
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
-         self.waitFor(QadMsg.translate("Command_MOVE", "Specificare punto base o [Spostamento] <Spostamento>: "), \
+         self.waitFor(prompt, \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                       None, \
                       keyWords, QadInputModeEnum.NONE)      

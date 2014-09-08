@@ -64,7 +64,20 @@ class QadInputModeEnum():
    NOT_NEGATIVE = 4   # valore negativo non permesso 
    NOT_POSITIVE = 8   # valore positivo non permesso  
 
-        
+      
+#===============================================================================
+# QadCmdOptionPos
+#===============================================================================
+class QadCmdOptionPos():      
+   def __init__(self, name = "", initialPos = 0, finalPos = 0):
+      self.name = name
+      self.initialPos = initialPos
+      self.finalPos = finalPos
+   
+   def isSelected(self, pos):
+      return True if pos >= self.initialPos and pos <= self.finalPos else False
+
+
 #===============================================================================
 # QadTextWindow
 #===============================================================================
@@ -82,12 +95,18 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
                 
    def initGui(self):
       self.edit = QadEdit(self)
+      self.editSyntaxHighlighter = QadCmdLineSyntaxHighlighter(self.edit)
       self.edit.setObjectName("QadTextEdit")
       self.vboxlayout.addWidget(self.edit)
+
+      #self.edit.textChanged.connect(self.textChanged) # roby
 
       # Inizializzo la finestra per il suggerimento dei comandi
       self.edit.cmdSuggestWindow.initGui()
       self.edit.cmdSuggestWindow.show(False)
+
+   def textChanged(self): # roby
+      qad_debug.breakPoint()
                   
    def setFocus(self):
       self.edit.setFocus()
@@ -110,15 +129,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NOT_NULL):
       # il valore di default del parametro di una funzione non può essere una traduzione
       # perchè lupdate.exe non lo riesce ad interpretare
-      if inputMsg is None: 
-         inputMsg = QadMsg.translate("QAD", "Comando: ")
-         
-      self.edit.displayPrompt(inputMsg)
-      self.edit.inputType = inputType
-      self.edit.default = default
-      if inputType & QadInputTypeEnum.KEYWORDS and (keyWords is not None):         
-         self.edit.keyWords = keyWords.split(" ")
-      self.edit.inputMode = inputMode
+      self.edit.showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
    def showErr(self, err):
       self.showMsg(err, True) # ripete il prompt
@@ -173,13 +184,67 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    
      
 #===============================================================================
+# QadCmdLineSyntaxHighlighter
+#===============================================================================
+class QadCmdLineSyntaxHighlighter(QSyntaxHighlighter):
+   PROMPT, KEY_WORDS = range(2)
+
+   def __init__(self, parent):
+      QSyntaxHighlighter.__init__(self, parent)
+      
+      self.tcf_keyWord = QTextCharFormat()
+      self.tcf_upperKeyWord = QTextCharFormat()
+      self.tcf_upperKeyWord.setFontWeight(QFont.Bold)
+      self.tcf_highlightKeyWord = QTextCharFormat()
+      self.tcf_highlightUpperKeyWord = QTextCharFormat()
+      self.tcf_highlightUpperKeyWord.setFontWeight(QFont.Bold)
+      self.set_keyWordColors()
+
+   def set_keyWordColors(self, backGroundColor = QColor(210, 210, 210), upperKeyWord_ForegroundColor = Qt.blue, \
+                         highlightKeyWord_BackGroundColor = Qt.gray):
+      self.tcf_keyWord.setBackground(backGroundColor)     
+      self.tcf_upperKeyWord.setForeground(upperKeyWord_ForegroundColor)
+      self.tcf_upperKeyWord.setBackground(backGroundColor)
+               
+      self.tcf_highlightKeyWord.setBackground(highlightKeyWord_BackGroundColor)         
+      self.tcf_highlightUpperKeyWord.setForeground(upperKeyWord_ForegroundColor)
+      self.tcf_highlightUpperKeyWord.setBackground(highlightKeyWord_BackGroundColor)
+   
+   def highlightBlock(self, txt):
+      size = len(txt)
+      state = self.currentBlockState()
+      if state == self.KEY_WORDS:
+         QTextEditParent = self.parent()
+         # messaggio + "[" + opz1 + "/" + opz2 + "]"
+         i = txt.find("[")
+         final = txt.rfind("]")
+         if i >= 0 and final >= 0: # se ci sono opzioni
+            #qad_debug.breakPoint()
+            while i < final:
+               if txt[i] != "/":
+                  # se c'è un'opzione corrente deve essere evidenziata in modo diverso
+                  if QTextEditParent.currentCmdOptionPos is not None and \
+                     i >= QTextEditParent.currentCmdOptionPos.initialPos - QTextEditParent.document().lastBlock().position() and \
+                     i <= QTextEditParent.currentCmdOptionPos.finalPos - QTextEditParent.document().lastBlock().position():
+                     if txt[i].isupper():
+                        self.setFormat(i, 1, self.tcf_highlightUpperKeyWord)
+                     else:
+                        self.setFormat(i, 1, self.tcf_highlightKeyWord)            
+                  else:
+                     if txt[i].isupper():
+                        self.setFormat(i, 1, self.tcf_upperKeyWord)
+                     else:
+                        self.setFormat(i, 1, self.tcf_keyWord)            
+               i = i + 1
+
+   
+#===============================================================================
 # QadEdit
 #===============================================================================
 class QadEdit(QTextEdit):
 
    parent = None # plug in parente
    inputType = QadInputTypeEnum.COMMAND
-   keyWords = []
    default = None
    inputMode = QadInputModeEnum.NONE
    
@@ -196,11 +261,17 @@ class QadEdit(QTextEdit):
    
       self.buffer = []
    
-      self.displayPrompt(QadMsg.translate("QAD", "Comando: "))
-
       self.history = []
       self.historyIndex = 0
-   
+
+      self.keyWords = []
+      self.cmdOptionPosList = [] # lista delle posizioni delle opzioni del comando corrente
+      self.currentCmdOptionPos = None
+
+      self.upperKeyWordForegroundColor = Qt.blue
+      self.keyWordBackGroundColor = QColor(210, 210, 210)
+      self.keyWordHighlightBackGroundColor = Qt.gray
+      
       # Creo la finestra per il suggerimento dei comandi
       # lista composta da elementi con <nome comando>, <icona>, <note>
       infoCmds = []   
@@ -209,6 +280,9 @@ class QadEdit(QTextEdit):
          if cmd is not None:
             infoCmds.append([cmdName, cmd.getIcon(), cmd.getNote()])
       self.cmdSuggestWindow = QadCmdSuggestWindow(self, infoCmds)      
+
+      self.displayPrompt(QadMsg.translate("QAD", "Comando: "))
+      self.setMouseTracking(True)
    
    def isCursorInEditionZone(self):
       cursor = self.textCursor()
@@ -221,7 +295,7 @@ class QadEdit(QTextEdit):
       block = self.cursor.block()
       text = block.text()
       return text[self.currentPromptLength:]
-
+      
    def showPrevious(self):
       if self.historyIndex < len(self.history) and len(self.history) > 0:
          self.historyIndex += 1
@@ -269,10 +343,85 @@ class QadEdit(QTextEdit):
          return self.history[len(self.history) - 1]
       else:
          return ""
+
+   def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
+                    default = None, keyWords = "", inputMode = QadInputModeEnum.NOT_NULL):
+      # il valore di default del parametro di una funzione non può essere una traduzione
+      # perchè lupdate.exe non lo riesce ad interpretare
+      if inputMsg is None: 
+         inputMsg = QadMsg.translate("QAD", "Comando: ")
+
+      cursor = self.textCursor()
+      actualPos = cursor.position()
+         
+      self.inputType = inputType
+      self.default = default
+      if inputType & QadInputTypeEnum.KEYWORDS and (keyWords is not None):         
+         self.keyWords = keyWords.split("/") # carttere separatore delle parole chiave
+         self.setCmdOptionPosList()
+         self.displayKeyWordsPrompt(inputMsg)
+      else:
+         self.displayPrompt(inputMsg)
+                  
+      self.inputMode = inputMode
+      return
+
+   def setCmdOptionPosList(self):
+      del self.cmdOptionPosList[:] # svuoto la lista
+      if len(self.keyWords) == 0 or len(self.currentPrompt) == 0:
+         return
+      cursor = self.textCursor()
+      actualPos = cursor.position()
+      i = len(self.keyWords) - 1
+      end = len(self.currentPrompt) - 1
+      #qad_debug.breakPoint()         
+      while i >= 0:
+         keyWord = self.keyWords[i]
+         initialPosInInputMsg = self.currentPrompt.rfind(keyWord, 0, end)
+         if initialPosInInputMsg >= 0:
+            initialPos = actualPos - (len(self.currentPrompt) - initialPosInInputMsg)
+            finalPos = initialPos + len(keyWord) - 1
+            self.cmdOptionPosList.append(QadCmdOptionPos(keyWord, initialPos, finalPos))         
+            end = initialPosInInputMsg
+         
+         i = i -1
+
+   def getCmdOptionPosUnderMouse(self, pos):
+      #qad_debug.breakPoint()
+      cursor = self.cursorForPosition(pos)
+      pos = cursor.position()
+      for cmdOptionPos in self.cmdOptionPosList:
+         if cmdOptionPos.isSelected(pos):
+            return cmdOptionPos
+      return None
+
+   def mouseMoveEvent(self, event):
+      self.cursor = self.textCursor()
+      #if self.cursor.position() >= self.document().lastBlock().position():
+      self.currentCmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
+      if self.currentCmdOptionPos is not None:
+         storeCursorPos = QTextCursor(self.textCursor())
+         self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+         self.cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor)
+         selText = self.cursor.selectedText()
+         self.cursor.removeSelectedText()
+         self.cursor.insertText(selText) # per forzare la chiamata a QadCmdLineSyntaxHighlighter.highlightBlock
+         self.setTextCursor(storeCursorPos)
+         self.currentCmdOptionPos = None
+            
+   def mouseReleaseEvent(self, event):
+      if self.textCursor().position() >= self.document().lastBlock().position():
+         if event.button() == Qt.LeftButton:
+            cmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
+            if cmdOptionPos is not None:
+               self.showEvaluateMsg(cmdOptionPos.name)
       
    def substituteText(self, text):
+      #qad_debug.breakPoint()
+      self.cursor = self.textCursor()
       self.cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.MoveAnchor)
       self.cursor.movePosition(QTextCursor.StartOfBlock, QTextCursor.KeepAnchor)
+      self.cursor.select(QTextCursor.LineUnderCursor)
       self.cursor.removeSelectedText()
       self.cursor.insertText(self.currentPrompt)
       self.insertPlainText(text)      
@@ -335,6 +484,8 @@ class QadEdit(QTextEdit):
          else:
             # all other keystrokes get sent to the input line
             self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+            self.setTextCursor(self.cursor)
+            QTextEdit.keyPressEvent(self, e)
                                     
          self.setTextCursor(self.cursor)
          self.ensureCursorVisible()
@@ -388,33 +539,44 @@ class QadEdit(QTextEdit):
          self.cmdSuggestWindow.show(False)
       self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
       self.setTextCursor(self.cursor)
-      self.evaluate( unicode(self.currentCommand()) )
+      self.evaluate(unicode(self.currentCommand()))
       
    def displayPrompt(self, prompt = None):
       self.insertPlainText("\n")
       if prompt is not None:
          self.currentPrompt = prompt
       self.currentPromptLength = len(self.currentPrompt)
-      self.insertTaggedLine(self.currentPrompt, ConsoleHighlighter.EDIT_LINE)
+      self.insertTaggedLine(self.currentPrompt, QadCmdLineSyntaxHighlighter.PROMPT)
       self.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
+      self.setCmdOptionPosList()
+
+   def displayKeyWordsPrompt(self, prompt = None):
+      self.insertPlainText("\n")
+      if prompt is not None:
+         self.currentPrompt = prompt
+      self.currentPromptLength = len(self.currentPrompt)
+      self.insertTaggedLine(self.currentPrompt, QadCmdLineSyntaxHighlighter.KEY_WORDS)
+      self.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
+      self.setCmdOptionPosList()
 
    def insertTaggedText(self, txt, tag):
       if len(txt) > 0 and txt[-1] == '\n': # remove trailing newline to avoid one more empty line
          txt = txt[0:-1]
 
       c = self.textCursor()
+
       for line in txt.split('\n'):
          b = c.block()
          b.setUserState(tag)
          c.insertText(line)
          c.insertBlock()
-
+         
    def insertTaggedLine(self, txt, tag):
       c = self.textCursor()
       b = c.block()
       b.setUserState(tag)
       c.insertText(txt)
-
+            
    def showEvaluateMsg(self, msg = None):
       """
       mostra e valuta il messaggio msg se diverso da None altrimenti usa il messaggio corrente
@@ -479,7 +641,7 @@ class QadEdit(QTextEdit):
       selectedKeyWords = []
       for keyWord in self.keyWords:
          #qad_debug.breakPoint()
-         # estraggo la parte maiuscola della paola chiave
+         # estraggo la parte maiuscola della parola chiave
          upperPart = ""
          for letter in keyWord:
             if letter.isupper():
@@ -556,7 +718,7 @@ class QadEdit(QTextEdit):
             snapParams = qad_utils.str2snapParams(cmd)
             self.parent.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
             self.insertPlainText(QadMsg.translate("QAD", "\n(impostato snap temporaneo)\n"))
-            self.displayPrompt()          
+            self.displayPrompt()        
             return
          if (self.inputType & QadInputTypeEnum.INT) or \
             (self.inputType & QadInputTypeEnum.LONG) or \
@@ -670,31 +832,7 @@ class QadEdit(QTextEdit):
    def resizeEvent(self, e):
       QTextEdit.resizeEvent(self, e)
       self.cmdSuggestWindow.resizeEvent(e)
-
-    
-#===============================================================================
-# ConsoleHighlighter
-#===============================================================================
-class ConsoleHighlighter(QSyntaxHighlighter):
-   EDIT_LINE, ERROR, OUTPUT, INIT = range(4)
    
-   def __init__(self, doc):
-      QSyntaxHighlighter.__init__(self,doc)
-      formats = { self.OUTPUT : Qt.black, self.ERROR : Qt.red, self.EDIT_LINE : Qt.darkGreen, self.INIT : Qt.gray }
-      self.f = {}
-      for tag, color in formats.iteritems():
-         self.f[tag] = QTextCharFormat()
-         self.f[tag].setForeground(color)
-
-   def highlightBlock(self, txt):
-      size = len(txt)
-      state = self.currentBlockState()
-      if state == self.OUTPUT or state == self.ERROR or state == self.INIT:
-         self.setFormat(0,size, self.f[state])
-      # highlight prompt only
-      if state == self.EDIT_LINE:
-         self.setFormat(0,3, self.f[self.EDIT_LINE]) 
-         
          
 #===============================================================================
 # Ui_QadCmdSuggestWindow

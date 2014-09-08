@@ -58,17 +58,18 @@ class QadUNDOCommandClass(QadCommandClass):
       self.isValidPreviousInput = True # per gestire il comando anche in macro
 
       if self.step == 0: # inizio del comando
-         keyWords = QadMsg.translate("Command_UNDO", "INIzio") + " " + \
-                    QadMsg.translate("Command_UNDO", "Fine") + " " + \
-                    QadMsg.translate("Command_UNDO", "Segno") + " " + \
+         keyWords = QadMsg.translate("Command_UNDO", "INIzio") + "/" + \
+                    QadMsg.translate("Command_UNDO", "Fine") + "/" + \
+                    QadMsg.translate("Command_UNDO", "Segno") + "/" + \
                     QadMsg.translate("Command_UNDO", "INDietro")
-         prompt = QadMsg.translate("Command_UNDO", "Digitare il numero di operazioni da annullare o [INIzio/Fine/Segno/INDietro] <1>: ")
+         default = 1
+         prompt = QadMsg.translate("Command_UNDO", "Digitare il numero di operazioni da annullare o [{0}] <{1}>: ").format(keyWords, str(default))
          
          # si appresta ad attendere un numero intero positivo o enter o una parola chiave         
          # msg, inputType, default, keyWords, valori positivi
          self.waitFor(prompt, \
                       QadInputTypeEnum.INT | QadInputTypeEnum.KEYWORDS, \
-                      1, \
+                      default, \
                       keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)      
          self.step = 1
          return False
@@ -104,14 +105,16 @@ class QadUNDOCommandClass(QadCommandClass):
                   self.showMsg(QadMsg.translate("Command_UNDO", "\nNon è possibile inserire un segno dentro un gruppo."))                  
             elif value == QadMsg.translate("Command_UNDO", "INDietro"):
                if self.plugIn.getPrevBookmarkPos() == -1: # non ci sono bookmark precedenti
-                  keyWords = QadMsg.translate("QAD", "Sì") + " " + \
-                             QadMsg.translate("QAD", "No")                               
+                  keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
+                             QadMsg.translate("QAD", "No")                                                 
+                  default = QadMsg.translate("QAD", "Sì")
+                  prompt = QadMsg.translate("Command_UNDO", "Questa operazione annullerà tutto. OK ? <{0}>: ").format(default)
                   
                   # si appresta ad attendere enter o una parola chiave         
                   # msg, inputType, default, keyWords, nessun controllo
-                  self.waitFor(QadMsg.translate("Command_UNDO", "Questa operazione annullerà tutto. OK ? <Sì>: "), \
+                  self.waitFor(prompt, \
                                QadInputTypeEnum.KEYWORDS, \
-                               QadMsg.translate("QAD", "Sì"), \
+                               default, \
                                keyWords, QadInputModeEnum.NONE)
                   self.step = 2
                   return False                                       

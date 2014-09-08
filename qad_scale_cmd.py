@@ -176,15 +176,16 @@ class QadSCALECommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT)
 
-      keyWords = QadMsg.translate("Command_SCALE", "Copia") + " " + \
+      keyWords = QadMsg.translate("Command_SCALE", "Copia") + "/" + \
                  QadMsg.translate("Command_SCALE", "Riferimento")
-      msg = QadMsg.translate("Command_SCALE", "Specificare fattore di scala o [Copia/Riferimento]: ")            
+      default = self.plugIn.lastScale
+      prompt = QadMsg.translate("Command_SCALE", "Specificare fattore di scala o [{0}] <{1}>: ").format(keyWords, str(default))                        
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
-      self.waitFor(msg.format(str(self.plugIn.lastScale)), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
-                   self.plugIn.lastScale, \
+                   default, \
                    keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)      
       self.step = 3      
 
@@ -208,17 +209,17 @@ class QadSCALECommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_LEN_PT)
       
       keyWords = QadMsg.translate("Command_SCALE", "Punti")
-      msg = QadMsg.translate("Command_SCALE", "Specificare nuova lunghezza o [Punti] <{0}>: ")                           
-      
       if self.plugIn.lastNewReferenceLen == 0:
-         length = self.plugIn.lastScale
+         default = self.plugIn.lastScale
       else:
-         length = self.plugIn.lastNewReferenceLen
+         default = self.plugIn.lastNewReferenceLen
+      prompt = QadMsg.translate("Command_SCALE", "Specificare nuova lunghezza o [{0}] <{1}>: ").format(keyWords, str(default))                        
+         
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
-      self.waitFor(msg.format(str(length)), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
-                   length, \
+                   default, \
                    keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
       self.step = 6
    

@@ -16,15 +16,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto iniziale dell&apos;arco o [Centro]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto dell&apos;arco [Centro/Fine]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -37,10 +29,6 @@
     </message>
     <message>
         <source>Lunghezza</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/Lunghezza corda]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -57,10 +45,6 @@
     </message>
     <message>
         <source>Raggio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare centro dell&apos;arco o [Angolo/Direzione/Raggio]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -115,6 +99,26 @@
         <source>Arco definito da un punto centrale, iniziale e lunghezza corda</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Specificare punto iniziale dell&apos;arco o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto dell&apos;arco o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lunghezza corda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare centro dell&apos;arco o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_BREAK</name>
@@ -124,10 +128,6 @@
     </message>
     <message>
         <source>Selezionare l&apos;oggetto da spezzare: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Primo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -143,7 +143,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto di interruzione o [Primo punto]: </source>
+        <source>Primo punto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto di interruzione o [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -163,10 +167,6 @@
     </message>
     <message>
         <source>Ttr</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto centrale del cerchio o [3P/2P/Ttr (tangente tangente raggio)]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -228,10 +228,6 @@ Il cerchio non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare raggio del cerchio o [Diametro/Area]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -259,6 +255,18 @@ Il cerchio non esiste.</source>
         <source>Cerchio definito da 3 punti di tangenza</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Ttr (tangente tangente raggio)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto centrale del cerchio o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare raggio del cerchio o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -275,15 +283,7 @@ Il cerchio non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare il punto base o [Spostamento/mOdalità] &lt;Spostamento&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>MUltiplo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare il punto base o [Spostamento/mOdalità/MUltiplo] &lt;Spostamento&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -303,10 +303,6 @@ Il cerchio non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie/Esci/Annulla] &lt;Esci&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Adatta</source>
         <translation type="unfinished"></translation>
     </message>
@@ -323,10 +319,6 @@ Il cerchio non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di modalità di copia [Singola/Multipla] &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
 Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
@@ -340,11 +332,23 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [Serie] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <source>Specificare il punto base o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare il secondo punto o [{0}] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -387,10 +391,6 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della linea di quota o [Testo/Angolo/Orizzontale/Verticale/Ruotato]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Non ci sono geometrie in questa posizione.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -411,10 +411,6 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della linea di quota o [Testo/Angolo]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Crea una quota per la lunghezza di un arco.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -431,19 +427,19 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Direttrice]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Nessuna direttrice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della quota o [Testo/Angolo/Parziale/Nessuna Direttrice]: </source>
+        <source>Selezionare un arco.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare un arco.</source>
+        <source>Specificare la posizione della linea di quota o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare la posizione della quota o [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -491,10 +487,6 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [iNTercetta/Interseca/Spigolo/Annulla]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Spigolo = Estensione</source>
         <translation type="unfinished"></translation>
     </message>
@@ -516,7 +508,15 @@ Selezionare i limiti di estensione...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare una modalità di estensione spigoli [Estensione/Nessuna estensione] &lt;{0}&gt;: </source>
+        <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nessuna estensione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -552,10 +552,6 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare il primo oggetto o [aNnulla/Polilinea/RAggio/Taglia/Multiplo]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Selezionare la polilinea o [Raggio]: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -565,10 +561,6 @@ Il raccordo con raggio {0} non esiste.</source>
     </message>
     <message>
         <source>NonTaglia</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare modalità di taglio [Taglia-estendi/Non taglia-estendi] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -589,6 +581,22 @@ Il raccordo con raggio {0} non esiste.</source>
     </message>
     <message>
         <source>Specificare raggio di raccordo &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare il primo oggetto o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Taglia-estendi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Non taglia-estendi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare modalità di taglio [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -643,11 +651,7 @@ Nessuna perpendicolare possibile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto successivo o [Chiudi/Annulla]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Annulla]: </source>
+        <source>Specificare punto successivo o [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -686,7 +690,7 @@ I punti devono essere distinti.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cancellare gli oggetti sorgente? [Sì/No] &lt;{0}&gt;: </source>
+        <source>Cancellare gli oggetti sorgente ? [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -701,15 +705,15 @@ I punti devono essere distinti.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto base o [Spostamento] &lt;Spostamento&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -744,19 +748,11 @@ Poligono non valido.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare distanza di offset o [Punto/Cancella] &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Esci</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ANnulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare oggetto di cui eseguire l&apos;offset o [Esci/ANnulla] &lt;Esci&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -780,10 +776,6 @@ Poligono non valido.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cancellare l&apos;oggetto sorgente dopo l&apos;offset? [Sì/No] &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare secondo punto: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -803,25 +795,21 @@ Poligono non valido.
         <source> (cima i segmenti)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Specificare distanza di offset o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare oggetto di cui eseguire l&apos;offset o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancellare l&apos;oggetto sorgente dopo l&apos;offset ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_PEDIT</name>
-    <message>
-        <source>Taglia-estendi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Taglia</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Non taglia-estendi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>NonTaglia</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Modifica polilinee o poligoni esistenti.</source>
         <translation type="unfinished"></translation>
@@ -832,10 +820,6 @@ Poligono non valido.
     </message>
     <message>
         <source>Multiplo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare polilinea o [Multiplo]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -896,10 +880,6 @@ Poligono non valido.
     </message>
     <message>
         <source>Tipo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare distanza di approssimazione o [Tipo unione] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -975,7 +955,19 @@ Poligono non valido.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare tipo di unione [Estendi/Aggiungi/ENtrambe] &lt;{0}&gt;: </source>
+        <source>Selezionare polilinea o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo unione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare distanza di approssimazione o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare tipo di unione [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1009,23 +1001,11 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Linea</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Raggio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Secondo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ANNulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/CEntro/CHiudi/Direzione/LInea/Raggio/Secondo punto/ANNulla]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1042,14 +1022,6 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Ricalca</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Arco/LUnghezza/ANnulla/Ricalca]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [Arco/CHiudi/LUnghezza/ANnulla/Ricalca]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1081,10 +1053,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Centro/Raggio]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare secondo punto: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1097,10 +1065,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo/Lunghezza corda]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare lunghezza della corda: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1110,6 +1074,30 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Specificare punto finale dell&apos;arco o [Angolo]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CEntro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LInea</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Secondo punto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto successivo o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lunghezza corda</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1128,10 +1116,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo angolo o [Cima/Raccordo]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Area</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1141,10 +1125,6 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Rotazione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare angolo opposto o [Area/Quote/Rotazione]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1172,10 +1152,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;angolo di rotazione o [SCegli punti] &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare seconda distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1188,10 +1164,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Calcolare le quote rettangolo in base alla [Lunghezza/lArghezza] &lt;Lunghezza&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Digitare la lunghezza rettangolo &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1201,6 +1173,26 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Specificare primo punto: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare primo angolo o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare angolo opposto o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SCegli punti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare l&apos;angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calcolare le quote rettangolo in base alla [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1219,19 +1211,11 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo di rotazione o [Copia/Riferimento] &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare angolo di riferimento &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Punti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare nuovo angolo o [Punti] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1251,6 +1235,14 @@ Rotazione di una copia degli oggetti selezionati.</source>
         <source>Specificare primo punto: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Specificare angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare nuovo angolo o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_SCALE</name>
@@ -1267,19 +1259,11 @@ Rotazione di una copia degli oggetti selezionati.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare fattore di scala o [Copia/Riferimento]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare lunghezza di riferimento &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Punti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare nuova lunghezza o [Punti] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1297,6 +1281,14 @@ Scala di una copia degli oggetti selezionati.</source>
     </message>
     <message>
         <source>Specificare primo punto: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare fattore di scala o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare nuova lunghezza o [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1473,10 +1465,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> o [Finestra/Ultimo/Interseca/Riquadro/Tutto/iNTercetta/FPoligono/IPoligono/FCerchio/ICerchio/FOggetti/IOggetti/AGgiungi/Elimina/Precedente/ANnulla/AUto/SIngolo/Help]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1490,6 +1478,10 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     </message>
     <message>
         <source>La finestra non è stata specificata correttamente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> o [{0}]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1512,15 +1504,7 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> da stirare tramite una finestra o [Poligono/AGgiungi/Elimina]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Spostamento</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto base o [Spostamento] &lt;Spostamento&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1545,6 +1529,14 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     </message>
     <message>
         <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> da stirare tramite una finestra o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1590,10 +1582,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [iNTercetta/Interseca/Spigolo/Annulla]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Spigolo = Estensione</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1615,7 +1603,15 @@ Selezionare i limiti di taglio...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare una modalità di estensione spigoli [Estensione/Nessuna estensione] &lt;{0}&gt;: </source>
+        <source>Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nessuna estensione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1642,10 +1638,6 @@ Selezionare i limiti di taglio...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare il numero di operazioni da annullare o [INIzio/Fine/Segno/INDietro] &lt;1&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
 Nessun gruppo è rimasto aperto.</source>
         <translation type="unfinished"></translation>
@@ -1653,10 +1645,6 @@ Nessun gruppo è rimasto aperto.</source>
     <message>
         <source>
 Non è possibile inserire un segno dentro un gruppo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Questa operazione annullerà tutto. OK ? &lt;Sì&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1670,6 +1658,14 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>Annulla l&apos;ultima operazione eseguita</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare il numero di operazioni da annullare o [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2521,12 +2517,6 @@ Nessun layer corrente.
     <message>
         <source>
 Il layer corrente non è di tipo testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-   
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

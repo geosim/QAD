@@ -303,16 +303,16 @@ class QadFILLETCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_FIRST_LINESTRING)
 
-      keyWords = QadMsg.translate("Command_FILLET", "aNnulla") + " " + \
-                 QadMsg.translate("Command_FILLET", "Polilinea") + " " + \
-                 QadMsg.translate("Command_FILLET", "RAggio") + " " + \
-                 QadMsg.translate("Command_FILLET", "Taglia") + " " + \
+      keyWords = QadMsg.translate("Command_FILLET", "aNnulla") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Polilinea") + "/" + \
+                 QadMsg.translate("Command_FILLET", "RAggio") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Taglia") + "/" + \
                  QadMsg.translate("Command_FILLET", "Multiplo")
-      msg = QadMsg.translate("Command_FILLET", "Selezionare il primo oggetto o [aNnulla/Polilinea/RAggio/Taglia/Multiplo]: ")                        
+      prompt = QadMsg.translate("Command_FILLET", "Selezionare il primo oggetto o [{0}]: ").format(keyWords)
                
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NOT_NULL)      
@@ -345,20 +345,17 @@ class QadFILLETCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.NONE)
 
-      keyWords = QadMsg.translate("Command_FILLET", "Taglia") + " " + \
-                 QadMsg.translate("Command_FILLET", "NonTaglia")
+      keyWords = QadMsg.translate("Command_FILLET", "Taglia-estendi") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Non taglia-estendi")
       if self.filletMode == 1:
-         defaultStr = QadMsg.translate("Command_PEDIT", "Taglia-estendi")
-         default = QadMsg.translate("Command_PEDIT", "Taglia")
+         default = QadMsg.translate("Command_FILLET", "Taglia-estendi")
       elif self.filletMode == 2:
-         defaultStr = QadMsg.translate("Command_PEDIT", "Non taglia-estendi")
-         default = QadMsg.translate("Command_PEDIT", "NonTaglia")
-                 
-      msg = QadMsg.translate("Command_FILLET", "Specificare modalità di taglio [Taglia-estendi/Non taglia-estendi] <{0}>: ")
+         default = QadMsg.translate("Command_FILLET", "Non taglia-estendi")                 
+      prompt = QadMsg.translate("Command_FILLET", "Specificare modalità di taglio [{0}] <{1}>: ").format(keyWords, default)
 
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(msg.format(defaultStr), QadInputTypeEnum.KEYWORDS, default, \
+      self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, default, \
                    keyWords, QadInputModeEnum.NOT_NULL)      
 
 

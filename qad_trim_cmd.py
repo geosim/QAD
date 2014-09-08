@@ -211,14 +211,15 @@ class QadTRIMCommandClass(QadCommandClass):
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
       self.getPointMapTool().onlyEditableLayers = True
       
-      keyWords = QadMsg.translate("Command_TRIM", "iNTercetta") + " " + \
-                 QadMsg.translate("Command_TRIM", "Interseca") + " " + \
-                 QadMsg.translate("Command_TRIM", "Spigolo") + " " + \
-                 QadMsg.translate("Command_TRIM", "Annulla")
+      keyWords = QadMsg.translate("Command_TRIM", "iNTercetta") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Interseca") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Spigolo") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Annulla")      
+      prompt = QadMsg.translate("Command_TRIM", "Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: ").format(keyWords)                        
       
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
-      self.waitFor(QadMsg.translate("Command_TRIM", "Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [iNTercetta/Interseca/Spigolo/Annulla]: "), \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
                    keyWords, QadInputModeEnum.NONE)      
@@ -304,18 +305,17 @@ class QadTRIMCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_TRIM", "Spigolo"):
                # Per estendere un oggetto usando anche le estensioni degli oggetti di riferimento
                # vedi variabile EDGEMODE
-               keyWords = QadMsg.translate("Command_TRIM", "Estensione") + " " + \
-                          QadMsg.translate("Command_TRIM", "Nessuna")                                              
-
-               msg = QadMsg.translate("Command_TRIM", "Specificare una modalità di estensione spigoli [Estensione/Nessuna estensione] <{0}>: ")
+               keyWords = QadMsg.translate("Command_TRIM", "Estensione") + "/" + \
+                          QadMsg.translate("Command_TRIM", "Nessuna estensione")                                              
                if self.edgeMode == 0: # 0 = nessuna estensione
                   self.defaultValue = QadMsg.translate("Command_TRIM", "Nessuna")
                else: 
                   self.defaultValue = QadMsg.translate("Command_TRIM", "Estensione")
+               prompt = QadMsg.translate("Command_TRIM", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
                    
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
-               self.waitFor(msg.format(self.defaultValue), \
+               self.waitFor(prompt, \
                             QadInputTypeEnum.KEYWORDS, \
                             self.defaultValue, \
                             keyWords, QadInputModeEnum.NONE)
