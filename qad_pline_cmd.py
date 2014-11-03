@@ -273,7 +273,7 @@ class QadPLINECommandClass(QadCommandClass):
       if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
          currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Line)
          if currLayer is None:
-            self.showMsg(errMsg)
+            self.showErr(errMsg)
             return True # fine comando
       
       # RICHIESTA PRIMO PUNTO 

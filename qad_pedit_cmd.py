@@ -917,6 +917,10 @@ class QadPEDITCommandClass(QadCommandClass):
 
         
    def run(self, msgMapTool = False, msg = None):
+      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         return True # fine comando
+      
       if self.step == 0:     
          self.waitForEntsel()
          return False # continua
@@ -1045,7 +1049,7 @@ class QadPEDITCommandClass(QadCommandClass):
                self.nOperationsToUndo = self.nOperationsToUndo - 1           
                self.plugIn.undoEditCommand()
             else:
-               self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+               self.showMsg(QadMsg.translate("QAD", "Il comando è stato completamente annullato."))                  
             
             if self.entity.isInitialized(): # selezionato solo un oggetto
                if self.atSubGeom is not None:

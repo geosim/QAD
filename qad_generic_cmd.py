@@ -42,9 +42,9 @@ class QadCommandClass():
    step                 = 0
    isValidPreviousInput = True
 
-   def showMsg(self, msg, displayPrompt = False):
+   def showMsg(self, msg, displayPromptAfterMsg = False):
       if self.plugIn is not None:
-         self.plugIn.showMsg(msg, displayPrompt)
+         self.plugIn.showMsg(msg, displayPromptAfterMsg)
          
    def showErr(self, err):
       if self.plugIn is not None:
@@ -129,6 +129,11 @@ class QadCommandClass():
    def runCommandAbortingTheCurrent(self):
       self.plugIn.runCommandAbortingTheCurrent(self.getName())
       
+   def getToolTipText(self):
+      text = self.getName()
+      if self.getNote() > 0:
+         text = text + "\n\n" + self.getNote()
+      return text
       
    #============================================================================
    # funzioni da sovrascrivere con le classi ereditate da questa

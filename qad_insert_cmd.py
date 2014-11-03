@@ -117,13 +117,13 @@ class QadINSERTCommandClass(QadCommandClass):
       
       currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Point)
       if currLayer is None:
-         self.showMsg(errMsg)
+         self.showErr(errMsg)
          return True # fine comando
 
       if qad_layer.isSymbolLayer(currLayer) == False:
          errMsg = QadMsg.translate("QAD", "\nIl layer corrente non è di tipo simbolo.")
          errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo è un layer vettoriale di tipo punto senza etichetta.\n")
-         self.showMsg(errMsg)         
+         self.showErr(errMsg)         
          return True # fine comando
 
                

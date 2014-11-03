@@ -167,14 +167,14 @@ class QadMBUFFERCommandClass(QadCommandClass):
          # il layer corrente deve essere editabile e di tipo linea o poligono
          currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, [QGis.Line, QGis.Polygon])
          if currLayer is None:
-            self.showMsg(errMsg)
+            self.showErr(errMsg)
             return True # fine comando
          
          # il layer corrente non deve appartenere a quotature
          dimStyle = self.plugIn.dimStyles.getDimByLayer(currLayer)
          if dimStyle is not None:
             errMsg = QadMsg.translate("QAD", "\nIl layer corrente appartiene allo stile di quotatura {0} e non è valido.\n")                        
-            self.showMsg(errMsg.format(dimStyle.name))
+            self.showErr(errMsg.format(dimStyle.name))
             return True # fine comando
             
       #=========================================================================

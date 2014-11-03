@@ -77,7 +77,7 @@ class QadARCCommandClass(QadCommandClass):
       
       currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Line)
       if currLayer is None:
-         self.showMsg(errMsg)
+         self.showErr(errMsg)
          return True # fine comando
 
       #=========================================================================

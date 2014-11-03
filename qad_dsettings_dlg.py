@@ -28,6 +28,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.core import QgsApplication
+from qgis.utils import *
 
 
 import qad_dsettings_ui
@@ -222,7 +223,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       # Memorizzo il valore di PolarANG
       SUserAngle = self.comboBox_increment_angle.currentText()
       UserAngle = qad_utils.str2float(SUserAngle)
-      QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
+      QadVariables.set(QadMsg.translate("Environment varia", "POLARANG"), UserAngle)
       
       SProgrDist = self.lineEdit_ProgrDistance.text()
       ProgrDist = qad_utils.str2float(SProgrDist)
@@ -249,6 +250,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          return False
       return True
     
+    
    def comboBox_increment_angle_Validation(self):
       string = self.comboBox_increment_angle.lineEdit().text()
       if qad_utils.str2float(string) is None or qad_utils.str2float(string) <= 0 or qad_utils.str2float(string) >= 360:
@@ -259,3 +261,9 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          return False
       return True
 
+
+   def ButtonHELP_Pressed(self):
+      # per conoscere la sezione/pagina del file html usare internet explorer,
+      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
+      # Questo perchè internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
+      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")

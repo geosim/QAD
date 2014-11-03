@@ -85,7 +85,7 @@ class QadCIRCLECommandClass(QadCommandClass):
          # il layer corrente deve essere editabile e di tipo linea o poligono
          currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, [QGis.Line, QGis.Polygon])
          if currLayer is None:
-            self.showMsg(errMsg)
+            self.showErr(errMsg)
             return True # fine comando
          self.getPointMapTool().geomType = QGis.Line if currLayer.geometryType() == QGis.Line else QGis.Polygon                                   
 

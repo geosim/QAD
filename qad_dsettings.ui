@@ -537,7 +537,7 @@ p, li { white-space: pre-wrap; }
        <x>10</x>
        <y>40</y>
        <width>151</width>
-       <height>151</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">
@@ -645,7 +645,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>266</x>
-     <y>452</y>
+     <y>443</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -661,7 +661,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>266</x>
-     <y>446</y>
+     <y>443</y>
     </hint>
     <hint type="destinationlabel">
      <x>120</x>
@@ -698,6 +698,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>436</x>
      <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_HELP</sender>
+   <signal>clicked()</signal>
+   <receiver>DSettings_Dialog</receiver>
+   <slot>ButtonHELP_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>439</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>426</y>
     </hint>
    </hints>
   </connection>

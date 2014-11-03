@@ -328,7 +328,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "Il comando è stato completamente annullato."))                  
          elif type(value) == QgsPoint: # se è stato selezionato un punto
             self.entitySet.clear()
             #qad_debug.breakPoint()

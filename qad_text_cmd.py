@@ -163,13 +163,13 @@ class QadTEXTCommandClass(QadCommandClass):
       
       currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Point)
       if currLayer is None:
-         self.showMsg(errMsg)
+         self.showErr(errMsg)
          return True # fine comando
 
       if qad_layer.isTextLayer(currLayer) == False:
          errMsg = QadMsg.translate("QAD", "\nIl layer corrente non è di tipo testo.")
          errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
-         self.showMsg(errMsg)         
+         self.showErr(errMsg)         
          return True # fine comando
 
                

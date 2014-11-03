@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Tue Jun 10 10:39:25 2014
+# Created: Thu Sep 18 16:00:53 2014
 #      by: PyQt4 UI code generator 4.8.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -191,7 +191,7 @@ class Ui_DSettings_Dialog(object):
         self.checkBox_PolarPickPoint.setGeometry(QtCore.QRect(10, 10, 171, 17))
         self.checkBox_PolarPickPoint.setObjectName(_fromUtf8("checkBox_PolarPickPoint"))
         self.groupBox_2 = QtGui.QGroupBox(self.tab_2)
-        self.groupBox_2.setGeometry(QtCore.QRect(10, 40, 151, 151))
+        self.groupBox_2.setGeometry(QtCore.QRect(10, 40, 151, 81))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.label_12 = QtGui.QLabel(self.groupBox_2)
         self.label_12.setGeometry(QtCore.QRect(10, 20, 121, 16))
@@ -232,6 +232,7 @@ class Ui_DSettings_Dialog(object):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), DSettings_Dialog.ButtonBOX_Accepted)
         QtCore.QObject.connect(self.pushButton_DeSelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonDeselectALL_Pressed)
         QtCore.QObject.connect(self.pushButton_SelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonSelectALL_Pressed)
+        QtCore.QObject.connect(self.pushButton_HELP, QtCore.SIGNAL(_fromUtf8("clicked()")), DSettings_Dialog.ButtonHELP_Pressed)
         QtCore.QMetaObject.connectSlotsByName(DSettings_Dialog)
 
     def retranslateUi(self, DSettings_Dialog):

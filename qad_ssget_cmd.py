@@ -124,7 +124,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    def showMsgOnAddRemove(self, found):
       msg = QadMsg.translate("Command_SSGET", " trovato(i) {0}, totale {1}")
-      self.showMsg(msg.format(found, self.entitySet.count()))         
+      self.showMsg(msg.format(found, self.entitySet.count()), True) # ripete il prompt         
 
    #============================================================================
    # SetEntity
@@ -325,9 +325,9 @@ class QadSSGetClass(QadCommandClass):
                  QadMsg.translate("Command_SSGET", "Help")
                  
       if self.AddOnSelection == True:
-         prompt = QadMsg.translate("Command_SSGET", "Selezionare oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "\nSelezionare oggetti")
       else:
-         prompt = QadMsg.translate("Command_SSGET", "Rimuovere oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "\nRimuovere oggetti")
                            
       if self.help == True:         
          prompt = prompt + QadMsg.translate("Command_SSGET", " o [{0}]").format(keyWords)                        

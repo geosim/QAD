@@ -136,7 +136,7 @@ class QadUNDOCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool Ë stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   self.plugIn.undoUntilBookmark()
-                  self.showMsg(QadMsg.translate("Command_UNDO", "\n» stato annullato tutto."))
+                  self.showMsg(QadMsg.translate("Command_UNDO", "» stato annullato tutto."))
                   return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -148,7 +148,7 @@ class QadUNDOCommandClass(QadCommandClass):
 
          if type(value) == unicode:
             if value == QadMsg.translate("QAD", "SÏ"):
-               self.showMsg(QadMsg.translate("Command_UNDO", "\n» stato annullato tutto."))
+               self.showMsg(QadMsg.translate("Command_UNDO", "» stato annullato tutto."))
                self.plugIn.undoUntilBookmark()
 
          return True # fine comando

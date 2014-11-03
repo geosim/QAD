@@ -403,7 +403,7 @@ class QadCOPYCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "\nIl comando è stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "Il comando è stato completamente annullato."))                  
                self.waitForSecondPt()
          elif type(value) == QgsPoint: # se è stato inserito lo spostamento con un punto
             self.copyGeoms(value)

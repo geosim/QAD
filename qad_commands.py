@@ -125,9 +125,9 @@ class QadCommandsClass():
       if self.plugIn is not None:
          self.plugIn.showInputMsg() # visualizza prompt standard per richiesta comando 
    
-   def showMsg(self, msg):
+   def showMsg(self, msg, displayPromptAfterMsg = False):
       if self.plugIn is not None:
-         self.plugIn.showMsg(msg)
+         self.plugIn.showMsg(msg, displayPromptAfterMsg)
 
    def showErr(self, err):
       if self.plugIn is not None:
@@ -263,7 +263,7 @@ class QadCommandsClass():
       # se è stato premuto il tasto destro del mouse valuto cosa è stato inserito nella finestra di testo
       if self.actualCommand.getPointMapTool().rightButton == True:
          msg = self.actualCommand.getCurrMsgFromTxtWindow()
-         if (msg is not None) and (len(msg) > 0):
+         if (msg is not None) and len(msg) > 0:
             self.actualCommand.showEvaluateMsg()
          else:
             if self.actualCommand.run(True) == True: # comando terminato
@@ -288,12 +288,12 @@ class QadCommandsClass():
    # abortCommand
    #============================================================================
    def abortCommand(self):
-      self.showMsg(QadMsg.translate("QAD", "\n*Annullato*\n"))
       # se non c'è alcun comando attivo
       if self.actualCommand is None:
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
          self.plugIn.setStandardMapTool()               
       else:
+         self.showErr(QadMsg.translate("QAD", "*Annullato*"))
          self.clearCommand()
 
 

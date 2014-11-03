@@ -169,6 +169,10 @@ class QadBREAKCommandClass(QadCommandClass):
 
        
    def run(self, msgMapTool = False, msg = None):
+      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         return True # fine comando
+      
       if self.step == 0:     
          self.waitForEntsel(msgMapTool, msg)
          return False # continua
