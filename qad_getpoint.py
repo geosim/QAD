@@ -598,7 +598,6 @@ class QadGetPoint(QgsMapTool):
       self.entity.set(self.tmpEntity.layer, self.tmpEntity.featureId)
     
    def keyPressEvent(self, event):
-      #qad_debug.breakPoint()
       self.plugIn.keyPressEvent(event)    
     
    def activate(self):

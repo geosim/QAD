@@ -102,7 +102,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    # getLayersToCheck
    #============================================================================
-   def getLayersToCheck(self):      
+   def getLayersToCheck(self):     
       layerList = []
       for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
          # considero solo i layer vettoriali che sono filtrati per tipo
@@ -325,9 +325,9 @@ class QadSSGetClass(QadCommandClass):
                  QadMsg.translate("Command_SSGET", "Help")
                  
       if self.AddOnSelection == True:
-         prompt = QadMsg.translate("Command_SSGET", "\nSelezionare oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "Selezionare oggetti")
       else:
-         prompt = QadMsg.translate("Command_SSGET", "\nRimuovere oggetti")
+         prompt = QadMsg.translate("Command_SSGET", "Rimuovere oggetti")
                            
       if self.help == True:         
          prompt = prompt + QadMsg.translate("Command_SSGET", " o [{0}]").format(keyWords)                        
@@ -391,8 +391,6 @@ class QadSSGetClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             shiftKey = False
             value = msg
-
-         #qad_debug.breakPoint()
 
          if value is None:
             if self.entitySet.count() > 0:

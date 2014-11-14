@@ -375,9 +375,12 @@ class QadEdit(QTextEdit):
             pos = pos + 1
    
    
-   def isCursorInEditionZone(self):
+   def isCursorInEditionZone(self, newPos = None):
       cursor = self.textCursor()
-      pos = cursor.position()
+      if newPos is None:
+         pos = cursor.position()
+      else:
+         pos = newPos
       block = self.document().lastBlock()
       last = block.position() + self.currentPromptLength
       return pos >= last
@@ -422,7 +425,6 @@ class QadEdit(QTextEdit):
 
 
    def displayPrompt(self, prompt = None):
-      #qad_debug.breakPoint()
       if prompt is not None:
          self.currentPrompt = prompt        
       self.currentPromptLength = len(self.currentPrompt)     
@@ -508,9 +510,22 @@ class QadEdit(QTextEdit):
       self.currentCmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
       self.highlightKeyWords()
       self.currentCmdOptionPos = None
-            
+   
+   def mouseDoubleClickEvent(self, event):
+      cursor = self.cursorForPosition(event.pos())
+      pos = cursor.position()
+      if self.isCursorInEditionZone(pos):
+         QTextEdit.mouseDoubleClickEvent(self, event)
+      
+   def mousePressEvent(self, event):
+      #qad_debug.breakPoint()
+      cursor = self.cursorForPosition(event.pos())
+      pos = cursor.position()
+      if self.isCursorInEditionZone(pos):
+         QTextEdit.mousePressEvent(self, event)
+   
    def mouseReleaseEvent(self, event):
-      # se sono sull'ultima riga
+      # se sono sull'ultima riga     
       if self.textCursor().position() >= self.document().lastBlock().position():
          if event.button() == Qt.LeftButton:
             cmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
@@ -567,7 +582,8 @@ class QadEdit(QTextEdit):
          self.parent.abortCommand()
          return
       
-      # if the cursor isn't in the edition zone, don't do anything except Ctrl+C
+      # if the cursor isn't in the edit zone, don't do anything except Ctrl+C
+      #qad_debug.breakPoint()      
       if not self.isCursorInEditionZone():
          if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier:
             if e.key() == Qt.Key_C or e.key() == Qt.Key_A:
