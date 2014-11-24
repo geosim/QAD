@@ -94,8 +94,8 @@ class QadCIRCLECommandClass(QadCommandClass):
       if self.step == 0: # inizio del comando
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_CENTER_PT)        
-         keyWords = QadMsg.translate("Command_CIRCLE", "3P") + "/" + \
-                    QadMsg.translate("Command_CIRCLE", "2P") + "/" + \
+         keyWords = QadMsg.translate("Command_CIRCLE", "3Punti") + "/" + \
+                    QadMsg.translate("Command_CIRCLE", "2PUnti") + "/" + \
                     QadMsg.translate("Command_CIRCLE", "Ttr (tangente tangente raggio)")
          prompt = QadMsg.translate("Command_CIRCLE", "Specificare punto centrale del cerchio o [{0}]: ").format(keyWords)
 
@@ -112,6 +112,7 @@ class QadCIRCLECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA CENTRO
       elif self.step == 1: # dopo aver atteso un punto o enter o una parola chiave si riavvia il comando
+         #qad_debug.breakPoint()
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # è stato attivato un altro plugin che ha disattivato Qad
@@ -135,13 +136,13 @@ class QadCIRCLECommandClass(QadCommandClass):
                return True # fine comando
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_CIRCLE", "3P"):
+            if value == QadMsg.translate("Command_CIRCLE", "3Punti"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare primo punto sul cerchio: "))
                self.step = 4           
-            elif value == QadMsg.translate("Command_CIRCLE", "2P"):
+            elif value == QadMsg.translate("Command_CIRCLE", "2PUnti"):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT)
                # si appresta ad attendere un punto

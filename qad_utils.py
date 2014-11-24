@@ -3475,6 +3475,102 @@ def getRectByAreaAndWidth(firstCorner, area, widthDim, rot, gapType, \
 
 
 #===============================================================================
+# funzioni di creazione poligoni
+# getPolygonByNsidesCenterRadius
+#===============================================================================
+def getPolygonByNsidesCenterRadius(sideNumber, centerPt, radius, Inscribed, ptStart = None):
+   """
+   ritorna una lista di punti che definisce il poligono costruito mediante 
+   sideNumber = numero di lati 
+   centerPt = centro del poligono
+   radius = raggio del cerchio
+   Inscribed = se True significa poligono inscritto altrimento circoscritto
+   ptStart = punto da cui partire
+   """
+   result = []      
+   angleIncrement = 2 * math.pi / sideNumber
+   # poligono circoscritto
+   if Inscribed == False:
+      # calcolo il nuovo raggio 
+      myRadius = radius / math.cos(angleIncrement / 2)
+
+      if ptStart is None:
+         myPtStart = getPolarPointByPtAngle(centerPt, math.pi / 2 * 3 + (angleIncrement / 2), myRadius)
+         angle = getAngleBy2Pts(centerPt, myPtStart)
+      else:
+         angle = getAngleBy2Pts(centerPt, ptStart)      
+         myPtStart = getPolarPointByPtAngle(centerPt, angle + (angleIncrement / 2), myRadius)
+         angle = getAngleBy2Pts(centerPt, myPtStart)      
+   else: # poligono inscritto
+      myRadius = radius
+      
+      if ptStart is None:
+         myPtStart = getPolarPointByPtAngle(centerPt, math.pi / 2 * 3 + (angleIncrement / 2), myRadius)
+         angle = getAngleBy2Pts(centerPt, myPtStart)
+      else:
+         myPtStart = ptStart
+         angle = getAngleBy2Pts(centerPt, ptStart)      
+      
+   result.append(myPtStart)
+   for i in xrange(1, sideNumber, 1):
+      angle = angle + angleIncrement
+      result.append(getPolarPointByPtAngle(centerPt, angle, myRadius))  
+   result.append(myPtStart)
+   
+   return result
+
+#===============================================================================
+# getPolygonByNsidesEdgePts
+#===============================================================================
+def getPolygonByNsidesEdgePts(sideNumber, firstEdgePt, secondEdgePt):
+   """
+   ritorna una lista di punti che definisce il poligono costruito mediante 
+   sideNumber = numero di lati 
+   firstEdgePt = primo punto di un lato
+   secondEdgePt = secondo punto di un lato
+   """
+   #qad_debug.breakPoint()
+   result = []      
+   angleIncrement = 2 * math.pi / sideNumber
+   angle = getAngleBy2Pts(firstEdgePt, secondEdgePt)
+   sideLength = getDistance(firstEdgePt, secondEdgePt)
+         
+   result.append(firstEdgePt)
+   result.append(secondEdgePt)
+   lastPoint = secondEdgePt
+   for i in xrange(1, sideNumber - 1, 1):
+      angle = angle + angleIncrement
+      lastPoint = getPolarPointByPtAngle(lastPoint, angle, sideLength)
+      result.append(lastPoint)  
+   result.append(firstEdgePt)
+   
+   return result
+
+#===============================================================================
+# getPolygonByNsidesArea
+#===============================================================================
+def getPolygonByNsidesArea(sideNumber, centerPt, area):
+   """
+   ritorna una lista di punti che definisce il poligono costruito mediante 
+   sideNumber = numero di lati 
+   centerPt = centro del poligono
+   area = area del poligono
+   """
+   angle = 2 * math.pi / sideNumber
+   triangleArea = area / sideNumber / 2
+   # divido il poligono in sideNumber triangoli
+   # ogni trinagolo viene diviso in 2 generando 2 trinagoli rettangoli in cui
+   # "(base * altezza) / 2 = Area" che equivale a "base = 2 * Area / altezza"
+   # "tan(alfa) = base / altezza" che equivale a "tan(alfa) * altezza = base
+   # per sostituzione si ha
+   # "tan(alfa) * altezza = 2 * Area / altezza" quindi
+   # "altezza = sqrt(2 * Area / tan(alfa))"
+   h = math.sqrt(2 * triangleArea / math.tan(angle / 2))
+   
+   return getPolygonByNsidesCenterRadius(sideNumber, centerPt, h, False)
+
+
+#===============================================================================
 # getSubGeomAtVertex
 #===============================================================================
 def getSubGeomAtVertex(geom, atVertex):

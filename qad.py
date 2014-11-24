@@ -81,7 +81,7 @@ class Qad(QObject):
    # ultimo nuovo angolo di riferimento (es. comando ruota)
    lastNewReferenceRot = 0.0
    # ultimo raggio
-   lastRadius = 0.0
+   lastRadius = 1.0
    # ultimo punto di offset
    lastOffsetPt = QgsPoint(0, 0)
    # ultima lunghezza di riferimento (es. comando scala)
@@ -102,6 +102,12 @@ class Qad(QObject):
    joinToleranceDist = 0.0
    # modalità di raccordo in comando raccordo
    filletMode = 1 # 1=Taglia-estendi, 2=Non taglia-estendi
+   # ultimo numero di lati per poligono
+   lastPolygonSideNumber = 4
+   # ultima opzione di costruzione del poligono conoscendo il centro
+   # "Inscritto nel cerchio", Circoscritto intorno al cerchio", "Area"
+   lastPolygonConstructionModeByCenter = QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio")
+
 
    # flag per identificare se un comando di QAD è attivo oppure no
    isQadActive = False
@@ -210,6 +216,16 @@ class Qad(QObject):
       # memorizzo modalità di raccordo in comando raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       if filletMode == 1 or filletMode == 2:
          self.filletMode = int(filletMode)     
+
+   def setLastPolygonSideNumber(self, polygonSideNumber):
+      # memorizzo l'ultimo numero di lati del poligono
+      if polygonSideNumber > 2:
+         self.lastPolygonSideNumber = polygonSideNumber
+
+   def setLastPolygonConstructionModeByCenter(self, mode):
+      # memorizzo ultima opzione di costruzione del poligono conoscendo il centro
+      # "Inscritto nel cerchio", Circoscritto intorno al cerchio", "Area"
+      self.lastPolygonConstructionModeByCenter = mode
 
 
    #============================================================================
@@ -336,6 +352,7 @@ class Qad(QObject):
       self.toolBar.addAction(self.extend_action)
       self.toolBar.addAction(self.trim_action)
       self.toolBar.addAction(self.rectangle_action)
+      self.toolBar.addAction(self.polygon_action)
       self.toolBar.addAction(self.mirror_action)
       self.toolBar.addAction(self.u_action)
       self.toolBar.addAction(self.redo_action)
@@ -563,6 +580,12 @@ class Qad(QObject):
       self.rectangle_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.rectangle_action)
       
+      # POLYGON
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "POLIGONO"))
+      self.polygon_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.polygon_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.polygon_action)
+      
       # MIRRROR
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "SPECCHIO"))
       self.mirror_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -691,6 +714,7 @@ class Qad(QObject):
       drawMenu.addMenu(self.circleMenu)
       
       drawMenu.addAction(self.rectangle_action)
+      drawMenu.addAction(self.polygon_action)
       drawMenu.addAction(self.mpolygon_action)
       drawMenu.addAction(self.mbuffer_action)
       drawMenu.addSeparator()  
@@ -1238,14 +1262,14 @@ class Qad(QObject):
    def runCIRCLE_BY_2POINTS_Command(self): # MACRO
       # nome comando + argomenti
       args = [QadMsg.translate("Command_list", "CERCHIO"), \
-              QadMsg.translate("Command_CIRCLE", "2P"), \
+              QadMsg.translate("Command_CIRCLE", "2PUnti"), \
               None, \
               None]
       self.runMacroAbortingTheCurrent(args)
    def runCIRCLE_BY_3POINTS_Command(self): # MACRO
       # nome comando + argomenti
       args = [QadMsg.translate("Command_list", "CERCHIO"), \
-              QadMsg.translate("Command_CIRCLE", "3P"), \
+              QadMsg.translate("Command_CIRCLE", "3Punti"), \
               None, \
               None, \
               None]
@@ -1261,7 +1285,7 @@ class Qad(QObject):
    def runCIRCLE_BY_3TANS_Command(self): # MACRO
       # nome comando + argomenti
       args = [QadMsg.translate("Command_list", "CERCHIO"), \
-              QadMsg.translate("Command_CIRCLE", "3P"), \
+              QadMsg.translate("Command_CIRCLE", "3Punti"), \
               QadMsg.translate("Snap", "TAN"), \
               QadMsg.translate("Snap", "TAN"), \
               QadMsg.translate("Snap", "TAN")]
@@ -1343,3 +1367,6 @@ class Qad(QObject):
 
    def runDIMALIGNEDCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMALLINEATA"))
+      
+   def runPOLYGONCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "POLIGONO"))      

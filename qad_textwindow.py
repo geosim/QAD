@@ -354,6 +354,7 @@ class QadEdit(QTextEdit):
       i = txt.find("[")
       final = txt.rfind("]")
       if i >= 0 and final > i: # se ci sono opzioni
+         #qad_debug.breakPoint()
          i = i + 1
          pos = lastBlock.position() + i
          while i < final:
@@ -396,7 +397,7 @@ class QadEdit(QTextEdit):
    def showCmdSuggestWindow(self, mode = True, filter = ""):
       self.parent.showCmdSuggestWindow(mode, filter)
 
-   def showMsg(self, msg, displayPromptAfterMsg = False):
+   def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
       if len(msg) > 0:
          sep = msg.rfind("\n")
          if sep >= 0:
@@ -404,10 +405,14 @@ class QadEdit(QTextEdit):
             newMsg = msg[sep+1:]
             self.clear()
          else:
-            cursor = self.textCursor()
-            cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor) # fine documento
-            self.setTextCursor(cursor)
-            newMsg = msg
+            if append == True:
+               cursor = self.textCursor()
+               cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor) # fine documento
+               self.setTextCursor(cursor)
+               newMsg = msg
+            else:
+               self.clear()
+               newMsg = self.currentPrompt + msg
 
          self.insertPlainText(newMsg)         
          self.parent.resizeEdits()
@@ -436,21 +441,24 @@ class QadEdit(QTextEdit):
       self.currentPromptLength = len(self.currentPrompt)
       self.showMsg("\n" + self.currentPrompt)
       
-   def showPrevious(self):
+   def showNext(self):
+      #qad_debug.breakPoint()
       if self.historyIndex < len(self.history) and len(self.history) > 0:
          self.historyIndex += 1
          if self.historyIndex < len(self.history):
-            self.showMsg("\n" + self.history[self.historyIndex])
+            # displayPromptAfterMsg = False, append = True
+            self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
                          
-   def showNext(self):
+   def showPrevious(self):
       if self.historyIndex > 0 and len(self.history) > 0:
          self.historyIndex -= 1
          if self.historyIndex < len(self.history):
-            self.showMsg("\n" + self.history[self.historyIndex])
+            # displayPromptAfterMsg = False, append = True
+            self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
                
    def showLast(self):
       if len(self.history) > 0:
-         self.showMsg("\n" + self.history[len(self.history) - 1])
+         self.showMsg(self.history[len(self.history) - 1])
          return self.history[len(self.history) - 1]
       else:
          return ""
@@ -479,23 +487,28 @@ class QadEdit(QTextEdit):
 
    def setCmdOptionPosList(self):
       del self.cmdOptionPosList[:] # svuoto la lista
-      if len(self.keyWords) == 0 or len(self.currentPrompt) == 0:
+      lenKeyWords = len(self.keyWords)
+      if lenKeyWords == 0 or len(self.currentPrompt) == 0:
          return
-      cursor = self.textCursor()
-      actualPos = cursor.position()
-      i = len(self.keyWords) - 1
-      end = len(self.currentPrompt) - 1
+      # le opzioni sono racchiuse in parentesi quadre e separate tra loro da /
+      prompt = self.currentPrompt
+      initialPos = prompt.find("[", 0)
+      finalDelimiter = prompt.find("]", initialPos)
+      if initialPos == -1 or finalDelimiter == -1:
+         return
+      i = 0
       #qad_debug.breakPoint() 
-      while i >= 0:
+      while i < lenKeyWords:
          keyWord = self.keyWords[i]
-         initialPosInInputMsg = self.currentPrompt.rfind(keyWord, 0, end)
-         if initialPosInInputMsg >= 0:
-            initialPos = actualPos - (len(self.currentPrompt) - initialPosInInputMsg)
-            finalPos = initialPos + len(keyWord) - 1
+         initialPos = prompt.find(keyWord, initialPos + 1, finalDelimiter)
+         if initialPos >= 0:
+            finalPos = initialPos + len(keyWord)
             self.cmdOptionPosList.append(QadCmdOptionPos(keyWord, initialPos, finalPos))         
-            end = initialPosInInputMsg
+            initialPos = prompt.find("/", finalPos)
+            if initialPos == -1:
+               return
          
-         i = i -1
+         i = i + 1
 
    def getCmdOptionPosUnderMouse(self, pos):
       #qad_debug.breakPoint()
@@ -604,9 +617,9 @@ class QadEdit(QTextEdit):
             self.entered()          
          # if Up or Down is pressed
          elif e.key() == Qt.Key_Down:
-            self.showPrevious()
-         elif e.key() == Qt.Key_Up:
             self.showNext()
+         elif e.key() == Qt.Key_Up:
+            self.showPrevious()
          # if backspace is pressed, delete until we get to the prompt
          elif e.key() == Qt.Key_Backspace:
             if not cursor.hasSelection() and cursor.columnNumber() == self.currentPromptLength:
@@ -642,6 +655,7 @@ class QadEdit(QTextEdit):
             self.showCmdSuggestWindow(True, self.getCurrMsg())
       
    def entered(self):
+      #qad_debug.breakPoint()
       if self.inputType & QadInputTypeEnum.COMMAND:
          self.showCmdSuggestWindow(False)
       

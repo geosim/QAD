@@ -762,8 +762,7 @@ class QadSnapper():
    #============================================================================
    def getCenPoint(self, geom, point, CRS = None):
       """
-      Cerca il punto centro di un arco o di un cerchio o il centroide di un poligono 
-      che si interseca con point.
+      Cerca il punto centro di un arco o di un cerchio o il centroide di un poligono.
       - CRS = sistema di coordinate in cui è espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
@@ -772,12 +771,13 @@ class QadSnapper():
       if geom is None:
          return result
 
+      #qad_debug.breakPoint()
       wkbType = geom.wkbType()
       if wkbType == QGis.WKBPoint or wkbType == QGis.WKBMultiPoint:
          return result
       elif wkbType == QGis.WKBPolygon or wkbType == QGis.WKBMultiPolygon:
          centroidGeom = geom.centroid()
-         wkbType = geom.wkbType()
+         wkbType = centroidGeom.wkbType()
          if wkbType == QGis.WKBPoint:
             self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione
          elif wkbType == QGis.WKBMultiPoint:

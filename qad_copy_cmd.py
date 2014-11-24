@@ -453,7 +453,7 @@ class QadCOPYCommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
-         else: # il punto arriva come parametro della funzione
+         else: # la parola chiave arriva come parametro della funzione
             value = msg
 
          if type(value) == unicode:

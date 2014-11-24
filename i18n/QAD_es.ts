@@ -158,14 +158,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>3P</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2P</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ttr</source>
         <translation type="unfinished"></translation>
     </message>
@@ -265,6 +257,14 @@ Il cerchio non esiste.</source>
     </message>
     <message>
         <source>Specificare raggio del cerchio o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3Punti</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2PUnti</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1102,6 +1102,58 @@ archi o una combinazione dei due.</source>
     </message>
 </context>
 <context>
+    <name>Command_POLYGON</name>
+    <message>
+        <source>Inscritto nel cerchio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Crea un poligono regolare.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare il numero dei lati &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spigolo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare centro del poligono [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Circoscritto intorno al cerchio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare primo punto dello spigolo: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto dello spigolo: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del poligono in unità correnti &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+È richiesto un valore intero maggiore di 2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_RECTANGLE</name>
     <message>
         <source>Crea una polilinea rettangolare.</source>
@@ -1648,11 +1700,6 @@ Non è possibile inserire un segno dentro un gruppo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-È stato annullato tutto.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1666,6 +1713,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>È stato annullato tutto.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1797,6 +1848,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     </message>
     <message>
         <source>ARCOQUOTA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>POLIGONO</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2110,6 +2165,13 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     </message>
 </context>
 <context>
+    <name>Environment varia</name>
+    <message>
+        <source>POLARANG</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Environment variables</name>
     <message>
         <source>ARCMINSEGMENTQTY</source>
@@ -2216,12 +2278,6 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     <message>
         <source>
 Comando sconosciuto &quot;{0}&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-*Annullato*
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2500,11 +2556,6 @@ Verificare il valore della variabile DIMSTYLE.
     </message>
     <message>
         <source>
-Il comando è stato completamente annullato.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
 Il layer corrente non è di tipo simbolo.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2523,6 +2574,14 @@ Il layer corrente non è di tipo testo.</source>
         <source>
 Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*Annullato*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Il comando è stato completamente annullato.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

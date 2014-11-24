@@ -158,14 +158,6 @@
         <translation>Draws a circlerc by many methods.</translation>
     </message>
     <message>
-        <source>3P</source>
-        <translation>3P</translation>
-    </message>
-    <message>
-        <source>2P</source>
-        <translation>2P</translation>
-    </message>
-    <message>
         <source>Ttr</source>
         <translation>Ttr</translation>
     </message>
@@ -267,6 +259,14 @@ The circle doesn&apos;t exist.</translation>
     <message>
         <source>Specificare raggio del cerchio o [{0}]: </source>
         <translation>Specify the circle radius or [{0}]: </translation>
+    </message>
+    <message>
+        <source>3Punti</source>
+        <translation>3Points</translation>
+    </message>
+    <message>
+        <source>2PUnti</source>
+        <translation>2POints</translation>
     </message>
 </context>
 <context>
@@ -1115,6 +1115,58 @@ and arc segments.</translation>
     </message>
 </context>
 <context>
+    <name>Command_POLYGON</name>
+    <message>
+        <source>Inscritto nel cerchio</source>
+        <translation>Inscribed in circle</translation>
+    </message>
+    <message>
+        <source>Crea un poligono regolare.</source>
+        <translation>Draws a regular polygon.</translation>
+    </message>
+    <message>
+        <source>Digitare il numero dei lati &lt;{0}&gt;: </source>
+        <translation>Enter number of sides &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Spigolo</source>
+        <translation>Edge</translation>
+    </message>
+    <message>
+        <source>Specificare centro del poligono [{0}]: </source>
+        <translation>Specify center of polygon or [{0}]: </translation>
+    </message>
+    <message>
+        <source>Circoscritto intorno al cerchio</source>
+        <translation>Circumscribed about circle</translation>
+    </message>
+    <message>
+        <source>Area</source>
+        <translation>Area</translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione [{0}] &lt;{1}&gt;: </source>
+        <translation>Enter an option [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare primo punto dello spigolo: </source>
+        <translation>Specify the first point of the edge: </translation>
+    </message>
+    <message>
+        <source>Specificare secondo punto dello spigolo: </source>
+        <translation>Specify the second point of the edge: </translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del poligono in unità correnti &lt;{0}&gt;: </source>
+        <translation>Enter the polygon area in current units &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>
+È richiesto un valore intero maggiore di 2.</source>
+        <translation>Enter an integer greater than 2.</translation>
+    </message>
+</context>
+<context>
     <name>Command_RECTANGLE</name>
     <message>
         <source>Crea una polilinea rettangolare.</source>
@@ -1665,11 +1717,6 @@ Non è possibile inserire un segno dentro un gruppo.</source>
         <translation>A mark can&apos;t be inserted into a group.</translation>
     </message>
     <message>
-        <source>
-È stato annullato tutto.</source>
-        <translation>Everithing undone.</translation>
-    </message>
-    <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
         <translation>Reverses the effects of previous UNDO.</translation>
     </message>
@@ -1684,6 +1731,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     <message>
         <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
         <translation>This will undo everything. OK ? &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>È stato annullato tutto.</source>
+        <translation>All has been undone.</translation>
     </message>
 </context>
 <context>
@@ -1815,6 +1866,10 @@ Non è possibile inserire un segno dentro un gruppo.</source>
     <message>
         <source>ARCOQUOTA</source>
         <translation>DIMARC</translation>
+    </message>
+    <message>
+        <source>POLIGONO</source>
+        <translation>POLYGON</translation>
     </message>
 </context>
 <context>
@@ -2197,6 +2252,13 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     </message>
 </context>
 <context>
+    <name>Environment varia</name>
+    <message>
+        <source>POLARANG</source>
+        <translation>POLARANG</translation>
+    </message>
+</context>
+<context>
     <name>Environment variables</name>
     <message>
         <source>ARCMINSEGMENTQTY</source>
@@ -2305,14 +2367,6 @@ Lo stile di quotatura &quot;{0}&quot; </source>
 Comando sconosciuto &quot;{0}&quot;.</source>
         <translation>
 Invalid command &quot;{0}&quot;.</translation>
-    </message>
-    <message>
-        <source>
-*Annullato*
-</source>
-        <translation>
-*Canceled*
-</translation>
     </message>
     <message>
         <source>Selezionare oggetto: </source>
@@ -2635,12 +2689,6 @@ Verify the value of DIMSTYLE variable.
     </message>
     <message>
         <source>
-Il comando è stato completamente annullato.</source>
-        <translation>
-The command has been completely undone.</translation>
-    </message>
-    <message>
-        <source>
 Il layer corrente non è di tipo simbolo.</source>
         <translation>
 Current layer is not a symbol layer.</translation>
@@ -2666,6 +2714,14 @@ Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
         <translation>
 Current layer is a layer referenced to {0} dimension style. and it is not valid.
 </translation>
+    </message>
+    <message>
+        <source>*Annullato*</source>
+        <translation>*Canceled*</translation>
+    </message>
+    <message>
+        <source>Il comando è stato completamente annullato.</source>
+        <translation>The command has been canceled.</translation>
     </message>
 </context>
 <context>

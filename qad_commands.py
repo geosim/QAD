@@ -66,6 +66,7 @@ from qad_break_cmd import QadBREAKCommandClass
 from qad_pedit_cmd import QadPEDITCommandClass
 from qad_fillet_cmd import QadFILLETCommandClass
 from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
+from qad_polygon_cmd import QadPOLYGONCommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -113,6 +114,7 @@ class QadCommandsClass():
       self.commands.append(QadMsg.translate("Command_list", "RACCORDO"))
       self.commands.append(QadMsg.translate("Command_list", "DIMLINEARE"))
       self.commands.append(QadMsg.translate("Command_list", "DIMALLINEATA"))
+      self.commands.append(QadMsg.translate("Command_list", "POLIGONO"))
    
       # carico alias dei comandi
       self.commandAliases = QadCommandAliasesClass()
@@ -204,6 +206,8 @@ class QadCommandsClass():
          return QadDIMLINEARCommandClass(self.plugIn)
       elif command == QadMsg.translate("Command_list", "DIMALLINEATA"):
          return QadDIMALIGNEDCommandClass(self.plugIn)      
+      elif command == QadMsg.translate("Command_list", "POLIGONO"):
+         return QadPOLYGONCommandClass(self.plugIn)      
       
       elif command == "MACRO_RUNNER":
          return QadMacroRunnerCommandClass(self.plugIn)
