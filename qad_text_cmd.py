@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-12-31
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -77,10 +77,10 @@ class QadTEXTCommandClass(QadCommandClass):
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       #qad_debug.breakPoint()
-      # quando si è in fase di richiesta distanza (altezza testo)
+      # quando si ï¿½ in fase di richiesta distanza (altezza testo)
       if self.step == 2:
          return self.GetDistClass.getPointMapTool()
-      # quando si è in fase di richiesta rotazione
+      # quando si ï¿½ in fase di richiesta rotazione
       elif self.step == 3:
          return self.GetAngleClass.getPointMapTool()
       else:
@@ -167,8 +167,8 @@ class QadTEXTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isTextLayer(currLayer) == False:
-         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non è di tipo testo.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
+         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non ï¿½ di tipo testo.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo ï¿½ un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
@@ -185,10 +185,10 @@ class QadTEXTCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

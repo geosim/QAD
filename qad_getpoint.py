@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -44,8 +44,8 @@ from qad_rubberband import createRubberBand
 #===============================================================================
 class QadGetPointSelectionModeEnum():
    POINT_SELECTION     = 0     # selezione di un punto
-   ENTITY_SELECTION    = 1     # selezione di una entità
-   ENTITYSET_SELECTION = 2     # selezione di un gruppo di entità   
+   ENTITY_SELECTION    = 1     # selezione di una entitï¿½
+   ENTITYSET_SELECTION = 2     # selezione di un gruppo di entitï¿½   
 
 
 #===============================================================================
@@ -61,7 +61,7 @@ class QadGetPointDrawModeEnum():
 # QadCursorTypeEnum class.
 #===============================================================================
 class QadCursorTypeEnum():
-   BOX   = 0     # un quadratino usato per selezionare entità
+   BOX   = 0     # un quadratino usato per selezionare entitï¿½
    CROSS = 1     # una croce usata per selezionare un punto
 
 
@@ -98,7 +98,7 @@ class QadGetPoint(QgsMapTool):
       self.__timer = QTimer()
       self.__stopTimer = True
       
-      # setto la modalità di selezione
+      # setto la modalitï¿½ di selezione
       self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
 
       self.setDrawMode(drawMode)
@@ -112,7 +112,7 @@ class QadGetPoint(QgsMapTool):
       self.setOrthoMode() # setto secondo le variabili d'ambiente
       self.setAutoSnap() # setto secondo le variabili d'ambiente
       
-      # leggo la tolleranza in unità di mappa
+      # leggo la tolleranza in unitï¿½ di mappa
       ToleranceInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) * self.canvas.mapRenderer().mapUnitsPerPixel()    
       self.__QadSnapper.setDistToExcludeNea(ToleranceInMapUnits)
       self.__QadSnapper.setToleranceExtParLines(ToleranceInMapUnits)
@@ -130,8 +130,8 @@ class QadGetPoint(QgsMapTool):
       self.point = None # punto selezionato dal click
       self.tmpPoint = None # punto selezionato dal movimento del mouse
       
-      self.entity = QadEntity() # entità selezionata dal click
-      self.tmpEntity = QadEntity() # entità selezionata dal movimento del mouse
+      self.entity = QadEntity() # entitï¿½ selezionata dal click
+      self.tmpEntity = QadEntity() # entitï¿½ selezionata dal movimento del mouse
       
       self.snapTypeOnSelection = None # snap attivo al momento del click
 
@@ -163,10 +163,10 @@ class QadGetPoint(QgsMapTool):
       if selectionMode == QadGetPointSelectionModeEnum.POINT_SELECTION:
          self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
-         self.entity.clear() # entità selezionata 
-         self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entità
+         self.entity.clear() # entitï¿½ selezionata 
+         self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entitï¿½
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
-         self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare un guppo di entità   
+         self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare un guppo di entitï¿½   
 
    def getSelectionMode(self):
       return self.__selectionMode
@@ -198,8 +198,8 @@ class QadGetPoint(QgsMapTool):
       self.point = None # punto selezionato dal click
       self.tmpPoint = None # punto selezionato dal movimento del mouse
       
-      self.entity.clear() # entità selezionata dal click
-      self.tmpEntity.clear() # entità selezionata dal movimento del mouse
+      self.entity.clear() # entitï¿½ selezionata dal click
+      self.tmpEntity.clear() # entitï¿½ selezionata dal movimento del mouse
       
       self.tmpShiftKey = False # tasto shift premuto durante il movimento del mouse      
       self.snapTypeOnSelection = None # snap attivo al momento del click
@@ -274,13 +274,13 @@ class QadGetPoint(QgsMapTool):
       
       #qad_debug.breakPoint()
       # se si vuole impostare lo snap perpendicolare e
-      # non è stato impostato un punto di partenza
+      # non ï¿½ stato impostato un punto di partenza
       if snapType == QadSnapTypeEnum.PER and self.__startPoint is None:
          # imposto lo snap perpendicolare differito
          self.setSnapType(QadSnapTypeEnum.PER_DEF)
          return
       # se si vuole impostare lo snap tangente e
-      # non è stato impostato un punto di partenza
+      # non ï¿½ stato impostato un punto di partenza
       if snapType == QadSnapTypeEnum.TAN and self.__startPoint is None:
          # imposto lo snap tangente differito
          self.setSnapType(QadSnapTypeEnum.TAN_DEF)
@@ -343,7 +343,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setCursorType(self, cursorType = None):
       if cursorType == QadCursorTypeEnum.BOX:
-         # un quadratino usato per selezionare entità
+         # un quadratino usato per selezionare entitï¿½
          self.__cursor = qad_utils.getEntSelCursor()
       elif cursorType == QadCursorTypeEnum.CROSS:
          # una croce usata per selezionare un punto
@@ -367,7 +367,7 @@ class QadGetPoint(QgsMapTool):
          if numberOfVertices == 2:
             # per un baco non ancora capito: se la linea ha solo 2 vertici e 
             # hanno la stessa x o y (linea orizzontale o verticale) 
-            # la linea non viene disegnata perciò sposto un pochino la x o la y         
+            # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y         
             adjustedPoint = qad_utils.getAdjustedRubberBandVertex(self.__RubberBand.getPoint(0, 0), point)                     
             self.__RubberBand.movePoint(numberOfVertices - 1, adjustedPoint)
          else:
@@ -398,7 +398,7 @@ class QadGetPoint(QgsMapTool):
          point = self.toMapCoordinates(self.canvas.mouseLastXY())
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
-         # la linea non viene disegnata perciò sposto un pochino la x o la y
+         # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y
          point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
                 
          self.__RubberBand.addPoint(point, True)
@@ -410,7 +410,7 @@ class QadGetPoint(QgsMapTool):
          point = self.toMapCoordinates(self.canvas.mouseLastXY())
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
-         # la linea non viene disegnata perciò sposto un pochino la x o la y
+         # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y
          point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
                 
          self.__RubberBand.addPoint(QgsPoint(startPoint.x(), point.y()), False)
@@ -425,7 +425,7 @@ class QadGetPoint(QgsMapTool):
          self.__QadSnapper.toggleIntExtLine(geom, point, crs)
       
    def canvasMoveEvent(self, event):
-      # se l'obiettivo è selezionare un'entità
+      # se l'obiettivo ï¿½ selezionare un'entitï¿½
       #qad_debug.breakPoint()   
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
          result = qad_utils.getEntSel(event.pos(), self, \
@@ -452,7 +452,7 @@ class QadGetPoint(QgsMapTool):
          geometry = feature.geometry()
          point = self.toLayerCoordinates(layer, event.pos())
 
-         # se è stata selezionata una geometria diversa da quella selezionata precedentemente
+         # se ï¿½ stata selezionata una geometria diversa da quella selezionata precedentemente
          if (self.__prevGeom is None) or not self.__prevGeom.equals(geometry):
             #qad_debug.breakPoint()
             self.__prevGeom = QgsGeometry(geometry)
@@ -469,7 +469,7 @@ class QadGetPoint(QgsMapTool):
       else:
          point = self.toMapCoordinates(event.pos())
          #qad_debug.breakPoint()
-         # se non è stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nel pickbox
+         # se non ï¿½ stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nel pickbox
          tmpGeometry = qad_utils.getGeomInPickBox(event.pos(),
                                                   self, \
                                                   self.tmpGeometries, \
@@ -479,14 +479,14 @@ class QadGetPoint(QgsMapTool):
                                                   self.__geometryTypesAccordingToSnapType[2], \
                                                   True)
          if tmpGeometry is not None:
-            # se è stata selezionata una geometria diversa da quella selezionata precedentemente
+            # se ï¿½ stata selezionata una geometria diversa da quella selezionata precedentemente
             if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
                self.__prevGeom = QgsGeometry(tmpGeometry)
                runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, point, self.canvas.mapRenderer().destinationCrs())
                self.__stopTimer = False
                self.__timer.singleShot(500, runToggleReferenceLines)
             #qad_debug.breakPoint()
-            self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perchè tmpGeometry può essere variato
+            self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perchï¿½ tmpGeometry puï¿½ essere variato
             oSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, point, \
                                                          self.canvas.mapRenderer().destinationCrs(), \
                                                          None, \
@@ -529,7 +529,7 @@ class QadGetPoint(QgsMapTool):
       
       if self.__RubberBand is not None:
          if oSnapPoint is None:
-            if self.__startPoint is not None: # c'è un punto di partenza
+            if self.__startPoint is not None: # c'ï¿½ un punto di partenza
                if self.__OrthoMode == 1: # orto attivato
                   self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
             
@@ -541,9 +541,9 @@ class QadGetPoint(QgsMapTool):
       # volevo mettere questo evento nel canvasReleaseEvent
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
-         # Se è stato premuto il tasto CTRL (o META)
+         # Se ï¿½ stato premuto il tasto CTRL (o META)
          if ((event.modifiers() & Qt.ControlModifier) or (event.modifiers() & Qt.MetaModifier)):
-            self.displayPopupMenu(event.pos())                  
+            self.displayPopupMenu(event.pos())
          else:
             # self.clear() da rivedere
             self.rightButton = True
@@ -564,14 +564,14 @@ class QadGetPoint(QgsMapTool):
       #self.plugIn.setStandardMapTool()
 
    def canvasReleaseEvent(self, event):
-      # se l'obiettivo è selezionare un gruppo di entità attraverso un rettangolo
+      # se l'obiettivo ï¿½ selezionare un gruppo di entitï¿½ attraverso un rettangolo
       #if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION and \
       #   self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
-      # se l'obiettivo è selezionare un rettangolo
+      # se l'obiettivo ï¿½ selezionare un rettangolo
       if self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
          if event.button() == Qt.LeftButton:
             p1 = self.__RubberBand.getPoint(0, 0)
-            # se il mouse è in una posizione diversa dal punto iniziale del rettangolo
+            # se il mouse ï¿½ in una posizione diversa dal punto iniziale del rettangolo
             if p1 != self.toMapCoordinates(event.pos()):
                self.__QadSnapper.removeReferenceLines()
                self.__QadSnapPointsDisplayManager.hide()
@@ -608,8 +608,8 @@ class QadGetPoint(QgsMapTool):
       self.point = None
       self.tmpPoint = None
 
-      self.entity = QadEntity() # entità selezionata dal click
-      self.tmpEntity = QadEntity() # entità selezionata dal movimento del mouse
+      self.entity = QadEntity() # entitï¿½ selezionata dal click
+      self.tmpEntity = QadEntity() # entitï¿½ selezionata dal movimento del mouse
       
       self.snapTypeOnSelection = None # snap attivo al momento del click
       
@@ -621,7 +621,7 @@ class QadGetPoint(QgsMapTool):
       self.showPointMapToolMarkers()
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          #qad_debug.breakPoint()
          self.hidePointMapToolMarkers()
       except:
@@ -844,3 +844,4 @@ class QadGetPoint(QgsMapTool):
       d = QadDSETTINGSDialog(self.plugIn)
       d.exec_()
       self.refreshSnapType()
+

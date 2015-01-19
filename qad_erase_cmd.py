@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-08-01
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -63,7 +63,7 @@ class QadERASECommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si è in fase di selezione entità
+      if self.step == 0: # quando si ï¿½ in fase di selezione entitï¿½
          return self.SSGetClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)

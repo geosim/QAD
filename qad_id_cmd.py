@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -58,10 +58,10 @@ class QadIDCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

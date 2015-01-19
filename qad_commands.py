@@ -9,8 +9,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -74,7 +74,7 @@ class QadCommandsClass():
    # quando si aggiunge un nuovo comando bisogna
    # 1) aggiungerlo nella lista commands nella funzione __init__ 
    # 2) aggiungere la sua chiamata nella funzione getCommandObj
-   # 3) se il comando può essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
+   # 3) se il comando puï¿½ essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
    #    e ricordarsi di inserire l'icona in resources.qrc e di ricompilare le risorse
    # 4) aggiungere funzione per l'avvio del comando "run<nome_comando>Command"
    
@@ -222,7 +222,7 @@ class QadCommandsClass():
    # run
    #============================================================================
    def run(self, command):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is not None:
          return
       
@@ -240,7 +240,7 @@ class QadCommandsClass():
    # runMacro
    #============================================================================
    def runMacro(self, args):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is not None:
          return
       
@@ -260,11 +260,11 @@ class QadCommandsClass():
    # continueCommandFromMapTool
    #============================================================================
    def continueCommandFromMapTool(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
       msg = None
-      # se è stato premuto il tasto destro del mouse valuto cosa è stato inserito nella finestra di testo
+      # se ï¿½ stato premuto il tasto destro del mouse valuto cosa ï¿½ stato inserito nella finestra di testo
       if self.actualCommand.getPointMapTool().rightButton == True:
          msg = self.actualCommand.getCurrMsgFromTxtWindow()
          if (msg is not None) and len(msg) > 0:
@@ -281,7 +281,7 @@ class QadCommandsClass():
    # continueCommandFromTextWindow
    #============================================================================
    def continueCommandFromTextWindow(self, msg):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
       if self.actualCommand.run(False, msg) == True: # comando terminato
@@ -292,7 +292,7 @@ class QadCommandsClass():
    # abortCommand
    #============================================================================
    def abortCommand(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
          self.plugIn.setStandardMapTool()               
@@ -317,13 +317,13 @@ class QadCommandsClass():
    # forceCommandMapToolSnapTypeOnce
    #============================================================================
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'è un maptool del comando attuale
+      # se non c'ï¿½ un maptool del comando attuale
       if self.actualCommand.getPointMapTool() is None:
          return
-      # se il maptool del comando attuale se non è attivo
+      # se il maptool del comando attuale se non ï¿½ attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
       self.actualCommand.getPointMapTool().forceSnapTypeOnce(snapType, snapParams)
@@ -333,13 +333,13 @@ class QadCommandsClass():
    # getCurrenPointFromCommandMapTool
    #============================================================================
    def getCurrenPointFromCommandMapTool(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return None
-      # se non c'è un maptool del comando attuale
+      # se non c'ï¿½ un maptool del comando attuale
       if self.actualCommand.PointMapTool is None:
          return None
-      # se il maptool del comando attuale se non è attivo
+      # se il maptool del comando attuale se non ï¿½ attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
       return self.actualCommand.PointMapTool.tmpPoint
@@ -349,10 +349,10 @@ class QadCommandsClass():
    # refreshCommandMapToolSnapType
    #============================================================================
    def refreshCommandMapToolSnapType(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'è un maptool attivo del comando attuale
+      # se non c'ï¿½ un maptool attivo del comando attuale
       if self.actualCommand.getPointMapTool() is None:
          return
       self.actualCommand.getPointMapTool().refreshSnapType()
@@ -362,10 +362,10 @@ class QadCommandsClass():
    # refreshCommandMapToolOrthoMode
    #============================================================================
    def refreshCommandMapToolOrthoMode(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'è un maptool attivo del comando attuale
+      # se non c'ï¿½ un maptool attivo del comando attuale
       if self.actualCommand.PointMapTool is None:
          return
       self.actualCommand.PointMapTool.refreshOrthoMode()
@@ -375,10 +375,10 @@ class QadCommandsClass():
    # refreshCommandMapToolAutoSnap
    #============================================================================
    def refreshCommandMapToolAutoSnap(self):
-      # se non c'è alcun comando attivo
+      # se non c'ï¿½ alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'è un maptool attivo del comando attuale
+      # se non c'ï¿½ un maptool attivo del comando attuale
       if self.actualCommand.PointMapTool is None:
          return
       self.actualCommand.PointMapTool.refreshAutoSnap()

@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-07-15
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -62,7 +62,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
       self.AddOnSelection = True # se = False significa remove
       self.points = []
       self.MPOLYGONCommand = None
-      self.SSGeomList = [] # lista di entità da stirare con geom di selezione
+      self.SSGeomList = [] # lista di entitï¿½ da stirare con geom di selezione
       self.basePt = QgsPoint()
    
    def __del__(self):
@@ -73,7 +73,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          SSGeom[0].deselectOnLayer()
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 2: # quando si è in fase di disegno linea
+      if self.step == 2: # quando si ï¿½ in fase di disegno linea
          return self.MPOLYGONCommand.getPointMapTool(drawMode)
       else:
          if (self.plugIn is not None):
@@ -101,7 +101,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          dimEntity = None
       
       if dimEntity is None:
-         # stiro la feature e la rimuovo da entitySet (è la prima)
+         # stiro la feature e la rimuovo da entitySet (ï¿½ la prima)
          stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
                                                       offSetX, offSetY, \
                                                       tolerance2ApproxCurve)
@@ -131,7 +131,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
    #============================================================================
    def stretchFeatures(self, newPt):
       #qad_debug.breakPoint()
-      # mi ricavo un unico QadEntitySet con le entità selezionate
+      # mi ricavo un unico QadEntitySet con le entitï¿½ selezionate
       entitySet = QadEntitySet()
       for SSGeom in self.SSGeomList:
          entitySet.unite(SSGeom[0])
@@ -285,10 +285,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = None
                else:
@@ -306,7 +306,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
                # Seleziona tutti gli oggetti che sono interni al poligono
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-               # che non verrà salvata su un layer
+               # che non verrï¿½ salvata su un layer
                self.MPOLYGONCommand.virtualCmd = True   
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 2
@@ -317,7 +317,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_SSGET", "Elimina"):
                # Passa al metodo Rimuovi: gli oggetti possono essere rimossi dal gruppo di selezione
                self.AddOnSelection = False                        
-         elif type(value) == QgsPoint: # se è stato selezionato un punto
+         elif type(value) == QgsPoint: # se ï¿½ stato selezionato un punto
             del self.points[:] # svuoto la lista
             self.points.append(value)
             # imposto il map tool
@@ -351,7 +351,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
                selSet = qad_utils.getSelSet("CP", self.getPointMapTool(), self.MPOLYGONCommand.vertices, \
                                                  None, True, True, True, \
                                                  True)
-               # se la selezione è avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
+               # se la selezione ï¿½ avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
                if self.AddOnSelection == False:
                   self.removeEntitySet(selSet)
                else:
@@ -362,7 +362,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
 
             # si appresta ad attendere la selezione degli oggetti da stirare
             self.waitForObjectSel()                                 
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di mpolygon                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di mpolygon                     
          return False
 
       #=========================================================================
@@ -371,12 +371,12 @@ class QadSTRETCHCommandClass(QadCommandClass):
          #qad_debug.breakPoint()
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_STRETCH", "La finestra non è stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_STRETCH", "La finestra non ï¿½ stata specificata correttamente."))
                   # si appresta ad attendere un punto
                   self.waitForPoint(QadMsg.translate("Command_STRETCH", "Specificare angolo opposto: "))
                   return False
@@ -402,7 +402,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             if self.AddOnSelection == False:
                self.removeEntitySet(selSet)
             else:
-               if shiftKey: # se la selezione è avvenuta con shift premuto
+               if shiftKey: # se la selezione ï¿½ avvenuta con shift premuto
                   self.addEntitySetGeom(selSet, QgsGeometry.fromRect(QgsRectangle(self.points[0], self.points[1])))
                else:
                   self.setEntitySetGeom(selSet, QgsGeometry.fromRect(QgsRectangle(self.points[0], self.points[1])))
@@ -415,10 +415,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   pass # opzione di default "spostamento"
                else:
@@ -444,7 +444,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
                          self.plugIn.lastOffsetPt, \
                          "", QadInputModeEnum.NONE)                                      
             self.step = 5      
-         elif type(value) == QgsPoint: # se è stato inserito il punto base
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il punto base
             self.basePt.set(value.x(), value.y())
 
             # imposto il map tool
@@ -466,10 +466,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -489,10 +489,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
       elif self.step == 6: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -506,7 +506,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          if value is None:
             newPt = QgsPoint(self.basePt.x() * 2, self.basePt.y() * 2)
             self.stretchFeatures(newPt)
-         elif type(value) == QgsPoint: # se è stato inserito lo spostamento con un punto
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito lo spostamento con un punto
             self.stretchFeatures(value)
             
          return True # fine comando

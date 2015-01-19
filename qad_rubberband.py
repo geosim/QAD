@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-12-12
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -40,7 +40,7 @@ from qad_entity import *
 def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = False):
    """
    la funzione crea un rubber band di tipo <geometryType> con le impostazioni di QGIS.
-   Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
+   Se <alternativeBand> = True, il rubber band sarï¿½ impostato con piï¿½ trasparenza e tipolinea punteggiato   
    """
    #qad_debug.breakPoint()
    settings = QSettings()

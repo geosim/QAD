@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-09-18
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -53,13 +53,13 @@ class QadMPOLYGONCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono è una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
+      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono ï¿½ una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un poligono
-      # che non verrà salvato su un layer
+      # che non verrï¿½ salvato su un layer
       self.virtualCmd = False
       self.PLINECommand = None
 
@@ -90,7 +90,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
          # asToolForMPolygon = True per rubberband tipo poligono
          self.PLINECommand = QadPLINECommandClass(self.plugIn, True)
          # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-         # che non verrà salvata su un layer
+         # che non verrï¿½ salvata su un layer
          self.PLINECommand.virtualCmd = True   
          self.PLINECommand.run(msgMapTool, msg)
          self.step = 1
@@ -105,7 +105,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
             if verticesLen > 3:
                self.vertices = self.PLINECommand.vertices[:] # copio la lista
                firstVertex = self.vertices[0]
-               # se l'ultimo vertice non è uguale al primo
+               # se l'ultimo vertice non ï¿½ uguale al primo
                if self.vertices[verticesLen - 1] != firstVertex:
                   # aggiungo un vertice con le stesse coordinate del primo
                   self.vertices.append(firstVertex)

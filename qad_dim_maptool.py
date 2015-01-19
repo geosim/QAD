@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -55,7 +55,7 @@ class Qad_dim_maptool_ModeEnum():
    # noto i punti di quotatura si richiede la posizione della linea di quota allineata
    FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS = 7
 
-   # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
+   # noto il primo punto di estremitï¿½ diam si richiede il secondo punto di estremitï¿½ diam
    FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT = 8
    # noto niente si richiede l'entita del primo punto di tangenza
    NONE_KNOWN_ASK_FOR_FIRST_TAN = 9
@@ -121,10 +121,10 @@ class Qad_dim_maptool(QadGetPoint):
       sxOfVerticalLine1 = True if qad_utils.leftOfLine(LinePosPt, verticalLine1[0], verticalLine1[1]) < 0 else False
       sxOfVerticalLine2 = True if qad_utils.leftOfLine(LinePosPt, verticalLine2[0], verticalLine2[1]) < 0 else False
       
-      # se LinePosPt è tra le linee di limite orizzontale e non è tra le linee di limite verticale      
+      # se LinePosPt ï¿½ tra le linee di limite orizzontale e non ï¿½ tra le linee di limite verticale      
       if sxOfHorizLine1 != sxOfHorizLine2 and sxOfVerticalLine1 == sxOfVerticalLine2:
          self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
-      # se LinePosPt non è tra le linee di limite orizzontale ed è tra le linee di limite verticale      
+      # se LinePosPt non ï¿½ tra le linee di limite orizzontale ed ï¿½ tra le linee di limite verticale      
       elif sxOfHorizLine1 == sxOfHorizLine2 and sxOfVerticalLine1 != sxOfVerticalLine2:
          self.preferredAlignment = QadDimStyleAlignmentEnum.VERTICAL
       
@@ -151,7 +151,7 @@ class Qad_dim_maptool(QadGetPoint):
       pt2 = qad_utils.getPolarPointByPtAngle(pt1, self.forcedDimLineRot, circle.radius)
       verticalLine2 = [pt1, pt2]
       
-      # se non è stato impostato un allineamento forzato, lo calcolo in automatico
+      # se non ï¿½ stato impostato un allineamento forzato, lo calcolo in automatico
       if self.forcedDimLineAlignment is None:         
          self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
       else:
@@ -169,7 +169,7 @@ class Qad_dim_maptool(QadGetPoint):
    # setLinearDimLineAlignmentOnDimPts
    #============================================================================
    def setLinearDimLineAlignmentOnDimPts(self, LinePosPt):      
-      # se non è stato impostato un allineamento forzato, lo calcolo in automatico
+      # se non ï¿½ stato impostato un allineamento forzato, lo calcolo in automatico
       if self.forcedDimLineAlignment is None:         
          pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt1, self.forcedDimLineRot + math.pi / 2, 1)
          horizLine1 = [self.dimPt1, pt2]
@@ -237,7 +237,7 @@ class Qad_dim_maptool(QadGetPoint):
          self.__rubberBand.show()
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          if self.__rubberBand is not None:
             self.__rubberBand.hide()

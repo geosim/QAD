@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -50,7 +50,7 @@ class Qad_line_maptool_ModeEnum():
    FIRST_PT_KNOWN_ASK_FOR_SECOND_PT = 2      
    # nota l'entita del primo punto di tangenza si richiede il secondo punto
    FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT = 3
-   # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
+   # nota l'entita del primo punto di perpendicolaritï¿½ si richiede il secondo punto
    FIRST_PER_KNOWN_ASK_FOR_SECOND_PT = 4
    
 
@@ -115,7 +115,7 @@ class Qad_line_maptool(QadGetPoint):
             if points is not None:
                line = [points[0], self.tmpPoint]
                break
-      # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
+      # nota l'entita del primo punto di perpendicolaritï¿½ si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
          snapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
@@ -141,7 +141,7 @@ class Qad_line_maptool(QadGetPoint):
          self.__lineRubberBand.show()
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          if self.__lineRubberBand is not None:
             self.__lineRubberBand.hide()
@@ -161,6 +161,6 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di tangenza si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE) 
-      # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
+      # nota l'entita del primo punto di perpendicolaritï¿½ si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE) 

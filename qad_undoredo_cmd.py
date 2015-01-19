@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -79,10 +79,10 @@ class QadUNDOCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   self.plugIn.undoEditCommand()
                   return True # fine comando
@@ -99,16 +99,16 @@ class QadUNDOCommandClass(QadCommandClass):
                self.plugIn.insertBeginGroup()
             elif value == QadMsg.translate("Command_UNDO", "Fine"):
                if self.plugIn.insertEndGroup() == False:
-                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNessun gruppo è rimasto aperto."))                  
+                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNessun gruppo ï¿½ rimasto aperto."))                  
             elif value == QadMsg.translate("Command_UNDO", "Segno"):
                if self.plugIn.insertBookmark() == False:
-                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNon è possibile inserire un segno dentro un gruppo."))                  
+                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNon ï¿½ possibile inserire un segno dentro un gruppo."))                  
             elif value == QadMsg.translate("Command_UNDO", "INDietro"):
                if self.plugIn.getPrevBookmarkPos() == -1: # non ci sono bookmark precedenti
-                  keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
+                  keyWords = QadMsg.translate("QAD", "Sï¿½") + "/" + \
                              QadMsg.translate("QAD", "No")                                                 
-                  default = QadMsg.translate("QAD", "Sì")
-                  prompt = QadMsg.translate("Command_UNDO", "Questa operazione annullerà tutto. OK ? <{0}>: ").format(default)
+                  default = QadMsg.translate("QAD", "Sï¿½")
+                  prompt = QadMsg.translate("Command_UNDO", "Questa operazione annullerï¿½ tutto. OK ? <{0}>: ").format(default)
                   
                   # si appresta ad attendere enter o una parola chiave         
                   # msg, inputType, default, keyWords, nessun controllo
@@ -130,13 +130,13 @@ class QadUNDOCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   self.plugIn.undoUntilBookmark()
-                  self.showMsg(QadMsg.translate("Command_UNDO", "È stato annullato tutto."))
+                  self.showMsg(QadMsg.translate("Command_UNDO", "ï¿½ stato annullato tutto."))
                   return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -147,8 +147,8 @@ class QadUNDOCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì"):
-               self.showMsg(QadMsg.translate("Command_UNDO", "È stato annullato tutto."))
+            if value == QadMsg.translate("QAD", "Sï¿½"):
+               self.showMsg(QadMsg.translate("Command_UNDO", "ï¿½ stato annullato tutto."))
                self.plugIn.undoUntilBookmark()
 
          return True # fine comando

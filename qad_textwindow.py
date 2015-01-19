@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-09-21
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -134,9 +134,9 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.edit.showMsg(msg, displayPromptAfterMsg)
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
-                    default = None, keyWords = "", inputMode = QadInputModeEnum.NOT_NULL):
-      # il valore di default del parametro di una funzione non può essere una traduzione
-      # perchè lupdate.exe non lo riesce ad interpretare
+                    default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):
+      # il valore di default del parametro di una funzione non puï¿½ essere una traduzione
+      # perchï¿½ lupdate.exe non lo riesce ad interpretare
       self.edit.showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
    def showErr(self, err):
@@ -359,7 +359,7 @@ class QadEdit(QTextEdit):
          pos = lastBlock.position() + i
          while i < final:
             if txt[i] != "/":
-               # se c'è un'opzione corrente deve essere evidenziata in modo diverso
+               # se c'ï¿½ un'opzione corrente deve essere evidenziata in modo diverso
                if self.currentCmdOptionPos is not None and \
                   pos >= self.currentCmdOptionPos.initialPos and \
                   pos <= self.currentCmdOptionPos.finalPos :                  
@@ -464,9 +464,9 @@ class QadEdit(QTextEdit):
          return ""
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
-                    default = None, keyWords = "", inputMode = QadInputModeEnum.NOT_NULL):      
-      # il valore di default del parametro di una funzione non può essere una traduzione
-      # perchè lupdate.exe non lo riesce ad interpretare
+                    default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):      
+      # il valore di default del parametro di una funzione non puï¿½ essere una traduzione
+      # perchï¿½ lupdate.exe non lo riesce ad interpretare
       if inputMsg is None: 
          inputMsg = QadMsg.translate("QAD", "Comando: ")
 
@@ -546,12 +546,12 @@ class QadEdit(QTextEdit):
                self.showEvaluateMsg(cmdOptionPos.name)
                            
    def updateHistory(self, command):
-      # Se command è una lista di comandi
+      # Se command ï¿½ una lista di comandi
       if isinstance(command, list):
          for line in command:
             self.updateHistory(line)
       elif not command == "":
-         # se lo storico è vuoto o se il comando da inserire è diverso dall'ultimo
+         # se lo storico ï¿½ vuoto o se il comando da inserire ï¿½ diverso dall'ultimo
          if len(self.history) <= 0 or command != self.history[-1]: 
             self.history.append(command)
             
@@ -566,28 +566,28 @@ class QadEdit(QTextEdit):
 
       #QMessageBox.warning(self.plugIn.TextWindow, "titolo" , 'msg')      
 
-      # Se è stato premuto il tasto CTRL (o META) + 9
+      # Se ï¿½ stato premuto il tasto CTRL (o META) + 9
       if ((e.modifiers() & Qt.ControlModifier) or (e.modifiers() & Qt.MetaModifier)) and \
          e.key() == Qt.Key_9:
          # Accendo o spengo la finestra di testo
          self.parent.toggleShow()
          return
 
-      # Se è stato premuto il tasto F10
+      # Se ï¿½ stato premuto il tasto F10
       if e.key() == Qt.Key_F10:
          # Attivo o disattivo lo snap
          self.parent.togglePolarMode()
          return
 
-      # Se è stato premuto il tasto F3
+      # Se ï¿½ stato premuto il tasto F3
       if e.key() == Qt.Key_F3:
          # Attivo o disattivo lo snap
          self.parent.toggleOsMode()
          return
 
-      # Se è stato premuto il tasto F8
+      # Se ï¿½ stato premuto il tasto F8
       if e.key() == Qt.Key_F8:
-         # Attivo o disattivo la modalità ortogonale
+         # Attivo o disattivo la modalitï¿½ ortogonale
          self.parent.toggleOrthoMode()
          return
       
@@ -675,7 +675,7 @@ class QadEdit(QTextEdit):
 
    def getCurrMsg(self):
       """
-      restituisce il messaggio già presente nella finestra di testo
+      restituisce il messaggio giï¿½ presente nella finestra di testo
       """
       cursor = self.textCursor()
       prevPos = cursor.position()
@@ -695,11 +695,11 @@ class QadEdit(QTextEdit):
          self.inputType & QadInputTypeEnum.POINT3D:
          if self.inputType & QadInputTypeEnum.KEYWORDS and \
             (self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE):
-            return QadMsg.translate("QAD", "\nÈ richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nï¿½ richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.KEYWORDS:
-            return QadMsg.translate("QAD", "\nÈ richiesto un punto o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nï¿½ richiesto un punto o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-            return QadMsg.translate("QAD", "\nÈ richiesto un punto o un numero reale.\n")
+            return QadMsg.translate("QAD", "\nï¿½ richiesto un punto o un numero reale.\n")
          else:
             return QadMsg.translate("QAD", "\nPunto non valido.\n")         
       elif self.inputType & QadInputTypeEnum.KEYWORDS:
@@ -800,7 +800,7 @@ class QadEdit(QTextEdit):
       if self.inputType & QadInputTypeEnum.POINT2D:
          snapType = qad_utils.str2snapTypeEnum(cmd)
          if snapType != QadSnapTypeEnum.NONE:
-            # se è stato forzato uno snap
+            # se ï¿½ stato forzato uno snap
             snapParams = qad_utils.str2snapParams(cmd)
             self.parent.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
             self.showMsg(QadMsg.translate("QAD", "\n(impostato snap temporaneo)\n"), True) # ripeti il prompt
@@ -892,7 +892,7 @@ class QadEdit(QTextEdit):
             num = None
             
          if num is not None:
-            if self.inputType & QadInputTypeEnum.ANGLE: # se è un angolo in gradi
+            if self.inputType & QadInputTypeEnum.ANGLE: # se ï¿½ un angolo in gradi
                # i gradi vanno convertiti in radianti
                num = qad_utils.toRadians(num)            
             self.parent.continueCommand(float(num))         
@@ -921,7 +921,7 @@ class QadEdit(QTextEdit):
       fm = QFontMetrics(self.currentFont())
       pixelsWidth = fm.width(QadMsg.translate("QAD", "Comando: "))
       pixelsHeight = fm.height()
-      # + 8 perchè la QTextEdit ha un offset verticale sopra e sotto il testo
+      # + 8 perchï¿½ la QTextEdit ha un offset verticale sopra e sotto il testo
       return max(self.document().size().height(), pixelsHeight + 8)
       
    def onTextChanged(self):

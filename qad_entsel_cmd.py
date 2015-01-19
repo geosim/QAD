@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-09-18
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -113,10 +113,10 @@ class QadEntSelClass(QadCommandClass):
          entity = None
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -134,7 +134,7 @@ class QadEntSelClass(QadCommandClass):
          
          if type(value) == unicode:
             if value == QadMsg.translate("Command_ENTSEL", "Ultimo"):
-               # Seleziona l'ultima entità inserita
+               # Seleziona l'ultima entitï¿½ inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:
                   # controllo sul layer
@@ -149,7 +149,7 @@ class QadEntSelClass(QadCommandClass):
                            self.entity.selectOnLayer()
          elif type(value) == QgsPoint:
             if entity is None:
-               # cerco se ci sono entità nel punto indicato
+               # cerco se ci sono entitï¿½ nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
                                             self.getLayersToCheck())

@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -42,7 +42,7 @@ from qad_rubberband import QadRubberBand
 # Qad_pedit_maptool_ModeEnum class.
 #===============================================================================
 class Qad_pedit_maptool_ModeEnum():
-   # si richiede la selezione di un'entità
+   # si richiede la selezione di un'entitï¿½
    ASK_FOR_ENTITY_SEL = 1     
    # non si richiede niente
    NONE = 2     
@@ -54,7 +54,7 @@ class Qad_pedit_maptool_ModeEnum():
    ASK_FOR_NEW_VERTEX = 5   
    # si richiede la nuova posizione di un vertice da spostare
    ASK_FOR_MOVE_VERTEX = 6     
-   # si richiede la posizione più vicina ad un vertice
+   # si richiede la posizione piï¿½ vicina ad un vertice
    ASK_FOR_VERTEX = 7     
 
 
@@ -151,7 +151,7 @@ class Qad_pedit_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:
@@ -159,7 +159,7 @@ class Qad_pedit_maptool(QadGetPoint):
 
    def setMode(self, mode):
       self.mode = mode
-      # si richiede la selezione di un'entità
+      # si richiede la selezione di un'entitï¿½
       if self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_ENTITY_SEL:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
          
@@ -179,7 +179,7 @@ class Qad_pedit_maptool(QadGetPoint):
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
       # si richiede il primo punto per calcolo distanza di approssimazione
-      # si richiede la posizione più vicina ad un vertice
+      # si richiede la posizione piï¿½ vicina ad un vertice
       elif self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_FIRST_TOLERANCE_PT:
          self.onlyEditableLayers = False
          self.checkPointLayer = True
@@ -201,7 +201,7 @@ class Qad_pedit_maptool(QadGetPoint):
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
          self.setStartPoint(self.firstPt)
-      # si richiede la posizione più vicina ad un vertice
+      # si richiede la posizione piï¿½ vicina ad un vertice
       elif self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX:
          self.setSnapType(QadSnapTypeEnum.DISABLE)
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   

@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-04-17
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,10 +22,12 @@
  ***************************************************************************/
 """
 
-DEBUG = True # False # True
+DEBUG = False # False # True
 
 if DEBUG == True:
    import os.path
+
+   import sys
    
    path = "C:/software/python/eclipse-SDK-4.2.2-win32/eclipse/plugins/org.python.pydev_2.7.3.2013031601/pysrc/"
    if os.path.exists(path):

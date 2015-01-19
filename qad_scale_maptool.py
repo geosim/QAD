@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-09-27
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -103,7 +103,7 @@ class Qad_scale_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # scalo la feature e la rimuovo da entitySet (è la prima)
+         # scalo la feature e la rimuovo da entitySet (ï¿½ la prima)
          f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
          self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
          del layerEntitySet.featureIds[0]
@@ -169,7 +169,7 @@ class Qad_scale_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

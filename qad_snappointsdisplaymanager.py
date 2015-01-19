@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -74,7 +74,7 @@ class QadSnapPointsDisplayManager():
 
    def setStartPoint(self, point):
       """
-      Setta il punto di partenza per la modalità di snap PAR
+      Setta il punto di partenza per la modalitï¿½ di snap PAR
       """
       self.__startPoint = point
 
@@ -138,11 +138,11 @@ class QadSnapPointsDisplayManager():
       Visualizza i punti di snap, riceve un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       e
-      lista delle linee da estendere (ogni elemento è una lista di 2 punti = linea) per la modalità di snap EXT
-      lista degli archi da estendere (ogni elemento è un arco) per la modalità di snap EXT
-      lista delle linee per modo parallelo (ogni elemento è una lista di 2 punti = linea) per la modalità di snap PAR
-      linea per intersezione su estensione (lista di 2 punti = linea) per la modalità di snap EXT_INT
-      arco per intersezione su estensione per la modalità di snap EXT_INT
+      lista delle linee da estendere (ogni elemento ï¿½ una lista di 2 punti = linea) per la modalitï¿½ di snap EXT
+      lista degli archi da estendere (ogni elemento ï¿½ un arco) per la modalitï¿½ di snap EXT
+      lista delle linee per modo parallelo (ogni elemento ï¿½ una lista di 2 punti = linea) per la modalitï¿½ di snap PAR
+      linea per intersezione su estensione (lista di 2 punti = linea) per la modalitï¿½ di snap EXT_INT
+      arco per intersezione su estensione per la modalitï¿½ di snap EXT_INT
       """
       #qad_debug.breakPoint()
       self.hide()
@@ -162,9 +162,9 @@ class QadSnapPointsDisplayManager():
             if snapType == QadSnapTypeEnum.EXT and (extLines is not None):
                for extLine in extLines:
                   dummyPt = qad_utils.getPerpendicularPointOnInfinityLine(extLine[0], extLine[1], point)
-                  # se dummyPt e point sono così vicini da essere considerati uguali
+                  # se dummyPt e point sono cosï¿½ vicini da essere considerati uguali
                   if qad_utils.ptNear(point, dummyPt):
-                     # prendo il vertice più vicino a point
+                     # prendo il vertice piï¿½ vicino a point
                      if qad_utils.getDistance(point, extLine[0]) < qad_utils.getDistance(point, extLine[1]):
                         dummyPt = extLine[0]
                      else:
@@ -172,7 +172,7 @@ class QadSnapPointsDisplayManager():
                                              
                      # per un baco non ancora capito: se la linea ha solo 2 vertici e 
                      # hanno la stessa x o y (linea orizzontale o verticale) 
-                     # la linea non viene disegnata perciò sposto un pochino la x o la y         
+                     # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y         
                      dummyPt = qad_utils.getAdjustedRubberBandVertex(point, dummyPt)                     
                      # disegno la linea di estensione
                      self.__lineMarkers.append(self.getLineMarker(point, dummyPt))
@@ -247,7 +247,7 @@ class QadSnapPointsDisplayManager():
                if (p1 is not None) and (p2 is not None):                    
                   # per un baco non ancora capito: se la linea ha solo 2 vertici e 
                   # hanno la stessa x o y (linea orizzontale o verticale) 
-                  # la linea non viene disegnata perciò sposto un pochino la x o la y         
+                  # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y         
                   p2 = qad_utils.getAdjustedRubberBandVertex(p1, p2)                                          
                   # disegno la linea parallela
                   self.__lineMarkers.append(self.getLineMarker(p1, p2))                  
@@ -302,7 +302,7 @@ class QadSnapPointsDisplayManager():
                   p2 = QgsPoint(x2, y2)                     
                   # per un baco non ancora capito: se la linea ha solo 2 vertici e 
                   # hanno la stessa x o y (linea orizzontale o verticale) 
-                  # la linea non viene disegnata perciò sposto un pochino la x o la y         
+                  # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y         
                   p2 = qad_utils.getAdjustedRubberBandVertex(p1, p2)                                          
                   # disegno la linea
                   self.__lineMarkers.append(self.getLineMarker(p1, p2))                  

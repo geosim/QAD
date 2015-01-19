@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-01-09
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -68,7 +68,7 @@ class QadBREAKCommandClass(QadCommandClass):
          del self.EntSelClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 1: # quando si è in fase di selezione entità
+      if self.step == 1: # quando si ï¿½ in fase di selezione entitï¿½
          return self.EntSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
@@ -191,7 +191,7 @@ class QadBREAKCommandClass(QadCommandClass):
                prompt = QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione o [{0}]: ").format(keyWords)
                
                self.step = 2
-               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di selezione entitï¿½                     
                # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
@@ -209,10 +209,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   pass # opzione di default "secondo punto"
                else:
@@ -227,7 +227,7 @@ class QadBREAKCommandClass(QadCommandClass):
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_BREAK", "Specificare primo punto di interruzione: "))            
             self.step = 3
-         elif type(value) == QgsPoint: # se è stato inserito il secondo punto
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il secondo punto
             self.secondPt = value
             self.plugIn.setLastPoint(self.secondPt)
             self.breakFeatures()            
@@ -240,10 +240,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -268,10 +268,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

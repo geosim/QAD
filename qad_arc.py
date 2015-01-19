@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -99,7 +99,7 @@ class QadArc():
                                               self.startAngle,
                                               self.radius)
    def setStartAngleByPt(self, pt):
-      # da usare per modificare un arco già definito
+      # da usare per modificare un arco giï¿½ definito
       angle = qad_utils.getAngleBy2Pts(self.center, pt)
       if angle == self.endAngle:
          return False
@@ -112,7 +112,7 @@ class QadArc():
                                               self.endAngle,
                                               self.radius)
    def setEndAngleByPt(self, pt):
-      # da usare per modificare un arco già definito
+      # da usare per modificare un arco giï¿½ definito
       angle = qad_utils.getAngleBy2Pts(self.center, pt)
       if angle == self.startAngle:
          return False
@@ -297,14 +297,14 @@ class QadArc():
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
-      if dummy <= 0: # se la tolleranza è troppo bassa rispetto al raggio
+      if dummy <= 0: # se la tolleranza ï¿½ troppo bassa rispetto al raggio
          SegmentLen = self.radius
       else:
          dummy      = (self.radius * self.radius) - (dummy * dummy)
          SegmentLen = math.sqrt(dummy) # radice quadrata
          SegmentLen = SegmentLen * 2
       
-      if SegmentLen == 0: # se la tolleranza è troppo bassa la lunghezza del segmento diventa zero  
+      if SegmentLen == 0: # se la tolleranza ï¿½ troppo bassa la lunghezza del segmento diventa zero  
          return None
          
       # calcolo quanti segmenti ci vogliono (non meno di _atLeastNSegment)
@@ -564,7 +564,7 @@ class QadArc():
       """
       setta le caratteristiche del primo arco incontrato nella lista di punti
       partendo dalla posizione startVertex (0-indexed)
-      ritorna la posizione nella lista del punto iniziale e finale se è stato trovato un arco
+      ritorna la posizione nella lista del punto iniziale e finale se ï¿½ stato trovato un arco
       altrimenti None
       """     
       if atLeastNSegment is None:
@@ -573,7 +573,7 @@ class QadArc():
          _atLeastNSegment = atLeastNSegment
       
       totPoints = len(points)
-      # perchè sia un arco ci vogliono almeno _atLeastNSegment segmenti
+      # perchï¿½ sia un arco ci vogliono almeno _atLeastNSegment segmenti
       if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 
@@ -614,20 +614,20 @@ class QadArc():
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
                   # calcolo il verso dell'arco e l'angolo dell'arco                 
-                  # se un punto intermedio dell'arco è a sinistra del
-                  # segmento che unisce i due punti allora il verso è antiorario
+                  # se un punto intermedio dell'arco ï¿½ a sinistra del
+                  # segmento che unisce i due punti allora il verso ï¿½ antiorario
                   startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
                   angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                  
-         else: # e sono già stati valutati almeno 2 segmenti
+         else: # e sono giï¿½ stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
             # calcolo il verso dell'arco e l'angolo                 
             clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
             angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
                        
-            # se la distanza è così vicina a quella del raggio
+            # se la distanza ï¿½ cosï¿½ vicina a quella del raggio
             # il verso dell'arco deve essere quello iniziale
-            # l'angolo dell'arco non può essere >= 360 gradi
+            # l'angolo dell'arco non puï¿½ essere >= 360 gradi
             if qad_utils.doubleNear(radius, dist, maxDifference) and \
                startClockWise == clockWise and \
                angle < 2 * math.pi:                              
@@ -636,7 +636,7 @@ class QadArc():
                #qad_debug.breakPoint()
                # se sono stati trovati un numero sufficiente di segmenti successivi
                if nSegment >= _atLeastNSegment:
-                  # se è un angolo giro e il primo punto = ultimo punto allora points è un cerchio
+                  # se ï¿½ un angolo giro e il primo punto = ultimo punto allora points ï¿½ un cerchio
                   if qad_utils.doubleNear(angle, 2 * math.pi) and points[0] == points[-1]: 
                      return None
                   break
@@ -652,12 +652,12 @@ class QadArc():
       # se sono stati trovati un numero sufficiente di segmenti successivi
       if nSegment >= _atLeastNSegment:
          nEndVertex = nStartVertex + nSegment
-         # se il punto iniziale e quello finale non coincidono è un arco         
+         # se il punto iniziale e quello finale non coincidono ï¿½ un arco         
          if points[nStartVertex] != points[nEndVertex]:
             self.center = center
             self.radius = radius
                            
-            # se il verso è orario
+            # se il verso ï¿½ orario
             if startClockWise:
                # inverto l'angolo iniziale con quello finale
                self.endAngle = qad_utils.getAngleBy2Pts(center, points[nStartVertex])
@@ -749,7 +749,7 @@ class QadArcList():
    #============================================================================
    def arcAt(self, afterVertex):
       """
-      cerca se esiste un arco al segmento il cui secondo vertice è <afterVertex>
+      cerca se esiste un arco al segmento il cui secondo vertice ï¿½ <afterVertex>
       restituisce una lista con <arco>, <lista con indice del punto iniziale e finale>
       oppure None se arco non trovato
       """

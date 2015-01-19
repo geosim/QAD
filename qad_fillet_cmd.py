@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-01-30
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -73,7 +73,7 @@ class QadFILLETCommandClass(QadCommandClass):
       self.partAt2 = 0
       self.pointAt2 = None
 
-      self.filletMode = plugIn.filletMode # modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+      self.filletMode = plugIn.filletMode # modalitï¿½ di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       self.radius = QadVariables.get(QadMsg.translate("Environment variables", "FILLETRAD"))
       self.multi = False
       self.nOperationsToUndo = 0
@@ -87,7 +87,7 @@ class QadFILLETCommandClass(QadCommandClass):
       self.entity2.deselectOnLayer()
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      # quando si è in fase di richiesta distanza
+      # quando si ï¿½ in fase di richiesta distanza
       if self.step == 3 or self.step == 5 or self.step == 7:
          return self.GetDistClass.getPointMapTool()
       elif (self.plugIn is not None):
@@ -134,8 +134,8 @@ class QadFILLETCommandClass(QadCommandClass):
          e.selectOnLayer(False) # non incrementale        
          
          # la funzione ritorna una lista con (<minima distanza al quadrato>,
-         #                                    <punto più vicino>
-         #                                    <indice della parte più vicina>       
+         #                                    <punto piï¿½ vicino>
+         #                                    <indice della parte piï¿½ vicina>       
          #                                    <"a sinistra di">)
          dummy = l.closestPartWithContext(transformedPt)
          
@@ -203,7 +203,7 @@ class QadFILLETCommandClass(QadCommandClass):
          transformedLinearObjectList2 = self.linearObjectList2.transform(coordTransform)
          transformedPointAt2 = coordTransform.transform(self.pointAt2)         
       else:
-         # stessa entità e stessa parte
+         # stessa entitï¿½ e stessa parte
          if self.entity1.layer.id() == self.entity2.layer.id() and \
             self.entity1.featureId == self.entity2.featureId and \
             self.partAt1 == self.partAt2:
@@ -351,12 +351,12 @@ class QadFILLETCommandClass(QadCommandClass):
          default = QadMsg.translate("Command_FILLET", "Taglia-estendi")
       elif self.filletMode == 2:
          default = QadMsg.translate("Command_FILLET", "Non taglia-estendi")                 
-      prompt = QadMsg.translate("Command_FILLET", "Specificare modalità di taglio [{0}] <{1}>: ").format(keyWords, default)
+      prompt = QadMsg.translate("Command_FILLET", "Specificare modalitï¿½ di taglio [{0}] <{1}>: ").format(keyWords, default)
 
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, default, \
-                   keyWords, QadInputModeEnum.NOT_NULL)      
+                   keyWords)      
 
 
    #============================================================================
@@ -389,9 +389,9 @@ class QadFILLETCommandClass(QadCommandClass):
       if self.step == 0:
          CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
          if self.filletMode == 1:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalità = Taglia-estendi")
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalitï¿½ = Taglia-estendi")
          else:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalità = Non taglia-estendi")
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalitï¿½ = Non taglia-estendi")
                
          CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", ", Raggio = ") + str(self.radius)   
          self.showMsg(CurrSettingsMsg)         
@@ -404,10 +404,10 @@ class QadFILLETCommandClass(QadCommandClass):
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -424,7 +424,7 @@ class QadFILLETCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando è stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "Il comando ï¿½ stato completamente annullato."))                  
                   
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
             elif value == QadMsg.translate("Command_FILLET", "Polilinea"):
@@ -445,7 +445,7 @@ class QadFILLETCommandClass(QadCommandClass):
                self.multi = True
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
                            
-         elif type(value) == QgsPoint: # se è stato selezionato un punto
+         elif type(value) == QgsPoint: # se ï¿½ stato selezionato un punto
             self.entity1.clear()
             self.linearObjectList1.removeAll()            
             #qad_debug.breakPoint()
@@ -455,7 +455,7 @@ class QadFILLETCommandClass(QadCommandClass):
                   self.waitForSecondEntSel() # si appresta ad attendere la selezione del secondo oggetto
                   return False
             else:
-               # cerco se ci sono entità nel punto indicato considerando
+               # cerco se ci sono entitï¿½ nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
                for layer in self.plugIn.canvas.layers():
@@ -484,10 +484,10 @@ class QadFILLETCommandClass(QadCommandClass):
       elif self.step == 2:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -510,7 +510,7 @@ class QadFILLETCommandClass(QadCommandClass):
                self.step = 5
                self.GetDistClass.run(msgMapTool, msg)                           
                return False
-         elif type(value) == QgsPoint: # se è stato selezionato un punto
+         elif type(value) == QgsPoint: # se ï¿½ stato selezionato un punto
             self.entity1.clear()
             self.linearObjectList1.removeAll()            
             #qad_debug.breakPoint()
@@ -523,7 +523,7 @@ class QadFILLETCommandClass(QadCommandClass):
                   else:
                      return True
             else:
-               # cerco se ci sono entità nel punto indicato considerando
+               # cerco se ci sono entitï¿½ nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
                for layer in self.plugIn.canvas.layers():
@@ -559,7 +559,7 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()
             self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di distanza                     
          return False # fine comando
       
       #=========================================================================
@@ -567,10 +567,10 @@ class QadFILLETCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.filletMode
                else:
@@ -600,7 +600,7 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()
             self.WaitForPolyline()
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di distanza                     
          return False # fine comando
       
       #=========================================================================
@@ -608,10 +608,10 @@ class QadFILLETCommandClass(QadCommandClass):
       elif self.step == 6:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -637,7 +637,7 @@ class QadFILLETCommandClass(QadCommandClass):
                self.GetDistClass.run(msgMapTool, msg)
                return False
                            
-         elif type(value) == QgsPoint: # se è stato selezionato un punto
+         elif type(value) == QgsPoint: # se ï¿½ stato selezionato un punto
             self.entity2.clear()
             self.linearObjectList2.removeAll()            
             #qad_debug.breakPoint()
@@ -648,7 +648,7 @@ class QadFILLETCommandClass(QadCommandClass):
                      dummyRadius = self.radius
                      self.radius = 0
                      dummyFilletMode = self.filletMode
-                     self.filletMode = 1 # modalità di raccordo; 1=Taglia-estendi
+                     self.filletMode = 1 # modalitï¿½ di raccordo; 1=Taglia-estendi
                      result = self.fillet()
                      self.radius = dummyRadius
                      self.filletMode = dummyFilletMode
@@ -665,7 +665,7 @@ class QadFILLETCommandClass(QadCommandClass):
                   else:
                      return True
             else:
-               # cerco se ci sono entità nel punto indicato considerando
+               # cerco se ci sono entitï¿½ nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
                for layer in self.plugIn.canvas.layers():
@@ -705,5 +705,5 @@ class QadFILLETCommandClass(QadCommandClass):
                QadVariables.set(QadMsg.translate("Environment variables", "FILLETRAD"), self.radius)
                QadVariables.save()      
             self.waitForSecondEntSel() # si appresta ad attendere la selezione del secondo oggetto
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di distanza                     
          return False # fine comando

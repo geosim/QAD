@@ -37,4 +37,4 @@ deprecated=False
 
 # Author contact information
 author=Iren Acqua Gas SpA
-email=geosim.dev@irenacquagas.it
+email=geosim.dev@gruppoiren.it

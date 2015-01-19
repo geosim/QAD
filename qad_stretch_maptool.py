@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-01-08
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -62,7 +62,7 @@ class Qad_stretch_maptool(QadGetPoint):
       QadGetPoint.__init__(self, plugIn)
                         
       self.basePt = None
-      self.SSGeomList = [] # lista di entità da stirare con geom di selezione
+      self.SSGeomList = [] # lista di entitï¿½ da stirare con geom di selezione
       self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
@@ -94,7 +94,7 @@ class Qad_stretch_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # stiro la feature e la rimuovo da entitySet (è la prima)
+         # stiro la feature e la rimuovo da entitySet (ï¿½ la prima)
          stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
                                                       offSetX, offSetY, \
                                                       tolerance2ApproxCurve)
@@ -168,7 +168,7 @@ class Qad_stretch_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

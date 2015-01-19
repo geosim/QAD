@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-10-04
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -122,7 +122,7 @@ class Qad_offset_maptool(QadGetPoint):
 
       for line in lines:
          if self.layer.geometryType() == QGis.Polygon:
-            if line[0] == line[-1]: # se è una linea chiusa
+            if line[0] == line[-1]: # se ï¿½ una linea chiusa
                offsetGeom = QgsGeometry.fromPolygon([line])
             else:
                offsetGeom = QgsGeometry.fromPolyline(line)
@@ -148,7 +148,7 @@ class Qad_offset_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

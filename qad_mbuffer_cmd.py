@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-09-19
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -59,7 +59,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un buffer
-      # che non verrà salvato su un layer
+      # che non verrï¿½ salvato su un layer
       self.virtualCmd = False
       self.SSGetClass = QadSSGetClass(plugIn)
       self.entitySet = QadEntitySet()
@@ -72,7 +72,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
       del SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si è in fase di selezione entità
+      if self.step == 0: # quando si ï¿½ in fase di selezione entitï¿½
          return self.SSGetClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
@@ -173,7 +173,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
          # il layer corrente non deve appartenere a quotature
          dimStyle = self.plugIn.dimStyles.getDimByLayer(currLayer)
          if dimStyle is not None:
-            errMsg = QadMsg.translate("QAD", "\nIl layer corrente appartiene allo stile di quotatura {0} e non è valido.\n")                        
+            errMsg = QadMsg.translate("QAD", "\nIl layer corrente appartiene allo stile di quotatura {0} e non ï¿½ valido.\n")                        
             self.showErr(errMsg.format(dimStyle.name))
             return True # fine comando
             
@@ -183,7 +183,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di selezione entitï¿½                     
             return self.run(msgMapTool, msg)
       
       #=========================================================================
@@ -215,10 +215,10 @@ class QadMBUFFERCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -256,10 +256,10 @@ class QadMBUFFERCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

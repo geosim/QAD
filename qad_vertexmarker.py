@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -100,7 +100,7 @@ class QadVertexMarker(QgsMapCanvasItem):
       
    def paint(self, painter, option, widget):
       """
-      p è un QPainter
+      p ï¿½ un QPainter
       """
       #qad_debug.breakPoint()
 
@@ -133,7 +133,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( 0, -s, -s,  s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.CIRCLE:
          # cerchio
-         # la linea è più sottile
+         # la linea ï¿½ piï¿½ sottile
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
          painter.drawEllipse(QPointF(0, 0), s, s)
@@ -141,7 +141,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.setPen(pen)
       elif self.__iconType == QadVertexmarkerIconTypeEnum.CIRCLE_X:
          # cerchio con al centro una x
-         # la linea è più sottile
+         # la linea ï¿½ piï¿½ sottile
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
          painter.drawEllipse(QPointF(0, 0), s, s)
@@ -180,7 +180,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( 0,  0,  0,  s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.TANGENT:
          # un cerchio con una retta tangente sopra
-         # la linea è più sottile
+         # la linea ï¿½ piï¿½ sottile
          l = s - self.__penWidth
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
@@ -190,7 +190,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(-s, -s,  s, -s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.DOUBLE_TRIANGLE:
          # due triangoli uno sull'altro con vertice al centro (clessidra)
-         # le linee oblique sono più sottili
+         # le linee oblique sono piï¿½ sottili
          pen.setWidth(self.__penWidth / 2)
          painter.setPen(pen)
          painter.drawLine(QLineF(-s, -s,  s,  s))
@@ -205,7 +205,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( s, -s,  s,  s))
          painter.drawLine(QLineF( s,  s, -s,  s))
          painter.drawLine(QLineF(-s,  s, -s, -s))
-         # le linee oblique della x sono più sottili
+         # le linee oblique della x sono piï¿½ sottili
          pen.setWidth(self.__penWidth / 2)
          painter.setPen(pen)
          painter.drawLine(QLineF(-s, -s,  s,  s))
@@ -222,7 +222,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(-s,  0,  0,  0))
          painter.drawLine(QLineF(2 * l,  0,  2 * l,  0))
          painter.drawLine(QLineF(4 * l,  0,  4 * l,  0))
-         # le linee oblique della x sono più sottili
+         # le linee oblique della x sono piï¿½ sottili
          pen.setWidth(self.__penWidth / 2)
          l = s / 2
          painter.setPen(pen)
@@ -235,7 +235,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          l = self.__penWidth
          painter.drawLine(QLineF(2 * l,  0,  2 * l,  0))
          painter.drawLine(QLineF(4 * l,  0,  4 * l,  0))
-         # le linee oblique della x sono più sottili
+         # le linee oblique della x sono piï¿½ sottili
          pen.setWidth(self.__penWidth / 2)
          l = s / 2
          painter.setPen(pen)
@@ -256,7 +256,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(l,  0,  l,  0))         
       elif self.__iconType == QadVertexmarkerIconTypeEnum.TANGENT_DEFERRED:
          # un cerchio con una retta tangente sopra
-         # la linea è più sottile
+         # la linea ï¿½ piï¿½ sottile
          l = s - self.__penWidth
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)

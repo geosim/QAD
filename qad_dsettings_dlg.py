@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -265,5 +265,5 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
    def ButtonHELP_Pressed(self):
       # per conoscere la sezione/pagina del file html usare internet explorer,
       # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perchè internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
+      # Questo perchï¿½ internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
       qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")

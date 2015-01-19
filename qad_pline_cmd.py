@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -56,13 +56,13 @@ class QadPLINECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_PLINE", "Disegna una polilinea mediante diversi metodi.\n\nUna polilinea è una sequenza di segmenti retti,\narchi o una combinazione dei due.")
+      return QadMsg.translate("Command_PLINE", "Disegna una polilinea mediante diversi metodi.\n\nUna polilinea ï¿½ una sequenza di segmenti retti,\narchi o una combinazione dei due.")
    
    def __init__(self, plugIn, asToolForMPolygon = False):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
       self.realVerticesIndexes = [] # posizioni in vertices dei vertici reali 
-                                    # (l'arco è approssimato a tanti segmenti)
+                                    # (l'arco ï¿½ approssimato a tanti segmenti)
       self.firstVertex = True
       
       self.asToolForMPolygon = asToolForMPolygon
@@ -75,7 +75,7 @@ class QadPLINECommandClass(QadCommandClass):
       self.mode = "LINE"
       self.EntSelClass = None
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-      # che non verrà salvata su un layer
+      # che non verrï¿½ salvata su un layer
       self.virtualCmd = False
 
    def __del__(self):
@@ -83,7 +83,7 @@ class QadPLINECommandClass(QadCommandClass):
       self.rubberBand.hide()
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 3: # quando si è in fase di selezione entità
+      if self.step == 3: # quando si ï¿½ in fase di selezione entitï¿½
          return self.EntSelClass.getPointMapTool(drawMode)
       else:
          if self.mode == "LINE":
@@ -171,7 +171,7 @@ class QadPLINECommandClass(QadCommandClass):
             info = arcList.arcAt(len(self.vertices) - 1)
             if info is not None:
                arc = info[0]
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(lastVertex, arc.getStartPt()):
                   result = arc.getTanDirectionOnStartPt() + math.pi
                else:
@@ -201,7 +201,7 @@ class QadPLINECommandClass(QadCommandClass):
       self.arcStartPt = self.vertices[-1] # ultimo vertice
       self.arcTanOnStartPt = self.getLastSegmentAng()
    
-      # Il segmento di arco è tangente al precedente segmento della polilinea
+      # Il segmento di arco ï¿½ tangente al precedente segmento della polilinea
       # uso il map tool per l'arco
       self.mode = "ARC"
       self.getPointMapTool().arcStartPt = self.arcStartPt
@@ -251,7 +251,7 @@ class QadPLINECommandClass(QadCommandClass):
       if numberOfVertices == 2:
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
-         # la linea non viene disegnata perciò sposto un pochino la x o la y                 
+         # la linea non viene disegnata perciï¿½ sposto un pochino la x o la y                 
          adjustedPoint = qad_utils.getAdjustedRubberBandVertex(self.rubberBand.getPoint(0, 0), point)                                                               
          self.rubberBand.addPoint(adjustedPoint, doUpdate)
       else:
@@ -292,10 +292,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
                      qad_layer.addLineToLayer(self.plugIn, currLayer, self.vertices)
@@ -368,10 +368,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -437,7 +437,7 @@ class QadPLINECommandClass(QadCommandClass):
 
          self.WaitForLineMenu()
          if entSelected:
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                              
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di selezione entitï¿½                              
          self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
          self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
          self.getPointMapTool().setStartPoint(self.vertices[-1])
@@ -450,10 +450,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 101: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
                      qad_layer.addLineToLayer(self.plugIn, currLayer, self.vertices)
@@ -500,7 +500,7 @@ class QadPLINECommandClass(QadCommandClass):
                if arc.fromStartEndPtsTan(self.arcStartPt, self.vertices[0], self.arcTanOnStartPt) == True:
                   points = arc.asPolyline()
                   if points is not None:
-                     # se i punti sono così vicini da essere considerati uguali
+                     # se i punti sono cosï¿½ vicini da essere considerati uguali
                      if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                         self.addArcVertices(points, False) # aggiungo i punti in ordine
                      else:
@@ -523,7 +523,7 @@ class QadPLINECommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_PLINE", "LInea"):
                self.mode = "LINE"
                #qad_debug.breakPoint()
-               self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che può essere variato dal maptool dell'arco
+               self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che puï¿½ essere variato dal maptool dell'arco
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                self.getPointMapTool().setStartPoint(self.vertices[-1])      
                self.WaitForLineMenu()              
@@ -554,12 +554,12 @@ class QadPLINECommandClass(QadCommandClass):
                   self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                   self.WaitForArcMenu()
-         elif type(value) == QgsPoint: # è stato inserito il punto finale dell'arco
+         elif type(value) == QgsPoint: # ï¿½ stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsTan(self.arcStartPt, value, self.arcTanOnStartPt) == True:
                points = arc.asPolyline()
                if points is not None:
-                  # se i punti sono così vicini da essere considerati uguali
+                  # se i punti sono cosï¿½ vicini da essere considerati uguali
                   if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
@@ -576,10 +576,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 102: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -619,10 +619,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 103: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -650,12 +650,12 @@ class QadPLINECommandClass(QadCommandClass):
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 105
-         elif type(value) == QgsPoint: # è stato inserito il punto finale dell'arco
+         elif type(value) == QgsPoint: # ï¿½ stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsAngle(self.arcStartPt, value, self.arcAngle) == True:
                points = arc.asPolyline()
                if points is not None:
-                  # se i punti sono così vicini da essere considerati uguali
+                  # se i punti sono cosï¿½ vicini da essere considerati uguali
                   if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
@@ -682,10 +682,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 104: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -700,7 +700,7 @@ class QadPLINECommandClass(QadCommandClass):
          if arc.fromStartCenterPtsAngle(self.arcStartPt, value, self.arcAngle) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -721,10 +721,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 105: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -768,10 +768,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 106: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -802,10 +802,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 107: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -826,7 +826,7 @@ class QadPLINECommandClass(QadCommandClass):
                                                      self.arcRadius, self.arcChordDirection) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -852,10 +852,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 108: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -891,10 +891,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 109: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -928,14 +928,14 @@ class QadPLINECommandClass(QadCommandClass):
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 111
                return False                              
-         elif type(value) == QgsPoint: # se è stato inserito il punto finale dell'arco
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il punto finale dell'arco
             self.arcEndPt = value
                      
             arc = QadArc()         
             if arc.fromStartCenterEndPts(self.arcStartPt, self.arcCenterPt, self.arcEndPt) == True:
                points = arc.asPolyline()
                if points is not None:
-                  # se i punti sono così vicini da essere considerati uguali
+                  # se i punti sono cosï¿½ vicini da essere considerati uguali
                   if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
@@ -962,10 +962,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 110: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -985,7 +985,7 @@ class QadPLINECommandClass(QadCommandClass):
          if arc.fromStartCenterPtsAngle(self.arcStartPt, self.arcCenterPt, self.arcAngle) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -1010,10 +1010,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 111: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1033,7 +1033,7 @@ class QadPLINECommandClass(QadCommandClass):
          if arc.fromStartCenterPtsChord(self.arcStartPt, self.arcCenterPt, self.arcChord) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -1058,10 +1058,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 112: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1092,10 +1092,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 113: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1110,7 +1110,7 @@ class QadPLINECommandClass(QadCommandClass):
          if arc.fromStartEndPtsTan(self.arcStartPt, value, self.arcTanOnStartPt) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -1131,10 +1131,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 114: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1177,10 +1177,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 115: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1212,10 +1212,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 116: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1239,12 +1239,12 @@ class QadPLINECommandClass(QadCommandClass):
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
                self.step = 117
-         elif type(value) == QgsPoint: # è stato inserito il punto finale dell'arco
+         elif type(value) == QgsPoint: # ï¿½ stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsRadius(self.arcStartPt, value, self.arcRadius) == True:
                points = arc.asPolyline()
                if points is not None:
-                  # se i punti sono così vicini da essere considerati uguali
+                  # se i punti sono cosï¿½ vicini da essere considerati uguali
                   if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                      self.addArcVertices(points, False) # aggiungo i punti in ordine
                   else:
@@ -1261,10 +1261,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 117: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1299,10 +1299,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 118: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1323,7 +1323,7 @@ class QadPLINECommandClass(QadCommandClass):
                                                      self.arcRadius, self.arcChordDirection) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:
@@ -1350,10 +1350,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 119: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1381,10 +1381,10 @@ class QadPLINECommandClass(QadCommandClass):
       elif self.step == 120: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1401,7 +1401,7 @@ class QadPLINECommandClass(QadCommandClass):
          if arc.fromStartSecondEndPts(self.arcStartPt, self.arcSecondPt, self.arcEndPt) == True:
             points = arc.asPolyline()
             if points is not None:
-               # se i punti sono così vicini da essere considerati uguali
+               # se i punti sono cosï¿½ vicini da essere considerati uguali
                if qad_utils.ptNear(self.arcStartPt, arc.getStartPt()):
                   self.addArcVertices(points, False) # aggiungo i punti in ordine
                else:

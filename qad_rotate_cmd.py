@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-09-27
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -75,7 +75,7 @@ class QadROTATECommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si è in fase di selezione entità
+      if self.step == 0: # quando si ï¿½ in fase di selezione entitï¿½
          return self.SSGetClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
@@ -101,11 +101,12 @@ class QadROTATECommandClass(QadCommandClass):
          dimEntity = None
       
       if dimEntity is None:
-         # ruoto la feature e la rimuovo da entitySet (è la prima)
+         # ruoto la feature e la rimuovo da entitySet (ï¿½ la prima)
          f.setGeometry(qad_utils.rotateQgsGeometry(f.geometry(), basePt, angle))
-         if rotFldName is not None:
+         #qad_debug.breakPoint()
+         if len(rotFldName) > 0:
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione è in gradi nel campo della feature
+            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione ï¿½ in gradi nel campo della feature
             rotValue = rotValue + angle
             f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
 
@@ -149,7 +150,7 @@ class QadROTATECommandClass(QadCommandClass):
                                  
          transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
 
-         rotFldName = None
+         rotFldName = ""
          if qad_layer.isTextLayer(layer):
             # se la rotazione dipende da un solo campo
             rotFldNames = qad_label.get_labelRotationFieldNames(layer)
@@ -196,7 +197,7 @@ class QadROTATECommandClass(QadCommandClass):
       self.waitFor(msg.format(str(qad_utils.toDegrees(self.plugIn.lastReferenceRot))), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                    self.plugIn.lastReferenceRot, \
-                   "", QadInputModeEnum.NOT_NULL)               
+                   "")               
       self.step = 4
 
 
@@ -216,7 +217,7 @@ class QadROTATECommandClass(QadCommandClass):
       self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
                    angle, \
-                   keyWords, QadInputModeEnum.NOT_NULL)
+                   keyWords)
       self.step = 6
    
 
@@ -231,7 +232,7 @@ class QadROTATECommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di selezione entitï¿½                     
             return self.run(msgMapTool, msg)
       
       #=========================================================================
@@ -256,10 +257,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -284,10 +285,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -307,8 +308,8 @@ class QadROTATECommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_ROTATE", "Riferimento"):
                # si appresta ad attendere l'angolo di riferimento                      
                self.waitForReferenceRot()
-         elif type(value) == QgsPoint or type(value) == float: # se è stato inserito l'angolo di rotazione
-            if type(value) == QgsPoint: # se è stato inserito l'angolo di rotazione con un punto                        
+         elif type(value) == QgsPoint or type(value) == float: # se ï¿½ stato inserito l'angolo di rotazione
+            if type(value) == QgsPoint: # se ï¿½ stato inserito l'angolo di rotazione con un punto                        
                angle = qad_utils.getAngleBy2Pts(self.basePt, value)
             else:
                angle = qad_utils.toRadians(value)
@@ -324,10 +325,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -338,13 +339,13 @@ class QadROTATECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if type(value) == float: # se è stato inserito l'angolo di rotazione
+         if type(value) == float: # se ï¿½ stato inserito l'angolo di rotazione
             self.ReferenceAng = qad_utils.toRadians(value)
             self.getPointMapTool().ReferenceAng = self.ReferenceAng 
             # si appresta ad attendere il nuovo angolo                    
             self.waitForNewReferenceRot()
 
-         elif type(value) == QgsPoint: # se è stato inserito l'angolo di rotazione con un punto                                 
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito l'angolo di rotazione con un punto                                 
             self.Pt1ReferenceAng = QgsPoint(value)
             self.getPointMapTool().Pt1ReferenceAng = self.Pt1ReferenceAng 
             # imposto il map tool
@@ -360,10 +361,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -387,10 +388,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 6: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -410,8 +411,8 @@ class QadROTATECommandClass(QadCommandClass):
                
                self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare primo punto: "))
                self.step = 7
-         elif type(value) == QgsPoint or type(value) == float: # se è stato inserito l'angolo di rotazione
-            if type(value) == QgsPoint: # se è stato inserito l'angolo di rotazione con un punto                        
+         elif type(value) == QgsPoint or type(value) == float: # se ï¿½ stato inserito l'angolo di rotazione
+            if type(value) == QgsPoint: # se ï¿½ stato inserito l'angolo di rotazione con un punto                        
                angle = qad_utils.getAngleBy2Pts(self.basePt, value)
             else:
                angle = qad_utils.toRadians(value)
@@ -428,10 +429,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 7: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -457,10 +458,10 @@ class QadROTATECommandClass(QadCommandClass):
       elif self.step == 8: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

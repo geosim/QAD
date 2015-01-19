@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-07-15
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -62,8 +62,8 @@ class QadTRIMCommandClass(QadCommandClass):
       self.SSGetClass = QadSSGetClass(plugIn)
       self.PLINECommand = None      
       self.RECTANGLECommand = None
-      self.entitySet = QadEntitySet() # entità da tagliare o estendere
-      self.limitEntitySet = QadEntitySet() # entità che fanno da limiti
+      self.entitySet = QadEntitySet() # entitï¿½ da tagliare o estendere
+      self.limitEntitySet = QadEntitySet() # entitï¿½ che fanno da limiti
       self.edgeMode = QadVariables.get(QadMsg.translate("Environment variables", "EDGEMODE"))
       self.defaultValue = None # usato per gestire il tasto dx del mouse
       self.nOperationsToUndo = 0
@@ -72,9 +72,9 @@ class QadTRIMCommandClass(QadCommandClass):
       QadCommandClass.__del__(self)
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 3: # quando si è in fase di disegno linea
+      if self.step == 3: # quando si ï¿½ in fase di disegno linea
          return self.PLINECommand.getPointMapTool(drawMode)
-      elif self.step == 4: # quando si è in fase di disegno rettangolo 
+      elif self.step == 4: # quando si ï¿½ in fase di disegno rettangolo 
          return self.RECTANGLECommand.getPointMapTool(drawMode)      
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
@@ -267,10 +267,10 @@ class QadTRIMCommandClass(QadCommandClass):
       elif self.step == 2:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -288,7 +288,7 @@ class QadTRIMCommandClass(QadCommandClass):
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-               # che non verrà salvata su un layer
+               # che non verrï¿½ salvata su un layer
                self.PLINECommand.virtualCmd = True   
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 3
@@ -297,7 +297,7 @@ class QadTRIMCommandClass(QadCommandClass):
                # Seleziona tutti gli oggetti che intersecano un rettangolo                                  
                self.RECTANGLECommand = QadRECTANGLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-               # che non verrà salvata su un layer
+               # che non verrï¿½ salvata su un layer
                self.RECTANGLECommand.virtualCmd = True   
                self.RECTANGLECommand.run(msgMapTool, msg)
                self.step = 4
@@ -311,7 +311,7 @@ class QadTRIMCommandClass(QadCommandClass):
                   self.defaultValue = QadMsg.translate("Command_TRIM", "Nessuna")
                else: 
                   self.defaultValue = QadMsg.translate("Command_TRIM", "Estensione")
-               prompt = QadMsg.translate("Command_TRIM", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
+               prompt = QadMsg.translate("Command_TRIM", "Specificare una modalitï¿½ di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
                    
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
@@ -326,8 +326,8 @@ class QadTRIMCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando è stato completamente annullato."))                  
-         elif type(value) == QgsPoint: # se è stato selezionato un punto
+                  self.showMsg(QadMsg.translate("QAD", "Il comando ï¿½ stato completamente annullato."))                  
+         elif type(value) == QgsPoint: # se ï¿½ stato selezionato un punto
             self.entitySet.clear()
             #qad_debug.breakPoint()
             if self.getPointMapTool().entity.isInitialized():
@@ -335,7 +335,7 @@ class QadTRIMCommandClass(QadCommandClass):
                ToExtend = True if self.getPointMapTool().shiftKey == True else False
                self.trimFeatures(QgsGeometry.fromPoint(value), ToExtend)
             else:
-               # cerco se ci sono entità nel punto indicato considerando
+               # cerco se ci sono entitï¿½ nel punto indicato considerando
                # solo layer lineari editabili che non appartengano a quote
                layerList = []
                for layer in self.plugIn.canvas.layers():
@@ -382,7 +382,7 @@ class QadTRIMCommandClass(QadCommandClass):
 
             # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
             self.waitForObjectSel()
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di pline                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di pline                     
                                              
          return False
 
@@ -407,7 +407,7 @@ class QadTRIMCommandClass(QadCommandClass):
 
             # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
             self.waitForObjectSel()                                 
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di rectangle                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che puï¿½ essere variato dal maptool di rectangle                     
          return False
 
       #=========================================================================
@@ -415,7 +415,7 @@ class QadTRIMCommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
             if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse

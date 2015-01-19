@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-02-19
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -52,7 +52,7 @@ import qad_layer
 # getStartEndPointClosestPartWithContext
 #============================================================================
 def getStartEndPointClosestPartWithContext(entity, point, destCrs):
-   # legge il punto iniziale e finale della parte più vicina al punto di selezione
+   # legge il punto iniziale e finale della parte piï¿½ vicina al punto di selezione
    #qad_debug.breakPoint()
    # se non si tratta di cerchio altrimenti ritorna l'oggetto QadCircle
    geom = entity.getGeometry()
@@ -104,7 +104,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       #qad_debug.breakPoint()
       _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
       if _dimStyle is not None:
-         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchè può venire modificato dal comando
+         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchï¿½ puï¿½ venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.LINEAR
       else:
          self.dimStyle = None
@@ -119,9 +119,9 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          del self.GetAngleClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 2: # quando si è in fase di selezione entità
+      if self.step == 2: # quando si ï¿½ in fase di selezione entitï¿½
          return self.EntSelClass.getPointMapTool(drawMode)
-      # quando si è in fase di richiesta rotazione
+      # quando si ï¿½ in fase di richiesta rotazione
       elif self.step == 6 or self.step == 7:
          return self.GetAngleClass.getPointMapTool()
       else:
@@ -256,10 +256,10 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = None # opzione di default None
                else:
@@ -288,15 +288,15 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                                                                self.EntSelClass.point, \
                                                                self.plugIn.canvas.mapRenderer().destinationCrs())
                if result is not None:                   
-                  if (type(result) == list or type(result) == tuple): # se è una lista di 2 punti
+                  if (type(result) == list or type(result) == tuple): # se ï¿½ una lista di 2 punti
                      self.dimPt1 = result[0]                    
                      self.dimPt2 = result[1]
                   else:
                      objType = result.whatIs()
-                     if objType == "ARC": # se è arco
+                     if objType == "ARC": # se ï¿½ arco
                         self.dimPt1 = result.getStartPt()                 
                         self.dimPt2 = result.getEndPt()
-                     elif objType == "CIRCLE": # se è cerchio
+                     elif objType == "CIRCLE": # se ï¿½ cerchio
                         self.dimCircle = result
                   
                self.waitForDimensionLinePos()
@@ -312,10 +312,10 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True
                else:
@@ -329,7 +329,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          if value is None:
             return True
 
-         if type(value) == QgsPoint: # se è stato inserito il secondo punto
+         if type(value) == QgsPoint: # se ï¿½ stato inserito il secondo punto
             self.dimPt2.set(value.x(), value.y())
             self.waitForDimensionLinePos()
          
@@ -341,10 +341,10 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -393,7 +393,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                self.step = 7
                self.GetAngleClass.run(msgMapTool, msg)               
                pass
-         elif type(value) == QgsPoint: # se è stato inserito il punto di posizionamento linea quota
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il punto di posizionamento linea quota
             self.preferredAlignment = self.getPointMapTool().preferredAlignment
             self.dimPt1 = self.getPointMapTool().dimPt1
             self.dimPt2 = self.getPointMapTool().dimPt2
@@ -470,7 +470,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
       _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
       if _dimStyle is not None:
-         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchè può venire modificato dal comando
+         self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perchï¿½ puï¿½ venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.ALIGNED
       else:
          self.dimStyle = None
@@ -485,9 +485,9 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
          del self.GetAngleClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 2: # quando si è in fase di selezione entità
+      if self.step == 2: # quando si ï¿½ in fase di selezione entitï¿½
          return self.EntSelClass.getPointMapTool(drawMode)
-      # quando si è in fase di richiesta rotazione
+      # quando si ï¿½ in fase di richiesta rotazione
       elif self.step == 6:
          return self.GetAngleClass.getPointMapTool()
       else:
@@ -615,10 +615,10 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = None # opzione di default None
                else:
@@ -647,15 +647,15 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
                                                                self.EntSelClass.point, \
                                                                self.plugIn.canvas.mapRenderer().destinationCrs())
                if result is not None:
-                  if (type(result) == list or type(result) == tuple): # se è una lista di 2 punti
+                  if (type(result) == list or type(result) == tuple): # se ï¿½ una lista di 2 punti
                      self.dimPt1 = result[0]                    
                      self.dimPt2 = result[1]
                   else:
                      objType = result.whatIs()
-                     if objType == "ARC": # se è arco
+                     if objType == "ARC": # se ï¿½ arco
                         self.dimPt1 = result.getStartPt()                 
                         self.dimPt2 = result.getEndPt()
-                     elif objType == "CIRCLE": # se è cerchio
+                     elif objType == "CIRCLE": # se ï¿½ cerchio
                         self.dimCircle = result
                         intPts = self.dimCircle.getIntersectionPointsWithInfinityLine(self.dimCircle.center, self.EntSelClass.point)
                         if len(intPts) == 2:
@@ -675,10 +675,10 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True
                else:
@@ -692,7 +692,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
          if value is None:
             return True
 
-         if type(value) == QgsPoint: # se è stato inserito il secondo punto
+         if type(value) == QgsPoint: # se ï¿½ stato inserito il secondo punto
             self.dimPt2.set(value.x(), value.y())
             self.waitForDimensionLinePos()
          
@@ -704,10 +704,10 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -735,7 +735,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6
                self.GetAngleClass.run(msgMapTool, msg)               
-         elif type(value) == QgsPoint: # se è stato inserito il punto di posizionamento linea quota
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il punto di posizionamento linea quota
             self.dimPt1 = self.getPointMapTool().dimPt1
             self.dimPt2 = self.getPointMapTool().dimPt2
             self.addDimToLayers(value)
@@ -801,9 +801,9 @@ class QadDIMARCCommandClass(QadCommandClass):
          del self.GetAngleClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 1: # quando si è in fase di selezione entità
+      if self.step == 1: # quando si ï¿½ in fase di selezione entitï¿½
          return self.EntSelClass.getPointMapTool(drawMode)
-      # quando si è in fase di richiesta rotazione
+      # quando si ï¿½ in fase di richiesta rotazione
       elif self.step == 6:
          return self.GetAngleClass.getPointMapTool()
       else:
@@ -912,9 +912,9 @@ class QadDIMARCCommandClass(QadCommandClass):
                                                                self.EntSelClass.point, \
                                                                self.plugIn.canvas.mapRenderer().destinationCrs())
                if result is not None:
-                  if (type(result) != list and type(result) != tuple): # se non è una lista di 2 punti
+                  if (type(result) != list and type(result) != tuple): # se non ï¿½ una lista di 2 punti
                      objType = result.whatIs()
-                     if objType == "ARC": # se è arco
+                     if objType == "ARC": # se ï¿½ arco
                         self.dimArc = result
                         return False
                      
@@ -931,10 +931,10 @@ class QadDIMARCCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True
                else:
@@ -948,7 +948,7 @@ class QadDIMARCCommandClass(QadCommandClass):
          if value is None:
             return True
 
-         if type(value) == QgsPoint: # se è stato inserito il secondo punto
+         if type(value) == QgsPoint: # se ï¿½ stato inserito il secondo punto
             self.dimPt2.set(value.x(), value.y())
             self.waitForDimensionLinePos()
          
@@ -960,10 +960,10 @@ class QadDIMARCCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # è stato attivato un altro plugin che ha disattivato Qad
+            # ï¿½ stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool è stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool ï¿½ stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -991,7 +991,7 @@ class QadDIMARCCommandClass(QadCommandClass):
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6
                self.GetAngleClass.run(msgMapTool, msg)               
-         elif type(value) == QgsPoint: # se è stato inserito il punto di posizionamento linea quota
+         elif type(value) == QgsPoint: # se ï¿½ stato inserito il punto di posizionamento linea quota
             self.dimPt1 = self.getPointMapTool().dimPt1
             self.dimPt2 = self.getPointMapTool().dimPt2
             self.addDimToLayers(value)

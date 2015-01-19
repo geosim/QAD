@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -56,9 +56,9 @@ class Qad_circle_maptool_ModeEnum():
    FIRST_PT_KNOWN_ASK_FOR_SECOND_PT = 5
    # noto il primo e il secondo punto si richiede il terzo punto
    FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT = 6
-   # noto niente si richiede il primo punto di estremità diam
+   # noto niente si richiede il primo punto di estremitï¿½ diam
    NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT = 7
-   # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
+   # noto il primo punto di estremitï¿½ diam si richiede il secondo punto di estremitï¿½ diam
    FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT = 8
    # noto niente si richiede l'entita del primo punto di tangenza
    NONE_KNOWN_ASK_FOR_FIRST_TAN = 9
@@ -134,7 +134,7 @@ class Qad_circle_maptool(QadGetPoint):
       elif self.mode == Qad_circle_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT:
          if (self.firstPt is not None) and (self.secondPt is not None):
             result = circle.from3Pts(self.firstPt, self.secondPt, self.tmpPoint)
-      # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
+      # noto il primo punto di estremitï¿½ diam si richiede il secondo punto di estremitï¿½ diam
       elif self.mode == Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT:
          if self.firstDiamPt is not None:
             result = circle.fromDiamEnds(self.firstDiamPt, self.tmpPoint)
@@ -166,7 +166,7 @@ class Qad_circle_maptool(QadGetPoint):
          self.__circleRubberBand.show()
 
    def deactivate(self):
-      try: # necessario perchè se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+      try: # necessario perchï¿½ se si chiude QGIS parte questo evento nonostante non ci sia piï¿½ l'oggetto maptool !
          QadGetPoint.deactivate(self)
          if self.__circleRubberBand is not None:
             self.__circleRubberBand.hide()
@@ -195,10 +195,10 @@ class Qad_circle_maptool(QadGetPoint):
       # noto il primo e il secondo punto si richiede il terzo punto
       elif self.mode == Qad_circle_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)         
-      # noto niente si richiede il primo punto di estremità diam
+      # noto niente si richiede il primo punto di estremitï¿½ diam
       elif self.mode == Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)                 
-      # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
+      # noto il primo punto di estremitï¿½ diam si richiede il secondo punto di estremitï¿½ diam
       elif self.mode == Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
       # noto niente si richiede l'entita del primo punto di tangenza

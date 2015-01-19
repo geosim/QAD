@@ -3,13 +3,13 @@
 /***************************************************************************
  QAD Quantum Aided Design plugin
 
- classe per la gestione delle entità
+ classe per la gestione delle entitï¿½
  
                               -------------------
         begin                : 2013-08-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -93,7 +93,7 @@ class QadEntity():
 
    def set(self, layer, featureId):
       #qad_debug.breakPoint()  
-      self.layer = layer # il layer non si può copiare
+      self.layer = layer # il layer non si puï¿½ copiare
       self.featureId = featureId # copio l'identificativo di feature
       return self
 
@@ -209,7 +209,7 @@ class QadLayerEntitySet():
 
    def set(self, layer, features = None):
       if type(layer) == QgsVectorLayer:
-         self.layer = layer # il layer non si può copiare
+         self.layer = layer # il layer non si puï¿½ copiare
          self.featureIds = []       
          if features is not None:
             self.addFeatures(features)
@@ -248,8 +248,8 @@ class QadLayerEntitySet():
 
                # roby
                # Per un baco sconosciuto quando trasformo la geometria se poi ne faccio un buffer
-               # il calcolo dà un risultato sbagliato quando la geometria è nuova o modificata
-               # (in cache del layer) e il sistema di coordinate è diverso de quello della mappa corrente 
+               # il calcolo dï¿½ un risultato sbagliato quando la geometria ï¿½ nuova o modificata
+               # (in cache del layer) e il sistema di coordinate ï¿½ diverso de quello della mappa corrente 
                wkbType = g.wkbType()
                if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:               
                   g = QgsGeometry().fromPoint(g.asPoint())

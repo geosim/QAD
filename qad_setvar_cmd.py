@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2013-05-22
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -61,7 +61,7 @@ class QadSETVARCommandClass(QadCommandClass):
          self.step = 1
          return False
       elif self.step == 1: # dopo aver atteso il nome della variabile si riavvia il comando
-         if msgMapTool == True: # niente può arrivare da grafica
+         if msgMapTool == True: # niente puï¿½ arrivare da grafica
             return False
          #  il nome della variabile arriva come parametro della funzione
          self.varName = msg
@@ -96,14 +96,14 @@ class QadSETVARCommandClass(QadCommandClass):
                self.step = 2
                return False
       elif self.step == 2: # dopo aver atteso il valore della variabile si riavvia il comando
-         if msgMapTool == True: # niente può arrivare da grafica
+         if msgMapTool == True: # niente puï¿½ arrivare da grafica
             return False
          # il valore della variabile arriva come parametro della funzione
          QadVariables.set(self.varName, msg)
          QadVariables.save()
          return True
       elif self.step == 3: # dopo aver atteso il nome della variabile si riavvia il comando
-         if msgMapTool == True: # niente può arrivare da grafica
+         if msgMapTool == True: # niente puï¿½ arrivare da grafica
             return False
 
          if msg == "*":

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'qad.ui'
 #
-# Created: Tue Feb 18 09:23:23 2014
-#      by: PyQt4 UI code generator 4.8.4
+# Created: Thu Jan 08 11:13:10 2015
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_QAD(object):
     def setupUi(self, QAD):
@@ -30,5 +39,5 @@ class Ui_QAD(object):
         QtCore.QMetaObject.connectSlotsByName(QAD)
 
     def retranslateUi(self, QAD):
-        QAD.setWindowTitle(QtGui.QApplication.translate("QAD", "QAD", None, QtGui.QApplication.UnicodeUTF8))
+        QAD.setWindowTitle(_translate("QAD", "QAD", None))
 

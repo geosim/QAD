@@ -8,8 +8,8 @@
                               -------------------
         begin                : 2014-04-24
         copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@irenacquagas.it
-        developers           : roberto poltini (roberto.poltini@irenacquagas.it)
+        email                : geosim.dev@gruppoiren.it
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -42,7 +42,7 @@ class QadUndoRecordTypeEnum():
    BEGIN    = 2     # inizio di un gruppo di comandi
    END      = 3     # fine di un gruppo di comandi
    BOOKMARK = 4     # flag di segnalibro, significa che si tratta di un segno a cui
-                     # si può ritornare
+                     # si puï¿½ ritornare
 
 
 #===============================================================================
@@ -206,7 +206,7 @@ class QadUndoStack():
    
 
    def insertEndGroup(self):
-      # non si può inserire un end gruppo se non si è rimasto aperto un gruppo
+      # non si puï¿½ inserire un end gruppo se non si ï¿½ rimasto aperto un gruppo
       openGroupPos = self.getOpenGroupPos(len(self.UndoRecordList) - 1)
       if openGroupPos == -1:
          return False
@@ -386,7 +386,7 @@ class QadUndoStack():
       
    def insertBookmark(self, text):
       #qad_debug.breakPoint()
-      # non si può inserire un bookmark all'interno di un gruppo begin-end
+      # non si puï¿½ inserire un bookmark all'interno di un gruppo begin-end
       if self.getOpenGroupPos(self.index) >= 0:
          return False  
       
