@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -33,7 +33,6 @@ from qgis.core import QgsApplication
 from qad_dsettings_dlg import QadDSETTINGSDialog
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 
@@ -58,7 +57,6 @@ class QadDSETTINGSCommandClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
             
    def run(self, msgMapTool = False, msg = None):
-      #qad_debug.breakPoint()
       Form = QadDSETTINGSDialog(self.plugIn)
       Form.exec_()
       return True

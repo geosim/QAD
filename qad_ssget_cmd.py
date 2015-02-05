@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_textwindow import *
@@ -38,7 +37,7 @@ from qad_getpoint import *
 from qad_pline_cmd import QadPLINECommandClass
 from qad_circle_cmd import QadCIRCLECommandClass
 from qad_mpolygon_cmd import QadMPOLYGONCommandClass
-# ho dovuto spostare in fondo questo import perch� qad_mbuffer_cmd fa l'import di qad_ssget_cmd
+# ho dovuto spostare in fondo questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
 #from qad_mbuffer_cmd import QadMBUFFERCommandClass
 import qad_utils
 
@@ -73,7 +72,7 @@ class QadSSGetClass(QadCommandClass):
       # se SingleSelection = True viene selezionato il primo oggetto o gruppo di oggetti indicato,
       # senza che vengano richieste altre selezioni.      
       self.SingleSelection = False
-      # selezione degli oggetti aggiunti pi� recentemente al gruppo di selezione (x opzione annulla)
+      # selezione degli oggetti aggiunti più recentemente al gruppo di selezione (x opzione annulla)
       self.lastEntitySet = QadEntitySet()
       self.PLINECommand = None
       self.CIRCLECommand = None
@@ -82,15 +81,15 @@ class QadSSGetClass(QadCommandClass):
       self.SSGetClass = None
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 4: # quando si � in fase di disegno linea
+      if self.step == 4: # quando si é in fase di disegno linea
          return self.PLINECommand.getPointMapTool(drawMode)
-      elif self.step == 5: # quando si � in fase di disegno cerchio
+      elif self.step == 5: # quando si é in fase di disegno cerchio
          return self.CIRCLECommand.getPointMapTool(drawMode)
-      elif self.step == 6: # quando si � in fase di selezione entit�
+      elif self.step == 6: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool(drawMode)
-      elif self.step == 7: # quando si � in fase di disegno polygono
+      elif self.step == 7: # quando si é in fase di disegno polygono
          return self.MPOLYGONCommand.getPointMapTool(drawMode)
-      elif self.step == 8: # quando si � in fase di disegno buffer 
+      elif self.step == 8: # quando si é in fase di disegno buffer 
          return self.MBUFFERCommand.getPointMapTool(drawMode)      
       else:
          ptMapTool = QadCommandClass.getPointMapTool(self, drawMode)
@@ -146,7 +145,7 @@ class QadSSGetClass(QadCommandClass):
          return
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
-         # se il layer non � quello di entity
+         # se il layer non é quello di entity
          if entity.layerId() != layerEntitySet.layerId():            
             layerEntitySet.deselectOnLayer()
          else:
@@ -159,7 +158,7 @@ class QadSSGetClass(QadCommandClass):
       if self.checkDimLayers == True:
          dimEntitySet = QadEntitySet()
          dimEntitySet.addEntity(entity)
-         # La funzione verifica se le entit� che fanno parte di un entitySet sono anche parte di quotatura e,
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
          self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
          self.entitySet.unite(dimEntitySet)
@@ -174,7 +173,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    def SetSelSet(self, selSet):
       for layerEntitySet in self.entitySet.layerEntitySetList:
-         # se il layer non � presente in selSet
+         # se il layer non é presente in selSet
          if selSet.findLayerEntitySet(layerEntitySet) is None:            
             layerEntitySet.deselectOnLayer()
          else:
@@ -184,7 +183,7 @@ class QadSSGetClass(QadCommandClass):
 
       if self.checkDimLayers == True:
          dimEntitySet = QadEntitySet(selSet)
-         # La funzione verifica se le entit� che fanno parte di un entitySet sono anche parte di quotatura e,
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
          self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
          self.entitySet.unite(dimEntitySet)
@@ -221,7 +220,7 @@ class QadSSGetClass(QadCommandClass):
       if self.checkDimLayers == True:
          dimEntitySet = QadEntitySet()
          dimEntitySet.addEntity(entity)
-         # La funzione verifica se le entit� che fanno parte di un entitySet sono anche parte di quotatura e,
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
          self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
          if self.AddOnSelection == True: # aggiungi al gruppo di selezione
@@ -280,7 +279,6 @@ class QadSSGetClass(QadCommandClass):
       else: # lista di geometrie
          selSet = QadEntitySet()
          for g in geom:
-            #qad_debug.breakPoint()
             partial = qad_utils.getSelSet(mode, self.getPointMapTool(), g, \
                                           self.getLayersToCheck())
             selSet.unite(partial)
@@ -335,7 +333,6 @@ class QadSSGetClass(QadCommandClass):
       prompt = prompt + QadMsg.translate("Command_SSGET", ": ")
             
       # imposto il map tool
-      #qad_debug.breakPoint()      
       self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
       # imposto i layer da controllare sul maptool
@@ -369,10 +366,10 @@ class QadSSGetClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto o enter o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.entitySet.count() > 0:
                      self.plugIn.setLastEntitySet(self.entitySet)
@@ -383,7 +380,7 @@ class QadSSGetClass(QadCommandClass):
             
             shiftKey = self.getPointMapTool().shiftKey
 
-            # se � stata selezionata un'entit�
+            # se é stata selezionata un'entità
             if self.getPointMapTool().entity.isInitialized():
                value = self.getPointMapTool().entity
             else:
@@ -411,7 +408,7 @@ class QadSSGetClass(QadCommandClass):
                self.waitForPoint(value == QadMsg.translate("Command_SSGET", "Specificare primo angolo: "))
                self.step = 2
             if value == QadMsg.translate("Command_SSGET", "Ultimo"): 
-               # Seleziona l'ultima entit� inserita
+               # Seleziona l'ultima entità inserita
                if self.plugIn.getLastEntity() is None:
                   self.showMsgOnAddRemove(0)
                else:
@@ -423,7 +420,7 @@ class QadSSGetClass(QadCommandClass):
             elif value == QadMsg.translate("Command_SSGET", "Riquadro"):
                # Seleziona tutti gli oggetti che intersecano o si trovano all'interno di un rettangolo specificato da due punti.
                # Se i punti del rettangolo sono specificati da destra a sinistra, Riquadro equivale ad Interseca,
-               # altrimenti � equivalente a Finestra
+               # altrimenti é equivalente a Finestra
                # imposto il map tool
                self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
@@ -443,7 +440,7 @@ class QadSSGetClass(QadCommandClass):
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-               # che non verr� salvata su un layer
+               # che non verrà salvata su un layer
                self.PLINECommand.virtualCmd = True   
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 4
@@ -453,7 +450,7 @@ class QadSSGetClass(QadCommandClass):
                # "IPoligono" = Seleziona gli oggetti che intersecano o si trovano all'interno di un poligono definito specificando dei punti
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-               # che non verr� salvata su un layer
+               # che non verrà salvata su un layer
                self.MPOLYGONCommand.virtualCmd = True   
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 7
@@ -463,7 +460,7 @@ class QadSSGetClass(QadCommandClass):
                # "ICerchio" = Seleziona oggetti che intersecano o si trovano all'interno di un cerchio
                self.CIRCLECommand = QadCIRCLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
-               # che non verr� salvata su un layer
+               # che non verrà salvata su un layer
                self.CIRCLECommand.virtualCmd = True   
                self.CIRCLECommand.run(msgMapTool, msg)
                self.step = 5
@@ -471,7 +468,6 @@ class QadSSGetClass(QadCommandClass):
                  value == QadMsg.translate("Command_SSGET", "IOggetti"):
                # "FOggetti" = Seleziona oggetti che si trovano completamente all'interno di oggetti da selezionare
                # "IOggetti" = Seleziona oggetti che intersecano o si trovano all'interno di oggetti da selezionare
-               #qad_debug.breakPoint()
                self.SSGetClass = QadSSGetClass(self.plugIn)
                self.SSGetClass.run(msgMapTool, msg)
                self.step = 6
@@ -481,7 +477,7 @@ class QadSSGetClass(QadCommandClass):
                # "IBuffer" = Seleziona oggetti che intersecano o si trovano all'interno di buffer intorno ad oggetti da selezionare
                self.MBUFFERCommand = QadMBUFFERCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
-               # che non verr� salvata su un layer
+               # che non verrà salvata su un layer
                self.MBUFFERCommand.virtualCmd = True   
                self.MBUFFERCommand.run(msgMapTool, msg)
                self.step = 8
@@ -494,7 +490,7 @@ class QadSSGetClass(QadCommandClass):
                self.AddOnSelection = False
                self.WaitForFirstPoint()
             elif value == QadMsg.translate("Command_SSGET", "Precedente"):
-               # Seleziona il gruppo di selezione pi� recente
+               # Seleziona il gruppo di selezione più recente
                if self.plugIn.lastEntitySet is None:
                   self.showMsgOnAddRemove(0)
                else:
@@ -521,7 +517,7 @@ class QadSSGetClass(QadCommandClass):
                      return True # fine                                   
                self.WaitForFirstPoint()
             elif value == QadMsg.translate("Command_SSGET", "Annulla"):
-               # Annulla la selezione dell'oggetto aggiunto pi� recentemente al gruppo di selezione.
+               # Annulla la selezione dell'oggetto aggiunto più recentemente al gruppo di selezione.
                # Inverto il tipo di selezione
                prevAddOnSelection = self.AddOnSelection
                self.AddOnSelection = not self.AddOnSelection
@@ -549,7 +545,7 @@ class QadSSGetClass(QadCommandClass):
             elif value == QadMsg.translate("Command_SSGET", "Help"):
                self.help = True
                self.WaitForFirstPoint()
-         elif type(value) == QgsPoint: # se � stato inserito il punto iniziale del rettangolo
+         elif type(value) == QgsPoint: # se é stato inserito il punto iniziale del rettangolo
             self.currSelectionMode = QadMsg.translate("Command_SSGET", "Riquadro")
             self.points.append(value)           
             self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITYSET_SELECTION)
@@ -558,8 +554,8 @@ class QadSSGetClass(QadCommandClass):
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specificare angolo opposto: "))
             self.step = 3
-         else: # se � stata selezionata un'entit�
-            # se la selezione � avvenuta con shift premuto o se si deve rimuovere l'entit� dal gruppo
+         else: # se é stata selezionata un'entità
+            # se la selezione é avvenuta con shift premuto o se si deve rimuovere l'entità dal gruppo
             if shiftKey or self.AddOnSelection == False:
                self.AddRemoveEntity(value)
             else:
@@ -579,12 +575,12 @@ class QadSSGetClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non � stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non é stata specificata correttamente."))
                   self.WaitForFirstPoint()
                   return False
                else:
@@ -604,7 +600,7 @@ class QadSSGetClass(QadCommandClass):
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specificare angolo opposto: "))
             self.step = 3
          else:
-            self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non � stata specificata correttamente."))
+            self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non é stata specificata correttamente."))
             self.WaitForFirstPoint()
 
          return False # continua
@@ -615,12 +611,12 @@ class QadSSGetClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non � stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non é stata specificata correttamente."))
                   # si appresta ad attendere un punto
                   self.waitForPoint(QadMsg.translate("Command_SSGET", "Specificare angolo opposto: "))
                   return False
@@ -649,8 +645,7 @@ class QadSSGetClass(QadCommandClass):
                
             selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), self.points, \
                                          self.getLayersToCheck())
-            #qad_debug.breakPoint()
-            # se la selezione � avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
+            # se la selezione é avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
             if shiftKey or self.AddOnSelection == False:
                self.AddRemoveSelSet(selSet)
             else:
@@ -662,7 +657,7 @@ class QadSSGetClass(QadCommandClass):
             
             self.WaitForFirstPoint()
          else:
-            self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non � stata specificata correttamente."))
+            self.showMsg(QadMsg.translate("Command_SSGET", "La finestra non é stata specificata correttamente."))
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specificare angolo opposto: "))
 
@@ -788,5 +783,5 @@ class QadSSGetClass(QadCommandClass):
          return False
 
 
-# ho dovuto spostare in fondo questo import perch� qad_mbuffer_cmd fa l'import di qad_ssget_cmd
+# ho dovuto spostare in fondo questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
 from qad_mbuffer_cmd import QadMBUFFERCommandClass

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_copy_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -41,7 +40,6 @@ from qad_variables import *
 import qad_utils
 import qad_layer
 from qad_dim import *
-from qad_rubberband import createRubberBand
 
 
 # Classe che gestisce il comando COPY
@@ -79,7 +77,7 @@ class QadCOPYCommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si � in fase di selezione entit�
+      if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
@@ -94,7 +92,6 @@ class QadCOPYCommandClass(QadCommandClass):
    # move
    #============================================================================
    def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -105,7 +102,7 @@ class QadCOPYCommandClass(QadCommandClass):
          dimEntity = None
       
       if dimEntity is None:
-         # sposto la feature e la rimuovo da entitySet (� la prima)
+         # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
          # plugIn, layer, feature, coordTransform, refresh, check_validity
          if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:  
@@ -126,7 +123,6 @@ class QadCOPYCommandClass(QadCommandClass):
    # copyGeoms
    #============================================================================
    def copyGeoms(self, newPt):
-      #qad_debug.breakPoint()
       # copio entitySet
       entitySet = QadEntitySet(self.entitySet)
       
@@ -179,10 +175,10 @@ class QadCOPYCommandClass(QadCommandClass):
 
       if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
          keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
-                    QadMsg.translate("Command_COPY", "mOdalit�")
+                    QadMsg.translate("Command_COPY", "mOdalità")
       else:
          keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
-                    QadMsg.translate("Command_COPY", "mOdalit�") + "/" + \
+                    QadMsg.translate("Command_COPY", "mOdalità") + "/" + \
                     QadMsg.translate("Command_COPY", "MUltiplo")
       default = QadMsg.translate("Command_COPY", "Spostamento")                   
       prompt = QadMsg.translate("Command_COPY", "Specificare il punto base o [{0}] <{1}>: ").format(keyWords, default)
@@ -288,14 +284,14 @@ class QadCOPYCommandClass(QadCommandClass):
 
          CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
          if self.copyMode == 0: # 0 = multipla 
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalit� = Multipla")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalità = Multipla")         
          else: # 1 = singola
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalit� = Singola")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_COPY", "Copia modalità = Singola")         
          self.showMsg(CurrSettingsMsg)         
 
          self.getPointMapTool().entitySet.set(self.entitySet)
          self.waitForBasePt()
-         self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che pu� essere variato dal maptool di selezione entit�                     
+         self.getPointMapTool().refreshSnapType() # riagggiorno lo snapType che può essere variato dal maptool di selezione entità                    
          return False
          
       #=========================================================================
@@ -303,10 +299,10 @@ class QadCOPYCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   pass # opzione di default "spostamento"
                else:
@@ -333,14 +329,14 @@ class QadCOPYCommandClass(QadCommandClass):
                             self.plugIn.lastOffsetPt, \
                             "", QadInputModeEnum.NONE)                                      
                self.step = 4
-            elif value == QadMsg.translate("Command_COPY", "mOdalit�"):
+            elif value == QadMsg.translate("Command_COPY", "mOdalità"):
                keyWords = QadMsg.translate("Command_COPY", "Singola") + "/" + \
                           QadMsg.translate("Command_COPY", "Multipla")
                if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                   default = QadMsg.translate("Command_COPY", "Multipla")
                else:
                   default = QadMsg.translate("Command_COPY", "Singola")               
-               prompt = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalit�di copia [{0}] <{1}>: ").format(keyWords, default)
+               prompt = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalità di copia [{0}] <{1}>: ").format(keyWords, default)
 
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
@@ -352,7 +348,7 @@ class QadCOPYCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_COPY", "MUltiplo"):
                self.copyMode = 0 # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                self.waitForBasePt()                         
-         elif type(value) == QgsPoint: # se � stato inserito il punto base
+         elif type(value) == QgsPoint: # se é stato inserito il punto base
             self.basePt.set(value.x(), value.y())
 
             # imposto il map tool
@@ -366,10 +362,10 @@ class QadCOPYCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if len(self.featureCache) > 0:
                      value = QadMsg.translate("Command_COPY", "Esci")
@@ -403,9 +399,9 @@ class QadCOPYCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando � stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
                self.waitForSecondPt()
-         elif type(value) == QgsPoint: # se � stato inserito lo spostamento con un punto
+         elif type(value) == QgsPoint: # se é stato inserito lo spostamento con un punto
             self.copyGeoms(value)
             if self.copyMode == 1: # "Singola" 
                return True # fine comando
@@ -418,10 +414,10 @@ class QadCOPYCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -442,10 +438,10 @@ class QadCOPYCommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -497,10 +493,10 @@ class QadCOPYCommandClass(QadCommandClass):
       elif self.step == 7: # dopo aver atteso un punto o una parola chiave
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -520,7 +516,7 @@ class QadCOPYCommandClass(QadCommandClass):
                self.adjust = True
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()
-         elif type(value) == QgsPoint: # se � stato inserito lo spostamento con un punto
+         elif type(value) == QgsPoint: # se é stato inserito lo spostamento con un punto
             self.copyGeoms(value)
             if self.copyMode == 1: # "Singola" 
                return True # fine comando            

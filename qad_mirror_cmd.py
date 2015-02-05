@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_mirror_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -72,7 +71,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si � in fase di selezione entit�
+      if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
@@ -97,12 +96,11 @@ class QadMIRRORCommandClass(QadCommandClass):
          dimEntity = None
       
       if dimEntity is None:
-         # scalo la feature e la rimuovo da entitySet (� la prima)
+         # scalo la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.mirrorQgsGeometry(f.geometry(), pt1, pt2))
          if len(rotFldName) > 0:
-            #qad_debug.breakPoint()
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione � in gradi nel campo della feature
+            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             ptDummy = qad_utils.getPolarPointByPtAngle(pt1, rotValue, 1)
             mirrorAngle = qad_utils.getAngleBy2Pts(pt1, pt2)
             ptDummy = qad_utils.mirrorPoint(ptDummy, pt1, mirrorAngle)
@@ -142,7 +140,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       entitySet = QadEntitySet(self.entitySet)
 
       self.plugIn.beginEditCommand("Feature mirrored", self.entitySet.getLayerList())
-      #qad_debug.breakPoint()
+
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
@@ -183,7 +181,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di selezione entit�                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                    
             return self.run(msgMapTool, msg)
       
       #=========================================================================
@@ -208,10 +206,10 @@ class QadMIRRORCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
                   self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare primo punto della linea speculare: "))
@@ -241,10 +239,10 @@ class QadMIRRORCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
                   self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare secondo punto della linea speculare: "))
@@ -264,10 +262,10 @@ class QadMIRRORCommandClass(QadCommandClass):
          
          self.secondMirrorPt.set(value.x(), value.y())
          
-         keyWords = QadMsg.translate("QAD", "S�") + "/" + \
+         keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                     QadMsg.translate("QAD", "No")                                       
          if self.copyFeatures == False:
-            default = QadMsg.translate("QAD", "S�")
+            default = QadMsg.translate("QAD", "Sì")
          else: 
             default = QadMsg.translate("QAD", "No")
          prompt = QadMsg.translate("Command_MIRROR", "Cancellare gli oggetti sorgente ? [{0}] <{1}>: ").format(keyWords, default)
@@ -289,7 +287,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
             if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
@@ -301,7 +299,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "S�"):
+            if value == QadMsg.translate("QAD", "Sì"):
                self.copyFeatures = False
             elif value == QadMsg.translate("QAD", "No"):
                self.copyFeatures = True

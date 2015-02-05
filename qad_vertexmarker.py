@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -27,9 +27,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
-
-
-import qad_debug
 
 
 #===============================================================================
@@ -74,6 +71,10 @@ class QadVertexMarker(QgsMapCanvasItem):
       self.__center = QgsPoint(0, 0) #  coordinates of the point in the center
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width
+
+      
+   def __del__(self):     
+      self.__canvas.scene().removeItem(self)
       
 
    def setCenter(self, point):
@@ -100,9 +101,8 @@ class QadVertexMarker(QgsMapCanvasItem):
       
    def paint(self, painter, option, widget):
       """
-      p � un QPainter
+      p é un QPainter
       """
-      #qad_debug.breakPoint()
 
       s = (self.__iconSize - 1) / 2
 
@@ -133,7 +133,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( 0, -s, -s,  s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.CIRCLE:
          # cerchio
-         # la linea � pi� sottile
+         # la linea é più sottile
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
          painter.drawEllipse(QPointF(0, 0), s, s)
@@ -141,7 +141,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.setPen(pen)
       elif self.__iconType == QadVertexmarkerIconTypeEnum.CIRCLE_X:
          # cerchio con al centro una x
-         # la linea � pi� sottile
+         # la linea é più sottile
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
          painter.drawEllipse(QPointF(0, 0), s, s)
@@ -180,7 +180,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( 0,  0,  0,  s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.TANGENT:
          # un cerchio con una retta tangente sopra
-         # la linea � pi� sottile
+         # la linea é più sottile
          l = s - self.__penWidth
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)
@@ -190,7 +190,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(-s, -s,  s, -s))
       elif self.__iconType == QadVertexmarkerIconTypeEnum.DOUBLE_TRIANGLE:
          # due triangoli uno sull'altro con vertice al centro (clessidra)
-         # le linee oblique sono pi� sottili
+         # le linee oblique sono più sottili
          pen.setWidth(self.__penWidth / 2)
          painter.setPen(pen)
          painter.drawLine(QLineF(-s, -s,  s,  s))
@@ -205,7 +205,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF( s, -s,  s,  s))
          painter.drawLine(QLineF( s,  s, -s,  s))
          painter.drawLine(QLineF(-s,  s, -s, -s))
-         # le linee oblique della x sono pi� sottili
+         # le linee oblique della x sono più sottili
          pen.setWidth(self.__penWidth / 2)
          painter.setPen(pen)
          painter.drawLine(QLineF(-s, -s,  s,  s))
@@ -222,7 +222,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(-s,  0,  0,  0))
          painter.drawLine(QLineF(2 * l,  0,  2 * l,  0))
          painter.drawLine(QLineF(4 * l,  0,  4 * l,  0))
-         # le linee oblique della x sono pi� sottili
+         # le linee oblique della x sono più sottili
          pen.setWidth(self.__penWidth / 2)
          l = s / 2
          painter.setPen(pen)
@@ -235,7 +235,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          l = self.__penWidth
          painter.drawLine(QLineF(2 * l,  0,  2 * l,  0))
          painter.drawLine(QLineF(4 * l,  0,  4 * l,  0))
-         # le linee oblique della x sono pi� sottili
+         # le linee oblique della x sono più sottili
          pen.setWidth(self.__penWidth / 2)
          l = s / 2
          painter.setPen(pen)
@@ -256,7 +256,7 @@ class QadVertexMarker(QgsMapCanvasItem):
          painter.drawLine(QLineF(l,  0,  l,  0))         
       elif self.__iconType == QadVertexmarkerIconTypeEnum.TANGENT_DEFERRED:
          # un cerchio con una retta tangente sopra
-         # la linea � pi� sottile
+         # la linea é più sottile
          l = s - self.__penWidth
          pen.setWidth(self.__penWidth / 2)         
          painter.setPen(pen)

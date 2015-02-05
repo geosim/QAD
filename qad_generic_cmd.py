@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_getpoint import *
@@ -37,11 +36,6 @@ from qad_getpoint import *
 
 # Classe che gestisce un comando generico
 class QadCommandClass():
-   plugIn               = None
-   PointMapTool         = None
-   step                 = 0
-   isValidPreviousInput = True
-
    def showMsg(self, msg, displayPromptAfterMsg = False):
       if self.plugIn is not None:
          self.plugIn.showMsg(msg, displayPromptAfterMsg)
@@ -158,7 +152,8 @@ class QadCommandClass():
    def __init__(self, plugIn):
       self.plugIn = plugIn
       self.PointMapTool = None
-      self.step         = 0
+      self.step         = 0      
+      self.isValidPreviousInput = True
       
       # inizializzare tutti i maptool necessari al comando
       # esempio di struttura di un comando che richiede
@@ -173,10 +168,10 @@ class QadCommandClass():
       """
       Esegue il comando. 
       - msgMapTool; se True significa che arriva un valore da MapTool del comando
-                    se false significa che il valore � nel parametro msg
+                    se false significa che il valore é nel parametro msg
       - msg;        valore in input al comando (usato quando msgMapTool = False)
       
-      ritorna True se il comando � terminato altrimenti False
+      ritorna True se il comando é terminato altrimenti False
       """
       # esempio di struttura di un comando che richiede
       # 1) un punto
@@ -187,10 +182,10 @@ class QadCommandClass():
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                return False
 

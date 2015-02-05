@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,13 +30,12 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
-from qad_rubberband import createRubberBand
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -57,45 +56,34 @@ class Qad_mbuffer_maptool(QadGetPoint):
       QadGetPoint.__init__(self, plugIn)
                         
       self.startPtForBufferWidth = None
-      # vedi il numero minimo di punti affinch� venga riconosciuto un arco o un cerchio
+      # vedi il numero minimo di punti affinché venga riconosciuto un arco o un cerchio
       # nei files qad_arc.py e qad_circle.py
       self.segments = 12
       self.entitySet = QadEntitySet()
       self.geomType = QGis.Polygon
-      self.__bufferRubberBand = None   
+      self.__rubberBand = QadRubberBand(self.canvas)   
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__bufferRubberBand is not None:
-         self.__bufferRubberBand.hide()
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__bufferRubberBand is not None:
-         self.__bufferRubberBand.show()
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__bufferRubberBand is not None:
-         self.__bufferRubberBand.hide()
-         del __bufferRubberBand
-         self.__bufferRubberBand = None
+      self.__rubberBand.reset()
       self.mode = None    
       
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__bufferRubberBand  is not None:
-         self.__bufferRubberBand.hide()
-         del self.__bufferRubberBand
-         self.__bufferRubberBand = None
+      self.__rubberBand.reset()
                
       # noto il primo punto si richiede la larghezza del buffer
       if self.mode == Qad_mbuffer_maptool_ModeEnum.FIRST_PT_ASK_FOR_BUFFER_WIDTH:
-         #qad_debug.breakPoint()
-         
-         self.__bufferRubberBand = createRubberBand(self.canvas, self.geomType)
          for layerEntitySet in self.entitySet.layerEntitySetList:
             transformedPt1 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
             transformedPt2 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
@@ -109,19 +97,18 @@ class Qad_mbuffer_maptool(QadGetPoint):
                bufferGeom = qad_utils.ApproxCurvesOnGeom(geom.buffer(width, self.segments), \
                                                          self.segments, self.segments, \
                                                          tolerance)
-               self.__bufferRubberBand.addGeometry(bufferGeom, layerEntitySet.layer)
+               if bufferGeom:
+                  self.__rubberBand.addGeometry(bufferGeom, layerEntitySet.layer)
                            
     
    def activate(self):
-      QadGetPoint.activate(self)            
-      if self.__bufferRubberBand is not None:
-         self.__bufferRubberBand.show()
+      QadGetPoint.activate(self)           
+      self.__rubberBand.show() 
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         if self.__bufferRubberBand is not None:
-            self.__bufferRubberBand.hide()
+         self.__rubberBand.hide()
       except:
          pass
 

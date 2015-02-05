@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_textwindow import *
@@ -109,14 +108,13 @@ class QadEntSelClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA PUNTO o ENTITA'
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
-         #qad_debug.breakPoint()
          entity = None
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -134,7 +132,7 @@ class QadEntSelClass(QadCommandClass):
          
          if type(value) == unicode:
             if value == QadMsg.translate("Command_ENTSEL", "Ultimo"):
-               # Seleziona l'ultima entit� inserita
+               # Seleziona l'ultima entità inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:
                   # controllo sul layer
@@ -149,7 +147,7 @@ class QadEntSelClass(QadCommandClass):
                            self.entity.selectOnLayer()
          elif type(value) == QgsPoint:
             if entity is None:
-               # cerco se ci sono entit� nel punto indicato
+               # cerco se ci sono entità nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
                                             self.getLayersToCheck())

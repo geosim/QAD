@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,9 +30,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
-
-
 #===============================================================================
 # get_tokenListFromLblFieldName ausilio di getTokenListFromLblFieldName
 #===============================================================================
@@ -53,13 +50,11 @@ def getToken(expr, start, endChar = None):
          token = token + ch
          i = i + 1
    else:
-      #qad_debug.breakPoint()
-      
       while i < tot:
          ch = expr[i]      
          if ch != endChar:
             token = token + ch
-         elif i + 1 < tot: # se c'� un carattere successivo
+         elif i + 1 < tot: # se c'é un carattere successivo
             if expr[i + 1] == endChar: # se il carattere successivo = endChar
                token = token + ch
                i = i + 1
@@ -103,7 +98,7 @@ def getTokenListFromLblFieldName(expr):
 #===============================================================================
 def get_activeDataDefinedPropertyFieldNames(layer, dataDefinedProperty):
    """
-   ritorna la lista dei nomi dei campi che determinano il valore della propriet� attiva
+   ritorna la lista dei nomi dei campi che determinano il valore della proprietà attiva
    """
    result = []
 
@@ -286,7 +281,7 @@ def get_labelFontTextNamedStyle(palLayerSettings, feature):
 #===============================================================================
 def get_labelIsBold(palLayerSettings, feature):
    """
-   restituisce se il font dell'etichetta � grassetto 
+   restituisce se il font dell'etichetta é grassetto 
    """
    val = None
    dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Bold)
@@ -307,7 +302,7 @@ def get_labelIsBold(palLayerSettings, feature):
 #===============================================================================
 def get_labelIsItalic(palLayerSettings, feature):
    """
-   restituisce se il font dell'etichetta � italico 
+   restituisce se il font dell'etichetta é italico 
    """
    val = None
    dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Italic)
@@ -328,7 +323,7 @@ def get_labelIsItalic(palLayerSettings, feature):
 #===============================================================================
 def get_labelIsUnderline(palLayerSettings, feature):
    """
-   restituisce se il font dell'etichetta � sottolineato 
+   restituisce se il font dell'etichetta é sottolineato 
    """
    val = None
    dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Underline)
@@ -349,7 +344,7 @@ def get_labelIsUnderline(palLayerSettings, feature):
 #===============================================================================
 def get_labelIsStrikeOut(palLayerSettings, feature):
    """
-   restituisce se il font dell'etichetta � barrato 
+   restituisce se il font dell'etichetta é barrato 
    """
    val = None
    dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Strikeout)
@@ -370,7 +365,7 @@ def get_labelIsStrikeOut(palLayerSettings, feature):
 #===============================================================================
 def get_labelFontCase(palLayerSettings, feature):
    """
-   restituisce se il font dell'etichetta � maiuscolo/minuscolo e varie opzioni:
+   restituisce se il font dell'etichetta é maiuscolo/minuscolo e varie opzioni:
    QFont::MixedCase    0   This is the normal text rendering option where no capitalization change is applied.
    QFont::AllUppercase 1   This alters the text to be rendered in all uppercase type.
    QFont::AllLowercase 2   This alters the text to be rendered in all lowercase type.
@@ -396,7 +391,7 @@ def get_labelFontCase(palLayerSettings, feature):
 #===============================================================================
 def get_labelFontSizeInMapUnits(palLayerSettings, feature):
    """
-   restituisce se l'unit� del font dell'etichetta � in unit� mappa
+   restituisce se l'unità del font dell'etichetta é in unità mappa
    """
    val = None
    dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.FontSizeUnit)
@@ -447,8 +442,6 @@ def calculateLabelSize(layer, feature, canvas):
          
    font = QFont(palyr.textFont)
    
-   #qad_debug.breakPoint()
-   
    fontSize = get_labelFontSize(palyr, feature)
    if fontSize is not None:
       if get_labelFontSizeInMapUnits(palyr, feature):
@@ -485,8 +478,6 @@ def calculateLabelSize(layer, feature, canvas):
    dimX = rect.width()
    dimY = rect.height()
 
-   #qad_debug.breakPoint()
-   
    mapToPixel = canvas.getCoordinateTransform()
    ptZero = mapToPixel.toMapCoordinatesF(0, 0)
    ptSize = mapToPixel.toMapCoordinatesF(dimX, dimY)

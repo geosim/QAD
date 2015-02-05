@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_pline_cmd import QadPLINECommandClass
 from qad_msg import QadMsg
@@ -53,13 +52,13 @@ class QadMPOLYGONCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono � una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
+      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono é una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.vertices = []
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un poligono
-      # che non verr� salvato su un layer
+      # che non verrà salvato su un layer
       self.virtualCmd = False
       self.PLINECommand = None
 
@@ -87,11 +86,11 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       #=========================================================================
       # RICHIESTA PRIMO PUNTO PER SELEZIONE OGGETTI
       if self.step == 0:
-         # asToolForMPolygon = True per rubberband tipo poligono
          self.PLINECommand = QadPLINECommandClass(self.plugIn, True)
          # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-         # che non verr� salvata su un layer
+         # che non verrà salvata su un layer
          self.PLINECommand.virtualCmd = True   
+         self.PLINECommand.asToolForMPolygon = True # per rubberband tipo poligono
          self.PLINECommand.run(msgMapTool, msg)
          self.step = 1
          return False # continua     
@@ -100,12 +99,11 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       # RISPOSTA ALLA RICHIESTA PUNTO (da step = 0 o 1)
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if self.PLINECommand.run(msgMapTool, msg) == True:
-            #qad_debug.breakPoint()
             verticesLen = len(self.PLINECommand.vertices)
             if verticesLen > 3:
                self.vertices = self.PLINECommand.vertices[:] # copio la lista
                firstVertex = self.vertices[0]
-               # se l'ultimo vertice non � uguale al primo
+               # se l'ultimo vertice non é uguale al primo
                if self.vertices[verticesLen - 1] != firstVertex:
                   # aggiungo un vertice con le stesse coordinate del primo
                   self.vertices.append(firstVertex)

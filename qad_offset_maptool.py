@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
@@ -109,7 +108,6 @@ class Qad_offset_maptool(QadGetPoint):
          else: # alla destra
             offSetDistance = offSetDistance + self.lastOffSetOnRightSide         
       
-      #qad_debug.breakPoint() 
       tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
                                                                   self.layer)
@@ -122,7 +120,7 @@ class Qad_offset_maptool(QadGetPoint):
 
       for line in lines:
          if self.layer.geometryType() == QGis.Polygon:
-            if line[0] == line[-1]: # se � una linea chiusa
+            if line[0] == line[-1]: # se é una linea chiusa
                offsetGeom = QgsGeometry.fromPolygon([line])
             else:
                offsetGeom = QgsGeometry.fromPolyline(line)
@@ -148,7 +146,7 @@ class Qad_offset_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

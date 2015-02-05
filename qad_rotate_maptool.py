@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
@@ -92,7 +91,6 @@ class Qad_rotate_maptool(QadGetPoint):
    # rotate
    #============================================================================
    def rotate(self, f, basePt, angle, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -103,7 +101,7 @@ class Qad_rotate_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # ruoto la feature e la rimuovo da entitySet (� la prima)
+         # ruoto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.rotateQgsGeometry(f.geometry(), basePt, angle))
          self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
          del layerEntitySet.featureIds[0]
@@ -121,7 +119,6 @@ class Qad_rotate_maptool(QadGetPoint):
    # addRotatedGeometries
    #============================================================================
    def addRotatedGeometries(self, angle):
-      #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
       # copio entitySet
@@ -150,7 +147,6 @@ class Qad_rotate_maptool(QadGetPoint):
          self.addRotatedGeometries(angle)                           
       # noto il punto base si richiede il secondo punto per il nuovo angolo
       elif self.mode == Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_ROTATION_PT:
-         #qad_debug.breakPoint()
          angle = qad_utils.getAngleBy2Pts(self.basePt, self.tmpPoint)
          diffAngle = angle - self.ReferenceAng
          self.addRotatedGeometries(diffAngle)                           
@@ -166,7 +162,7 @@ class Qad_rotate_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

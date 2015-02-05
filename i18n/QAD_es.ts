@@ -166,10 +166,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare prima estremità del diametro del cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare oggetto per la prima tangente del cerchio: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -187,10 +183,6 @@
     </message>
     <message>
         <source>Specificare terzo punto sul cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare seconda estremità del diametro del cerchio: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -217,10 +209,6 @@ Il cerchio non esiste.</source>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -267,6 +255,18 @@ Il cerchio non esiste.</source>
         <source>2PUnti</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Specificare prima estremità del diametro del cerchio: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specificare seconda estremità del diametro del cerchio: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -276,10 +276,6 @@ Il cerchio non esiste.</source>
     </message>
     <message>
         <source>Spostamento</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mOdalità</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -324,14 +320,6 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copia modalità = Multipla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copia modalità = Singola</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -348,7 +336,19 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
+        <source>mOdalità</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copia modalità = Multipla</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copia modalità = Singola</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -568,14 +568,6 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Modalità = Taglia-estendi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modalità = Non taglia-estendi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>, Raggio = </source>
         <translation type="unfinished"></translation>
     </message>
@@ -597,6 +589,14 @@ Il raccordo con raggio {0} non esiste.</source>
     </message>
     <message>
         <source>Specificare modalità di taglio [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modalità= Taglia-estendi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modalità= Non taglia-estendi</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -720,16 +720,16 @@ I punti devono essere distinti.</source>
 <context>
     <name>Command_MPOLYGON</name>
     <message>
-        <source>Disegna un poligono mediante diversi metodi.
-
-Un poligono è una sequenza chiusa di segmenti retti,
-archi o una combinazione dei due.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
 Poligono non valido.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disegna un poligono mediante diversi metodi.
+
+Un poligono é una sequenza chiusa di segmenti retti,
+archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -835,10 +835,6 @@ Poligono non valido.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edita</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Edita vertici</source>
         <translation type="unfinished"></translation>
     </message>
@@ -911,10 +907,6 @@ Poligono non valido.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>INserisci_prima</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>SPosta</source>
         <translation type="unfinished"></translation>
     </message>
@@ -973,13 +965,6 @@ Poligono non valido.
 </context>
 <context>
     <name>Command_PLINE</name>
-    <message>
-        <source>Disegna una polilinea mediante diversi metodi.
-
-Una polilinea è una sequenza di segmenti retti,
-archi o una combinazione dei due.</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Selezionare l&apos;oggetto nel punto finale di ricalco: </source>
         <translation type="unfinished"></translation>
@@ -1100,6 +1085,13 @@ archi o una combinazione dei due.</source>
         <source>Lunghezza corda</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Disegna una polilinea mediante diversi metodi.
+
+Una polilinea é una sequenza di segmenti retti,
+archi o una combinazione dei due.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_POLYGON</name>
@@ -1149,7 +1141,7 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>
-È richiesto un valore intero maggiore di 2.</source>
+é richiesto un valore intero maggiore di 2.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1180,19 +1172,11 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare prima distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Specificare raggio di raccordo del rettangolo &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare l&apos;area del rettangolo in unità correnti &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1245,6 +1229,14 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Calcolare le quote rettangolo in base alla [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>La finestra non é stata specificata correttamente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del rettangolo in unità correnti &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1351,16 +1343,16 @@ Scala di una copia degli oggetti selezionati.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare l&apos;oggetto il cui layer diventerà quello corrente: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Non ci sono geometrie in questa posizione.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Selezionare l&apos;oggetto il cui layer diventerà quello corrente: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
-Il layer corrente è {0}.</source>
+Il layer corrente é {0}.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1377,12 +1369,12 @@ Selezionare gli oggetti i cui layer diventeranno editabili: </source>
     </message>
     <message>
         <source>
-Il layer {0} è editabile.</source>
+Il layer {0} é editabile.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente è {0}.</source>
+Il layer corrente é {0}.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1529,11 +1521,11 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
+        <source> o [{0}]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> o [{0}]</source>
+        <source>La finestra non é stata specificata correttamente.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1564,10 +1556,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Selezionare i vertici</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1589,6 +1577,10 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     </message>
     <message>
         <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>La finestra non é stata specificata correttamente.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1690,16 +1682,6 @@ Selezionare i limiti di taglio...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Nessun gruppo è rimasto aperto.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Non è possibile inserire un segno dentro un gruppo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1712,11 +1694,21 @@ Non è possibile inserire un segno dentro un gruppo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>
+Nessun gruppo é rimasto aperto.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Non é possibile inserire un segno dentro un gruppo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>È stato annullato tutto.</source>
+        <source>é stato annullato tutto.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2123,25 +2115,13 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ha il layer per i testi delle quote che non è di tipo testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>non ha impostato il layer per i simboli delle quote.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ha il layer per i simboli delle quote che non è di tipo simbolo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>non ha impostato il layer per le linee delle quote.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ha il layer per le linee delle quote che non è di tipo linea.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2161,6 +2141,18 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     </message>
     <message>
         <source>non ha impostato i layer con lo stesso sistema di coordinate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote che non é di tipo testo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote che non é di tipo simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote che non é di tipo linea.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2305,10 +2297,6 @@ Comando sconosciuto &quot;{0}&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sì</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2319,24 +2307,6 @@ Il valore deve essere positivo e diverso da zero.</source>
     </message>
     <message>
         <source>Comando: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto, un numero reale o la parola chiave di un&apos;opzione.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto o la parola chiave di un&apos;opzione.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto o un numero reale.
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2463,25 +2433,7 @@ I punti devono essere distinti.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Il layer corrente non è di tipo vettoriale.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Il tipo di geometria del layer corrente è {0} e non è valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ammessi solo layer di tipo {1}.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Il layer corrente non è modificabile.
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2517,6 +2469,41 @@ Il layer corrente non è modificabile.
     </message>
     <message>
         <source>
+Stile di quotatura corrente non valido.
+Verificare il valore della variabile DIMSTYLE.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Nessun layer corrente.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*Annullato*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto, un numero reale o la parola chiave di un&apos;opzione.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto o la parola chiave di un&apos;opzione.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto o un numero reale.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
 &lt;Modalità ortogonale attivata&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2536,52 +2523,63 @@ Il layer corrente non è modificabile.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Il comando é stato completamente annullato.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
-Un layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+Un layer testo é  un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Un layer simbolo è un layer vettoriale di tipo punto senza etichetta.
+Un layer simbolo é un layer vettoriale di tipo punto senza etichetta.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Stile di quotatura corrente non valido.
-Verificare il valore della variabile DIMSTYLE.
+Il layer corrente non é di tipo simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non é di tipo vettoriale.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente non è di tipo simbolo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Nessun layer corrente.
+Il tipo di geometria del layer corrente é {0} e non é valido.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente non è di tipo testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
+Il layer corrente non é modificabile.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>*Annullato*</source>
+        <source>
+Il layer corrente appartiene allo stile di quotatura {0} e non é valido.
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Il comando è stato completamente annullato.</source>
+        <source>Sì</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non é di tipo testo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_variables import *
@@ -60,7 +59,7 @@ class Qad_fillet_maptool(QadGetPoint):
    def __init__(self, plugIn):
       QadGetPoint.__init__(self, plugIn)
 
-      self.filletMode = 1 # modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+      self.filletMode = 1 # modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       self.radius = 0.0
       self.transformedRadius = 0.0
       
@@ -105,7 +104,6 @@ class Qad_fillet_maptool(QadGetPoint):
 
 
    def canvasMoveEvent(self, event):
-      #qad_debug.breakPoint()
       QadGetPoint.canvasMoveEvent(self, event)
       
       self.__rubberBand.reset()
@@ -134,25 +132,23 @@ class Qad_fillet_maptool(QadGetPoint):
                tmpLinearObjectList.fromPolyline(subGeom.asPolyline())
                
                # la funzione ritorna una lista con (<minima distanza al quadrato>,
-               #                                    <punto pi� vicino>
-               #                                    <indice della parte pi� vicina>       
+               #                                    <punto più vicino>
+               #                                    <indice della parte più vicina>       
                #                                    <"a sinistra di">)
                dummy = tmpLinearObjectList.closestPartWithContext(transformedPt)
                tmpPartAt = dummy[2]
                tmpPointAt = dummy[1]
                
-               # stessa entit� e stessa parte
+               # stessa entità e stessa parte
                if self.layer.id() == self.tmpEntity.layer.id() and \
                   self.featureId == self.tmpEntity.featureId and \
                   self.partAt == tmpPartAt:
                   return
 
-               #qad_debug.breakPoint()
-                              
                epsg = self.layer.crs().authid()
                
                if self.tmpShiftKey == True: # tasto shift premuto durante il movimento del mouse
-                  # filletMode = 1 # modalit� di raccordo; 1=Taglia-estendi
+                  # filletMode = 1 # modalità di raccordo; 1=Taglia-estendi
                   # raggio = 0
                   res = qad_utils.getFilletLinearObjectList(self.linearObjectList, self.partAt, self.pointAt, \
                                                             tmpLinearObjectList, tmpPartAt, tmpPointAt,\
@@ -200,7 +196,7 @@ class Qad_fillet_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

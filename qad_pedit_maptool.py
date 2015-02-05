@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_variables import *
@@ -42,7 +41,7 @@ from qad_rubberband import QadRubberBand
 # Qad_pedit_maptool_ModeEnum class.
 #===============================================================================
 class Qad_pedit_maptool_ModeEnum():
-   # si richiede la selezione di un'entit�
+   # si richiede la selezione di un'entità
    ASK_FOR_ENTITY_SEL = 1     
    # non si richiede niente
    NONE = 2     
@@ -54,7 +53,7 @@ class Qad_pedit_maptool_ModeEnum():
    ASK_FOR_NEW_VERTEX = 5   
    # si richiede la nuova posizione di un vertice da spostare
    ASK_FOR_MOVE_VERTEX = 6     
-   # si richiede la posizione pi� vicina ad un vertice
+   # si richiede la posizione più vicina ad un vertice
    ASK_FOR_VERTEX = 7     
 
 
@@ -97,7 +96,6 @@ class Qad_pedit_maptool(QadGetPoint):
                                                                        self.layer)                              
 
    def setVertexAt(self, vertexAt, after = None):
-      #qad_debug.breakPoint()
       if vertexAt == self.linearObjectList.qty():
          pt = self.linearObjectList.getLinearObjectAt(-1).getEndPt()
       else:
@@ -109,7 +107,6 @@ class Qad_pedit_maptool(QadGetPoint):
     
       
    def canvasMoveEvent(self, event):
-      #qad_debug.breakPoint()
       QadGetPoint.canvasMoveEvent(self, event)
       
       self.__rubberBand.reset()
@@ -117,7 +114,6 @@ class Qad_pedit_maptool(QadGetPoint):
        
       # noti il primo punto e il centro dell'arco si richiede il punto finale
       if self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_NEW_VERTEX:
-         #qad_debug.breakPoint()
          newPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.layer, self.tmpPoint)
          tmpLinearObjectList = qad_utils.QadLinearObjectList()
          tmpLinearObjectList.set(self.linearObjectList)
@@ -151,7 +147,7 @@ class Qad_pedit_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:
@@ -159,7 +155,7 @@ class Qad_pedit_maptool(QadGetPoint):
 
    def setMode(self, mode):
       self.mode = mode
-      # si richiede la selezione di un'entit�
+      # si richiede la selezione di un'entità
       if self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_ENTITY_SEL:
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
          
@@ -179,7 +175,7 @@ class Qad_pedit_maptool(QadGetPoint):
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
       # si richiede il primo punto per calcolo distanza di approssimazione
-      # si richiede la posizione pi� vicina ad un vertice
+      # si richiede la posizione più vicina ad un vertice
       elif self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_FIRST_TOLERANCE_PT:
          self.onlyEditableLayers = False
          self.checkPointLayer = True
@@ -201,7 +197,7 @@ class Qad_pedit_maptool(QadGetPoint):
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
          self.setStartPoint(self.firstPt)
-      # si richiede la posizione pi� vicina ad un vertice
+      # si richiede la posizione più vicina ad un vertice
       elif self.mode == Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX:
          self.setSnapType(QadSnapTypeEnum.DISABLE)
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   

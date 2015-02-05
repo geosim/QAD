@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_move_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -70,7 +69,7 @@ class QadMOVECommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si � in fase di selezione entit�
+      if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
@@ -86,7 +85,6 @@ class QadMOVECommandClass(QadCommandClass):
    # move
    #============================================================================
    def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -97,7 +95,7 @@ class QadMOVECommandClass(QadCommandClass):
          dimEntity = None
       
       if dimEntity is None:
-         # sposto la feature e la rimuovo da entitySet (� la prima)
+         # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
          # plugIn, layer, feature, refresh, check_validity
          if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
@@ -121,7 +119,6 @@ class QadMOVECommandClass(QadCommandClass):
    # moveGeoms
    #============================================================================
    def moveGeoms(self, newPt):      
-      #qad_debug.breakPoint()
       # copio entitySet
       entitySet = QadEntitySet(self.entitySet)
       
@@ -160,7 +157,7 @@ class QadMOVECommandClass(QadCommandClass):
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di selezione entit�                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                    
             return self.run(msgMapTool, msg)
       
       #=========================================================================
@@ -192,10 +189,10 @@ class QadMOVECommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   pass # opzione di default "spostamento"
                else:
@@ -218,7 +215,7 @@ class QadMOVECommandClass(QadCommandClass):
                          self.plugIn.lastOffsetPt, \
                          "", QadInputModeEnum.NONE)                                      
             self.step = 4           
-         elif type(value) == QgsPoint: # se � stato inserito il punto base
+         elif type(value) == QgsPoint: # se é stato inserito il punto base
             self.basePt.set(value.x(), value.y())
 
             # imposto il map tool
@@ -240,10 +237,10 @@ class QadMOVECommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -257,7 +254,7 @@ class QadMOVECommandClass(QadCommandClass):
          if value is None:
             newPt = QgsPoint(self.basePt.x() * 2, self.basePt.y() * 2)
             self.moveGeoms(newPt)
-         elif type(value) == QgsPoint: # se � stato inserito lo spostamento con un punto
+         elif type(value) == QgsPoint: # se é stato inserito lo spostamento con un punto
             self.moveGeoms(value)
             
          return True # fine comando
@@ -267,10 +264,10 @@ class QadMOVECommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

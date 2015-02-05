@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -31,7 +31,6 @@ from qgis.gui import *
 import re # regular expression
 
 
-import qad_debug
 from qad_msg import QadMsg
 import qad_utils
 
@@ -65,9 +64,9 @@ def layerGeometryTypeToStr(geomType):
 #===============================================================================
 def getCurrLayerEditable(canvas, geomType = None):
    """
-   Ritorna il layer corrente se � aggiornabile e compatibile con il tipo geomType +
+   Ritorna il layer corrente se é aggiornabile e compatibile con il tipo geomType +
    eventuale messaggio di errore.
-   Se <geomType> � una lista allora verifica che sia compatibile con almeno un tipo nella lista <geomType>
+   Se <geomType> é una lista allora verifica che sia compatibile con almeno un tipo nella lista <geomType>
    altrimenti se <> None verifica che sia compatibile con il tipo <geomType>
    """
    vLayer = canvas.currentLayer()
@@ -75,28 +74,28 @@ def getCurrLayerEditable(canvas, geomType = None):
       return None, QadMsg.translate("QAD", "\nNessun layer corrente.\n")
    
    if (vLayer.type() != QgsMapLayer.VectorLayer):
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non � di tipo vettoriale.\n")
+      return None, QadMsg.translate("QAD", "\nIl layer corrente non é di tipo vettoriale.\n")
 
    if geomType is not None:
       if (type(geomType) == list or type(geomType) == tuple): # se lista di tipi
          if vLayer.geometryType() not in geomType:
-            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente � {0} e non � valido.\n")
+            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente é {0} e non é valido.\n")
             errMsg = errMsg + QadMsg.translate("QAD", "Ammessi solo layer di tipo {1}.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
       else:
          if vLayer.geometryType() != geomType:
-            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente � {0} e non � valido.\n")
+            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente é {0} e non é valido.\n")
             errMsg = errMsg + QadMsg.translate("QAD", "Ammessi solo layer di tipo {1}.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
 
    provider = vLayer.dataProvider()
    if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non � modificabile.\n")
+      return None, QadMsg.translate("QAD", "\nIl layer corrente non é modificabile.\n")
    
    if not vLayer.isEditable():
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non � modificabile.\n")
+      return None, QadMsg.translate("QAD", "\nIl layer corrente non é modificabile.\n")
 
    return vLayer, None
   
@@ -106,8 +105,8 @@ def getCurrLayerEditable(canvas, geomType = None):
 #===============================================================================
 def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, check_validity = False):
    """
-   Aggiunge un punto ad un layer. Se il punto � gi�
-   nel sistema di coordinate del layer allora non va trasformato se invece � nel
+   Aggiunge un punto ad un layer. Se il punto é già 
+   nel sistema di coordinate del layer allora non va trasformato se invece é nel
    sistema map-coordinate allora transform deve essere = True
    """
    if len(points) < 2:
@@ -158,8 +157,8 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
 #===============================================================================
 def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False):
    """
-   Aggiunge una linea (lista di punti) ad un layer. Se la lista di punti � gi�
-   nel sistema di coordinate del layer allora non va trasformata se invece � nel
+   Aggiunge una linea (lista di punti) ad un layer. Se la lista di punti é già 
+   nel sistema di coordinate del layer allora non va trasformata se invece é nel
    sistema  map-coordinate allora transform deve essere = True
    """
    if len(points) < 2: # almeno 2 punti
@@ -213,8 +212,8 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
 #===============================================================================
 def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False):
    """
-   Aggiunge un poligono (lista di punti) ad un layer. Se la lista di punti � gi�
-   nel sistema di coordinate del layer allora non va trasformata se invece � nel
+   Aggiunge un poligono (lista di punti) ad un layer. Se la lista di punti é già 
+   nel sistema di coordinate del layer allora non va trasformata se invece é nel
    sistema  map-coordinate allora transform deve essere = True
    """
    if len(points) < 3: # almeno 4 punti (il primo e l'ultimo sono uguali)
@@ -268,7 +267,7 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
 #===============================================================================
 def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, check_validity = False):
    """
-   Aggiunge una geometria ad un layer. Se la geometria � da convertire allora
+   Aggiunge una geometria ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
    refresh controlla la transazione del comando e il refresh del canvas
    """     
@@ -315,7 +314,7 @@ def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, c
 #===============================================================================
 def addGeomsToLayer(plugIn, layer, geoms, coordTransform = None, refresh = True, check_validity = False):
    """
-   Aggiunge le geometrie ad un layer. Se la geometria � da convertire allora
+   Aggiunge le geometrie ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
    refresh controlla la transazione del comando e il refresh del canvas
    """
@@ -339,7 +338,7 @@ def addGeomsToLayer(plugIn, layer, geoms, coordTransform = None, refresh = True,
 #===============================================================================
 def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, check_validity = False):
    """
-   Aggiunge una feature ad un layer. Se la geometria � da convertire allora
+   Aggiunge una feature ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
    <refresh> controlla la transazione del comando e il refresh del canvas
    """     
@@ -375,7 +374,7 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
 #===============================================================================
 def addFeaturesToLayer(plugIn, layer, features, coordTransform = None, refresh = True, check_validity = False):
    """
-   Aggiunge le feature ad un layer. Se la geometria � da convertire allora
+   Aggiunge le feature ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
    <refresh> controlla la transazione del comando e il refresh del canvas
    """
@@ -500,7 +499,6 @@ def getLayersByName(regularExprName):
    Ritorna la lista dei layer il cui nome soddisfa la regular expression di ricerca
    (per conversione da wildcards vedi la funzione wildCard2regularExpr)
    """
-   #qad_debug.breakPoint()
    result = []
    regExprCompiled = re.compile(regularExprName)
    for layer in QgsMapLayerRegistry.instance().mapLayers().values():
@@ -531,7 +529,6 @@ def get_symbolRotationFieldName(layer):
    """
    return rotation field name (or empty string if not set or not supported by renderer) 
    """
-   #qad_debug.breakPoint()
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return ""
 
@@ -567,9 +564,8 @@ def get_symbolScaleFieldName(layer):
 #===============================================================================
 def isTextLayer(layer):
    """
-   return True se il layer � di tipo testo 
+   return True se il layer é di tipo testo 
    """
-   #qad_debug.breakPoint()
    # deve essere un VectorLayer di tipo puntuale
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return False
@@ -591,14 +587,14 @@ def isTextLayer(layer):
 #===============================================================================
 def isSymbolLayer(layer):
    """
-   return True se il layer � di tipo simbolo 
+   return True se il layer é di tipo simbolo 
    """   
    # deve essere un VectorLayer di tipo puntuale
    if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
       return False
-   # se la rotazione � letta da un campo ricordarsi che per i simboli la rotazione � in senso orario
+   # se la rotazione é letta da un campo ricordarsi che per i simboli la rotazione é in senso orario
    # quindi usare l'espressione 360 - <campo rotazione>
-   # se non � un layer di tipo testo � di tipo simbolo
+   # se non é un layer di tipo testo é di tipo simbolo
    return False if isTextLayer(layer) else True 
 
 
@@ -625,7 +621,7 @@ def createQADTempLayer(plugIn, GeomType):
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("Point?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry().instance().addMapLayers([layer], True)
+         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
    elif GeomType == QGis.Line:
@@ -633,7 +629,7 @@ def createQADTempLayer(plugIn, GeomType):
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry().instance().addMapLayers([layer], True)
+         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
    elif GeomType == QGis.Polygon:
@@ -641,7 +637,7 @@ def createQADTempLayer(plugIn, GeomType):
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("Polygon?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry().instance().addMapLayers([layer], True)
+         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
 

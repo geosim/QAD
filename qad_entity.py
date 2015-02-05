@@ -1,9 +1,9 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
 
- classe per la gestione delle entit�
+ classe per la gestione delle entità
  
                               -------------------
         begin                : 2013-08-22
@@ -30,7 +30,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 import qad_utils
 
 
@@ -92,8 +91,7 @@ class QadEntity():
 
 
    def set(self, layer, featureId):
-      #qad_debug.breakPoint()  
-      self.layer = layer # il layer non si pu� copiare
+      self.layer = layer # il layer non si può copiare
       self.featureId = featureId # copio l'identificativo di feature
       return self
 
@@ -209,7 +207,7 @@ class QadLayerEntitySet():
 
    def set(self, layer, features = None):
       if type(layer) == QgsVectorLayer:
-         self.layer = layer # il layer non si pu� copiare
+         self.layer = layer # il layer non si può copiare
          self.featureIds = []       
          if features is not None:
             self.addFeatures(features)
@@ -248,8 +246,8 @@ class QadLayerEntitySet():
 
                # roby
                # Per un baco sconosciuto quando trasformo la geometria se poi ne faccio un buffer
-               # il calcolo d� un risultato sbagliato quando la geometria � nuova o modificata
-               # (in cache del layer) e il sistema di coordinate � diverso de quello della mappa corrente 
+               # il calcolo dà un risultato sbagliato quando la geometria é nuova o modificata
+               # (in cache del layer) e il sistema di coordinate é diverso de quello della mappa corrente 
                wkbType = g.wkbType()
                if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:               
                   g = QgsGeometry().fromPoint(g.asPoint())
@@ -406,7 +404,6 @@ class QadLayerEntitySet():
       featureIds = []
       if self.isInitialized() == True:      
          feature = QadEntity()
-         #qad_debug.breakPoint()
          for featureId in self.featureIds:
             feature.set(self.layer, featureId)
             if not feature.exists():
@@ -504,7 +501,6 @@ class QadEntitySet():
 
 
    def deselectOnLayer(self):
-      #qad_debug.breakPoint()
       for layerEntitySet in self.layerEntitySetList:
          layerEntitySet.deselectOnLayer()
 

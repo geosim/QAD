@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,9 +30,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
-
-
 #===============================================================================
 # QadUndoRecordTypeEnum class.
 #===============================================================================
@@ -42,7 +39,7 @@ class QadUndoRecordTypeEnum():
    BEGIN    = 2     # inizio di un gruppo di comandi
    END      = 3     # fine di un gruppo di comandi
    BOOKMARK = 4     # flag di segnalibro, significa che si tratta di un segno a cui
-                     # si pu� ritornare
+                     # si può ritornare
 
 
 #===============================================================================
@@ -206,7 +203,7 @@ class QadUndoStack():
    
 
    def insertEndGroup(self):
-      # non si pu� inserire un end gruppo se non si � rimasto aperto un gruppo
+      # non si può inserire un end gruppo se non si é rimasto aperto un gruppo
       openGroupPos = self.getOpenGroupPos(len(self.UndoRecordList) - 1)
       if openGroupPos == -1:
          return False
@@ -219,7 +216,6 @@ class QadUndoStack():
 
       
    def beginEditCommand(self, text, layerList):
-      #qad_debug.breakPoint()
       tot = len(self.UndoRecordList)
       if tot > 0 and self.index < tot - 1:
          del self.UndoRecordList[self.index + 1 :] # cancello fino alla fine
@@ -235,12 +231,10 @@ class QadUndoStack():
          UndoRecord = self.UndoRecordList[-1]
          if UndoRecord.destroyEditCommand():
             del self.UndoRecordList[-1]
-            #qad_debug.breakPoint()
             self.index = self.index - 1
 
 
    def endEditCommand(self, canvas):
-      #qad_debug.breakPoint()
       if len(self.UndoRecordList) > 0:
          UndoRecord = self.UndoRecordList[-1]
          UndoRecord.endEditCommand(canvas)
@@ -258,7 +252,6 @@ class QadUndoStack():
       return False 
          
    def undoEditCommand(self, canvas = None, nTimes = 1):
-      #qad_debug.breakPoint()
       for i in xrange(0, nTimes, 1):
          # cerco il primo record in cui ha senso fare UNDO
          if self.moveOnFirstUndoRecord() == False:
@@ -275,7 +268,6 @@ class QadUndoStack():
                UndoRecord = self.UndoRecordList[self.index]
          else:
             UndoRecord.undoEditCommand(None)
-            #qad_debug.breakPoint()
             self.index = self.index - 1
       
       if canvas is not None:   
@@ -295,7 +287,6 @@ class QadUndoStack():
       return False     
       
    def redoEditCommand(self, canvas = None, nTimes = 1):
-      #qad_debug.breakPoint()
       for i in xrange(0, nTimes, 1):         
          # cerco il primo record in cui ha senso fare REDO
          if self.moveOnFirstRedoRecord() == False:
@@ -348,7 +339,6 @@ class QadUndoStack():
    #===============================================================================
    
    def undoUntilBookmark(self, canvas):
-      #qad_debug.breakPoint()
       if self.index == -1:
          return
       for i in xrange(self.index, -1, -1):
@@ -363,7 +353,6 @@ class QadUndoStack():
 
 
    def redoUntilBookmark(self, canvas):
-      #qad_debug.breakPoint()
       for i in xrange(self.index + 1, len(self.UndoRecordList), 1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
@@ -385,8 +374,7 @@ class QadUndoStack():
  
       
    def insertBookmark(self, text):
-      #qad_debug.breakPoint()
-      # non si pu� inserire un bookmark all'interno di un gruppo begin-end
+      # non si può inserire un bookmark all'interno di un gruppo begin-end
       if self.getOpenGroupPos(self.index) >= 0:
          return False  
       

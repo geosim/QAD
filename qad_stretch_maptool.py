@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
@@ -62,7 +61,7 @@ class Qad_stretch_maptool(QadGetPoint):
       QadGetPoint.__init__(self, plugIn)
                         
       self.basePt = None
-      self.SSGeomList = [] # lista di entit� da stirare con geom di selezione
+      self.SSGeomList = [] # lista di entità da stirare con geom di selezione
       self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
@@ -83,7 +82,6 @@ class Qad_stretch_maptool(QadGetPoint):
    # stretch
    #============================================================================
    def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -94,7 +92,7 @@ class Qad_stretch_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # stiro la feature e la rimuovo da entitySet (� la prima)
+         # stiro la feature e la rimuovo da entitySet (é la prima)
          stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
                                                       offSetX, offSetY, \
                                                       tolerance2ApproxCurve)
@@ -168,7 +166,7 @@ class Qad_stretch_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

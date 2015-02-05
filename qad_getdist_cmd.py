@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_textwindow import *
@@ -49,6 +48,9 @@ class QadGetDistClass(QadCommandClass):
       self.msg = QadMsg.translate("QAD", "Specificare distanza: ")
       self.dist = None
       self.inputMode = QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE
+      # memorizzo last point perchè il/i punto/i indicato/i da questa questa funzione non devono
+      # alterare lastpoint 
+      self.__prevLastPoint = self.plugIn.lastPoint
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
@@ -76,13 +78,12 @@ class QadGetDistClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA PUNTO o numero reale
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
-         #qad_debug.breakPoint()
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -100,6 +101,9 @@ class QadGetDistClass(QadCommandClass):
             self.dist = value
             return True # fine comando
          elif type(value) == QgsPoint:
+            # il/i punto/i indicato/i da questa questa funzione non devono alterare lastpoint 
+            self.plugIn.setLastPoint(self.__prevLastPoint)
+
             if self.startPt is not None:
                self.dist = qad_utils.getDistance(self.startPt, value)
                return True # fine comando
@@ -119,10 +123,10 @@ class QadGetDistClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -132,6 +136,9 @@ class QadGetDistClass(QadCommandClass):
             value = self.getPointMapTool().point
          else: # il punto arriva come parametro della funzione
             value = msg
+
+         # il/i punto/i indicato/i da questa questa funzione non devono alterare lastpoint 
+         self.plugIn.setLastPoint(self.__prevLastPoint)
 
          self.dist = qad_utils.getDistance(self.startPt, value)
          return True # fine comando

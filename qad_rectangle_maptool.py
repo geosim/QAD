@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,13 +30,12 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
-from qad_rubberband import createRubberBand
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -65,34 +64,26 @@ class Qad_rectangle_maptool(QadGetPoint):
       self.rot = 0
       self.vertices = []
 
-      self.__rectangleRubberBand = None   
+      self.__rubberBand = QadRubberBand(self.canvas, True)   
       self.geomType = QGis.Polygon
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__rectangleRubberBand is not None:
-         self.__rectangleRubberBand.hide()
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__rectangleRubberBand is not None:
-         self.__rectangleRubberBand.show()
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__rectangleRubberBand is not None:
-         self.__rectangleRubberBand.hide()
-         del self.__rectangleRubberBand
-         self.__rectangleRubberBand = None
+      self.__rubberBand.reset()
       self.mode = None                
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__rectangleRubberBand  is not None:
-         self.__rectangleRubberBand.hide()
-         del self.__rectangleRubberBand
-         self.__rectangleRubberBand = None
+      self.__rubberBand.reset()
 
       result = False
       del self.vertices[:] # svuoto la lista
@@ -104,27 +95,20 @@ class Qad_rectangle_maptool(QadGetPoint):
          result = True
 
       if result == True:
-         self.__rectangleRubberBand = createRubberBand(self.canvas, self.geomType, True)      
          if self.vertices is not None:
-            tot = len(self.vertices) - 1
-            i = 0
-            while i <= tot:
-               if i < tot:
-                  self.__rectangleRubberBand.addPoint(self.vertices[i], False)
-               else:  # ultimo punto
-                  self.__rectangleRubberBand.addPoint(self.vertices[i], True)
-               i = i + 1
+            if self.geomType == QGis.Polygon:
+               self.__rubberBand.setPolygon(self.vertices)
+            else:
+               self.__rubberBand.setLine(self.vertices)            
          
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__rectangleRubberBand is not None:
-         self.__rectangleRubberBand.show()
+      self.__rubberBand.show()
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         if self.__rectangleRubberBand is not None:
-            self.__rectangleRubberBand.hide()
+         self.__rubberBand.hide()
       except:
          pass
 

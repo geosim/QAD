@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_getpoint import *
@@ -63,7 +62,7 @@ class QadERASECommandClass(QadCommandClass):
       del self.SSGetClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 0: # quando si � in fase di selezione entit�
+      if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
@@ -73,7 +72,6 @@ class QadERASECommandClass(QadCommandClass):
       #=========================================================================
       # RICHIESTA PRIMO PUNTO PER SELEZIONE OGGETTI
       if self.step == 0: # inizio del comando
-         #qad_debug.breakPoint()
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
             self.step = 1

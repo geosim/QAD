@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_variables import *
@@ -61,7 +60,7 @@ class QadSETVARCommandClass(QadCommandClass):
          self.step = 1
          return False
       elif self.step == 1: # dopo aver atteso il nome della variabile si riavvia il comando
-         if msgMapTool == True: # niente pu� arrivare da grafica
+         if msgMapTool == True: # niente può arrivare da grafica
             return False
          #  il nome della variabile arriva come parametro della funzione
          self.varName = msg
@@ -96,14 +95,14 @@ class QadSETVARCommandClass(QadCommandClass):
                self.step = 2
                return False
       elif self.step == 2: # dopo aver atteso il valore della variabile si riavvia il comando
-         if msgMapTool == True: # niente pu� arrivare da grafica
+         if msgMapTool == True: # niente può arrivare da grafica
             return False
          # il valore della variabile arriva come parametro della funzione
          QadVariables.set(self.varName, msg)
          QadVariables.save()
          return True
       elif self.step == 3: # dopo aver atteso il nome della variabile si riavvia il comando
-         if msgMapTool == True: # niente pu� arrivare da grafica
+         if msgMapTool == True: # niente può arrivare da grafica
             return False
 
          if msg == "*":

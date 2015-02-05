@@ -1,9 +1,9 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
 
- funzioni varie di utilit�
+ funzioni varie di utilità
  
                               -------------------
         begin                : 2013-05-22
@@ -38,7 +38,6 @@ import ConfigParser
 import time
 
 
-import qad_debug
 from qad_variables import *
 from qad_snapper import *
 from qad_msg import QadMsg
@@ -47,7 +46,7 @@ from qad_arc import *
 from qad_entity import *
 
 
-# Modulo che gestisce varie funzionalit� di Qad
+# Modulo che gestisce varie funzionalità di Qad
 
 
 #===============================================================================
@@ -147,7 +146,7 @@ def str2bool(s):
 def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = True):
    """
    Ritorna la conversione di una stringa in punto QgsPoint
-   se <oneNumberAllowed> = False significa che s non pu� essere un solo numero
+   se <oneNumberAllowed> = False significa che s non può essere un solo numero
    che rappresenterebbe la distanza dall'ultimo punto con angolo in base al punto corrente
    (questo viene vietato quando si vuole accettare un numero o un punto)
    lastPoint viene usato solo per le espressioni tipo @10<45 (dall'ultimo punto, lunghezza 10, angolo 45 gradi)
@@ -242,7 +241,7 @@ def str2snapTypeEnum(s):
          snapType = snapType | QadSnapTypeEnum.PER
       elif snapTypeStr == QadMsg.translate("Snap", "TAN"): # "TAN" tangente
          snapType = snapType | QadSnapTypeEnum.TAN
-      elif snapTypeStr == QadMsg.translate("Snap", "VIC"): # "VIC" punto pi� vicino
+      elif snapTypeStr == QadMsg.translate("Snap", "VIC"): # "VIC" punto più vicino
          snapType = snapType | QadSnapTypeEnum.NEA
       elif snapTypeStr == QadMsg.translate("Snap", "APP"): # "APP" intersezione apparente
          snapType = snapType | QadSnapTypeEnum.APP
@@ -251,7 +250,7 @@ def str2snapTypeEnum(s):
       elif snapTypeStr == QadMsg.translate("Snap", "PAR"): # "PAR" Parallelo
          snapType = snapType | QadSnapTypeEnum.PAR         
       elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0: # se inizia per "PR" distanza progressiva
-         # la parte successiva PR pu� essere vuota o numerica
+         # la parte successiva PR può essere vuota o numerica
          param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
          if len(param) == 0 or str2float(param) is not None:
             snapType = snapType | QadSnapTypeEnum.PR
@@ -319,8 +318,8 @@ def toDegrees(angle):
 def normalizeAngle(angle, norm = math.pi * 2):
    """
    Normalizza un angolo a da [0 - 2pi] o da [0 - pi].
-   Cos�, ad esempio, se un angolo � pi� grande di 2pi viene ridotto all'angolo giusto 
-   (il raffronto in gradi sarebbe da 380 a 20 gradi) o se � negativo diventa positivo
+   Così, ad esempio, se un angolo é più grande di 2pi viene ridotto all'angolo giusto 
+   (il raffronto in gradi sarebbe da 380 a 20 gradi) o se é negativo diventa positivo
    (il raffronto in gradi sarebbe da -90 a 270 gradi)  
    """
    if angle == 0:
@@ -375,7 +374,7 @@ def filterFeaturesByType(features, filterByGeomType):
    La funzine modifica la lista <features> depurandola dalle geometrie di tipo diverso
    da <filterByGeomType>.   
    Restituisce 3 liste rispettivamente di punti, linee e poligoni.
-   La lista del tipo indicato dal parametro <filterByGeomType> sar� vuota, le altre
+   La lista del tipo indicato dal parametro <filterByGeomType> sarà vuota, le altre
    due liste conterranno geometrie.
    """
    resultPoint = []
@@ -407,7 +406,7 @@ def filterGeomsByType(geoms, filterByGeomType):
    La funzine modifica la lista <geoms> depurandola dalle geometrie di tipo diverso
    da <filterByGeomType>.   
    Restituisce 3 liste rispettivamente di punti, linee e poligoni.
-   La lista del tipo indicato dal parametro <filterByGeomType> sar� vuota, le altre
+   La lista del tipo indicato dal parametro <filterByGeomType> sarà vuota, le altre
    due liste conterranno geometrie.
    """
    resultPoint = []
@@ -434,7 +433,7 @@ def filterGeomsByType(geoms, filterByGeomType):
 #===============================================================================
 def getEntSelCursor():
    """
-   Ritorna l'immagine del cursore per la selezione di un'entit� 
+   Ritorna l'immagine del cursore per la selezione di un'entità
    """
    
    size = 1 + QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) * 2
@@ -510,7 +509,6 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
    # should be done or whether test on bounding box suffices.
    # This is needed e.g. for feature identification or selection. Default: False
       
-   #qad_debug.breakPoint()
    request = QgsFeatureRequest()
    
    #flag = QgsFeatureRequest.NoFlags
@@ -521,7 +519,7 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
    if rect is not None:
       r = QgsRectangle(rect)
       
-      # Se il rettangolo � schiacciato in verticale o in orizzontale
+      # Se il rettangolo é schiacciato in verticale o in orizzontale
       # risulta una linea e la funzione fa casino, allora in questo caso lo allargo un pochino
       if doubleNear(r.xMinimum(), r.xMaximum(), 1.e-6):
          r.setXMaximum(r.xMaximum() + 1.e-6)
@@ -552,7 +550,7 @@ def getEntSel(point, mQgsMapTool, \
               onlyBoundary = True, onlyEditableLayers = False):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
-   la funzione cerca la prima entit� dentro il quadrato
+   la funzione cerca la prima entità dentro il quadrato
    di dimensioni PICKBOX centrato sul punto
    layer = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
@@ -569,7 +567,6 @@ def getEntSel(point, mQgsMapTool, \
    feature = QgsFeature()
    Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
    
-   #qad_debug.breakPoint()
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
@@ -594,7 +591,7 @@ def getEntSel(point, mQgsMapTool, \
          selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
                                    layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
                                            
-         # se � un layer contenente poligoni allora verifico se considerare solo i bordi
+         # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
             # fetchAttributes, fetchGeometry, rectangle, useIntersect             
             for feature in layer.getFeatures(getFeatureRequest([], True, selectRect, True)):
@@ -636,7 +633,7 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
                     onlyBoundary = True):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
-   la funzione verifica se la geometria � dentro il quadrato
+   la funzione verifica se la geometria é dentro il quadrato
    di dimensioni PICKBOX centrato sul punto
    geom = geometria da verificare
    crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
@@ -644,7 +641,7 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce True se la geometria � nel quadrato di PickBox altrimenti False 
+   Restituisce True se la geometria é nel quadrato di PickBox altrimenti False 
    """   
    if geom is None:
       return False
@@ -653,7 +650,6 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
       
    Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
    
-   #qad_debug.breakPoint()
    # considero solo la geometria filtrata per tipo
    if ((geom.type() == QGis.Point and checkPointLayer == True) or \
        (geom.type() == QGis.Line and checkLineLayer == True) or \
@@ -669,7 +665,7 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
       selectRect = QgsRectangle(mapPoint.x() - ToleranceInMapUnits, mapPoint.y() - ToleranceInMapUnits, \
                                 mapPoint.x() + ToleranceInMapUnits, mapPoint.y() + ToleranceInMapUnits)
                                            
-      # se � una geometria poligono allora verifico se considerare solo i bordi
+      # se é una geometria poligono allora verifico se considerare solo i bordi
       if onlyBoundary == False or geom.type() != QGis.Polygon:
          if mapGeom.intersects(selectRect):
             return True
@@ -700,7 +696,7 @@ def getGeomInPickBox(point, mQgsMapTool, geoms, crs = None, \
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce la geometria che � nel quadrato di PickBox altrimenti None 
+   Restituisce la geometria che é nel quadrato di PickBox altrimenti None 
    """   
    if geoms is None:
       return False
@@ -715,7 +711,7 @@ def getGeomInPickBox(point, mQgsMapTool, geoms, crs = None, \
 #===============================================================================
 def getActualSingleSelection(layers):
    """
-   la funzione cerca se esiste una sola entit� selezionata tra i layer
+   la funzione cerca se esiste una sola entità selezionata tra i layer
    Restituisce un QgsFeature e il suo layer in caso di successo altrimenti None 
    """
    selFeature = []
@@ -730,7 +726,7 @@ def getActualSingleSelection(layers):
             del selFeature[:] # svuoto la lista
             break
       
-   if len(selFeature) == 1: # se c'era solo una entit� selezionata
+   if len(selFeature) == 1: # se c'era solo una entità selezionata
       return selFeature[0], selLayer
   
    return None
@@ -738,7 +734,7 @@ def getActualSingleSelection(layers):
 
 def deselectAll(layers):
    """
-   la funzione deseleziona tutte le entit� selezionate nei layer
+   la funzione deseleziona tutte le entità selezionate nei layer
    """
    selFeatureIds = []
    for layer in layers: # ciclo sui layer
@@ -754,8 +750,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
               layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
               onlyEditableLayers = False):
    """
-   dato un QgsMapTool, una modalit� di selezione e una lista opzionale di punti (in map coordinates),
-   la funzione cerca le entit�.
+   dato un QgsMapTool, una modalità di selezione e una lista opzionale di punti (in map coordinates),
+   la funzione cerca le entità.
    mode = "C"  -> Crossing selection (inside and crossing)
           "CP" -> Crossing polygon (inside and crossing)
           "F"  -> Fence selection (crossing)
@@ -796,7 +792,6 @@ def getSelSet(mode, mQgsMapTool, points = None, \
          provider = layer.dataProvider()  
 
          if mode.upper() == "X": # take all features
-            #qad_debug.breakPoint()
             # fetchAttributes, fetchGeometry, rectangle, useIntersect             
             for feature in layer.getFeatures(getFeatureRequest([], True,  None, False)):
                entity.set(layer, feature.id())
@@ -849,8 +844,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
          elif mode.upper() == "CO": # crossing object
-            #qad_debug.breakPoint()
-            # points � in questo caso un QgsGeometry  
+            # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
             if mQgsMapTool.canvas.mapRenderer().destinationCrs() != layer.crs():       
                coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapRenderer().destinationCrs(), \
@@ -881,7 +875,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
          elif mode.upper() == "WO": # windows object
-            # points � in questo caso un QgsGeometry  
+            # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
             if mQgsMapTool.canvas.mapRenderer().destinationCrs() != layer.crs():       
                coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapRenderer().destinationCrs(), \
@@ -934,8 +928,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
 #===============================================================================
 def appendUniquePointToList(pointList, point):
    """
-   Aggiunge un punto alla lista verificando che non sia gi� presente.
-   Resituisce True se l'inserimento � avvenuto False se il punto c'era gi�.
+   Aggiunge un punto alla lista verificando che non sia già presente.
+   Resituisce True se l'inserimento é avvenuto False se il punto c'era già.
    """
    for iPoint in pointList:
       if ptNear(iPoint, point):
@@ -951,7 +945,7 @@ def appendUniquePointToList(pointList, point):
 def getIntersectionPoints(geom1, geom2, checkForCurves = False):
    """
    la funzione ritorna una lista dei punti di intersezione tra le 2 geometrie.
-   Purtroppo non posso usare QgsGeometry.intersection perch� non usa una tolleranza
+   Purtroppo non posso usare QgsGeometry.intersection perché non usa una tolleranza
    (le geometrie spesso vengono convertite in un'altro crs 
    e poi riconvertite in quello originale perdendo precisione)
    """
@@ -1052,14 +1046,12 @@ def getLinePart(geom, ptStart, ptEnd):
             break            
       if found == False:
          continue        
-      
-      #qad_debug.breakPoint()
-      
+            
       if isPolygon == False:
          # trovata la polilinea che contiene il punto iniziale e finale
          result = [ptStart]
          if segmentStart < segmentEnd:
-            # se il punto ptStart � uguale al punto iniziale del segmento successivo            
+            # se il punto ptStart é uguale al punto iniziale del segmento successivo            
             if ptStart == points[segmentStart + 1]:
                segmentStart = segmentStart + 1
             
@@ -1067,7 +1059,7 @@ def getLinePart(geom, ptStart, ptEnd):
                result.append(points[i])
                   
          elif segmentStart > segmentEnd:
-            # se il punto ptEnd � uguale al punto finale del segmento            
+            # se il punto ptEnd é uguale al punto finale del segmento            
             if ptEnd == points[segmentEnd + 1]:
                segmentEnd = segmentEnd + 1
             
@@ -1076,17 +1068,17 @@ def getLinePart(geom, ptStart, ptEnd):
                
          result.append(ptEnd)     
       else:
-         # do il senso di circolarit�
+         # do il senso di circolarità
          if ptStart == points[0]:
             segmentStart = totalSegment - 1
             
          if segmentStart == segmentEnd:
             return [ptStart, ptEnd]
-         # Se � un poligono devo verificare il percorso pi� corto da ptStart e ptEnd
+         # Se é un poligono devo verificare il percorso più corto da ptStart e ptEnd
          
          # seguo il senso dei vertici
          result1 = [ptStart]         
-         # se il punto ptStart � uguale al punto iniziale del segmento successivo
+         # se il punto ptStart é uguale al punto iniziale del segmento successivo
          i = segmentStart
          nextSegment = getNextPolygonVertex(segmentStart, totalSegment)          
          if ptStart == points[nextSegment]:
@@ -1102,7 +1094,7 @@ def getLinePart(geom, ptStart, ptEnd):
          
          # seguo il senso inverso dei vertici
          result2 = [ptStart]
-         # se il punto ptEnd � uguale al punto finale del segmento 
+         # se il punto ptEnd é uguale al punto finale del segmento 
          nextSegment = getNextPolygonVertex(segmentEnd, totalSegment)
          if ptEnd == points[nextSegment]:
             segmentEnd = nextSegment
@@ -1137,9 +1129,9 @@ def getPerpendicularPointOnInfinityLine(p1, p2, pt):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 � verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 é verticale
       return QgsPoint(p1.x(), pt.y())
-   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 � orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 é orizzontale
       return QgsPoint(pt.x(), p1.y())
    else:
       coeff = diffY / diffX
@@ -1171,7 +1163,7 @@ def getInfinityLinePerpOnMiddle(pt1, pt2):
 #===============================================================================
 def getBisectorInfinityLine(pt1, pt2, pt3, acuteMode = True):
    """
-   dato un angolo definito da 3 punti il cui secondo punto � vertice dell'angolo,
+   dato un angolo definito da 3 punti il cui secondo punto é vertice dell'angolo,
    la funzione restituisce la linea bisettrice dell'angolo attraverso 2 punti 
    della linea (il vertice dell'angolo e un altro punto calcolato distante quanto
    la distanza di pt1 da pt2).
@@ -1209,9 +1201,9 @@ def getXOnInfinityLine(p1, p2, y):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 � verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 é verticale
       return p1.x()
-   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 � orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 é orizzontale
       return None # infiniti punti
    else:
       coeff = diffY / diffX
@@ -1230,9 +1222,9 @@ def getYOnInfinityLine(p1, p2, x):
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
                           
-   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 � verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 é verticale
       return None # infiniti punti
-   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 � orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 é orizzontale
       return p1.y()
    else:
       coeff = diffY / diffX
@@ -1316,7 +1308,6 @@ def getMinDistancePtsBetween2Segments(line1P1, line1P2, line2P1, line2P2):
    la funzione ritorna i punti di distanza minima e la distanza minima tra due segmenti
    (<punto di distanza minima sul segmento1><punto di distanza minima sul segmento2><distanza minima>)
    """
-   #qad_debug.breakPoint()
    intPt = getIntersectionPointOn2Segments(line1P1, line1P2, line2P1, line2P2)
    if intPt is not None:
       return [intPt, intPt, 0]
@@ -1354,18 +1345,18 @@ def getMinDistancePtsBetweenSegmentAndArc(p1, p2, arc):
    # ritorna una lista: (<punto di distanza minima><distanza minima>)
    resultP1 = getMinDistancePtBetweenArcAndPt(arc, p1)   
    resultP2 = getMinDistancePtBetweenArcAndPt(arc, p2)
-   # se il segmento � interno al cerchio orginato dall'estensione dell'arco
+   # se il segmento é interno al cerchio orginato dall'estensione dell'arco
    if getDistance(p1, arc.center) < arc.radius and \
       getDistance(p2, arc.center) < arc.radius:
       if resultP1[1] < resultP2[1]:
          return [p1, resultP1[0], resultP1[1]]
       else:
          return [p2, resultP2[0], resultP2[1]]
-   # se il segmento � esterno al cerchio orginato dall'estensione dell'arco
+   # se il segmento é esterno al cerchio orginato dall'estensione dell'arco
    else:
       perpPt = getPerpendicularPointOnInfinityLine(p1, p2, arc.center)
       angle = getAngleBy2Pts(arc.center, perpPt)
-      # il punto di perpendicolare alla linea infinita p1,p2 � sul segmento e sull'arco
+      # il punto di perpendicolare alla linea infinita p1,p2 é sul segmento e sull'arco
       if isPtOnSegment(p1, p2, perpPt) == True and \
          isAngleBetweenAngles(arc.startAngle, arc.endAngle, angle) == True:
          ptOnArc = getPolarPointByPtAngle(arc.center, angle, arc.radius)
@@ -1453,8 +1444,8 @@ def getMinDistancePtsBetween2Arcs(arc1, arc2):
             distanceIntPts = getDistance(intPtArc1, intPtArc2)
             if bestResult[2] > distanceIntPts:
                bestResult = [intPtArc1, intPtArc2, distanceIntPts]                    
-   # il cerchio1 � interno al cerchio2 oppure
-   # il cerchio2 � interno al cerchio1
+   # il cerchio1 é interno al cerchio2 oppure
+   # il cerchio2 é interno al cerchio1
    elif distanceBetweenCenters + circle1.radius < circle2.radius or \
         distanceBetweenCenters + circle2.radius < circle1.radius:
       # creo un segmento che unisce i due centri e lo interseco con l'arco 2
@@ -1494,12 +1485,12 @@ def getAngleBy2Pts(p1, p2):
    """
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
-   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 � verticale
+   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 é verticale
       if p1.y() < p2.y():
          angle = math.pi / 2
       else :
          angle = math.pi * 3 / 2
-   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 � orizzontale
+   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 é orizzontale
       if p1.x() <= p2.x():
          angle = 0.0
       else:
@@ -1580,7 +1571,7 @@ def getPolarPointBy2Pts(p1, p2, dist):
 #===============================================================================
 def isPtOnSegment(p1, p2, point):
    """
-   la funzione ritorna true se il punto � sul segmento (estremi compresi).
+   la funzione ritorna true se il punto é sul segmento (estremi compresi).
    p1, p2 e point sono QgsPoint.
    """
    if p1.x() < p2.x():
@@ -1598,15 +1589,15 @@ def isPtOnSegment(p1, p2, point):
       yMin = p2.y()
 
    y = getYOnInfinityLine(p1, p2, point.x())
-   if y is None: # il segmento p1-p2 � verticale
+   if y is None: # il segmento p1-p2 é verticale
       if (doubleNear(point.x(), xMin)) and \
          (point.y() < yMax or doubleNear(point.y(), yMax)) and \
          (point.y() > yMin or doubleNear(point.y(), yMin)):
          return True
    else:
-      # se il punto � sulla linea infinita che passa da p1-p2
+      # se il punto é sulla linea infinita che passa da p1-p2
       if doubleNear(point.y(), y):
-         # se la coordinata x � compresa nel segmento
+         # se la coordinata x é compresa nel segmento
          if (point.x() > xMin or doubleNear(point.x(), xMin)) and \
             (point.x() < xMax or doubleNear(point.x(), xMax)):
             return True
@@ -1619,15 +1610,15 @@ def isPtOnSegment(p1, p2, point):
 #===============================================================================
 def isPtOnInfinityLine(lineP1, lineP2, point):
    """
-   la funzione ritorna true se il punto � sul segmento (estremi compresi).
+   la funzione ritorna true se il punto é sul segmento (estremi compresi).
    p1, p2 e point sono QgsPoint.
    """
    y = getYOnInfinityLine(lineP1, lineP2, point.x())
-   if y is None: # la linea infinita lineP1-lineP2 � verticale
+   if y is None: # la linea infinita lineP1-lineP2 é verticale
       if doubleNear(point.x(), lineP1.x()):
          return True
    else:
-      # se il punto � sulla linea infinita che passa da p1-p2
+      # se il punto é sulla linea infinita che passa da p1-p2
       if doubleNear(point.y(), y):
          return True
          
@@ -1653,13 +1644,13 @@ def getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2):
    elif doubleNear(line1DiffY, 0) and doubleNear(line2DiffY, 0): # se la retta1 e la retta2 sono orizzonatali
       return None # sono parallele
 
-   if doubleNear(line1DiffX, 0): # se la retta1 � verticale
+   if doubleNear(line1DiffX, 0): # se la retta1 é verticale
       return QgsPoint(line1P2.x(), getYOnInfinityLine(line2P1, line2P2, line1P2.x()))
-   if doubleNear(line1DiffY, 0): # se la retta1 � orizzontale
+   if doubleNear(line1DiffY, 0): # se la retta1 é orizzontale
       return QgsPoint(getXOnInfinityLine(line2P1, line2P2, line1P2.y()), line1P2.y())
-   if doubleNear(line2DiffX, 0): # se la retta2 � verticale
+   if doubleNear(line2DiffX, 0): # se la retta2 é verticale
       return QgsPoint(line2P2.x(), getYOnInfinityLine(line1P1, line1P2, line2P2.x()))
-   if doubleNear(line2DiffY, 0): # se la retta2 � orizzontale
+   if doubleNear(line2DiffY, 0): # se la retta2 é orizzontale
       return QgsPoint(getXOnInfinityLine(line1P1, line1P2, line2P2.y()), line2P2.y())
 
    line1Coeff = line1DiffY / line1DiffX
@@ -1669,7 +1660,7 @@ def getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2):
       return None
      
    D = line1Coeff - line2Coeff
-   # se D � cos� vicino a zero 
+   # se D é così vicino a zero 
    if doubleNear(D, 0.0):
       return None   
    x = line1P1.x() * line1Coeff - line1P1.y() - line2P1.x() * line2Coeff + line2P1.y()
@@ -1689,7 +1680,7 @@ def getIntersectionPointOn2Segments(line1P1, line1P2, line2P1, line2P2):
    """
    ptInt = getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2)
    if ptInt is not None: # se non sono parallele
-      # se il punto di intersezione � sui segmenti
+      # se il punto di intersezione é sui segmenti
       if isPtOnSegment(line1P1, line1P2, ptInt) and isPtOnSegment(line2P1, line2P2, ptInt):
          return QgsPoint(ptInt)
    else:
@@ -1716,12 +1707,12 @@ def getIntersectionPointOn2Segments(line1P1, line1P2, line2P1, line2P2):
 #===============================================================================
 def getNearestPoints(point, points, tolerance = 0):
    """
-   Ritorna una lista di punti pi� vicino a point.
+   Ritorna una lista di punti più vicino a point.
    """   
    result = []   
    minDist = sys.float_info.max
    
-   if tolerance == 0: # solo il punti pi� vicino
+   if tolerance == 0: # solo il punti più vicino
       for pt in points:
          dist = getDistance(point, pt)
          if dist < minDist:
@@ -1731,7 +1722,7 @@ def getNearestPoints(point, points, tolerance = 0):
       if minDist != sys.float_info.max: # trovato
          result.append(nearestPoint)
    else:
-      nearest = __getNearestPoints(point, points) # punto pi� vicino
+      nearest = __getNearestPoints(point, points) # punto più vicino
       nearestPoint = nearest[0]
       
       for pt in points:
@@ -1798,7 +1789,7 @@ def asPointOrPolyline(geom):
 #===============================================================================
 def leftOfLineCoords(x, y, x1, y1, x2, y2):
    """
-   la funzione ritorna una numero < 0 se il punto x,y � alla sinistra della linea x1,y1 -> x2,y2
+   la funzione ritorna una numero < 0 se il punto x,y é alla sinistra della linea x1,y1 -> x2,y2
    """
    f1 = x - x1
    f2 = y2 - y1
@@ -1892,7 +1883,7 @@ def sqrDistToSegment(point, x1, y1, x2, y2, epsilon):
    """
    la funzione ritorna una lista con 
    (<minima distanza al quadrato>
-    <punto pi� vicino>)
+    <punto più vicino>)
    """
    minDistPoint = QgsPoint()
    
@@ -1932,7 +1923,7 @@ def sqrDistToArc(point, arc):
    """
    la funzione ritorna una lista con 
    (<minima distanza al quadrato>
-    <punto pi� vicino>)
+    <punto più vicino>)
    """   
    minDistPoint = QgsPoint()
    angle = getAngleBy2Pts(arc.center, point)
@@ -1957,11 +1948,10 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
    """
    la funzione ritorna una lista con 
    (<minima distanza al quadrato>
-    <punto pi� vicino>
-    <indice vertice successivo del segmento pi� vicino (nel caso la geom fosse linea o poligono)>
-    <"a sinistra di" se il punto � alla sinista del segmento (< 0 -> sinistra, > 0 -> destra)
+    <punto più vicino>
+    <indice vertice successivo del segmento più vicino (nel caso la geom fosse linea o poligono)>
+    <"a sinistra di" se il punto é alla sinista del segmento (< 0 -> sinistra, > 0 -> destra)
    """
-   #qad_debug.breakPoint()
    minDistPoint = QgsPoint()
    closestSegmentIndex = 0
    wkbType = geom.wkbType()
@@ -2097,7 +2087,7 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
 def getBoundingPtsOnOnInfinityLine(linePt1, linePt2, pts):
    """
    Data una linea infinita passante per <linePt1> e <linePt2> e una lista di punti <pts> non ordinati sulla linea,
-   la funzione ritorna i due punti estremi al fascio di punti (i due punti pi� lontani tra di loro).
+   la funzione ritorna i due punti estremi al fascio di punti (i due punti più lontani tra di loro).
    """
    tot = len(pts)
    if tot < 3:
@@ -2355,18 +2345,17 @@ def moveQgsGeometry(geom, offSetX, offSetY):
 def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
    """
    la funzione estende la geometria (lineare) nella parte iniziale o finale fino ad
-   incontrare l'oggetto pi� vicino nel gruppo <limitEntitySet> secondo la modalit� <edgeMode>.
+   incontrare l'oggetto più vicino nel gruppo <limitEntitySet> secondo la modalità <edgeMode>.
    <layer> = layer della geometria da estendere
    <geom> = geometria da estendere
    <pt> = punto che indica il sotto-oggetto grafico (se si tratta di WKBMultiLineString)
           e la parte di quell'oggetto che deve essere estesa
-   <QadEntitySet> = gruppo di entit� che serve da limite di estensione
-   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino
-              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino o 
+   <QadEntitySet> = gruppo di entità che serve da limite di estensione
+   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto più vicino
+              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto più vicino o 
               anche il suo prolungamento
    <tolerance2ApproxCurve> = tolleranza di approssimazione per le curve
    """
-   #qad_debug.breakPoint()   
    if geom is None:
       return None
 
@@ -2388,7 +2377,7 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
    LinearObjectListToExtend = QadLinearObjectList()
    LinearObjectListToExtend.fromPolyline(subGeom.asPolyline())
    
-   if LinearObjectListToExtend.isClosed(): # non si pu� fare con polilinea chiusa
+   if LinearObjectListToExtend.isClosed(): # non si può fare con polilinea chiusa
       return None
    
    # stabilisco se devo considerare l'inizio o la fine della polilinea
@@ -2419,7 +2408,7 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
          coordTransform = QgsCoordinateTransform(limitLayer.crs(), layer.crs())          
       ExtendedLinearObject.set(LinearObjectToExtend)
             
-      # per ciascuna entit� del layer
+      # per ciascuna entità del layer
       for featureId in limitLayerEntitySet.featureIds:
          f = getFeatureById(limitLayer, featureId)
          # Trasformo la geometria limite nel sistema di coordinate del <layer>     
@@ -2429,8 +2418,7 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
          
          intPt = getIntersectionPtExtendQgsGeometry(LinearObjectToExtend, gTransformed, edgeMode)
          if intPt is not None:
-            #qad_debug.breakPoint()
-            # cerco il punto di intersezione pi� vicino al punto finale di linearObject
+            # cerco il punto di intersezione più vicino al punto finale di linearObject
             ExtendedLinearObject.setEndPt(intPt)
             if ExtendedLinearObject.length() < minDist:
                minDist = ExtendedLinearObject.length()
@@ -2457,12 +2445,12 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
 def getIntersectionPtExtendQgsGeometry(linearObject, limitGeom, edgeMode):
    """
    la funzione calcola il punto di intersezione tra il prolungamento della parte lineare
-   oltre il punto finale fino ad incontrare la geometria <limitGeom> secondo la modalit� <edgeMode>.
-   Viene restituito il punto pi� vicino al punto finale di <linearObject>.
+   oltre il punto finale fino ad incontrare la geometria <limitGeom> secondo la modalità <edgeMode>.
+   Viene restituito il punto più vicino al punto finale di <linearObject>.
    <linearObject> = parte lineare da estendere
    <limitGeom> = geometria da usare come limite di estensione
-   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino
-              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino o 
+   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto più vicino
+              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto più vicino o 
               anche il suo prolungamento
    """
    intPts = []
@@ -2488,7 +2476,6 @@ def getIntersectionPtExtendQgsGeometry(linearObject, limitGeom, edgeMode):
          
          # primo tratto
          LimitLinearObject = limitLinearObjectParts.getLinearObjectAt(0)
-         #qad_debug.breakPoint()
          pts = linearObject.getIntersectionPtsOnExtensionWithLinearObject(LimitLinearObject)               
          if edgeMode == 0: # senza estendere
             # considero solo i punti sulla parte <LimitLinearObject>
@@ -2554,7 +2541,7 @@ def getIntersectionPtExtendQgsGeometry(linearObject, limitGeom, edgeMode):
    if len(intPts) == 0:
       return None
    
-   # cerco il punto di intersezione pi� vicino al punto finale di linearObject
+   # cerco il punto di intersezione più vicino al punto finale di linearObject
    minDist = sys.float_info.max
    LimitLinearObject.set(linearObject)
    for intPt in intPts:
@@ -2571,19 +2558,18 @@ def getIntersectionPtExtendQgsGeometry(linearObject, limitGeom, edgeMode):
 #===============================================================================
 def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
    """
-   la funzione taglia la geometria (lineare) in una parte i cui limiti sono le intersezioni pi�
-   vicine a pt con gli oggetti del gruppo <limitEntitySet> secondo la modalit� <edgeMode>.
+   la funzione taglia la geometria (lineare) in una parte i cui limiti sono le intersezioni più
+   vicine a pt con gli oggetti del gruppo <limitEntitySet> secondo la modalità <edgeMode>.
    <layer> = layer della geometria da tagliare
    <geom> = geometria da tagliare
    <pt> = punto che indica il sotto-oggetto grafico (se si tratta di WKBMultiLineString)
           e la parte di quell'oggetto che deve essere tagliata
-   <QadEntitySet> = gruppo di entit� che serve da limite di taglio
-   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino
-              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino o 
+   <QadEntitySet> = gruppo di entità che serve da limite di taglio
+   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto più vicino
+              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto più vicino o 
               anche il suo prolungamento
    <tolerance2ApproxCurve> = tolleranza di approssimazione per le curve
    """
-   #qad_debug.breakPoint()   
    if geom is None:
       return None
 
@@ -2614,14 +2600,14 @@ def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxC
    trimmedLinearObject = QadLinearObject()
    gTransformed = QgsGeometry()
   
-   # cerco intersezione pi� vicina a pt nella prima parte
+   # cerco intersezione più vicina a pt nella prima parte
    newPt1 = None
    geom1 = None
    if partList1ToTrim is not None:
       partList1ToTrim.reverse()
       newPt1, partNumberAtpartList1 = partList1ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
       if newPt1 is None: # nessuna intersezione
-         if LinearObjectListToCut.isClosed(): # se � chiusa
+         if LinearObjectListToCut.isClosed(): # se é chiusa
             if partList2ToTrim is None:
                return None               
             partList2ToTrim.reverse()
@@ -2642,12 +2628,12 @@ def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxC
 
       partList1ToTrim.reverse()
       
-   # cerco intersezione pi� vicina a pt nella seconda parte
+   # cerco intersezione più vicina a pt nella seconda parte
    newPt2 = None  
    if partList2ToTrim is not None:
       newPt2, partNumberAtpartList2 = partList2ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
       if newPt2 is None: # nessuna intersezione
-         if LinearObjectListToCut.isClosed(): # se � chiusa
+         if LinearObjectListToCut.isClosed(): # se é chiusa
             if partList1ToTrim is None:
                return None               
             newPt, partNumberAtpartList = partList1ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
@@ -2684,12 +2670,12 @@ def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxC
 def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
    """
    la funzione calcola il punto di intersezione tra la parte lineare
-   e la geometria <limitGeom> secondo la modalit� <edgeMode>.
-   Viene restituito il punto pi� vicino al punto iniziale di <linearObject>.
+   e la geometria <limitGeom> secondo la modalità <edgeMode>.
+   Viene restituito il punto più vicino al punto iniziale di <linearObject>.
    <linearObject> = parte lineare da estendere
    <limitGeom> = geometria da usare come limite di estensione
-   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino
-              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto pi� vicino o 
+   <edgeMode> se = 0 si deve estendere la geometria fino ad incontrare l'oggetto più vicino
+              se = 1 si deve estendere la geometria fino ad incontrare l'oggetto più vicino o 
               anche il suo prolungamento
    """
    intPts = []
@@ -2709,7 +2695,6 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
          
          # primo tratto
          LimitLinearObject = limitLinearObjectParts.getLinearObjectAt(0)
-         #qad_debug.breakPoint()
          pts = linearObject.getIntersectionPtsOnExtensionWithLinearObject(LimitLinearObject)               
          if edgeMode == 0: # senza estendere
             # considero solo i punti sulla parte <LimitLinearObject>
@@ -2779,7 +2764,7 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
    if len(intPts) == 0:
       return None
    
-   # cerco il punto di intersezione pi� vicino al punto iniziale di linearObject
+   # cerco il punto di intersezione più vicino al punto iniziale di linearObject
    minDist = sys.float_info.max
    LimitLinearObject.set(linearObject)
    for intPt in intPts:
@@ -2868,13 +2853,12 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
    obj = whatGeomIs(0, geom)
    if (type(obj) != list and type(obj) != tuple):
       objType = obj.whatIs()
-      if objType == "CIRCLE": # se � cerchio
+      if objType == "CIRCLE": # se é cerchio
          if containerGeom.contains(obj.center): # punto interno a containerGeom
             obj.center.setX(obj.center.x() + offSetX)
             obj.center.setY(obj.center.y() + offSetY)
             return QgsGeometry.fromPolyline(obj.asPolyline(tolerance2ApproxCurve))
 
-   #qad_debug.breakPoint()
    stretchedGeom = QgsGeometry(geom)
    snapper = QadSnapper()
    points = snapper.getEndPoints(stretchedGeom)
@@ -2965,7 +2949,6 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
    <secondPt> = secondo punto di divisione
    <tolerance2ApproxCurve> = tolleranza di approssimazione per le curve
    """
-   #qad_debug.breakPoint()   
    if geom is None:
       return None
 
@@ -3012,7 +2995,7 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
       dummy = LinearObjectListToCut.breakOnPt(myFirstPt)
       partList1ToTrim = dummy[0]
       partList2ToTrim = dummy[1]
-      if LinearObjectListToCut.isClosed(): # se � chiusa
+      if LinearObjectListToCut.isClosed(): # se é chiusa
          return None
       else:
          if partList1ToTrim is not None:
@@ -3021,7 +3004,7 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
             geom2 = QgsGeometry.fromPolyline(partList2ToTrim.asPolyline(tolerance2ApproxCurve))
          
          return [geom1, geom2, atSubGeom]
-   else: # c'� anche il secondo punto di divisione
+   else: # c'é anche il secondo punto di divisione
       dist1 = LinearObjectListToCut.getDistanceFromStart(myFirstPt)
       dist2 = LinearObjectListToCut.getDistanceFromStart(mySecondPt)
       if dist1 < dist2:
@@ -3030,8 +3013,8 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
       else:
          p1 = mySecondPt
          p2 = myFirstPt
+         
       # divido la polilinea in 2
-      #qad_debug.breakPoint()
       dummy = LinearObjectListToCut.breakOnPt(p1)
       partList1ToTrim = dummy[0]
       partList2ToTrim = dummy[1]
@@ -3040,7 +3023,7 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
          dummy = partList2ToTrim.breakOnPt(p2)
          partList2ToTrim = dummy[1]
       
-      if LinearObjectListToCut.isClosed(): # se � chiusa
+      if LinearObjectListToCut.isClosed(): # se é chiusa
          if partList2ToTrim is None:
             partList2ToTrim = QadLinearObjectList()   
          if partList1ToTrim is not None:
@@ -3056,7 +3039,7 @@ def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
                geom1 = QgsGeometry.fromPolyline(arc.asPolyline(tolerance2ApproxCurve))            
             else:
                geom1 = QgsGeometry.fromPolyline(partList2ToTrim.asPolyline(tolerance2ApproxCurve))            
-      else: # se � aperta
+      else: # se é aperta
          if partList1ToTrim is not None:
             geom1 = QgsGeometry.fromPolyline(partList1ToTrim.asPolyline(tolerance2ApproxCurve))      
          if partList2ToTrim is not None:
@@ -3295,7 +3278,6 @@ def getRectByCorners(firstCorner, secondCorner, rot, gapType, \
    2 = smussa gli spigoli del rettangolo con 2 distanze di cimatura gapValue1, gapValue2
    tolerance2ApproxCurve = errore minimo di tolleranza per rappresentare le curve
    """
-   #qad_debug.breakPoint()
    # creo un rettangolo ruotato con con angoli retti
    secondCornerProj = getPolarPointByPtAngle(firstCorner, rot, 10)
    pt2 = getPerpendicularPointOnInfinityLine(firstCorner, secondCornerProj, secondCorner)
@@ -3310,7 +3292,7 @@ def getRectByCorners(firstCorner, secondCorner, rot, gapType, \
       width = getDistance(pt2, secondCorner)
                   
       if gapType == 1: # raccorda gli spigoli del rettangolo con un raggio di curvatura gapValue1
-         if (gapValue1 * 2) > length or (gapValue1 * 2) > width: # il rettangolo � troppo piccolo
+         if (gapValue1 * 2) > length or (gapValue1 * 2) > width: # il rettangolo é troppo piccolo
             return [QgsPoint(firstCorner), pt2, QgsPoint(secondCorner), pt4, QgsPoint(firstCorner)]
          
          if tolerance2ApproxCurve is None:
@@ -3371,7 +3353,7 @@ def getRectByCorners(firstCorner, secondCorner, rot, gapType, \
          LinearObjectList.append([arc, Inverse])
          return LinearObjectList.asPolyline(tolerance)
       elif gapType == 2: # smussa gli spigoli del rettangolo con 2 distanze di cimatura gapValue1, gapValue2
-         if (gapValue1 + gapValue2) > length or (gapValue1 + gapValue2) > width: # il rettangolo � troppo piccolo
+         if (gapValue1 + gapValue2) > length or (gapValue1 + gapValue2) > width: # il rettangolo é troppo piccolo
             return [QgsPoint(firstCorner), pt2, QgsPoint(secondCorner), pt4, QgsPoint(firstCorner)]
 
          p1 = getPolarPointByPtAngle(firstCorner, angle, gapValue2)
@@ -3424,18 +3406,17 @@ def getRectByAreaAndLength(firstCorner, area, lengthDim, rot, gapType, \
       return getRectByCornerAndDims(firstCorner, lengthDim, widthDim, rot, gapType, \
                                     gapValue1, gapValue2, tolerance2ApproxCurve)
    else:
-      #qad_debug.breakPoint()
       if gapType == 1: # raccorda gli spigoli del rettangolo con un raggio di curvatura gapValue1
          angleArea = ((2 * gapValue1) * (2 * gapValue1)) - (math.pi * gapValue1 * gapValue1)
          widthDim = (area + angleArea) / lengthDim
-         if (gapValue1 * 2) > lengthDim or (gapValue1 * 2) > widthDim: # il rettangolo � troppo piccolo
+         if (gapValue1 * 2) > lengthDim or (gapValue1 * 2) > widthDim: # il rettangolo é troppo piccolo
             widthDim = area / lengthDim
          return getRectByCornerAndDims(firstCorner, lengthDim, widthDim, rot, gapType, \
                                        gapValue1, gapValue2, tolerance2ApproxCurve)
       elif gapType == 2: # smussa gli spigoli del rettangolo con 2 distanze di cimatura gapValue1, gapValue2
          angleArea = 2 * (gapValue1 * gapValue2)
          widthDim = (area + angleArea) / lengthDim
-         if (gapValue1 + gapValue2) > lengthDim or (gapValue1 + gapValue2) > widthDim: # il rettangolo � troppo piccolo
+         if (gapValue1 + gapValue2) > lengthDim or (gapValue1 + gapValue2) > widthDim: # il rettangolo é troppo piccolo
             widthDim = area / lengthDim
          return getRectByCornerAndDims(firstCorner, lengthDim, widthDim, rot, gapType, \
                                        gapValue1, gapValue2, tolerance2ApproxCurve)
@@ -3461,14 +3442,14 @@ def getRectByAreaAndWidth(firstCorner, area, widthDim, rot, gapType, \
       if gapType == 1: # raccorda gli spigoli del rettangolo con un raggio di curvatura gapValue1
          angleArea = math.pi * gapValue1 * gapValue1
          lengthDim = (area + angleArea) / widthDim
-         if (gapValue1 * 2) > lengthDim or (gapValue1 * 2) > widthDim: # il rettangolo � troppo piccolo
+         if (gapValue1 * 2) > lengthDim or (gapValue1 * 2) > widthDim: # il rettangolo é troppo piccolo
             lengthDim = area / widthDim
          return getRectByCornerAndDims(firstCorner, lengthDim, widthDim, rot, gapType, \
                                        gapValue1, gapValue2, tolerance2ApproxCurve)
       elif gapType == 2: # smussa gli spigoli del rettangolo con 2 distanze di cimatura gapValue1, gapValue2
          angleArea = 2 * (gapValue1 * gapValue2)
          lengthDim = (area + angleArea) / widthDim
-         if (gapValue1 + gapValue2) > lengthDim or (gapValue1 + gapValue2) > widthDim: # il rettangolo � troppo piccolo
+         if (gapValue1 + gapValue2) > lengthDim or (gapValue1 + gapValue2) > widthDim: # il rettangolo é troppo piccolo
             lengthDim = area / widthDim
          return getRectByCornerAndDims(firstCorner, lengthDim, widthDim, rot, gapType, \
                                        gapValue1, gapValue2, tolerance2ApproxCurve)
@@ -3529,7 +3510,6 @@ def getPolygonByNsidesEdgePts(sideNumber, firstEdgePt, secondEdgePt):
    firstEdgePt = primo punto di un lato
    secondEdgePt = secondo punto di un lato
    """
-   #qad_debug.breakPoint()
    result = []      
    angleIncrement = 2 * math.pi / sideNumber
    angle = getAngleBy2Pts(firstEdgePt, secondEdgePt)
@@ -3575,7 +3555,7 @@ def getPolygonByNsidesArea(sideNumber, centerPt, area):
 #===============================================================================
 def getSubGeomAtVertex(geom, atVertex):
    # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
-   # la posizione � espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
    wkbType = geom.wkbType()
    
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
@@ -3599,7 +3579,7 @@ def getSubGeomAtVertex(geom, atVertex):
          return QgsGeometry(geom), [0]
          
    if wkbType == QGis.WKBMultiLineString:
-      # cerco in quale linea � il vertice <atVertex>
+      # cerco in quale linea é il vertice <atVertex>
       i = 0
       iLine = 0
       lines = geom.asMultiPolyline() # lista di linee   
@@ -3645,7 +3625,7 @@ def getSubGeomAtVertex(geom, atVertex):
 #===============================================================================
 def getSubGeomAt(geom, atSubGeom):
    # ritorna la sotto-geometria la cui posizione
-   # � espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+   # é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
    wkbType = geom.wkbType()
    
    ndx = 0
@@ -3686,7 +3666,7 @@ def getSubGeomAt(geom, atSubGeom):
 #===============================================================================
 def setSubGeom(geom, SubGeom, atSubGeom):
    # restituisce una geometria con la sotto-geometria alla posizione <atSubGeom> 
-   # la posizione � espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
    wkbType = geom.wkbType()
    subWkbType = SubGeom.wkbType()
    
@@ -3749,7 +3729,7 @@ def setSubGeom(geom, SubGeom, atSubGeom):
 #===============================================================================
 def delSubGeom(geom, atSubGeom):
    # restituisce una geometria con la sotto-geometria alla posizione <atSubGeom> cancellata
-   # la posizione � espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
    wkbType = geom.wkbType()
    
    ndx = 0
@@ -3871,12 +3851,12 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
    1 = Raccorda i segmenti attraverso un arco di raccordo di raggio <offset>
    2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
        La distanza perpendicolare da ciascuna cima al rispettivo vertice
-       sull'oggetto originale � uguale alla distanza <offset>.
+       sull'oggetto originale é uguale alla distanza <offset>.
    
    Se 
    Ritorna una lista di 3 elementi (None in caso di errore):   
    una linea che sostituisce <line1>, se = None <line1> va rimossa
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    una linea che sostituisce <line2>, se = None <line2> va rimossa
    """
    # cerco il punto di intersezione tra le due linee
@@ -3891,22 +3871,21 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
    
    if gapType == 0: # Estende i segmenti     
       if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
-         # secondo punto di line1 pi� vicino al punto di intersezione
+         # secondo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([line1.getStartPt(), ptInt])
       else:
-         # primo punto di line1 pi� vicino al punto di intersezione
+         # primo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([ptInt, line1.getEndPt()])
          
       if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
-         # secondo punto di line2 pi� vicino al punto di intersezione
+         # secondo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([line2.getStartPt(), ptInt])
       else:
-         # primo punto di line2 pi� vicino al punto di intersezione
+         # primo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([ptInt, line2.getEndPt()])
       
       return [newLine1, None, newLine2]
    elif gapType == 1: # Raccorda i segmenti
-      #qad_debug.breakPoint()
       pt1Distant = line1.getStartPt() if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt else line1.getEndPt()
       angleLine1 = getAngleBy2Pts(ptInt, pt1Distant)
          
@@ -3915,7 +3894,7 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
 
       bisectorLine = getBisectorInfinityLine(pt1Distant, ptInt, pt2Distant, True)
       # cerco il punto di intersezione tra la bisettrice e 
-      # la retta che congiunge i punti pi� distanti delle due linee
+      # la retta che congiunge i punti più distanti delle due linee
       pt = getIntersectionPointOn2InfinityLines(bisectorLine[0], bisectorLine[1], \
                                                 pt1Distant, pt2Distant)
       angleBisectorLine = getAngleBy2Pts(ptInt, pt)
@@ -3940,20 +3919,20 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
       arc.fromStartSecondEndPts(pt1Proj, secondPt, pt2Proj)
       
       if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
-         # secondo punto di line1 pi� vicino al punto di intersezione
+         # secondo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([pt1Distant, pt1Proj])
       else:
-         # primo punto di line1 pi� vicino al punto di intersezione
+         # primo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([pt1Proj, pt1Distant])   
 
       if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
-         # secondo punto di line2 pi� vicino al punto di intersezione
+         # secondo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([pt2Distant, pt2Proj])
       else:
-         # primo punto di line2 pi� vicino al punto di intersezione
+         # primo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([pt2Proj, pt2Distant])
       
-      # se i punti sono cos� vicini da essere considerati uguali         
+      # se i punti sono così vicini da essere considerati uguali         
       inverse = False if ptNear(newLine1.getEndPt(), arc.getStartPt()) else True
       return [newLine1, QadLinearObject([arc, inverse]), newLine2]   
    elif gapType == 2: # Cima i segmenti
@@ -3963,18 +3942,18 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
 
       pt1Proj = getPerpendicularPointOnInfinityLine(line1.getStartPt(), line1.getEndPt(), ptProj)
       if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
-         # secondo punto di line1 pi� vicino al punto di intersezione
+         # secondo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([line1.getStartPt(), pt1Proj])
       else:
-         # primo punto di line1 pi� vicino al punto di intersezione
+         # primo punto di line1 più vicino al punto di intersezione
          newLine1 = QadLinearObject([pt1Proj, line1.getEndPt()])      
 
       pt2Proj = getPerpendicularPointOnInfinityLine(line2.getStartPt(), line2.getEndPt(), ptProj)
       if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
-         # secondo punto di line2 pi� vicino al punto di intersezione
+         # secondo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([line2.getStartPt(), pt2Proj])
       else:
-         # primo punto di line2 pi� vicino al punto di intersezione
+         # primo punto di line2 più vicino al punto di intersezione
          newLine2 = QadLinearObject([pt2Proj, line2.getEndPt()])
 
       return [newLine1, QadLinearObject([pt1Proj, pt2Proj]), newLine2]
@@ -3988,16 +3967,15 @@ def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
 def bridgeTheGapBetweenLines(line1, ptOnLine1, line2, ptOnLine2, radius, filletMode):
    """   
    la funzione raccorda 2 segmenti retti (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che più si avvicinza ai punti di selezione
    sul segmento 1 <ptOnLine1> e sul segmento 2 <ptOnLine2>.
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    una linea che sostituisce <line1>, se = None <line1> va rimossa
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    una linea che sostituisce <line2>, se = None <line2> va rimossa
    """   
-   #qad_debug.breakPoint()
    if radius == 0: # Estende i segmenti     
       # cerco il punto di intersezione tra le due linee
       ptInt = getIntersectionPointOn2InfinityLines(line1.getStartPt(), line1.getEndPt(), \
@@ -4006,25 +3984,24 @@ def bridgeTheGapBetweenLines(line1, ptOnLine1, line2, ptOnLine2, radius, filletM
          return None
       
       if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
-         # secondo punto di line1 pi� vicino al punto di intersezione
+         # secondo punto di line1 più vicino al punto di intersezione
          resLine1 = QadLinearObject([line1.getStartPt(), ptInt])
       else:
-         # primo punto di line1 pi� vicino al punto di intersezione
+         # primo punto di line1 più vicino al punto di intersezione
          resLine1 = QadLinearObject([ptInt, line1.getEndPt()])
          
       if distBetweenLine2Pt1AndPtInt > distBetweenLine2Pt2AndPtInt:
-         # secondo punto di line2 pi� vicino al punto di intersezione
+         # secondo punto di line2 più vicino al punto di intersezione
          resLine2 = QadLinearObject([line2.getStartPt(), ptInt])
       else:
-         # primo punto di line2 pi� vicino al punto di intersezione
+         # primo punto di line2 più vicino al punto di intersezione
          resLine2 = QadLinearObject([ptInt, line2.getEndPt()])
       
       return [resLine1, None, resLine2]
    else: # Raccorda i segmenti
       filletArcs = getFilletArcsBetweenLines(line1, line2, radius)
-      #qad_debug.breakPoint()    
 
-      # cerco l'arco valido pi� vicino a ptOnLine1 e ptOnLine2
+      # cerco l'arco valido più vicino a ptOnLine1 e ptOnLine2
       AvgList = []
       Avg = sys.float_info.max   
    
@@ -4032,8 +4009,6 @@ def bridgeTheGapBetweenLines(line1, ptOnLine1, line2, ptOnLine2, radius, filletM
       resFilletArc = QadLinearObject()
       resLine2 = QadLinearObject()
       for filletArc in filletArcs:
-         #qad_debug.breakPoint()
-         
          # ricavo il nuovo segmento in modo che sia tangente con l'arco di raccordo       
          newLine1, distFromPtOnLine1 = getNewLineAccordingFilletArc(line1, filletArc, ptOnLine1)
          if newLine1 is None:
@@ -4048,7 +4023,7 @@ def bridgeTheGapBetweenLines(line1, ptOnLine1, line2, ptOnLine2, radius, filletM
          AvgList.append(distFromPtOnLine2)
    
          currAvg = numericListAvg(AvgList)           
-         if currAvg < Avg: # mediamente pi� vicino
+         if currAvg < Avg: # mediamente più vicino
             Avg = currAvg
             resLine1.set(newLine1)
             resFilletArc.setArc(filletArc, False)
@@ -4085,43 +4060,43 @@ def getNewLineAccordingFilletArc(line, filletArc, ptOnLine):
       filletPtOnLine = filletArc.getEndPt()
       isStartFilletPtOnLine = False
 
-   if line.containsPt(filletPtOnLine) == True: # se il punto � all'interno del segmento  
+   if line.containsPt(filletPtOnLine) == True: # se il punto é all'interno del segmento  
       newLine.set([filletPtOnLine, line.getEndPt()])
       
-      if isStartFilletPtOnLine: # se il punto iniziale dell'arco di raccordo � sulla linea
-         # se il nuovo segmento non � un segmento valido
+      if isStartFilletPtOnLine: # se il punto iniziale dell'arco di raccordo é sulla linea
+         # se il nuovo segmento non é un segmento valido
          if ptNear(newLine.getStartPt(), newLine.getEndPt()):          
-            # se l'arco di raccordo � tangente sul punto finale del nuovo segmento
+            # se l'arco di raccordo é tangente sul punto finale del nuovo segmento
             if TanDirectionNear(line.getTanDirectionOnEndPt(), \
                                 normalizeAngle(filletArc.getTanDirectionOnStartPt())) == True:
                newLine.set(line) # ripristino il segmento originale
          else:
-            # se l'arco di raccordo non � tangente sul punto iniziale del nuovo segmento            
+            # se l'arco di raccordo non é tangente sul punto iniziale del nuovo segmento            
             if TanDirectionNear(newLine.getTanDirectionOnStartPt(), \
                                 normalizeAngle(filletArc.getTanDirectionOnStartPt() + math.pi)) == False:
                newLine.set([line.getStartPt(), filletPtOnLine])
             
-         # se il nuovo segmento non � un segmento valido
+         # se il nuovo segmento non é un segmento valido
          if ptNear(newLine.getStartPt(), newLine.getEndPt()) or \
             newLine.containsPt(ptOnLine) == False:
             return None, None          
          
          # calcolo la distanza dal punto ptOnLine
          distFromPtOnLine = getDistance(ptOnLine, filletPtOnLine)
-      else: # se il punto finale dell'arco di raccordo � sulla linea
-         # se il nuovo segmento non � un segmento valido
+      else: # se il punto finale dell'arco di raccordo é sulla linea
+         # se il nuovo segmento non é un segmento valido
          if ptNear(newLine.getStartPt(), newLine.getEndPt()):          
-            # se l'arco di raccordo � tangente sul punto finale del nuovo segmento
+            # se l'arco di raccordo é tangente sul punto finale del nuovo segmento
             if TanDirectionNear(line.getTanDirectionOnEndPt(), \
                                 normalizeAngle(filletArc.getTanDirectionOnEndPt() + math.pi)) == True:
                newLine.set(line) # ripristino il segmento originale
          else:
-            # se l'arco di raccordo non � tangente sul punto iniziale del nuovo segmento            
+            # se l'arco di raccordo non é tangente sul punto iniziale del nuovo segmento            
             if TanDirectionNear(newLine.getTanDirectionOnStartPt(), \
                                 filletArc.getTanDirectionOnEndPt()) == False:
                newLine.set([line.getStartPt(), filletPtOnLine])
             
-         # se il nuovo segmento non � un segmento valido
+         # se il nuovo segmento non é un segmento valido
          if ptNear(newLine.getStartPt(), newLine.getEndPt()) or \
             newLine.containsPt(ptOnLine) == False:
             return None, None          
@@ -4130,7 +4105,7 @@ def getNewLineAccordingFilletArc(line, filletArc, ptOnLine):
          distFromPtOnLine = getDistance(ptOnLine, filletPtOnLine)
          
       return newLine, distFromPtOnLine
-   else: # se il punto � all'esterno del segmento 
+   else: # se il punto é all'esterno del segmento 
       if getDistance(line.getStartPt(), filletPtOnLine) < getDistance(line.getEndPt(), filletPtOnLine):
          newLine.set([filletPtOnLine, line.getEndPt()])
       else:
@@ -4151,13 +4126,13 @@ def auxFilletArcsBetweenLines(ptLine1, ptLine2, intPt, radius, both = True):
    linea2 che va da <ptLine2> fino al punto di intersezione con la linea 1 <intPt>
    """
    res = []
-   #qad_debug.breakPoint()    
+
    angleLine1 = getAngleBy2Pts(intPt, ptLine1)
    angleLine2 = getAngleBy2Pts(intPt, ptLine2)
 
    bisectorLine = getBisectorInfinityLine(ptLine1, intPt, ptLine2, True)
    # cerco il punto di intersezione tra la bisettrice e 
-   # la retta che congiunge i punti pi� distanti delle due linee
+   # la retta che congiunge i punti più distanti delle due linee
    pt = getIntersectionPointOn2InfinityLines(bisectorLine[0], bisectorLine[1], \
                                              ptLine1, ptLine2)
    angleBisectorLine = getAngleBy2Pts(intPt, pt)
@@ -4254,29 +4229,26 @@ def getFilletArcsBetweenLines(line1, line2, radius):
 def bridgeTheGapBetweenCircleLine(circle, ptOnCircle, line, ptOnLine, radius, filletMode):
    """
    la funzione raccorda un cerchio e un segmento retto (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che più si avvicinza ai punti di selezione
    sul cerchio <ptOnCircle> e sul segmento retto <ptOnLine>.
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    None
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    una linea che sostituisce <line>
    """
-   #qad_debug.breakPoint()
    # ricavo i possibili archi di raccordo
    _circle = circle.getCircle()  
    filletArcs = getFilletArcsBetweenCircleLine(_circle, line, radius)
    
-   # cerco l'arco valido pi� vicino a ptOnArc e ptOnLine
+   # cerco l'arco valido più vicino a ptOnArc e ptOnLine
    AvgList = []
    Avg = sys.float_info.max   
 
    resFilletArc = QadLinearObject()
    resLine = QadLinearObject()
    for filletArc in filletArcs:
-      #qad_debug.breakPoint()
-      
       # ricavo il nuovo segmento in modo che sia tangente con l'arco di raccordo       
       newLine, distFromPtOnLine = getNewLineAccordingFilletArc(line, filletArc, ptOnLine)
       if newLine is None:
@@ -4296,7 +4268,7 @@ def bridgeTheGapBetweenCircleLine(circle, ptOnCircle, line, ptOnLine, radius, fi
       AvgList.append(distFromPtOnCircle)
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente piùvicino
          Avg = currAvg
          resLine.set(newLine)
          resFilletArc.setArc(filletArc, False)
@@ -4323,11 +4295,11 @@ def auxFilletArcsBetweenCircleLine(circle, line, origCircle, origLine, both = Tr
    # che daranno origine ai centri degli archi di raccordo
    intPts = circle.getIntersectionPointsWithInfinityLine(line[0], line[1])
    if len(intPts) > 0:
-      # un punto di tangenza � dato dal punto a distanza radius dal centro di <origCircle> 
+      # un punto di tangenza é dato dal punto a distanza radius dal centro di <origCircle> 
       # in direzione centro dell'arco di raccordo
       angle = getAngleBy2Pts(origCircle.center, intPts[0])
       tanCirclePt = getPolarPointByPtAngle(origCircle.center, angle, origCircle.radius)      
-      # un punto di tangenza � la proiezione perpendicolare del centro dell'arco di raccordo
+      # un punto di tangenza é la proiezione perpendicolare del centro dell'arco di raccordo
       # con <origLine> 
       ptPerp = getPerpendicularPointOnInfinityLine(origLine.getStartPt(), origLine.getEndPt(), intPts[0])
       filletArc = QadArc()
@@ -4342,11 +4314,11 @@ def auxFilletArcsBetweenCircleLine(circle, line, origCircle, origLine, both = Tr
          res.append(filletArc)
 
       if len(intPts) > 1: # # due centri per i due archi di raccordo
-         # un punto di tangenza � dato dal punto a distanza arc.radius dal centro di <arc> 
+         # un punto di tangenza é dato dal punto a distanza arc.radius dal centro di <arc> 
          # in direzione centro dell'arco di raccordo
          angle = getAngleBy2Pts(origCircle.center, intPts[1])
          tanCirclePt = getPolarPointByPtAngle(origCircle.center, angle, origCircle.radius)      
-         # un punto di tangenza � la proiezione perpendicolare del centro dell'arco di raccordo
+         # un punto di tangenza é la proiezione perpendicolare del centro dell'arco di raccordo
          # con <line> 
          ptPerp = getPerpendicularPointOnInfinityLine(origLine.getStartPt(), origLine.getEndPt(), intPts[1])
          filletArc = QadArc()
@@ -4474,21 +4446,21 @@ def getNewArcAccordingFilletArc(arc, filletArc, ptOnArc):
    # verifico che l'arco di raccordo sia tangente con l'arco
    newArc.setStartAngleByPt(filletPtOnArc)
       
-   if isStartFilletPtOnArc: # se il punto iniziale dell'arco di raccordo � sull'arco
-      # se il nuovo arco non � un arco valido
+   if isStartFilletPtOnArc: # se il punto iniziale dell'arco di raccordo é sull'arco
+      # se il nuovo arco non é un arco valido
       if doubleNear(newArc.startAngle, newArc.endAngle):
-         # se l'arco di raccordo � tangente sul punto finale dell'arco
+         # se l'arco di raccordo é tangente sul punto finale dell'arco
          if TanDirectionNear(arc.getTanDirectionOnEndPt(), \
                              normalizeAngle(filletArc.getTanDirectionOnStartPt())) == True:
             newArc.startAngle = arc.startAngle # ripristino l'arco originale
       else:
-         # se l'arco di raccordo non � tangente sul punto iniziale del nuovo arco            
+         # se l'arco di raccordo non é tangente sul punto iniziale del nuovo arco            
          if TanDirectionNear(newArc.getTanDirectionOnStartPt(), \
                              normalizeAngle(filletArc.getTanDirectionOnStartPt() + math.pi)) == False:
             newArc.startAngle = arc.startAngle # ripristino l'arco originale
             newArc.setEndAngleByPt(filletPtOnArc)
          
-      # se il nuovo arco non � un arco valido
+      # se il nuovo arco non é un arco valido
       if doubleNear(newArc.startAngle, newArc.endAngle):
          return None, None
                    
@@ -4496,21 +4468,21 @@ def getNewArcAccordingFilletArc(arc, filletArc, ptOnArc):
       distFromPtOnArc = circle.lengthBetween2Points(filletArc.getStartPt(), \
                                                     ptOnArc, \
                                                     filletArc.getTanDirectionOnStartPt() + math.pi)
-   else: # se il punto finale dell'arco di raccordo � sull'arco
-      # se il nuovo arco non � un arco valido
+   else: # se il punto finale dell'arco di raccordo é sull'arco
+      # se il nuovo arco non é un arco valido
       if doubleNear(newArc.startAngle, newArc.endAngle):
-         # se l'arco di raccordo � tangente sul punto finale dell'arco
+         # se l'arco di raccordo é tangente sul punto finale dell'arco
          if TanDirectionNear(arc.getTanDirectionOnEndPt(), \
                              normalizeAngle(filletArc.getTanDirectionOnEndPt() + math.pi)) == True:
             newArc.startAngle = arc.startAngle # ripristino l'arco originale
       else:
-         # se l'arco di raccordo non � tangente sul punto iniziale del nuovo arco            
+         # se l'arco di raccordo non é tangente sul punto iniziale del nuovo arco            
          if TanDirectionNear(newArc.getTanDirectionOnStartPt(), \
                              filletArc.getTanDirectionOnEndPt()) == False:
             newArc.startAngle = arc.startAngle # ripristino l'arco originale
             newArc.setEndAngleByPt(filletPtOnArc)
 
-      # se il nuovo arco non � un arco valido
+      # se il nuovo arco non é un arco valido
       if doubleNear(newArc.startAngle, newArc.endAngle):
          return None, None
 
@@ -4528,20 +4500,19 @@ def getNewArcAccordingFilletArc(arc, filletArc, ptOnArc):
 def bridgeTheGapBetweenArcLine(arc, ptOnArc, line, ptOnLine, radius, filletMode):
    """
    la funzione raccorda un arco e un segmento retto (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che piùsi avvicinza ai punti di selezione
    sull'arco <ptOnArc> e sul segmento retto <ptOnLine>.
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    una arco che sostituisce <arc>
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    una linea che sostituisce <line>
    """
-   #qad_debug.breakPoint()
    # ricavo i possibili archi di raccordo
    filletArcs = getFilletArcsBetweenArcLine(arc, line, radius)
    
-   # cerco l'arco valido pi� vicino a ptOnArc e ptOnLine
+   # cerco l'arco valido più vicino a ptOnArc e ptOnLine
    AvgList = []
    Avg = sys.float_info.max   
 
@@ -4549,8 +4520,6 @@ def bridgeTheGapBetweenArcLine(arc, ptOnArc, line, ptOnLine, radius, filletMode)
    resFilletArc = QadLinearObject()
    resLine = QadLinearObject()
    for filletArc in filletArcs:
-      #qad_debug.breakPoint()
-      
       # ricavo il nuovo segmento in modo che sia tangente con l'arco di raccordo       
       newLine, distFromPtOnLine = getNewLineAccordingFilletArc(line, filletArc, ptOnLine)
       if newLine is None:
@@ -4566,7 +4535,7 @@ def bridgeTheGapBetweenArcLine(arc, ptOnArc, line, ptOnLine, radius, filletMode)
       AvgList.append(distFromPtOnArc)
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          resLine.set(newLine)
          resFilletArc.setArc(filletArc, False)
@@ -4602,21 +4571,20 @@ def getFilletArcsBetweenArcLine(arc, line, radius):
 def bridgeTheGapBetweenCircles(circle1, ptOnCircle1, circle2, ptOnCircle2, radius):
    """
    la funzione raccorda due cerchi (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che più si avvicinza ai punti di selezione
    sui cerchi.
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    None
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    None
    """
-   #qad_debug.breakPoint()
    # ricavo i possibili archi di raccordo
    _circle1 = circle1.getCircle()
    _circle2 = circle2.getCircle()
    filletArcs = getFilletArcsBetweenCircles(_circle1, _circle2, radius)
    
-   # cerco l'arco valido pi� vicino a ptOnCircle1 e ptOnCircle2
+   # cerco l'arco valido più vicino a ptOnCircle1 e ptOnCircle2
    AvgList = []
    Avg = sys.float_info.max   
 
@@ -4642,7 +4610,7 @@ def bridgeTheGapBetweenCircles(circle1, ptOnCircle1, circle2, ptOnCircle2, radiu
       AvgList.append(distFromPtOnCircle2)
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          resFilletArc.setArc(filletArc, False)
       
@@ -4664,13 +4632,13 @@ def auxFilletArcsBetweenCircles(circle1, circle2, radius, both = True):
    # calcolo le intersezioni tra le due circonferenze 
    # che daranno origine ai centri degli archi di raccordo
    intPts = circle1.getIntersectionPointsWithCircle(circle2)
-   #qad_debug.breakPoint()
+
    if len(intPts) > 0:
-      # un punto di tangenza � dato dal punto a distanza radius dal centro dell'arco di raccordo
+      # un punto di tangenza é dato dal punto a distanza radius dal centro dell'arco di raccordo
       # in direzione centro dell'arco <circle1>
       angle = getAngleBy2Pts(intPts[0], circle1.center)
       tanC1Pt = getPolarPointByPtAngle(intPts[0], angle, radius)
-      # un punto di tangenza � dato dal punto a distanza radius dal centro dell'arco di raccordo
+      # un punto di tangenza é dato dal punto a distanza radius dal centro dell'arco di raccordo
       # in direzione centro dell'arco <circle2>
       angle = getAngleBy2Pts(intPts[0], circle2.center)
       tanC2Pt = getPolarPointByPtAngle(intPts[0], angle, radius)
@@ -4684,11 +4652,11 @@ def auxFilletArcsBetweenCircles(circle1, circle2, radius, both = True):
          res.append(filletArc)
 
       if len(intPts) > 1:
-         # un punto di tangenza � dato dal punto a distanza radius dal centro dell'arco di raccordo
+         # un punto di tangenza é dato dal punto a distanza radius dal centro dell'arco di raccordo
          # in direzione centro dell'arco <circle1>
          angle = getAngleBy2Pts(intPts[1], circle1.center)
          tanC1Pt = getPolarPointByPtAngle(intPts[1], angle, radius)
-         # un punto di tangenza � dato dal punto a distanza radius dal centro dell'arco di raccordo
+         # un punto di tangenza é dato dal punto a distanza radius dal centro dell'arco di raccordo
          # in direzione centro dell'arco <circle2>
          angle = getAngleBy2Pts(intPts[1], circle2.center)
          tanC2Pt = getPolarPointByPtAngle(intPts[1], angle, radius)
@@ -4713,7 +4681,6 @@ def getFilletArcsBetweenCircles(circle1, circle2, radius):
    Ritorna una lista dei possibili archi
    """
    res = []
-   #qad_debug.breakPoint()
         
    # caso 1: raccordo tra <circle1> e <circle2> formando un flesso con ciascuno dei cerchi
    # creo un nuovo cerchio concentrico a circle1 con raggio aumentato di <radius>
@@ -4803,20 +4770,19 @@ def getFilletArcsBetweenCircles(circle1, circle2, radius):
 def bridgeTheGapBetweenArcs(arc1, ptOnArc1, arc2, ptOnArc2, radius, filletMode):
    """
    la funzione raccorda due archi (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che più si avvicinza ai punti di selezione
    sull'arco1 <ptOnArc1> e sull'arco2 <ptOnArc2>.
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    una arco che sostituisce <arc1>
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    una arco che sostituisce <arc2>
    """
-   #qad_debug.breakPoint()
    # ricavo i possibili archi di raccordo
    filletArcs = getFilletArcsBetweenArcs(arc1, arc2, radius)
    
-   # cerco l'arco valido pi� vicino a ptOnArc1 e ptOnArc2
+   # cerco l'arco valido più vicino a ptOnArc1 e ptOnArc2
    AvgList = []
    Avg = sys.float_info.max   
 
@@ -4838,7 +4804,7 @@ def bridgeTheGapBetweenArcs(arc1, ptOnArc1, arc2, ptOnArc2, radius, filletMode):
       AvgList.append(distFromPtOnArc2)
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          resArc1.setArc(newArc1, False) 
          resFilletArc.setArc(filletArc, False)
@@ -4876,39 +4842,37 @@ def getFilletArcsBetweenArcs(arc1, arc2, radius):
 def bridgeTheGapBetweenArcCircle(arc, ptOnArc, circle, ptOnCircle, radius, filletMode):
    """
    la funzione raccorda un arco e un cerchio (QadLinearObject) attraverso 
-   un arco di raccordo di raggio <radius> che pi� si avvicinza ai punti di selezione
+   un arco di raccordo di raggio <radius> che più si avvicinza ai punti di selezione
    sull'arco <ptOnArc> e sul cerchio <ptCircle>.
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    
    Ritorna una lista di 3 elementi (None in caso di errore):   
    una arco che sostituisce <arc>
-   un arco, se = None non c'� arco di raccordo tra le due linee
+   un arco, se = None non c'é arco di raccordo tra le due linee
    None
    """
-   #qad_debug.breakPoint()
    # ricavo i possibili archi di raccordo
    _circle = circle.getCircle()
    filletArcs = getFilletArcsBetweenArcCircle(arc, _circle, radius)
    
-   # cerco l'arco valido pi� vicino a ptOnArc e ptOnCircle
+   # cerco l'arco valido più vicino a ptOnArc e ptOnCircle
    AvgList = []
    Avg = sys.float_info.max   
 
    resFilletArc = QadLinearObject()
    resArc = QadLinearObject()
    for filletArc in filletArcs:
-      #qad_debug.breakPoint() 
       # ricavo il nuovo arco in modo che sia tangente con l'arco di raccordo       
       newArc, distFromPtOnArc = getNewArcAccordingFilletArc(arc.getArc(), filletArc, ptOnArc)
       if newArc is None:
          continue
          
       # calcolo la distanza dal punto ptOnCircle
-      if _circle.isPtOnCircle(filletArc.getStartPt()): # se il punto iniziale dell'arco di raccordo � sul cerchio
+      if _circle.isPtOnCircle(filletArc.getStartPt()): # se il punto iniziale dell'arco di raccordo é sul cerchio
          distFromPtOnCircle = _circle.lengthBetween2Points(filletArc.getStartPt(), \
                                                            ptOnCircle, \
                                                            filletArc.getTanDirectionOnStartPt() + math.pi)
-      else: # se il punto finale dell'arco di raccordo � sul cerchio
+      else: # se il punto finale dell'arco di raccordo é sul cerchio
          distFromPtOnCircle = _circle.lengthBetween2Points(filletArc.getEndPt(), \
                                                            ptOnCircle, \
                                                            filletArc.getTanDirectionOnEndPt())
@@ -4918,7 +4882,7 @@ def bridgeTheGapBetweenArcCircle(arc, ptOnArc, circle, ptOnCircle, radius, fille
       AvgList.append(distFromPtOnCircle)
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          resArc.setArc(newArc, False) 
          resFilletArc.setArc(filletArc, False)
@@ -4960,8 +4924,6 @@ def pretreatment_offset(partList):
    # verifico se polilinea chiusa
    i = -1 if partList.isClosed() else 0   
    
-   #qad_debug.breakPoint()
-   
    result = QadLinearObjectList()
    while i < partList.qty() - 1:
       if i == -1: # polilinea chiusa quindi prendo in esame l'ultimo segmento e il primo
@@ -4981,7 +4943,7 @@ def pretreatment_offset(partList):
          else: # arco
             arc1 = QadArc(part.getArc())
             arc2 = QadArc(part.getArc())
-            # se i punti sono cos� vicini da essere considerati uguali
+            # se i punti sono così vicini da essere considerati uguali
             if ptNear(part.getArc().getEndPt(), ptIntList[0]):
                ptInt = part.getArc().getEndPt()
             else:
@@ -4997,7 +4959,7 @@ def pretreatment_offset(partList):
       
       i = i + 1
    
-   if partList.isClosed() == False: # se non � chiusa aggiungo l'ultima parte
+   if partList.isClosed() == False: # se non é chiusa aggiungo l'ultima parte
       if partList.qty() > 1:
          result.append(nextPart)   
       else:
@@ -5013,7 +4975,7 @@ def getIntersectionPointInfo_offset(part, nextPart):
    """
    la funzione restituisce il punto di intersezione tra le 2 parti e
    e il tipo di intersezione per <part> e per <nextPart>.
-   Alle parti deve essere gi� stato fatto l'offset singolarmente:
+   Alle parti deve essere già stato fatto l'offset singolarmente:
    
    1 = TIP (True Intersection Point) se il punto di intersezione ottenuto estendendo 
    le 2 parti si trova su <part>
@@ -5021,9 +4983,9 @@ def getIntersectionPointInfo_offset(part, nextPart):
    2  = FIP  (False Intersection Point) se il punto di intersezione ottenuto estendendo
     
    le 2 parti non si trova su <part>
-   3 = PFIP (Positive FIP) se il punto di intersezione � nella stessa direzione di part
+   3 = PFIP (Positive FIP) se il punto di intersezione é nella stessa direzione di part
 
-   4 = NFIP (Negative FIP) se il punto di intersezione � nella direzione opposta di part
+   4 = NFIP (Negative FIP) se il punto di intersezione é nella direzione opposta di part
    """
 
    ptIntList = part.getIntersectionPtsOnExtensionWithLinearObject(nextPart)
@@ -5037,8 +4999,8 @@ def getIntersectionPointInfo_offset(part, nextPart):
       if part.isSegment(): # segmento
          if part.containsPt(ptIntList[0]):
             intTypePart = 1 # TIP
-         else: # l'intersezione non � sul segmento (FIP)
-            # se la direzione � la stessa del segmento
+         else: # l'intersezione non é sul segmento (FIP)
+            # se la direzione é la stessa del segmento
             if doubleNear(getAngleBy2Pts(part.getStartPt(), part.getEndPt()), \
                           getAngleBy2Pts(part.getStartPt(), ptIntList[0])):
                intTypePart = 3 # PFIP
@@ -5053,8 +5015,8 @@ def getIntersectionPointInfo_offset(part, nextPart):
       if nextPart.isSegment(): # segmento      
          if nextPart.containsPt(ptIntList[0]):
             intTypeNextPart = 1 # TIP
-         else: # l'intersezione non � sul segmento (FIP)
-            # se la direzione � la stessa del segmento
+         else: # l'intersezione non é sul segmento (FIP)
+            # se la direzione é la stessa del segmento
             if doubleNear(getAngleBy2Pts(nextPart.getStartPt(), nextPart.getEndPt()), \
                           getAngleBy2Pts(nextPart.getStartPt(), ptIntList[0])):
                intTypeNextPart = 3 # PFIP
@@ -5068,7 +5030,7 @@ def getIntersectionPointInfo_offset(part, nextPart):
 
       return [ptIntList[0], intTypePart, intTypeNextPart]
    else: # 2 punti di intersezione
-      # scelgo il punto pi� vicino al punto finale di part     
+      # scelgo il punto più vicino al punto finale di part     
       if part.isSegment(): # segmento
          if getDistance(ptIntList[0], part.getEndPt()) < getDistance(ptIntList[1], part.getEndPt()):
             ptInt = ptIntList[0]
@@ -5077,18 +5039,18 @@ def getIntersectionPointInfo_offset(part, nextPart):
 
          if part.containsPt(ptInt):
             intTypePart = 1 # TIP
-         else: # l'intersezione non � sul segmento (FIP)
-            # se la direzione � la stessa del segmento
+         else: # l'intersezione non é sul segmento (FIP)
+            # se la direzione é la stessa del segmento
             if doubleNear(getAngleBy2Pts(part.getStartPt(), part.getEndPt()), \
                           getAngleBy2Pts(part.getStartPt(), ptInt)):
                intTypePart = 3 # PFIP
             else:
                intTypePart = 4 # NFIP
 
-         # la seconda parte � sicuramente un'arco
+         # la seconda parte é sicuramente un'arco
          if nextPart.containsPt(ptInt):
             intTypeNextPart = 1 # TIP
-         else: # l'intersezione non � sull'arco (FIP)
+         else: # l'intersezione non é sull'arco (FIP)
             intTypeNextPart = 2 # FIP         
 
          return [ptInt, intTypePart, intTypeNextPart]
@@ -5102,14 +5064,14 @@ def getIntersectionPointInfo_offset(part, nextPart):
 
          if part.containsPt(ptInt):
             intTypePart = 1 # TIP
-         else: # l'intersezione non � sull'arco (FIP)
+         else: # l'intersezione non é sull'arco (FIP)
            intTypePart = 2 # FIP         
 
          if nextPart.isSegment(): # segmento
             if nextPart.containsPt(ptInt):
                intTypeNextPart = 1 # TIP
-            else: # l'intersezione non � sul segmento (FIP)
-               # se la direzione � la stessa del segmento
+            else: # l'intersezione non é sul segmento (FIP)
+               # se la direzione é la stessa del segmento
                if doubleNear(getAngleBy2Pts(nextPart.getStartPt(), nextPart.getEndPt()), \
                              getAngleBy2Pts(nextPart.getStartPt(), ptInt)):
                   intTypeNextPart = 3 # PFIP
@@ -5118,7 +5080,7 @@ def getIntersectionPointInfo_offset(part, nextPart):
          else : # arco
             if nextPart.containsPt(ptInt):
                intTypeNextPart = 1 # TIP
-            else: # l'intersezione non � sull'arco (FIP)
+            else: # l'intersezione non é sull'arco (FIP)
                intTypeNextPart = 2 # FIP
                         
          return [ptInt, intTypePart, intTypeNextPart]
@@ -5134,8 +5096,7 @@ def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
    2) arco-segmento (FIP-NFIP, nessuna intersezione)
    3) arco-arco (nessuna intersezione)
    """
-   #qad_debug.breakPoint()
-   # se la prima parte � un segmento e la seconda � un arco
+   # se la prima parte é un segmento e la seconda é un arco
    if part.isSegment():
       newNextPart = QadLinearObject(part)
       newNextPart.reverse() # rovescio la direzione
@@ -5145,7 +5106,7 @@ def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
       result = fillet2Parts_offset(newPart, newNextPart, newOffSetSide, offSetDist)
       result.setInverseArc(not result.isInverseArc()) # cambio verso
       return result
-   else: # se la prima parte � un arco
+   else: # se la prima parte é un arco
       arc = part.getArc()
       inverse = part.isInverseArc()
       AngleProjected = getAngleBy2Pts(arc.center, part.getEndPt())
@@ -5162,7 +5123,7 @@ def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
             center = getPolarPointByPtAngle(arc.center, AngleProjected, arc.radius - offSetDist)
       
    newArc = QadArc()                                                                                        
-   # se il centro dell'arco di raccordo � interno all'arco di offset
+   # se il centro dell'arco di raccordo é interno all'arco di offset
    if getDistance(arc.center, center) < arc.radius:                           
       newArcInverse = inverse
       if inverse == False:
@@ -5173,7 +5134,7 @@ def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
          newArc.fromStartCenterEndPts(nextPart.getStartPt(), \
                                       center, \
                                       arc.getStartPt())                        
-   else: # se il centro dell'arco di raccordo � esterno all'arco di offset
+   else: # se il centro dell'arco di raccordo é esterno all'arco di offset
       newArcInverse = not inverse
       if inverse == False:
          newArc.fromStartCenterEndPts(nextPart.getStartPt(), \
@@ -5193,21 +5154,19 @@ def fillet2Parts_offset(part, nextPart, offSetSide, offSetDist):
 def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolerance2ApproxCurve = None):
    """
    la funzione fa l'offset non pulito da eventuali tagli da apportare (vedi
-   getTrimmedOffSetPartList") di una polilinea (lista di parti <partList> � QadLinearObjectList)
-
+   getTrimmedOffSetPartList") di una polilinea (lista di parti <partList> é QadLinearObjectList)
    secondo una distanza e un lato di offset ("right" o "left") 
    ed un modo <gapType>:
    0 = Estende i segmenti di linea alle relative intersezioni proiettate
    1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
-       Il raggio di ciascun segmento di arco � uguale alla distanza di offset
+       Il raggio di ciascun segmento di arco é uguale alla distanza di offset
    2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
        La distanza perpendicolare da ciascuna cima al rispettivo vertice
-       sull'oggetto originale � uguale alla distanza di offset.
+       sull'oggetto originale é uguale alla distanza di offset.
    tolerance2ApproxCurve = errore minimo di tolleranza
        
    La funzione ritorna una lista di parti della polilinee (lista di segmenti o archi) 
    """
-   #qad_debug.breakPoint()
    # verifico se polilinea chiusa
    isClosedPolyline = partList.isClosed()
 
@@ -5231,9 +5190,7 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
             newPart = QadLinearObject([newArc, part.isInverseArc()]) # <arco> e <inverse>
             newPartList.append(newPart)
 
-   #qad_debug.breakPoint()
-
-   # calcolo i punti di intersezione tra parti adiacenti
+      # calcolo i punti di intersezione tra parti adiacenti
    # per ottenere una linea di offset non tagliata
    if isClosedPolyline == True:
       i = -1
@@ -5255,9 +5212,8 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
       else:
          lastUntrimmedOffsetPt = untrimmedOffsetPartList.getLinearObjectAt(-1).getEndPt() # ultima parte
       
-      #qad_debug.breakPoint()
       IntPointInfo = getIntersectionPointInfo_offset(part, nextPart)
-      if IntPointInfo is not None: # se c'� un'intersezione
+      if IntPointInfo is not None: # se c'é  un'intersezione
          IntPoint = IntPointInfo[0]
          IntPointTypeForPart = IntPointInfo[1]
          IntPointTypeForNextPart = IntPointInfo[2]
@@ -5299,7 +5255,6 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
                else: # FIP
                   if IntPointTypeForPart == 3: # PFIP
                      if IntPointTypeForNextPart == 2: # FIP
-                        #qad_debug.breakPoint()
                         untrimmedOffsetPartList.append([lastUntrimmedOffsetPt, part.getEndPt()])
                         untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
                   else: # NFIP
@@ -5313,7 +5268,6 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
                untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))               
       else: # arco
          if nextPart.isSegment(): # arco-segmento         
-            #qad_debug.breakPoint() 
             if IntPointInfo is not None: # se esiste un punto di intersezione
                if IntPointTypeForPart == 1: # TIP
                   if IntPointTypeForNextPart == 1: # TIP
@@ -5330,7 +5284,6 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
                         virtualPartPositionList.append(untrimmedOffsetPartList.qty() - 1)
                else: # FIP
                   if IntPointTypeForNextPart == 4: # NFIP
-                     #qad_debug.breakPoint()
                      newPart = QadLinearObject(part)
                      newPart.setStartPt(lastUntrimmedOffsetPt) # modifico l'arco
                      untrimmedOffsetPartList.append(newPart)
@@ -5352,7 +5305,7 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
             inverse = part.isInverseArc()
             nextArc = nextPart.getArc()
             nextInverse = nextPart.isInverseArc()
-            #qad_debug.breakPoint() 
+
             if IntPointInfo is not None: # se esiste un punto di intersezione
                if IntPointTypeForPart == 1: # TIP
                   if IntPointTypeForNextPart == 1: # TIP
@@ -5415,11 +5368,27 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
                newPart = QadLinearObject(part)
                newPart.setStartPt(lastUntrimmedOffsetPt) # modifico l'arco
                untrimmedOffsetPartList.append(newPart)
-               untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))
+               
+               # prima di raccordare verifico se l'arco <part> si trova interamente dentro la zona di offset
+               # dell'arco <nextPart> e viceversa. 
+               # Per replicare questa eccezione fare una polilinea composta da 2 archi:
+               # il primo con centro in ..., raggio..., angolo iniziale ... angolo finale ...
+               # il secondo con centro in ..., raggio..., angolo iniziale ... angolo finale ...
+               # offset a destra = 8
+               arc = part.getArc()
+               nextArc = nextPart.getArc()
+               dist = getDistance(arc.center, nextArc.center)               
+               minDistArc, maxDistArc = getOffsetDistancesFromCenterOnOffsetedArc(arc, inverse, offSetDist, offSetSide)
+               minDistNextArc, maxDistNextArc = getOffsetDistancesFromCenterOnOffsetedArc(nextArc, nextInverse, offSetDist, offSetSide)
+               
+               if (dist + nextArc.radius <= maxDistArc and dist - nextArc.radius >= minDistArc) or \
+                  (dist + arc.radius <= maxDistNextArc and dist - arc.radius >= minDistNextArc):
+                  untrimmedOffsetPartList.append([newPart.getEndPt(), nextPart.getStartPt()])                  
+               else:              
+                  untrimmedOffsetPartList.append(fillet2Parts_offset(part, nextPart, offSetSide, offSetDist))
                
       i = i + 1
 
-   #qad_debug.breakPoint()
    if newPartList.qty() > 0:
       if isClosedPolyline == False:
          if untrimmedOffsetPartList.qty() == 0:
@@ -5443,6 +5412,38 @@ def getUntrimmedOffSetPartList(partList, offSetDist, offSetSide, gapType, tolera
 
 
 #===============================================================================
+# getOffsetDistancesFromCenterOnOffsetedArc
+#===============================================================================
+def getOffsetDistancesFromCenterOnOffsetedArc(arc, isInverseArc, offSetDist, offSetSide):
+   """
+   la funzione restituisce la distanza minima e massima dal centro dell'arco su cui è già stato fatto un offset.
+   Queste distanze generano un'area di offset intorno all'arco originale.
+   <arc> arco a cui è già stato fatto un offset
+   <isInverseArc> come gira l'arco, se true gira verso destra altrimento gira verso sinistra
+   <offSetDist> distanza di offset
+   <offSetSide> parte in cui si vuole l'offset "right" o "left"
+   """               
+   if isInverseArc: # l'arco gira verso destra
+      if offSetSide == "right": # offset sulla parte interna dell'arco
+         minDist = arc.radius                     
+         maxDist = arc.radius + 2 * offSetDist               
+      else: # offset sulla parte esterna dell'arco
+         maxDist = arc.radius                     
+         minDist = arc.radius - 2 * offSetDist
+   else: # l'arco gira verso sin
+      if offSetSide == "right": # offset sulla parte esterna dell'arco
+         maxDist = arc.radius                     
+         minDist = arc.radius - 2 * offSetDist
+      else: # offset sulla parte interna dell'arco
+         minDist = arc.radius                     
+         maxDist = arc.radius + 2 * offSetDist
+                                    
+   if minDist < 0: minDist = 0                                       
+
+   return minDist, maxDist
+
+
+#===============================================================================
 # virtualPartClipping
 #===============================================================================
 def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
@@ -5454,8 +5455,6 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
    <untrimmedOffsetPartList> lista delle parti
    <virtualPartPositionList> lista delle posizioni delle parti virtuali (viene modificata)
    """
-   #qad_debug.breakPoint()
-
    result = QadLinearObjectList(untrimmedOffsetPartList)
    
    # per prima cosa elimino tutte le isole con parti virtuali che hanno le parti 
@@ -5486,14 +5485,13 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
    nextPart_1 = QadLinearObject()
    nextPart_2 = QadLinearObject()
 
-   #qad_debug.breakPoint()
    # elimino tutte le isole con parti virtuali che hanno le parti adiacenti intersecanti
    # ma che non formino con il resto della linea altre isole.
    # quando considero un lato adiacente alla parte virtuale da un lato devo considerare le intersezioni 
    # partendo dal lato successivo quello adicente nella parte opposta di quello virtuale 
    for i in xrange(len(virtualPartPositionList) - 1, -1, -1):      
       virtualPartPosition = virtualPartPositionList[i]
-      # finch� non trovo l'intersezione
+      # finché non trovo l'intersezione
       nPrevPartsToRemove = -1
       prevPos = virtualPartPosition
       ptIntList = []      
@@ -5508,14 +5506,14 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
          if virtualPartPositionList.count(prevPos) > 0:
             break 
           
-         # l'ultima condizione � nel caso la polilinea sia chiusa
+         # l'ultima condizione é nel caso la polilinea sia chiusa
          if (prevPos is None) or (nextPos is None) or prevPos == nextPos:
             break
 
          nPrevPartsToRemove = nPrevPartsToRemove + 1
          prevPart = result.getLinearObjectAt(prevPos)
  
-         # ciclo finche non ci sono pi� parti successive
+         # ciclo finche non ci sono più parti successive
          while (nextPos is not None) and (prevPos != nextPos):
             # se trovo una parte virtuale mi fermo
             if virtualPartPositionList.count(nextPos) > 0:
@@ -5548,7 +5546,6 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
          else:
             nextPart_2.clear()                       
          
-         #qad_debug.breakPoint()
          ########################################################
          # Creo una lista di parti che definisce l'isola - inizio
          islandPartList = QadLinearObjectList()         
@@ -5574,9 +5571,7 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
          # Creo una lista di parti che definisce l'isola - fine
          ########################################################
 
-         #qad_debug.breakPoint()
-
-         # verifico se le parti seguenti formano con islandPartList delle aree (pi� di 2 intersezioni)         
+         # verifico se le parti seguenti formano con islandPartList delle aree (più di 2 intersezioni)         
          if nextPart_2.isInitialized():
             nIntersections = 1
          else:
@@ -5587,7 +5582,7 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
             intPtList = dummy[0]                               
             nIntersections = nIntersections + len(intPtList)
 
-         # se � positivo e minore o uguale a 2 verifico anche dall'altra parte
+         # se é positivo e minore o uguale a 2 verifico anche dall'altra parte
          if nIntersections > 0 and nIntersections <= 2:
             # verifico se le parti precedenti formano con islandPartList delle aree (almeno 2 intersezioni)
             if prevPart_2.isInitialized():
@@ -5600,7 +5595,7 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
                intPtList = dummy[0]                    
                nIntersections = nIntersections + len(intPtList)
 
-            # se � positivo e minore o uguale a 2 verifico anche dall'altra parte
+            # se é positivo e minore o uguale a 2 verifico anche dall'altra parte
             if nIntersections > 0 and nIntersections <= 2:
                # rimuovo island da result
                if nextPart_2.isInitialized():
@@ -5617,7 +5612,6 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
        
                # cancello le parti inutili
                for j in xrange(0, nPrevPartsToRemove, 1):
-                  #qad_debug.breakPoint()
                   result.remove(virtualPartPosition - nPrevPartsToRemove)
 
                if prevPart_2.isInitialized():
@@ -5636,10 +5630,10 @@ def virtualPartClipping(untrimmedOffsetPartList, virtualPartPositionList):
 def getIntPtListBetweenPartAndPartList_offset(part, partList):
    """
    la funzione restituisce due liste:
-   la prima � una lista di punti di intersezione tra la parte <part>
+   la prima é una lista di punti di intersezione tra la parte <part>
    e una lista di parti <partList ordinata per distanza dal punto iniziale
    di part (scarta i doppioni e i punti iniziale-finale di part)
-   la seconda � una lista che  contiene, rispettivamente per ogni punto di intersezione,
+   la seconda é una lista che  contiene, rispettivamente per ogni punto di intersezione,
    il numero della parte (0-based) di <partList> in cui si trova quel punto.
    <part>: un segmento o arco 
    <partList>: lista delle parti di una polilinea 
@@ -5655,10 +5649,10 @@ def getIntPtListBetweenPartAndPartList_offset(part, partList):
       for partialIntPt in partialIntPtList:
          # escludo i punti che sono all'inizio-fine di part
          
-         # se i punti sono cos� vicini da essere considerati uguali         
+         # se i punti sono così vicini da essere considerati uguali         
          if ptNear(startPtOfPart, partialIntPt) == False and \
             ptNear(endPtOfPart, partialIntPt) == False:
-            # escludo i punti che sono gi� in intPtSortedList
+            # escludo i punti che sono già in intPtSortedList
             found = False
             for intPt in intPtSortedList:
                if ptNear(intPt[0], partialIntPt):
@@ -5702,8 +5696,6 @@ def dualClipping(partList, untrimmedOffsetPartList, untrimmedReversedOffsetPartL
       
    # linea spezzata sui self intersection points e 
    # sui punti di intersezione con untrimmedReversedOffsetPartList
-   
-   #qad_debug.breakPoint()  
    
    # per ogni parte di untrimmedOffsetPartList
    for part in untrimmedOffsetPartList.defList:
@@ -5819,29 +5811,26 @@ def generalClosedPointPairClipping(partList, dualClippedPartList, offSetDist):
        
    La funzione ritorna una lista di parti risultato del dual clipping 
    """
-   #qad_debug.breakPoint()
    # inizio di General Closed Point Pair clipping
    GCPPCList = QadLinearObjectList(dualClippedPartList) # duplico la lista di parti      
    circle = QadCircle()
-
-   qad_debug.breakPoint()
-   
+  
    # per ogni parte di partList
    for part in partList.defList:
       # per ogni parte di GCPPCList
       i = 0
       while i < GCPPCList.qty():
-         # ripeto finch� viene fatto lo split        
+         # ripeto finché viene fatto lo split        
          splitted = True
          while splitted:
             splitted = False
             GCPPCPart = GCPPCList.getLinearObjectAt(i)
-            # verifico quale � il punto di part pi� vicino a GCPPCPart
+            # verifico quale é il punto di part più vicino a GCPPCPart
             # (<punto di distanza minima sulla parte 1><punto di distanza minima sulla parte 2><distanza minima>)
             MinDistancePts = part.getMinDistancePtsWithLinearObject(GCPPCPart)
-            # se la distanza � inferiore a offSetDist (e non cos� vicina da essere considerata uguale)
+            # se la distanza é inferiore a offSetDist (e non così vicina da essere considerata uguale)
             if MinDistancePts[2] < offSetDist and not doubleNear(MinDistancePts[2], offSetDist):
-               # creo un cerchio nel punto di part pi� vicino a GCPPCPart
+               # creo un cerchio nel punto di part più vicino a GCPPCPart
                circle.set(MinDistancePts[0], offSetDist)
                # ottengo le parti di GCPPCPart esterne al cerchio 
                splittedParts = GCPPCPart.getPartsExternalToCircle(circle)
@@ -5856,8 +5845,6 @@ def generalClosedPointPairClipping(partList, dualClippedPartList, offSetDist):
             else:
                i = i + 1
                        
-   #qad_debug.breakPoint()
-           
    return GCPPCList
 
 
@@ -5877,12 +5864,9 @@ def getTrimmedOffSetPartList(partList, epsg, untrimmedOffsetPartList, untrimmedR
    La funzione ritorna una lista di parti della polilinee (lista di segmenti o archi) 
    """
    
-   #qad_debug.breakPoint()
-
    # faccio il dual clipping
    dualClippedPartList = dualClipping(partList, untrimmedOffsetPartList, untrimmedReversedOffsetPartList, offSetDist)
    # test
-   #qad_debug.breakPoint()
    #GCPPCList = untrimmedOffsetPartList
    #GCPPCList = dualClipping(partList, untrimmedOffsetPartList, untrimmedReversedOffsetPartList, offSetDist)
      
@@ -5903,10 +5887,10 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
    ed un modo <gapType>:
    0 = Estende i segmenti di linea alle relative intersezioni proiettate
    1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
-       Il raggio di ciascun segmento di arco � uguale alla distanza di offset
+       Il raggio di ciascun segmento di arco é uguale alla distanza di offset
    2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
        La distanza perpendicolare da ciascuna cima al rispettivo vertice
-       sull'oggetto originale � uguale alla distanza di offset.
+       sull'oggetto originale é uguale alla distanza di offset.
    <epsg> = the authority identifier for this srs 
    <tolerance2ApproxCurve> = errore minimo di tolleranza
        
@@ -5919,22 +5903,17 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
    
    result = []
    
-   AngleToAdd = (-math.pi / 2) if offSetSide == "right" else (math.pi / 2)
    pointsLen = len(points)
 
-   # verifico se � un cerchio
+   # verifico se é un cerchio
    circle = QadCircle()
    startEndVertices = circle.fromPolyline(points, 0)
    if startEndVertices is not None and \
       startEndVertices[0] == 0 and startEndVertices[1] == (pointsLen - 1):
-      points = circle.asPolyline()         
-      pt1 = points[0]
-      angleLine = getAngleBy2Pts(pt1, points[1])
-
-      # calcolo il primo punto proiettato
-      pt1Proj = getPolarPointByPtAngle(pt1, angleLine + AngleToAdd, offSetDist)
-      pt1InverseProj = getPolarPointByPtAngle(pt1, angleLine - AngleToAdd, offSetDist)
-      if getDistance(pt1Proj, circle.center) > getDistance(pt1InverseProj, circle.center):
+      # siccome i punti del cerchio sono disegnati in senso antiorario
+      # se offSetSide = "right" significa verso l'esterno del cerchio
+      # se offSetSide = "left" significa verso l'interno del cerchio
+      if offSetSide == "left":
          # offset verso l'interno del cerchio
          offSetCircle = getOffSetCircle(circle, offSetDist, "internal")
       else:
@@ -5946,8 +5925,6 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
          
       return result
    
-   #qad_debug.breakPoint()
-
    # creo una lista dei segmenti e archi che formano la polilinea
    partList = QadLinearObjectList()
    partList.fromPolyline(points)
@@ -5958,16 +5935,14 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
    reversedPoints.reverse()
    reversedPartList = QadLinearObjectList()
    reversedPartList.fromPolyline(reversedPoints)
-   #qad_debug.breakPoint()
+
    untrimmedReversedOffsetPartList = getUntrimmedOffSetPartList(reversedPartList, offSetDist, offSetSide, gapType, tolerance)
    # taglio la polilinea dove necessario
    trimmedOffsetPartList = getTrimmedOffSetPartList(partList, epsg, \
                                                     untrimmedOffsetPartList, \
                                                     untrimmedReversedOffsetPartList, \
                                                     offSetDist)
-   
-   #qad_debug.breakPoint()
-   
+      
    # ottengo una lista di punti delle nuove polilinee
    result = []
    for trimmedOffsetPart in trimmedOffsetPartList:
@@ -5983,7 +5958,7 @@ def getAdjustedRubberBandVertex(vertexBefore, vertex):
          
    # per un baco non ancora capito in QGIS: se la linea ha solo 2 vertici e 
    # hanno la stessa x o y (linea orizzontale o verticale) 
-   # la linea non viene disegnata perci� sposto un pochino la x o la y
+   # la linea non viene disegnata perciò sposto un pochino la x o la y
    # del secondo vertice         
    if vertexBefore.x() == vertex.x():
       adjustedVertex.setX(vertex.x() + 1.e-9)
@@ -6020,8 +5995,6 @@ def ApproxCurvesOnGeom(geom, atLeastNSegmentForArc = None, atLeastNSegmentForCir
    
    g = QgsGeometry(geom) # copio la geometria
    
-   #qad_debug.breakPoint()
-
    # verifico se ci sono archi
    arcList = QadArcList()
    arcList.fromGeom(g, _atLeastNSegmentForArc)
@@ -6073,7 +6046,7 @@ def ApproxCurvesOnGeom(geom, atLeastNSegmentForArc = None, atLeastNSegmentForCir
 # whatGeomIs
 #===============================================================================
 def whatGeomIs(pt, geom):
-   if type(pt) == int: # pt � il numero del vertice
+   if type(pt) == int: # pt é il numero del vertice
       afterVertex = pt
    else:      
       # ritorna una tupla (<The squared cartesian distance>,
@@ -6099,7 +6072,7 @@ def whatGeomIs(pt, geom):
       if info is not None:
          return info[0]
       
-   # se non � un cerchio � una linea
+   # se non é un cerchio é una linea
    pt1 = geom.vertexAt(afterVertex - 1)
    pt2 = geom.vertexAt(afterVertex)
    return pt1, pt2
@@ -6168,10 +6141,10 @@ def solveApollonius(c1, c2, c3, s1, s2, s3):
       return None
    D = (b * b) - (4 * a * c)
    
-   # se D � cos� vicino a zero 
+   # se D é così vicino a zero 
    if doubleNear(D, 0.0):
       D = 0
-   elif D < 0: # non si pu� fare la radice quadrata di un numero negativo
+   elif D < 0: # non si può fare la radice quadrata di un numero negativo
       return None
    
    rs = (-b-math.sqrt(D))/(2*a)
@@ -6192,16 +6165,15 @@ def solveCircleTangentTo2LinesAndCircle(line1, line2, circle, s1, s2):
    '''
    Trova i due cerchi tangenti a due rette e un cerchio (sarebbero 8 cerchi che si trovano con le 
    4 combinazioni di s1, s2 che assumo valore -1 o 1)
-   e restituisce quello pi� vicino a pt
+   e restituisce quello più vicino a pt
    '''
    circleList = []
    # http://www.batmath.it/matematica/a_apollonio/rrc.htm
-   #qad_debug.breakPoint()
 
    # Questa costruzione utilizza una particolare trasformazione geometrica, che alcuni chiamano dilatazione parallela:
-   # si immagina che il raggio r del cerchio dato c si riduca a zero (il cerchio � ridotto al suo centro),
-   # mentre le rette rimangono parallele con distanze dal centro del cerchio che si � ridotto a zero aumentate o
-   # diminuite di r. Si � cos� ricondotti al caso di un punto e due rette e si pu� applicare una delle tecniche viste
+   # si immagina che il raggio r del cerchio dato c si riduca a zero (il cerchio é ridotto al suo centro),
+   # mentre le rette rimangono parallele con distanze dal centro del cerchio che si é ridotto a zero aumentate o
+   # diminuite di r. Si é così ricondotti al caso di un punto e due rette e si può applicare una delle tecniche viste
    # in quel caso.  
 
    line1Par = []
@@ -6231,20 +6203,19 @@ def solveCircleTangentToLineAnd2Circles(line, circle1, circle2, s1, s2):
    '''
    Trova i due cerchi tangenti a una retta e due cerchi (sarebbero 8 cerchi che si trovano con le 
    4 combinazioni di s1, s2 che assumo valore -1 o 1)
-   e restituisce quello pi� vicino a pt
+   e restituisce quello più vicino a pt
    '''
    # http://www.batmath.it/matematica/a_apollonio/rcc.htm
-   #qad_debug.breakPoint()
 
-   # Il modo pi� semplice per risolvere questo problema � quello di utilizzare una particolare 
+   # Il modo più semplice per risolvere questo problema é quello di utilizzare una particolare 
    # trasformazione geometrica, che alcuni chiamano dilatazione parallela: si immagina che il raggio r 
-   # del pi� piccolo dei cerchi in questione si riduca a zero (il cerchio � ridotto al suo centro), 
+   # del più piccolo dei cerchi in questione si riduca a zero (il cerchio é ridotto al suo centro), 
    # mentre le rette (risp. gli altri cerchi) rimangono parallele (risp. concentrici) con distanze
-   # dal centro del cerchio che si � ridotto a zero (rispettivamente con raggi dei cerchi) aumentati o 
+   # dal centro del cerchio che si é ridotto a zero (rispettivamente con raggi dei cerchi) aumentati o 
    # diminuiti di r. 
-   # Se applichiamo questa trasformazione al nostro caso, riducendo a zero il raggio del cerchio pi� piccolo
+   # Se applichiamo questa trasformazione al nostro caso, riducendo a zero il raggio del cerchio più piccolo
    # (o di uno dei due se hanno lo stesso raggio) ci ritroveremo con un punto, un cerchio e una retta:
-   # trovate le circonferenze passanti per il punto e tangenti alla retta e al cerchio (nel modo gi� noto)
+   # trovate le circonferenze passanti per il punto e tangenti alla retta e al cerchio (nel modo già noto)
    # potremo applicare la trasformazione inversa della dilatazione parallela precedente per determinare
    # le circonferenze richieste.
    if circle1.radius <= circle2.radius:
@@ -6284,7 +6255,7 @@ def getCircularInversionOfpoint(circleRef, pt):
    
 def getCircularInversionOfLine(circleRef, line):
    """
-   la funzione ritorna l'inversione circolare di una linea (che � un cerchio)
+   la funzione ritorna l'inversione circolare di una linea (che é un cerchio)
    """
    angleLine = getAngleBy2Pts(line[0], line[1])
    ptNearestLine = getPerpendicularPointOnInfinityLine(line[0], line[1], circleRef.center)
@@ -6307,7 +6278,7 @@ def getCircularInversionOfLine(circleRef, line):
 
 def getCircularInversionOfCircle(circleRef, circle):
    """
-   la funzione ritorna l'inversione circolare di un cerchio (che � un cerchio)
+   la funzione ritorna l'inversione circolare di un cerchio (che é un cerchio)
    """
 
    angleLine = getAngleBy2Pts(circle.center, circleRef.center)
@@ -6340,14 +6311,13 @@ def lineFrom2TanPts(geom1, pt1, geom2, pt2):
    geometria 2 di tangenza (arco o cerchio)
    punto di selezione geometria 2
    '''
-   #qad_debug.breakPoint()
    obj1 = whatGeomIs(pt1, geom1)
    obj2 = whatGeomIs(pt2, geom2)
 
    if (type(obj1) == list or type(obj1) == tuple): # se linea esco
       return None
    obj1Type = obj1.whatIs()
-   if obj1Type == "ARC": # se � arco lo trasformo in cerchio
+   if obj1Type == "ARC": # se é arco lo trasformo in cerchio
       circle1 = QadCircle()
       circle1.set(obj1.center, obj1.radius)
    else:
@@ -6356,7 +6326,7 @@ def lineFrom2TanPts(geom1, pt1, geom2, pt2):
    if (type(obj2) == list or type(obj2) == tuple): # se linea esco
       return None
    obj2Type = obj2.whatIs()
-   if obj2Type == "ARC": # se � arco lo trasformo in cerchio
+   if obj2Type == "ARC": # se é arco lo trasformo in cerchio
       circle2 = QadCircle()
       circle2.set(obj2.center, obj2.radius)
    else:
@@ -6365,7 +6335,6 @@ def lineFrom2TanPts(geom1, pt1, geom2, pt2):
    tangents = circle1.getTangentsWithCircle(circle2)
    
    if obj1Type == "ARC" or obj2Type == "ARC":
-      qad_debug.breakPoint()
       # cancello le linee di tangenza che non abbiano un punto di tangenza nell'arco
       for i in xrange(len(tangents) - 1, -1, -1):         
          toDelete1 = False         
@@ -6399,7 +6368,7 @@ def lineFrom2TanPts(geom1, pt1, geom2, pt2):
       AvgList.append(getDistance(ptInt, pt2))
 
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          result = tangent       
                
@@ -6414,17 +6383,16 @@ def lineFromTanPerPts(tanGeom1, tanPt1, perGeom2, perPt2):
    Trova la linea tangente a 1 oggetto e perpendicolare ad un altro 
    geometria di tangenza (arco o cerchio)
    punto di selezione geometria di tangenza
-   geometria di perpendicolarit� (linea, arco o cerchio)
-   punto di selezione geometria di perpendicolarit�
+   geometria di perpendicolarità (linea, arco o cerchio)
+   punto di selezione geometria di perpendicolarità
    '''
-   #qad_debug.breakPoint()
    obj1 = whatGeomIs(tanPt1, tanGeom1)
    obj2 = whatGeomIs(perPt2, perGeom2)
 
    if (type(obj1) == list or type(obj1) == tuple): # se linea esco
       return None
    obj1Type = obj1.whatIs()
-   if obj1Type == "ARC": # se � arco lo trasformo in cerchio
+   if obj1Type == "ARC": # se é arco lo trasformo in cerchio
       circle1 = QadCircle()
       circle1.set(obj1.center, obj1.radius)
    else:
@@ -6434,7 +6402,7 @@ def lineFromTanPerPts(tanGeom1, tanPt1, perGeom2, perPt2):
       obj2Type = "LINE"
    else:
       obj2Type = obj2.whatIs()
-      if obj2Type == "ARC": # se � arco lo trasformo in cerchio
+      if obj2Type == "ARC": # se é arco lo trasformo in cerchio
          circle2 = QadCircle()
          circle2.set(obj2.center, obj2.radius)
       else:
@@ -6502,7 +6470,7 @@ def lineFromTanPerPts(tanGeom1, tanPt1, perGeom2, perPt2):
       AvgList.append(getDistance(line[1], perPt2))
          
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          result = line       
                
@@ -6515,10 +6483,10 @@ def lineFromTanPerPts(tanGeom1, tanPt1, perGeom2, perPt2):
 def lineFrom2PerPts(geom1, pt1, geom2, pt2):
    '''
    Trova la linea perpendicolare a 2 oggetti: 
-   geometria di perpendicolarit� (linea, arco o cerchio)
-   punto di selezione geometria di perpendicolarit�
-   geometria di perpendicolarit� (linea, arco o cerchio)
-   punto di selezione geometria di perpendicolarit�
+   geometria di perpendicolarità (linea, arco o cerchio)
+   punto di selezione geometria di perpendicolarità
+   geometria di perpendicolarità (linea, arco o cerchio)
+   punto di selezione geometria di perpendicolarità
    '''
    obj1 = whatGeomIs(pt1, geom1)
    obj2 = whatGeomIs(pt2, geom2)
@@ -6527,7 +6495,7 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
       obj1Type = "LINE"
    else:
       obj1Type = obj1.whatIs()
-      if obj1Type == "ARC": # se � arco lo trasformo in cerchio
+      if obj1Type == "ARC": # se é arco lo trasformo in cerchio
          circle1 = QadCircle()
          circle1.set(obj1.center, obj1.radius)
       else:
@@ -6537,7 +6505,7 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
       obj2Type = "LINE"
    else:
       obj2Type = obj2.whatIs()
-      if obj2Type == "ARC": # se � arco lo trasformo in cerchio
+      if obj2Type == "ARC": # se é arco lo trasformo in cerchio
          circle2 = QadCircle()
          circle2.set(obj2.center, obj2.radius)
       else:
@@ -6553,10 +6521,10 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
          ptPer1 = getPerpendicularPointOnInfinityLine(obj1[0], obj1[1], circle2.center)
          angle = getAngleBy2Pts(circle2.center, ptPer1)
          ptPer2 = getPolarPointByPtAngle(circle2.center, angle, circle2.radius)
-         if ptPer1 != ptPer2: # se la linea non � tangente nel punto ptPer2
+         if ptPer1 != ptPer2: # se la linea non é tangente nel punto ptPer2
             lines.append([ptPer1, ptPer2]) 
          ptPer2 = getPolarPointByPtAngle(circle2.center, angle, -1 * circle2.radius)
-         if ptPer1 != ptPer2: # se la linea non � tangente nel punto ptPer2
+         if ptPer1 != ptPer2: # se la linea non é tangente nel punto ptPer2
             lines.append([ptPer1, ptPer2]) 
    else:
       if obj2Type == "LINE":
@@ -6564,10 +6532,10 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
          ptPer2 = getPerpendicularPointOnInfinityLine(obj2[0], obj2[1], circle1.center)
          angle = getAngleBy2Pts(circle1.center, ptPer2)
          ptPer1 = getPolarPointByPtAngle(circle1.center, angle, circle1.radius)
-         if ptPer1 != ptPer2: # se la linea non � tangente nel punto ptPer1
+         if ptPer1 != ptPer2: # se la linea non é tangente nel punto ptPer1
             lines.append([ptPer1, ptPer2]) 
          ptPer1 = getPolarPointByPtAngle(circle1.center, angle, -1 * circle1.radius)
-         if ptPer1 != ptPer2: # se la linea non � tangente nel punto ptPer1
+         if ptPer1 != ptPer2: # se la linea non é tangente nel punto ptPer1
             lines.append([ptPer1, ptPer2]) 
       else:
          perPoints1 = circle1.getIntersectionPointsWithInfinityLine(circle1.center, circle2.center)
@@ -6626,7 +6594,7 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
       AvgList.append(getDistance(line[1], pt2))
          
       currAvg = numericListAvg(AvgList)           
-      if currAvg < Avg: # mediamente pi� vicino
+      if currAvg < Avg: # mediamente più vicino
          Avg = currAvg
          result = line       
                
@@ -6635,7 +6603,7 @@ def lineFrom2PerPts(geom1, pt1, geom2, pt2):
 
 #===============================================================================
 # QadLinearObject class
-# Classe che definisce un oggetto lineare che pu� essere un segmento o un arco
+# Classe che definisce un oggetto lineare che può essere un segmento o un arco
 #===============================================================================
 class QadLinearObject():
 
@@ -6655,7 +6623,7 @@ class QadLinearObject():
    #============================================================================
    def isInitialized(self):
       """
-      la funzione ritorna True se l'oggetto � inizializzato.
+      la funzione ritorna True se l'oggetto é inizializzato.
       """
       return False if self.defList is None else True
 
@@ -6677,7 +6645,7 @@ class QadLinearObject():
    #============================================================================
    def isSegment(self):
       """
-      la funzione ritorna True se l'oggetto � un segmento.
+      la funzione ritorna True se l'oggetto é  un segmento.
       """
       if self.isInitialized() == False:
          return False
@@ -6689,7 +6657,7 @@ class QadLinearObject():
    #============================================================================
    def isArc(self):
       """
-      la funzione ritorna True se l'oggetto � un arco.
+      la funzione ritorna True se l'oggetto é  un arco.
       """
       if self.isInitialized() == False:
          return False
@@ -6701,7 +6669,7 @@ class QadLinearObject():
    #============================================================================
    def isInverseArc(self):
       """
-      la funzione ritorna True se il punto iniziale dell'arco � da considerare come finale
+      la funzione ritorna True se il punto iniziale dell'arco é da considerare come finale
       nel verso impostato all'arco.
       """
       if self.isArc() == False:
@@ -6767,12 +6735,12 @@ class QadLinearObject():
       if self.isInitialized():
          del self.defList[:] # svuoto la lista
          
-      if type(linearObject) == list or type(linearObject) == tuple: # � una lista
-         if type(linearObject[0]) == QgsPoint: # � un segmento
+      if type(linearObject) == list or type(linearObject) == tuple: # é una lista
+         if type(linearObject[0]) == QgsPoint: # é un segmento
             self.defList = [QgsPoint(linearObject[0]), QgsPoint(linearObject[1])]
-         else: # � un arco
+         else: # é un arco
             self.defList = [QadArc(linearObject[0]), linearObject[1]]
-      else: # � un oggetto QadLinearObject
+      else: # é un oggetto QadLinearObject
          if linearObject.isSegment():
             self.defList = [QgsPoint(linearObject.defList[0]), QgsPoint(linearObject.defList[1])]
          else:
@@ -6787,8 +6755,6 @@ class QadLinearObject():
       la funzione imposta l'oggetto attraverso una geometria di cui si conosce un punto
       nelle vicinanze.
       """
-      #qad_debug.breakPoint()
-      
       if self.isInitialized():
          del self.defList[:] # svuoto la lista
    
@@ -6824,7 +6790,7 @@ class QadLinearObject():
       else:   
          pt1 = points[afterVertex - 1 ]
          pt2 = points[afterVertex]
-         if pt1 != pt2: # solo se il punto iniziale � diverso da quello finale
+         if pt1 != pt2: # solo se il punto iniziale é diverso da quello finale
             self.setSegment(pt1, pt2)
    
       return True
@@ -6932,7 +6898,7 @@ class QadLinearObject():
       """
       if self.isSegment(): # segmento
          return getAngleBy2Pts(self.getStartPt(), self.getEndPt())
-      else: # se � un arco
+      else: # se é un arco
          arc = QadArc()
          if self.isInverseArc():
             return self.getArc().getTanDirectionOnEndPt() + math.pi
@@ -6949,7 +6915,7 @@ class QadLinearObject():
       """
       if self.isSegment(): # segmento
          return getAngleBy2Pts(self.getStartPt(), self.getEndPt())
-      else: # se � un arco
+      else: # se é un arco
          arc = QadArc()
          if self.isInverseArc():
             return self.getArc().getTanDirectionOnStartPt() + math.pi
@@ -7093,7 +7059,7 @@ class QadLinearObject():
       dummy = QadLinearObject(self)
       dummy.setEndPt(pt)
 
-      # se il punto � sull'estensione dalla parte del punto iniziale      
+      # se il punto é sull'estensione dalla parte del punto iniziale      
       if self.containsPt(pt) == False and \
          getDistance(self.getStartPt(), pt) < getDistance(self.getEndPt(), pt):
          return -dummy.length()
@@ -7145,27 +7111,27 @@ class QadLinearObject():
          # se entrambi i punti terminali della parte sono esterni al cerchio
          if startPtFromCenter >= circle.radius and endPtFromCenter >= circle.radius:
             result.append(QadLinearObject(self))      
-      elif intPtListLen == 1: # se c'� un solo punto di intersezione
+      elif intPtListLen == 1: # se c'é un solo punto di intersezione
          # se entrambi i punti terminali della parte sono esterni al cerchio
          if startPtFromCenter >= circle.radius and endPtFromCenter >= circle.radius:
             result.append(QadLinearObject(self))      
-         # se il primo punto della parte � interno e il secondo esterno al cerchio
+         # se il primo punto della parte é interno e il secondo esterno al cerchio
          elif startPtFromCenter < circle.radius and endPtFromCenter > circle.radius:
             newLinearobj = QadLinearObject(self)
             newLinearobj.setStartPt(intPtList[0]) 
             result.append(newLinearobj)      
-         # se il primo punto della parte � esterno e il secondo interno al cerchio
+         # se il primo punto della parte é esterno e il secondo interno al cerchio
          elif startPtFromCenter > circle.radius and endPtFromCenter < circle.radius:
             newLinearobj = QadLinearObject(self)
             newLinearobj.setEndPt(intPtList[0]) 
             result.append(newLinearobj)      
       else : # se ci sono due punti di intersezione
-         # se il primo punto della parte � esterno al cerchio
+         # se il primo punto della parte é esterno al cerchio
          if startPtFromCenter > circle.radius:
             newLinearobj = QadLinearObject(self)
             newLinearobj.setEndPt(intPtList[0]) 
             result.append(newLinearobj)      
-         # se il secondo punto della parte � esterno al cerchio
+         # se il secondo punto della parte é esterno al cerchio
          if endPtFromCenter > circle.radius:
             newLinearobj = QadLinearObject(self)
             newLinearobj.setStartPt(intPtList[1]) 
@@ -7240,9 +7206,8 @@ class QadLinearObject():
       if self.isSegment(): # segmento
          result = [self.getStartPt(), self.getEndPt()]
       else: # arco
-         #qad_debug.breakPoint()
          result = self.getArc().asPolyline(tolerance2ApproxCurve)
-         if self.isInverseArc(): # l'arco � in senso inverso
+         if self.isInverseArc(): # l'arco é in senso inverso
             result.reverse()
                      
       return result
@@ -7280,20 +7245,20 @@ class QadLinearObject():
    #============================================================================
    def leftOf(self, point):
       """
-      la funzione ritorna una numero < 0 se il punto � alla sinistra della parte lineare
+      la funzione ritorna una numero < 0 se il punto é alla sinistra della parte lineare
       """
       if self.isSegment(): # segmento
          return leftOfLine(point, self.getStartPt(), self.getEndPt())
       else:
          if getDistance(self.getArc().center, point) - self.getArc().radius > 0:
             # esterno all'arco
-            if self.isInverseArc(): # l'arco � in senso inverso
+            if self.isInverseArc(): # l'arco é in senso inverso
                return -1 # a sinistra
             else:
                return 1 # a destra
          else: 
             # interno all'arco
-            if self.isInverseArc(): # l'arco � in senso inverso
+            if self.isInverseArc(): # l'arco é in senso inverso
                return 1 # a destra
             else:
                return -1 # a sinistra
@@ -7306,8 +7271,8 @@ class QadLinearObject():
       """
       la funzione ritorna una lista con 
       (<minima distanza al quadrato>
-       <punto pi� vicino>
-       <"a sinistra di" se il punto � alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+       <punto più vicino>
+       <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
       """
       if self.isSegment(): # segmento
          startPt = self.getStartPt()
@@ -7325,8 +7290,8 @@ class QadLinearObject():
    def breakOnPt(self, point):
       """
       la funzione spezza in due la parte nel punto <point>.
-      Ritorna una lista di due parti: la prima parte (che pu� essere
-      nulla se <point> conicide con il punto iniziale) e la seconda parte (che pu� essere
+      Ritorna una lista di due parti: la prima parte (che può essere
+      nulla se <point> conicide con il punto iniziale) e la seconda parte (che può essere
       nulla se <point> conicide con il punto finale)
       """
       dummy = self.closestPtWithContext(point)
@@ -7351,7 +7316,7 @@ class QadLinearObject():
 
 #===============================================================================
 # QadLinearObjectList class
-# Classe che definisce una lista di oggetti lineari che pu� essere una polilinea
+# Classe che definisce una lista di oggetti lineari che può essere una polilinea
 #===============================================================================
 class QadLinearObjectList():
 
@@ -7447,7 +7412,6 @@ class QadLinearObjectList():
       elif partAt >= self.qty(): # inserisco parte in fondo
          self.append([self.getEndPt(), pt])
       else:
-         #qad_debug.breakPoint()
          linearObject = self.getLinearObjectAt(partAt)
 
          if linearObject.isArc():
@@ -7478,7 +7442,6 @@ class QadLinearObjectList():
       se i < 0 aggiunge il punto all'inizio della polilinea
       se i >= qty() aggiunge il punto alla fine della polilinea
       """
-      #qad_debug.breakPoint()
       prevLinearObject, nextLinearObject = self.getPrevNextLinearObjectsAtVertex(vertexAt)
       
       if prevLinearObject is not None:
@@ -7562,7 +7525,7 @@ class QadLinearObjectList():
          if ptNear(linearObject.getStartPt(), pt):
             return vertexAt
          vertexAt = vertexAt + 1
-      if self.isClosed() == False: # se non � chiusa verifico ultimo vertice dell'ultima parte
+      if self.isClosed() == False: # se non é chiusa verifico ultimo vertice dell'ultima parte
          if ptNear(self.defList[-1].getEndPt(), pt):
             return vertexAt
          
@@ -7615,7 +7578,7 @@ class QadLinearObjectList():
       la funzione restituisce la posizione della parte successiva all' i-esima (0-based) 
       """      
       if i == self.qty() - 1 or i == -1: # sono alla fine
-         if self.isClosed(): # se � chiusa torno all'inizio
+         if self.isClosed(): # se é chiusa torno all'inizio
             return 0
          else:
             return None
@@ -7631,7 +7594,7 @@ class QadLinearObjectList():
       la funzione restituisce la posizione della parte precedente all' i-esima (0-based) 
       """      
       if i == 0: # sono all'inizio
-         if self.isClosed(): # se � chiusa torno alla fine
+         if self.isClosed(): # se é chiusa torno alla fine
             return self.qty() - 1
          else:
             return None
@@ -7664,7 +7627,7 @@ class QadLinearObjectList():
          if arcInfo is not None:
             arc = arcInfo[0]
             if arc.getStartPt() != arc.getEndPt():
-               # se i punti sono cos� vicini da essere considerati uguali         
+               # se i punti sono così vicini da essere considerati uguali         
                inverse = False if ptNear(points[i], arc.getStartPt()) else True
                self.append([arc, inverse])
             startEndVertices = arcInfo[1]
@@ -7673,8 +7636,7 @@ class QadLinearObjectList():
          else:
             pt1 = points[i]
             pt2 = points[i + 1]
-            if pt1 != pt2: # solo se il punto iniziale � diverso da quello finale
-               self.append([pt1, pt2])
+            self.append([pt1, pt2])
             i = i + 1
    
       return
@@ -7748,7 +7710,7 @@ class QadLinearObjectList():
    #============================================================================
    def qty(self):
       """
-      la funzione restituisce la quantit� di parti nella lista.
+      la funzione restituisce la quantità di parti nella lista.
       """
       return len(self.defList)
    
@@ -7780,7 +7742,7 @@ class QadLinearObjectList():
    #============================================================================
    def isClosed(self):
       """
-      la funzione restituisce True se la polilinea (lista di parti segmenti-archi) � chiusa.
+      la funzione restituisce True se la polilinea (lista di parti segmenti-archi) é chiusa.
       """
       if len(self.defList) == 0:
          return False
@@ -7798,8 +7760,7 @@ class QadLinearObjectList():
       if toClose: # da chiudere
          if self.isClosed() == False:
             linearObject = self.getLinearObjectAt(-1)
-            if linearObject.isArc(): # se � un arco
-               #qad_debug.breakPoint()
+            if linearObject.isArc(): # se é un arco
                arc = QadArc()
                if linearObject.isInverseArc():
                   if arc.fromStartEndPtsTan(linearObject.getArc().getStartPt(), \
@@ -7815,7 +7776,7 @@ class QadLinearObjectList():
                newLinearObject = QadLinearObject()
                newLinearObject.setArc(arc, linearObject.isInverseArc())
                self.append(newLinearObject)
-            else: # non � un arco
+            else: # non é un arco
                if self.qty() > 1:
                   self.append([self.getEndPt(), self.getStartPt()])               
       else: # da aprire
@@ -7836,7 +7797,7 @@ class QadLinearObjectList():
       la funzione trasforma in segmento retto ogni arco della polilinea (lista di parti segmenti-archi).
       """
       if toCurve == False:
-         if self.getCircle() is not None: # se � un cerchio
+         if self.getCircle() is not None: # se é un cerchio
             return
    
          for linearObject in self.defList:
@@ -7849,12 +7810,10 @@ class QadLinearObjectList():
          return
       isClosed = self.isClosed()
       if isClosed:
-         if self.getCircle() is not None: # se � un cerchio
+         if self.getCircle() is not None: # se é un cerchio
             return
 
       newLinearObjectList = QadLinearObjectList()
-
-      #qad_debug.breakPoint()
 
       # primo oggetto lineare
       current = self.getLinearObjectAt(0)         
@@ -7864,10 +7823,10 @@ class QadLinearObjectList():
          prev = self.getLinearObjectAt(-1)
          arc = QadArc()
          if arc.fromStartSecondEndPts(prev.getStartPt(), current.getStartPt(), current.getEndPt()):
-            if ptNear(prev.getStartPt(), arc.getStartPt()): # arco non � inverso                  
+            if ptNear(prev.getStartPt(), arc.getStartPt()): # arco non é inverso                  
                arc.setStartAngleByPt(current.getStartPt())
                tanDirectionOnStartPt = arc.getTanDirectionOnStartPt()
-            else: # arco � inverso
+            else: # arco é inverso
                arc.setEndAngleByPt(current.getStartPt())
                tanDirectionOnStartPt = arc.getTanDirectionOnEndPt() + math.pi
             
@@ -7899,13 +7858,12 @@ class QadLinearObjectList():
    def fillet(self, radius):
       """
       la funzione raccorda ogni segmento al successivo con un raggio di curvatura noto,
-      la nuova polilinea avr� i vertici cambiati.
+      la nuova polilinea avrà i vertici cambiati.
       """
       if radius <= 0:
          return
       newLinearObjectList = QadLinearObjectList()
 
-      qad_debug.breakPoint()
       part = self.getLinearObjectAt(0)
       i = 1
       tot = self.qty()
@@ -7914,7 +7872,7 @@ class QadLinearObjectList():
          if part.isSegment() and nextPart.isSegment():
             # Ritorna una lista di 3 elementi (None in caso di errore):   
             # - una linea che sostituisce <line1>, se = None <line1> va rimossa
-            # - un arco, se = None non c'� arco di raccordo tra le due linee
+            # - un arco, se = None non c'é arco di raccordo tra le due linee
             # - una linea che sostituisce <line2>, se = None <line2> va rimossa
             res = offsetBridgeTheGapBetweenLines(part, nextPart, radius, 1)
             if res is None:
@@ -7937,7 +7895,7 @@ class QadLinearObjectList():
          if part.isSegment() and nextPart.isSegment():
             # Ritorna una lista di 3 elementi (None in caso di errore):   
             # - una linea che sostituisce <line1>, se = None <line1> va rimossa
-            # - un arco, se = None non c'� arco di raccordo tra le due linee
+            # - un arco, se = None non c'é arco di raccordo tra le due linee
             # - una linea che sostituisce <line2>, se = None <line2> va rimossa
             res = offsetBridgeTheGapBetweenLines(part, nextPart, radius, 1)
             if res is None:
@@ -7993,7 +7951,7 @@ class QadLinearObjectList():
    def asQgsFeatureList(self, polylineMode):
       """
       la funzione restituisce una lista di feature.
-      Se polylineMode = True allora la lista degli oggetti lineari sar� considerata un'unica polilinea
+      Se polylineMode = True allora la lista degli oggetti lineari sarà considerata un'unica polilinea
       """
       fList = []
       if polylineMode == False:
@@ -8014,11 +7972,10 @@ class QadLinearObjectList():
    #============================================================================
    def appendToTempQgsVectorLayer(self, vectorLayer, polylineMode, updateExtents = True):
       """
-      la funzione inserisce gli oggetti lineari in lista in un QgsVectorLayer temporaneo gi� creato.
-      Se polylineMode = True allora la lista degli oggetti lineari sr� considerata un'unica polilinea
+      la funzione inserisce gli oggetti lineari in lista in un QgsVectorLayer temporaneo già creato.
+      Se polylineMode = True allora la lista degli oggetti lineari sarà considerata un'unica polilinea
       Ritorna la lista dei corrispettivi id di feature oppure None in caso di errore
       """
-      #qad_debug.breakPoint()
       fList = self.asQgsFeatureList(polylineMode)
       
       idList = []
@@ -8051,13 +8008,13 @@ class QadLinearObjectList():
    def getIntersectionPtsWithLinearObject(self, part, orderByStartPtOfPart = False):
       """
       la funzione restituisce diverse liste:
-      - la prima � una lista di punti di intersezione tra la parte <part> e
+      - la prima é una lista di punti di intersezione tra la parte <part> e
       la lista di parti ordinata per distanza dal punto iniziale di <part> se
       <orderByStartPtOfPart> = True altrimenti ordinata per distanza dal punto iniziale
       della lista di parti.
-      - la seconda � una lista che contiene, rispettivamente per ogni punto di intersezione,
+      - la seconda é una lista che contiene, rispettivamente per ogni punto di intersezione,
       il numero della parte (0-based) della lista di parti in cui si trova quel punto.
-      - la terza � una lista che contiene, rispettivamente per ogni punto di intersezione,
+      - la terza é una lista che contiene, rispettivamente per ogni punto di intersezione,
       la distanza dal punto iniziale di <part> o dal punto iniziale della lista di parti
       (vedi <orderByStartPtOfPart>)
       <part>: un segmento o arco 
@@ -8072,7 +8029,7 @@ class QadLinearObjectList():
          partNumber = partNumber + 1
          partialIntPtList = part.getIntersectionPtsWithLinearObject(part2)
          for partialIntPt in partialIntPtList:
-            # escludo i punti che sono gi� in intPtSortedList
+            # escludo i punti che sono già in intPtSortedList
             found = False
             for intPt in intPtSortedList:
                if ptNear(intPt[0], partialIntPt):
@@ -8114,11 +8071,11 @@ class QadLinearObjectList():
    def getIntersectionPtsWithLinearObjectList(self, partList):
       """
       la funzione restituisce diverse liste:
-      - la prima � una lista di punti di intersezione tra le 2 liste di parti
+      - la prima é una lista di punti di intersezione tra le 2 liste di parti
       ordinata per distanza dal punto iniziale della lista.
-      - la seconda � una lista che contiene, rispettivamente per ogni punto di intersezione,
+      - la seconda é una lista che contiene, rispettivamente per ogni punto di intersezione,
       il numero della parte (0-based) della lista di parti in cui si trova quel punto.
-      - la terza � una lista che contiene, rispettivamente per ogni punto di intersezione,
+      - la terza é una lista che contiene, rispettivamente per ogni punto di intersezione,
       la distanza dal punto iniziale della lista.
       <partList>: lista di parti       
       """
@@ -8142,25 +8099,27 @@ class QadLinearObjectList():
    #============================================================================
    def join(self, linearObjectListToJoinTo, toleranceDist = 1.e-9, mode = 1):
       """
-      la funzione unisce la polilinea con un'altra polilinea secondo la modalit� <mode>.
+      la funzione unisce la polilinea con un'altra polilinea secondo la modalità <mode>.
       In caso di successo ritorna True altrimenti False.
       <linearObjectListToJoinTo> = polilinea con cui unirsi
-      <toleranceDist> = distanza di tolleranza perch� 2 punti siano considerati coincidenti  
+      <toleranceDist> = distanza di tolleranza perché 2 punti siano considerati coincidenti  
       <mode> = Imposta il metodo di unione (usato se toleranceDist > 0):
                1 -> Estendi;  Consente di unire polilinee selezionate estendendo o tagliando 
-                              i segmenti nei punti finali pi� vicini.
+                              i segmenti nei punti finali più vicini.
                2 -> Aggiungi; Consente di unire polilinee selezionate aggiungendo un segmento 
-                              retto tra i punti finali pi� vicini.
+                              retto tra i punti finali più vicini.
                3 -> Entrambi;Consente di unire polilinee selezionate estendendo o tagliando, se possibile.
                     In caso contrario, consente di unire polilinee selezionate aggiungendo 
-                    un segmento retto tra i punti finali pi� vicini. 
+                    un segmento retto tra i punti finali più vicini. 
       """
       myToleranceDist = 1.e-9 if toleranceDist == 0 else toleranceDist
-      # cerco il punto pi� vicino al punto iniziale della polilinea
+      # cerco il punto più vicino al punto iniziale della polilinea
       ptToJoin = self.getStartPt()
       isStartPt = True
       minDist = sys.float_info.max
       # considero il punto iniziale della polilinea a cui unirsi
+      if linearObjectListToJoinTo.getStartPt() is None: # roby test
+         fermati = True
       dist = getDistance(ptToJoin, linearObjectListToJoinTo.getStartPt())
       if dist < minDist:
          isStartPtToJoinTo = True
@@ -8171,7 +8130,7 @@ class QadLinearObjectList():
          isStartPtToJoinTo = False
          minDist = dist
 
-      # cerco il punto pi� vicino al punto finale della polilinea
+      # cerco il punto più vicino al punto finale della polilinea
       ptToJoin = self.getEndPt()
       # considero il punto iniziale della polilinea a cui unirsi
       dist = getDistance(ptToJoin, linearObjectListToJoinTo.getStartPt())
@@ -8187,7 +8146,7 @@ class QadLinearObjectList():
          minDist = dist
 
       if minDist <= myToleranceDist: # trovato un punto
-         # se il punto iniziale della polilinea da unire � uguale a quello iniziale della polilinea a cui unirsi
+         # se il punto iniziale della polilinea da unire é uguale a quello iniziale della polilinea a cui unirsi
          if isStartPt == True and isStartPtToJoinTo == True:            
             part1 = qad_utils.QadLinearObject(self.getLinearObjectAt(0))
             part1.reverse()
@@ -8209,7 +8168,7 @@ class QadLinearObjectList():
                   i = i + 1
                return True
             
-         # se il punto iniziale della polilinea da unire � uguale a quello finale della polilinea a cui unirsi
+         # se il punto iniziale della polilinea da unire é uguale a quello finale della polilinea a cui unirsi
          elif isStartPt == True and isStartPtToJoinTo == False:
             part1 = qad_utils.QadLinearObject(self.getLinearObjectAt(0))
             part1.reverse()
@@ -8229,7 +8188,7 @@ class QadLinearObjectList():
                   i = i - 1
                return True
 
-         # se il punto finale della polilinea da unire � uguale a quello iniziale della polilinea a cui unirsi
+         # se il punto finale della polilinea da unire é uguale a quello iniziale della polilinea a cui unirsi
          elif isStartPt == False and isStartPtToJoinTo == True:
             part1 = self.getLinearObjectAt(-1)
             part2 = qad_utils.QadLinearObject(linearObjectListToJoinTo.getLinearObjectAt(0))
@@ -8249,7 +8208,7 @@ class QadLinearObjectList():
                   i = i + 1
                return True
             
-         # se il punto finale della polilinea da unire � uguale a quello finale della polilinea a cui unirsi         
+         # se il punto finale della polilinea da unire é uguale a quello finale della polilinea a cui unirsi         
          elif isStartPt == False and isStartPtToJoinTo == False:
             part1 = self.getLinearObjectAt(-1)
             part2 = linearObjectListToJoinTo.getLinearObjectAt(-1)
@@ -8279,7 +8238,6 @@ class QadLinearObjectList():
       generate dall'unione degli oggetti lineari (lista di parti segmenti-archi).
       <epsg> = the authority identifier for this srs 
       """
-      #qad_debug.breakPoint()
       # creo un layer temporaneo in memoria
       vectorLayer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, "QAD_SelfJoinLines", "memory")
       provider = vectorLayer.dataProvider()
@@ -8307,7 +8265,6 @@ class QadLinearObjectList():
       # fetchAttributes, fetchGeometry, rectangle, useIntersect             
       for feature in vectorLayer.getFeatures(getFeatureRequest([], True, None, False)):                       
          linearObjectList = QadLinearObjectList()
-         #qad_debug.breakPoint()
          linearObjectList.fromPolyline(feature.geometry().asPolyline())
          result.append(linearObjectList)
     
@@ -8363,9 +8320,9 @@ class QadLinearObjectList():
       """
       la funzione ritorna una lista con 
       (<minima distanza al quadrato>
-       <punto pi� vicino>
-       <indice della parte pi� vicina>       
-       <"a sinistra di" se il punto � alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+       <punto più vicino>
+       <indice della parte più vicina>       
+       <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
       """
       minDistPoint = QgsPoint()
       closestPartIndex = 0
@@ -8392,8 +8349,8 @@ class QadLinearObjectList():
    def breakOnPt(self, point):
       """
       la funzione spezza in due la lista di parti nel punto <point>.
-      Ritorna una lista di due parti: la prima parte (che pu� essere
-      nulla se <point> conicide con il punto iniziale) e la seconda parte (che pu� essere
+      Ritorna una lista di due parti: la prima parte (che può essere
+      nulla se <point> conicide con il punto iniziale) e la seconda parte (che può essere
       nulla se <point> conicide con il punto finale)
       """
       dummy = self.closestPartWithContext(point)
@@ -8438,11 +8395,11 @@ class QadLinearObjectList():
    #============================================================================
    def getIntPtNearestToStartPt(self, crs, entitySet, edgeMode):
       """
-      La funzione cerca il punto di intersezione tra la polilinea e un gruppo di entit�
-      che � pi� vicino al punto iniziale della polilinea.
+      La funzione cerca il punto di intersezione tra la polilinea e un gruppo di entità
+      che é più vicino al punto iniziale della polilinea.
       La funzione riceve:
-      <crs> sistema di coordinate in cui � espressa la polilinea 
-      <entitySet> gruppo di entit�
+      <crs> sistema di coordinate in cui é espressa la polilinea 
+      <entitySet> gruppo di entità
       La funzione restituisce:
       punto di intersezione, numero della parte
       """   
@@ -8465,7 +8422,7 @@ class QadLinearObjectList():
                coordTransform = QgsCoordinateTransform(layer.crs(), crs)          
             trimmedLinearObject.set(LinearObject)
                   
-            # per ciascuna entit� del layer
+            # per ciascuna entità del layer
             for featureId in layerEntitySet.featureIds:
                f = getFeatureById(layer, featureId)
                # Trasformo la geometria nel sistema di coordinate del <layer> 
@@ -8475,7 +8432,7 @@ class QadLinearObjectList():
                
                intPt = getIntersectionPtTrimQgsGeometry(LinearObject, gTransformed, edgeMode)
                if intPt is not None:
-                  # cerco il punto di intersezione pi� vicino al punto iniziale
+                  # cerco il punto di intersezione più vicino al punto iniziale
                   trimmedLinearObject.setEndPt(intPt)
                   if trimmedLinearObject.length() < minDist:
                      minDist = trimmedLinearObject.length()
@@ -8510,17 +8467,17 @@ def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve
    La funzione riceve:
    <featureIdToJoin> = un ID della feature da unire 
    <vectorLayer> = un QgsVectorLayer che deve contenere le feature da unire
-                   (si usano gli indici spaziali del vettore x essere pi� veloci).
-   <toleranceDist> = distanza di tolleranza perch� 2 punti siano considerati coincidenti  
+                   (si usano gli indici spaziali del vettore x essere più veloci).
+   <toleranceDist> = distanza di tolleranza perché 2 punti siano considerati coincidenti  
    <tolerance2ApproxCurve> = tolleranza di approssimazione per le curve (usato se toleranceDist > 0)
    <mode> = Imposta il metodo di unione (usato se toleranceDist > 0):
             1 -> Estendi;  Consente di unire polilinee selezionate estendendo o tagliando 
-                           i segmenti nei punti finali pi� vicini.
+                           i segmenti nei punti finali più vicini.
             2 -> Aggiungi; Consente di unire polilinee selezionate aggiungendo un segmento 
-                           retto tra i punti finali pi� vicini.
+                           retto tra i punti finali più vicini.
             3 -> Entrambi;Consente di unire polilinee selezionate estendendo o tagliando, se possibile.
                  In caso contrario, consente di unire polilinee selezionate aggiungendo 
-                 un segmento retto tra i punti finali pi� vicini. 
+                 un segmento retto tra i punti finali più vicini. 
    La funzione modifica il <vectorLayer> modificando la feature da unire e cancellando 
    quelle unite a featureIdToJoin . Ritorna la lista di features cancellate.
    """   
@@ -8533,20 +8490,21 @@ def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve
    linearObjectList.fromPolyline(g.asPolyline())
    
    linearObjectListToJoinTo = qad_utils.QadLinearObjectList()
-   #qad_debug.breakPoint()
    
    deleteFeatures = []
    feature = QgsFeature()
    
-   # Unisco usando il punto iniziale finch� trovo feature da unire
+   # Unisco usando il punto iniziale finché trovo feature da unire
    ptToJoin = linearObjectList.getStartPt()
    found = True
    while found == True:
       found = False
+      if ptToJoin is None: # test roby
+         fermati = True
       # cerco le features nel punto iniziale usando un micro rettangolo secondo <toleranceDist>
       selectRect = QgsRectangle(ptToJoin.x() - toleranceDist, ptToJoin.y() - toleranceDist, \
                                 ptToJoin.x() + toleranceDist, ptToJoin.y() + toleranceDist)
-      # cerco il punto pi� vicino al punto iniziale della polilinea
+      # cerco il punto più vicino al punto iniziale della polilinea
       minDist = sys.float_info.max
       # fetchAttributes, fetchGeometry, rectangle, useIntersect             
       for feature in vectorLayer.getFeatures(getFeatureRequest([], True, selectRect, True)):                       
@@ -8567,7 +8525,7 @@ def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve
                   return []
                break
             
-   # Unisco usando il punto finale finch� trovo feature da unire
+   # Unisco usando il punto finale finché trovo feature da unire
    ptToJoin = linearObjectList.getEndPt()
    found = True
    while found == True:
@@ -8580,7 +8538,6 @@ def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve
          if feature.id() != featureIdToJoin: # salto la feature da unire
             linearObjectListToJoinTo.fromPolyline(feature.geometry().asPolyline())
 
-            #qad_debug.breakPoint()
             if linearObjectList.join(linearObjectListToJoinTo, toleranceDist, mode) == True:
                found = True
                
@@ -8610,24 +8567,23 @@ def joinEndPtsLinearParts(part1, part2, mode):
    <part2> = seconda parte parte lineare  
    <mode> = Imposta il metodo di unione:
             1 -> Estendi;  Consente di unire polilinee selezionate estendendo o tagliando 
-                           i segmenti nei punti finali pi� vicini.
+                           i segmenti nei punti finali più vicini.
             2 -> Aggiungi; Consente di unire polilinee selezionate aggiungendo un segmento 
-                           retto tra i punti finali pi� vicini.
+                           retto tra i punti finali più vicini.
             3 -> Entrambi; Consente di unire polilinee selezionate estendendo o tagliando, se possibile.
                            In caso contrario, consente di unire polilinee selezionate aggiungendo 
-                           un segmento retto tra i punti finali pi� vicini. 
+                           un segmento retto tra i punti finali più vicini. 
    La funzione restituisce una QadLinearObjectList che comprende:
    part1 (eventualmente modificata nel punto finale) + 
    eventuale segmento + 
    part2 (eventualmente modificata nel punto finale)
-   oppure restituisce None se non � possibile l'unione delle parti
+   oppure restituisce None se non é possibile l'unione delle parti
    """
-   #qad_debug.breakPoint()
    linearObjectList = qad_utils.QadLinearObjectList()
    endPt1 = part1.getEndPt()
    endPt2 = part2.getEndPt()
    
-   if ptNear(endPt1, endPt2): # le 2 parti sono gi� unite
+   if ptNear(endPt1, endPt2): # le 2 parti sono già  unite
       linearObjectList.append(QadLinearObject(part1))
       linearObjectList.append(QadLinearObject(part2).reverse())
       return linearObjectList
@@ -8675,36 +8631,34 @@ def getCurveLinearObjects(tanDirectionOnStartPt, prev, current, next):
    la funzione ritorna una lista di parti lineari
    da sostituire alla parte <current> per curvare la polilinea
    """
-   #qad_debug.breakPoint()      
-
    if current.isArc():
       return [QadLinearObject(current)]
 
-   # se non ci sono n� la parte precedente n� la parte successiva 
+   # se non ci sono né la parte precedente né la parte successiva 
    if prev is None and next is None:
       return QadLinearObject(current)
 
    arc = QadArc()
-   if prev is None: # non c'� una parte precedente
+   if prev is None: # non c'é una parte precedente
       if arc.fromStartSecondEndPts(current.getStartPt(), current.getEndPt(), next.getEndPt()) == False:
          return [QadLinearObject(current)]
-      if ptNear(current.getStartPt(), arc.getStartPt()): # arco non � inverso                  
+      if ptNear(current.getStartPt(), arc.getStartPt()): # arco non é inverso                  
          arc.setEndAngleByPt(current.getEndPt())
          return [QadLinearObject([arc, False])]
-      else: # arco � inverso
+      else: # arco é inverso
          arc.setStartAngleByPt(current.getEndPt())
          return [QadLinearObject([arc, True])]
    else:
       t = prev.getTanDirectionOnEndPt() if tanDirectionOnStartPt is None else tanDirectionOnStartPt
        
-      if next is None: # non c'� una parte successiva          
+      if next is None: # non c'é una parte successiva          
          if arc.fromStartEndPtsTan(current.getStartPt(), current.getEndPt(), t) == False:
             return [QadLinearObject(current)]
-         if ptNear(current.getStartPt(), arc.getStartPt()): # arco non � inverso                  
+         if ptNear(current.getStartPt(), arc.getStartPt()): # arco non é inverso                  
             return [QadLinearObject([arc, False])]
-         else: # arco � inverso
+         else: # arco é inverso
             return [QadLinearObject([arc, True])]
-      else: # c'� una parte precedente e successiva
+      else: # c'é una parte precedente e successiva
          # calcolo il punto medio tra i 2 archi di raccordo
 #          if arc.fromStartEndPtsTan(current.getStartPt(), current.getEndPt(), \
 #                                    prev.getTanDirectionOnEndPt()) == False:
@@ -8717,33 +8671,33 @@ def getCurveLinearObjects(tanDirectionOnStartPt, prev, current, next):
 
          if arc.fromStartSecondEndPts(prev.getStartPt(), current.getStartPt(), current.getEndPt()) == False:
             return [QadLinearObject(current)]
-         if ptNear(prev.getStartPt(), arc.getStartPt()): # arco non � inverso                  
+         if ptNear(prev.getStartPt(), arc.getStartPt()): # arco non é inverso                  
             arc.setStartAngleByPt(current.getStartPt())
-         else: # arco � inverso
+         else: # arco é inverso
             arc.setEndAngleByPt(current.getStartPt())
          arc2 = QadArc()
          if arc2.fromStartSecondEndPts(current.getStartPt(), current.getEndPt(), next.getEndPt()) == False:
             return [QadLinearObject(current)]
-         if ptNear(current.getStartPt(), arc2.getStartPt()): # arco non � inverso                  
+         if ptNear(current.getStartPt(), arc2.getStartPt()): # arco non é inverso                  
             arc2.setEndAngleByPt(current.getEndPt())
-         else: # arco � inverso
+         else: # arco é inverso
             arc2.setStartAngleByPt(current.getEndPt())
 
          midPt = getMiddlePoint(arc.getMiddlePt(), arc2.getMiddlePt())
          
          if arc.fromStartEndPtsTan(current.getStartPt(), midPt, t) == False:
             return [QadLinearObject(current)]
-         if ptNear(current.getStartPt(), arc.getStartPt()): # arco non � inverso                  
+         if ptNear(current.getStartPt(), arc.getStartPt()): # arco non é inverso                  
             linearObject1 = QadLinearObject([arc, False])
-         else: # arco � inverso
+         else: # arco é inverso
             linearObject1 = QadLinearObject([arc, True])
          
          if arc2.fromStartEndPtsTan(linearObject1.getEndPt(), current.getEndPt(), \
                                     linearObject1.getTanDirectionOnEndPt()) == False:
             return [QadLinearObject(current)]
-         if ptNear(current.getEndPt(), arc2.getEndPt()): # arco non � inverso                  
+         if ptNear(current.getEndPt(), arc2.getEndPt()): # arco non é inverso                  
             linearObject2 = QadLinearObject([arc2, False])
-         else: # arco � inverso
+         else: # arco é inverso
             linearObject2 = QadLinearObject([arc2, True])
 
          return [linearObject1, linearObject2]
@@ -8756,12 +8710,11 @@ def getFilletLinearObjectList(poly1, partAt1, pointAt1, poly2, partAt2, pointAt2
    """
    Date due polilinee, la parte e il punto in cui bisogna fare il raccordo tra le due
    polilinee, la funzione ritorna una polilinea risultato del raccordo e due flag che
-   danno indicazioni su ci� che deve essere fatto alle polilinee originali:
+   danno indicazioni su ciò che deve essere fatto alle polilinee originali:
    (0=niente, 1=modificare, 2=cancellare)
-   <filletMode> modalit� di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+   <filletMode> modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
    <radius> raggio di raccordo
    """
-   #qad_debug.breakPoint()
    circle1 = poly1.getCircle()
    circle2 = poly2.getCircle()
    
@@ -8775,32 +8728,32 @@ def getFilletLinearObjectList(poly1, partAt1, pointAt1, poly2, partAt2, pointAt2
                   res = bridgeTheGapBetweenLines(part, pointAt1, nextPart, pointAt2, radius, 0)
                else:
                   res = bridgeTheGapBetweenLines(part, pointAt1, nextPart, pointAt2, radius, 1)
-            else: # part � un segmento retto, nextPart � un arco
+            else: # part é un segmento retto, nextPart é un arco
                res = bridgeTheGapBetweenArcLine(nextPart, pointAt2, part, pointAt1, radius, filletMode)
                if res is not None:
                   dummy = res[0] # inverto il primo e il terzo elemento
                   res[0] = res[2]
                   res[2] = dummy
          else:
-            if nextPart.isSegment(): # part � un arco, nextPart � un segmento retto
+            if nextPart.isSegment(): # part é un arco, nextPart é un segmento retto
                res = bridgeTheGapBetweenArcLine(part, pointAt1, nextPart, pointAt2, radius, filletMode)
-            else: # part � un arco, nextPart � un arco
+            else: # part é un arco, nextPart é un arco
                res = bridgeTheGapBetweenArcs(part, pointAt1, nextPart, pointAt2, radius, filletMode)
       else:
-         if part.isSegment(): # part � un segmento retto, poly2 � un cerchio
+         if part.isSegment(): # part é un segmento retto, poly2 é un cerchio
             res = bridgeTheGapBetweenCircleLine(poly2, pointAt2, part, pointAt1, radius, filletMode)
             if res is not None:
                dummy = res[0] # inverto il primo e il terzo elemento
                res[0] = res[2]
                res[2] = dummy
-         else: # part � un arco, poly2 � un cerchio
+         else: # part é un arco, poly2 é un cerchio
             res = bridgeTheGapBetweenArcCircle(part, pointAt1, poly2, pointAt2, radius, filletMode)
    else:
       if circle2 is None: # se poly2 non era un cerchio
          nextPart = QadLinearObject(poly2.getLinearObjectAt(partAt2))         
-         if nextPart.isSegment(): # poly1 � un cerchio, nextPart � un segmento retto
+         if nextPart.isSegment(): # poly1 é un cerchio, nextPart é un segmento retto
             res = bridgeTheGapBetweenCircleLine(poly1, pointAt1, nextPart, pointAt2, radius, filletMode)
-         else: # poly1 � un cerchio, nextPart � un arco
+         else: # poly1 é un cerchio, nextPart é un arco
             res = bridgeTheGapBetweenArcCircle(nextPart, pointAt2, poly1, pointAt1, radius, filletMode)
             if res is not None:
                dummy = res[0] # inverto il primo e il terzo elemento
@@ -8816,7 +8769,7 @@ def getFilletLinearObjectList(poly1, partAt1, pointAt1, poly2, partAt2, pointAt2
    whatToDoPoly1 = 0 # 0=niente, 1=modificare, 2=cancellare
    whatToDoPoly2 = 0 # 0=niente, 1=modificare, 2=cancellare
    
-   if filletMode == 1 or radius == 0: # modalit� di raccordo "Taglia-estendi"
+   if filletMode == 1 or radius == 0: # modalità di raccordo "Taglia-estendi"
       if circle1 is None: # se poly1 non era un cerchio
          if res[0] is not None:
             part.set(res[0]) # modifico part
@@ -8976,7 +8929,7 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    show a help in the user's html browser.
    per conoscere la sezione/pagina del file html usare internet explorer,
    selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-   Questo perch� internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
+   Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
    """   
    try:
       source = ""
@@ -8988,7 +8941,6 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    except:
       return
 
-   #qad_debug.breakPoint()
    path = os.path.dirname(source) + "/help/help"
    locale = str(QLocale().name())
    helpPath = path + "_" + locale # provo a caricare la lingua e la regione selezionate

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -26,7 +26,6 @@ from PyQt4.QtCore import *
 import os.path
 from qgis.core import *
 
-import qad_debug
 import qad_utils
 from qad_msg import QadMsg
 
@@ -44,14 +43,14 @@ class QadVariablesClass():
       """
       Inizializza un dizionario con le variabili e i loro valori di default 
       """
-      # ARCMINSEGMENTQTY (int): numero minimo di segmenti perch� venga riconosciuto un arco
+      # ARCMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un arco
       VariableName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY") # x lupdate
       self.__VariableValuesDict[VariableName] = int(12)
       # AUTOSNAP (int): attiva il puntamento polare (somma di bit):
       # 8 = Attiva il puntamento polare
       VariableName = QadMsg.translate("Environment variables", "AUTOSNAP")
       self.__VariableValuesDict[VariableName] = int(63)
-      # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perch� venga riconosciuto un cerchio
+      # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un cerchio
       VariableName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY")
       self.__VariableValuesDict[VariableName] = int(12)
       # CMDINPUTHISTORYMAX (int): Imposta il numero massimo di comandi nella lista di storicizzazione
@@ -84,15 +83,15 @@ class QadVariablesClass():
       # OFFSETGAPTYPE (int):
       # 0 = Estende i segmenti di linea alle relative intersezioni proiettate
       # 1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
-      #     Il raggio di ciascun segmento di arco � uguale alla distanza di offset
+      #     Il raggio di ciascun segmento di arco é uguale alla distanza di offset
       # 2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
       #     La distanza perpendicolare da ciascuna cima al rispettivo vertice
-      #     sull'oggetto originale � uguale alla distanza di offset.
+      #     sull'oggetto originale é uguale alla distanza di offset.
       VariableName = QadMsg.translate("Environment variables", "OFFSETGAPTYPE")
       self.__VariableValuesDict[VariableName] = int(0)     
       # ORTHOMODE (int):
-      # 0 = modalit� di movimento ortogonale cursore disabilitata
-      # 1 = modalit� di movimento ortogonale cursore abilitata
+      # 0 = modalità di movimento ortogonale cursore disabilitata
+      # 1 = modalità di movimento ortogonale cursore abilitata
       VariableName = QadMsg.translate("Environment variables", "ORTHOMODE")
       self.__VariableValuesDict[VariableName] = int(0)
       # OSCOLOR (str): Imposta il colore (RGB) dei simboli di osnap
@@ -109,7 +108,7 @@ class QadVariablesClass():
       # 64 = (INS) punto di inserimento di oggetti (come 8)
       # 128 = (PER) punto perpendicolare a un oggetto
       # 256 = (TAN) tangente di un arco, di un cerchio, di un'ellisse, di un arco ellittico o di una spline
-      # 512 = (NEA) punto pi� vicino di un oggetto
+      # 512 = (NEA) punto più vicino di un oggetto
       # 1024 = (C) Cancella tutti gli snap ad oggetto
       # 2048 = (APP) intersezione apparente di due oggetti che non si intersecano nello spazio 3D 
       #        ma che possono apparire intersecanti nella vista corrente
@@ -181,9 +180,8 @@ class QadVariablesClass():
       """
       Salva il dizionario delle variabili su file 
       """
-      #qad_debug.breakPoint()
       if Path == "":
-         # Se la path non � indicata uso il file "qad.ini" in 
+         # Se la path non é indicata uso il file "qad.ini" in 
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
          Path = Path + "qad.ini"
       
@@ -210,7 +208,7 @@ class QadVariablesClass():
       self.__VariableValuesDict.clear()
       self.__init__()
       if Path == "":
-         # Se la path non � indicata uso il file "qad.ini" in 
+         # Se la path non é indicata uso il file "qad.ini" in 
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
          Path = Path + "qad.ini"
 

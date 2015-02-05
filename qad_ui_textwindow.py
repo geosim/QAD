@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -24,7 +24,6 @@
 from PyQt4 import QtCore, QtGui
 
 
-import qad_debug
 from qad_msg import QadMsg
 
 
@@ -36,13 +35,7 @@ class Ui_QadTextWindow(object):
         QadTextWindow.resize(642, 193)
         QadTextWindow.setMinimumSize(100, 20)
         QadTextWindow.setMaximumSize(QtCore.QSize(524287, 524287))
-        self.dockWidgetContents = QtGui.QWidget()
-        self.dockWidgetContents.setObjectName("QadTextWindowDockWidgetContents")
-        self.vboxlayout = QtGui.QVBoxLayout(self.dockWidgetContents)
-        self.vboxlayout.setMargin(0)
-        self.vboxlayout.setObjectName("QadTextWindowVBoxLayout")
-        QadTextWindow.setWidget(self.dockWidgetContents)
-
+                
         self.retranslateUi(QadTextWindow)
         QtCore.QMetaObject.connectSlotsByName(QadTextWindow)
 

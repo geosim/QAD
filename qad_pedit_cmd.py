@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_snapper import *
 from qad_pedit_maptool import *
@@ -92,7 +91,7 @@ class QadPEDITCommandClass(QadCommandClass):
       del self.snapPointsDisplayManager
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 2: # quando si � in fase di selezione entit�
+      if self.step == 2: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()           
       else:
          if (self.plugIn is not None):
@@ -122,7 +121,6 @@ class QadPEDITCommandClass(QadCommandClass):
       if dummy[2] is not None:
          # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
          subGeom, self.atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])
-         #qad_debug.breakPoint()               
          self.linearObjectList.fromPolyline(subGeom.asPolyline())
          if self.linearObjectList.getCircle() is not None:
             self.entity.deselectOnLayer()
@@ -145,7 +143,7 @@ class QadPEDITCommandClass(QadCommandClass):
       tot = self.linearObjectList.qty()
       if vertexAt == tot - 1: # se penultimo punto
          return 0 if self.linearObjectList.isClosed() else vertexAt + 1
-      elif vertexAt < tot: # se non � ultimo punto
+      elif vertexAt < tot: # se non é ultimo punto
          return vertexAt + 1
       else:
          return vertexAt
@@ -187,8 +185,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # setClose
    #============================================================================
    def setClose(self, toClose):
-      #qad_debug.breakPoint()
-
       if self.entity.isInitialized(): # selezionato solo un oggetto
          layer = self.entity.layer
          self.plugIn.beginEditCommand("Feature edited", layer)
@@ -268,7 +264,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # reverse
    #============================================================================
    def reverse(self):
-      #qad_debug.breakPoint()      
       if self.entity.isInitialized(): # selezionato solo un oggetto
          layer = self.entity.layer
          self.plugIn.beginEditCommand("Feature edited", layer)
@@ -318,11 +313,10 @@ class QadPEDITCommandClass(QadCommandClass):
    # join
    #============================================================================
    def join(self):
-      #qad_debug.breakPoint()
       tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       epsg = self.plugIn.canvas.currentLayer().crs().authid()
       # creo un layer temporaneo in memoria con campo numerico per 
-      # contenere la posizione dell'entit� originale nella lista newIdFeatureList
+      # contenere la posizione dell'entità originale nella lista newIdFeatureList
       vectorLayer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, "QAD_SelfJoinLines", "memory")
       
       provider = vectorLayer.dataProvider()
@@ -338,9 +332,9 @@ class QadPEDITCommandClass(QadCommandClass):
       i = 0
       
       if self.entity.isInitialized(): # selezionato solo un oggetto
-         self.entitySet.removeEntity(self.entity) # elimino dal gruppo l'entit� da unire
+         self.entitySet.removeEntity(self.entity) # elimino dal gruppo l'entità da unire
          
-         # aggiungo l'entit� a cui unirsi
+         # aggiungo l'entità a cui unirsi
          layer = self.entity.layer
          
          if layer.geometryType() != QGis.Line:
@@ -418,7 +412,6 @@ class QadPEDITCommandClass(QadCommandClass):
          i = 0 
          tot = len(newIdFeatureList)
          while i < tot:
-            #qad_debug.breakPoint()
             featureIdToJoin = newIdFeatureList[i][0]
             #                         featureIdToJoin, vectorLayer, tolerance2ApproxCurve, toleranceDist, mode     
             deleteFeatures.extend(qad_utils.joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, \
@@ -467,7 +460,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # curve
    #============================================================================
    def curve(self, toCurve):
-      #qad_debug.breakPoint()      
       if self.entity.isInitialized(): # selezionato solo un oggetto
          layer = self.entity.layer
          self.plugIn.beginEditCommand("Feature edited", layer)
@@ -522,7 +514,6 @@ class QadPEDITCommandClass(QadCommandClass):
       tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
                                                                   self.entity.layer)                              
-      #qad_debug.breakPoint()
       f = self.entity.getFeature()
       geom = f.geometry() 
 
@@ -570,7 +561,6 @@ class QadPEDITCommandClass(QadCommandClass):
 
       newPt = self.mapToLayerCoordinates(layer, pt)
 
-      #qad_debug.breakPoint()
       self.linearObjectList.movePoint(self.vertexAt, newPt)
                
       updSubGeom = QgsGeometry.fromPolyline(self.linearObjectList.asPolyline(tolerance2ApproxCurve))
@@ -604,7 +594,6 @@ class QadPEDITCommandClass(QadCommandClass):
       f = self.entity.getFeature()
       geom = f.geometry() 
 
-      #qad_debug.breakPoint()     
       if self.vertexAt < self.secondVertexAt:
          firstPt = self.linearObjectList.getPointAtVertex(self.vertexAt)
          secondPt = self.linearObjectList.getPointAtVertex(self.secondVertexAt)
@@ -657,7 +646,6 @@ class QadPEDITCommandClass(QadCommandClass):
       f = self.entity.getFeature()
       geom = f.geometry() 
 
-      #qad_debug.breakPoint()
       firstPt = self.linearObjectList.getPointAtVertex(self.vertexAt)
       secondPt = self.linearObjectList.getPointAtVertex(self.secondVertexAt)
 
@@ -720,7 +708,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # WaitForMainMenu
    #============================================================================
    def WaitForMainMenu(self):
-      #qad_debug.breakPoint()
       # verifico se ci sono layer di tipo linea
       line = False
       if self.entity.isInitialized(): # selezionato solo un oggetto
@@ -735,11 +722,11 @@ class QadPEDITCommandClass(QadCommandClass):
 
       if line == True: # se ci sono dei layer linea
          if self.entity.isInitialized(): # selezionato solo un oggetto
-            if self.linearObjectList.isClosed(): # se � chiusa
+            if self.linearObjectList.isClosed(): # se é chiusa
                keyWords = QadMsg.translate("Command_PEDIT", "Apri") + "/"
             else:
                keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/"
-         else: # selezionati pi� oggetti
+         else: # selezionati più oggetti
             keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/" + \
                        QadMsg.translate("Command_PEDIT", "Apri") + "/"
                   
@@ -834,7 +821,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # WaitForVertexEditingMenu
    #============================================================================
    def WaitForVertexEditingMenu(self):
-      #qad_debug.breakPoint()
       self.getPointMapTool().setLinearObjectList(self.linearObjectList, self.entity.layer)            
       
       self.displayVertexMarker(self.vertexAt)
@@ -846,10 +832,10 @@ class QadPEDITCommandClass(QadCommandClass):
          keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Dividi")
 
       keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Inserisci") + "/" + \
-                                 + QadMsg.translate("Command_PEDIT", "INserisci prima") + "/" + \
-                                 + QadMsg.translate("Command_PEDIT", "SPosta") + "/" + \
-                                 + QadMsg.translate("Command_PEDIT", "Raddrizza") + "/" + \
-                                 + QadMsg.translate("Command_PEDIT", "esCi")
+                                   QadMsg.translate("Command_PEDIT", "INserisci prima") + "/" + \
+                                   QadMsg.translate("Command_PEDIT", "SPosta") + "/" + \
+                                   QadMsg.translate("Command_PEDIT", "Raddrizza") + "/" + \
+                                   QadMsg.translate("Command_PEDIT", "esCi")
 
       prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione di modifica vertici [{0}] <{1}>: ").format(keyWords, self.default)
                
@@ -869,7 +855,6 @@ class QadPEDITCommandClass(QadCommandClass):
    #============================================================================
    def waitForNewVertex(self):      
       # imposto il map tool
-      #qad_debug.breakPoint()
       self.getPointMapTool().setVertexAt(self.vertexAt, self.after)            
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_NEW_VERTEX)
 
@@ -895,7 +880,6 @@ class QadPEDITCommandClass(QadCommandClass):
    # WaitForVertexEditingMenu
    #============================================================================
    def WaitForSecondVertex(self):
-      #qad_debug.breakPoint()     
       self.displayVertexMarker(self.secondVertexAt)
       
       keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + "/"  + \
@@ -930,10 +914,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -944,25 +928,23 @@ class QadPEDITCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         #qad_debug.breakPoint()
-
          if type(value) == unicode:
             if value == QadMsg.translate("Command_PEDIT", "Multiplo"):
                self.SSGetClass.checkPolygonLayer = True               
                self.SSGetClass.run(msgMapTool, msg)
                self.step = 2
                return False               
-         elif type(value) == QgsPoint: # se � stato selezionato un punto
+         elif type(value) == QgsPoint: # se é stato selezionato un punto
             self.entity.clear()
             self.linearObjectList.removeAll()            
-            #qad_debug.breakPoint()
+
             if self.getPointMapTool().entity.isInitialized():
                if self.setEntityInfo(self.getPointMapTool().entity.layer, \
                                      self.getPointMapTool().entity.featureId, value) == True:
                   self.WaitForMainMenu()
                   return False
             else:               
-               # cerco se ci sono entit� nel punto indicato considerando
+               # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
                for layer in self.plugIn.canvas.layers():
@@ -997,7 +979,7 @@ class QadPEDITCommandClass(QadCommandClass):
                self.waitForEntsel()
             else:
                self.WaitForMainMenu()
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di selezione entit�                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                    
          return False
       
       #=========================================================================
@@ -1005,10 +987,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso una opzione si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1024,7 +1006,7 @@ class QadPEDITCommandClass(QadCommandClass):
             self.setClose(True) 
          elif value == QadMsg.translate("Command_PEDIT", "Apri"):
             self.setClose(False) 
-         elif value == QadMsg.translate("Command_PEDIT", "Edita"):
+         elif value == QadMsg.translate("Command_PEDIT", "Edita vertici"):
             self.vertexAt = 0
             self.default = QadMsg.translate("Command_PEDIT", "Seguente")
             self.WaitForVertexEditingMenu()
@@ -1049,7 +1031,7 @@ class QadPEDITCommandClass(QadCommandClass):
                self.nOperationsToUndo = self.nOperationsToUndo - 1           
                self.plugIn.undoEditCommand()
             else:
-               self.showMsg(QadMsg.translate("QAD", "Il comando � stato completamente annullato."))                  
+               self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
             
             if self.entity.isInitialized(): # selezionato solo un oggetto
                if self.atSubGeom is not None:
@@ -1071,10 +1053,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.joinToleranceDist
                else:
@@ -1089,7 +1071,7 @@ class QadPEDITCommandClass(QadCommandClass):
             if value == QadMsg.translate("Command_PEDIT", "Tipo"):
                # si appresta ad attendere il tipo di unione
                self.waitForJoinType()
-         elif type(value) == QgsPoint: # se � stato inserito il primo punto per il calcolo della distanza
+         elif type(value) == QgsPoint: # se é stato inserito il primo punto per il calcolo della distanza
             # imposto il map tool
             self.firstPt.set(value.x(), value.y())
             self.getPointMapTool().firstPt = self.firstPt
@@ -1113,10 +1095,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1147,10 +1129,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 6: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1195,10 +1177,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 8: # dopo aver atteso un punto o una opzione si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.default
                else:
@@ -1227,7 +1209,7 @@ class QadPEDITCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_PEDIT", "Inserisci"):
                self.after = True
                self.waitForNewVertex()      
-            elif value == QadMsg.translate("Command_PEDIT", "INserisci_prima"):
+            elif value == QadMsg.translate("Command_PEDIT", "INserisci prima"):
                self.after = False
                self.waitForNewVertex()
             elif value == QadMsg.translate("Command_PEDIT", "SPosta"):
@@ -1240,11 +1222,10 @@ class QadPEDITCommandClass(QadCommandClass):
                return False
             elif value == QadMsg.translate("Command_PEDIT", "esCi"):
                self.WaitForMainMenu()
-         elif type(value) == QgsPoint: # se � stato inserito il primo punto
-            #qad_debug.breakPoint()         
+         elif type(value) == QgsPoint: # se é stato inserito il primo punto
             # la funzione ritorna una lista con (<minima distanza al quadrato>,
-            #                                    <punto pi� vicino>
-            #                                    <indice della parte pi� vicina>       
+            #                                    <punto più vicino>
+            #                                    <indice della parte più vicina>       
             #                                    <"a sinistra di">)
             dummy = self.linearObjectList.closestPartWithContext(value)
             partAt = dummy[2]
@@ -1268,10 +1249,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 9: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1282,7 +1263,6 @@ class QadPEDITCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
          
-         #qad_debug.breakPoint()
          self.insertVertexAt(value)
          self.vertexAt = self.vertexAt + (1 if self.after else -1)
          self.WaitForVertexEditingMenu()
@@ -1295,10 +1275,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 10: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -1320,10 +1300,10 @@ class QadPEDITCommandClass(QadCommandClass):
       elif self.step == 11: # dopo aver atteso un punto o una opzione si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.default
                else:
@@ -1355,11 +1335,10 @@ class QadPEDITCommandClass(QadCommandClass):
                self.WaitForVertexEditingMenu()
             elif value == QadMsg.translate("Command_PEDIT", "esCi"):
                self.WaitForVertexEditingMenu()
-         elif type(value) == QgsPoint: # se � stato inserito il primo punto
-            #qad_debug.breakPoint()         
+         elif type(value) == QgsPoint: # se é stato inserito il primo punto
             # la funzione ritorna una lista con (<minima distanza al quadrato>,
-            #                                    <punto pi� vicino>
-            #                                    <indice della parte pi� vicina>       
+            #                                    <punto più vicino>
+            #                                    <indice della parte più vicina>       
             #                                    <"a sinistra di">)
             dummy = self.linearObjectList.closestPartWithContext(value)
             partAt = dummy[2]

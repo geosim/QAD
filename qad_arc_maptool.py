@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,14 +30,13 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_arc import *
-from qad_rubberband import createRubberBand
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -106,34 +105,26 @@ class Qad_arc_maptool(QadGetPoint):
       self.arcAngle = None
       self.arcStartPtForRadius = None
       self.arcRadius = None
-      self.__arcRubberBand = None   
+      self.__rubberBand = QadRubberBand(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.hide()
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.show()
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.hide()
-         del self.__arcRubberBand
-         self.__arcRubberBand = None
+      self.__rubberBand.reset()
       self.mode = None
       
       
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.hide()
-         del self.__arcRubberBand
-         self.__arcRubberBand = None
+      self.__rubberBand.reset()
          
       result = False
       arc = QadArc()    
@@ -186,30 +177,20 @@ class Qad_arc_maptool(QadGetPoint):
          result = arc.fromStartEndPtsRadius(self.arcStartPt, self.tmpPoint, self.arcRadius)
       
       if result == True:
-         self.__arcRubberBand = createRubberBand(self.canvas, QGis.Line)
          points = arc.asPolyline()
       
          if points is not None:
-            tot = len(points) - 1
-            i = 0
-            while i <= tot:
-               if i < tot:
-                  self.__arcRubberBand.addPoint(points[i], False)
-               else: # ultimo punto
-                  self.__arcRubberBand.addPoint(points[i], True)
-               i = i + 1
+            self.__rubberBand.setLine(points)
       
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__arcRubberBand is not None:
-         self.__arcRubberBand.show()
+      self.__rubberBand.show()
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         if self.__arcRubberBand is not None:
-            self.__arcRubberBand.hide()
+         self.__rubberBand.hide()
       except:
          pass
 

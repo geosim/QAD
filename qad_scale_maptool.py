@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
@@ -92,7 +91,6 @@ class Qad_scale_maptool(QadGetPoint):
    # scale
    #============================================================================
    def scale(self, f, basePt, scale, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -103,7 +101,7 @@ class Qad_scale_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # scalo la feature e la rimuovo da entitySet (� la prima)
+         # scalo la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
          self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
          del layerEntitySet.featureIds[0]
@@ -121,7 +119,6 @@ class Qad_scale_maptool(QadGetPoint):
    # addScaledGeometries
    #============================================================================
    def addScaledGeometries(self, scale):
-      #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
       # copio entitySet
@@ -153,7 +150,6 @@ class Qad_scale_maptool(QadGetPoint):
          self.addScaledGeometries(scale)                           
       # noto il primo punto si richiede il secondo punto per la lunghezza di riferimento
       elif self.mode == Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_LEN_PT:
-         #qad_debug.breakPoint()
          len = qad_utils.getDistance(self.basePt, self.tmpPoint)
          scale = len / self.ReferenceLen
          self.addScaledGeometries(scale)                           
@@ -169,7 +165,7 @@ class Qad_scale_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

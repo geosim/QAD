@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -34,7 +34,6 @@ from qgis.utils import *
 import qad_dsettings_ui
 
 
-import qad_debug
 from qad_variables import *
 from qad_snapper import *
 from qad_msg import QadMsg
@@ -45,7 +44,6 @@ import qad_utils
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
 class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
    def __init__(self, plugIn):
-      #qad_debug.breakPoint()
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
       QDialog.__init__(self, self.iface)
@@ -108,9 +106,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
 
 
    def init_dimension_tab(self):
-      # Inizializzazione del TAB che riguarda la quotatura
-      #qad_debug.breakPoint()
-      
+      # Inizializzazione del TAB che riguarda la quotatura      
       for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
          self.comboBox_current_dim_style.addItem(dimStyle.name, dimStyle)
 
@@ -175,7 +171,6 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       return True
       
    def ButtonBOX_Accepted(self):
-      #qad_debug.breakPoint()
       newOSMODE = 0
       if self.checkBox_CENP.checkState() == Qt.Checked:
          newOSMODE = newOSMODE | QadSnapTypeEnum.CEN
@@ -265,5 +260,5 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
    def ButtonHELP_Pressed(self):
       # per conoscere la sezione/pagina del file html usare internet explorer,
       # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perch� internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
+      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
       qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")

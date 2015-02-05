@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 
 """
 /***************************************************************************
@@ -30,7 +30,6 @@ import os.path
 from qgis.core import *
 
 
-import qad_debug
 import qad_utils
 
 
@@ -70,11 +69,9 @@ class QadCommandAliasesClass():
       # svuoto il dizionario e lo reimposto con i valori di default
       self.__commandAliases.clear()
       if Path == "":
-         # Se la path non � indicata uso il file "qad.pgp" in 
+         # Se la path non é indicata uso il file "qad.pgp" in 
          Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
          Path = Path + "qad.pgp"
-
-      #qad_debug.displayMsg(Path)
 
       if not os.path.exists(Path):
          return True
@@ -85,7 +82,7 @@ class QadCommandAliasesClass():
          line = qad_utils.strip(line, [" ", "\t", "\r\n"]) # rimuovo gli spazi e i tab prima e dopo
          if len(line) == 0:
             continue
-         # se la riga inizia per ; allora � una riga commentata
+         # se la riga inizia per ; allora é una riga commentata
          if line[0] == ";":
             continue
 
@@ -102,11 +99,11 @@ class QadCommandAliasesClass():
          command = qad_utils.strip(command, [" ", "\t", "\r\n"]) # rimuovo gli spazi e i tab prima e dopo
          if len(command) <= 1:
             continue
-         # se il comando non inizia per * allora non � un alias
+         # se il comando non inizia per * allora non é un alias
          if command[0] != "*":
             continue
          command = command[1:]
-         # il comando non pu� contenere spazi
+         # il comando non può contenere spazi
          sep = command.find(" ")
          if sep > 0:
             continue

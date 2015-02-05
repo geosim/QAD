@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
@@ -82,7 +81,6 @@ class Qad_copy_maptool(QadGetPoint):
    # move
    #============================================================================
    def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      #qad_debug.breakPoint()
       if dimStyle is not None:
          entity = QadEntity()
          entity.set(layerEntitySet.layer, f.id())
@@ -93,7 +91,7 @@ class Qad_copy_maptool(QadGetPoint):
          dimEntity = None
       
       if dimEntity is None:
-         # sposto la feature e la rimuovo da entitySet (� la prima)
+         # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
          self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
          del layerEntitySet.featureIds[0]
@@ -108,7 +106,6 @@ class Qad_copy_maptool(QadGetPoint):
    
    
    def setCopiedGeometries(self, newPt):
-      #qad_debug.breakPoint()      
       self.__rubberBand.reset()            
       
       # copio entitySet
@@ -129,9 +126,7 @@ class Qad_copy_maptool(QadGetPoint):
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
          
-            if self.seriesLen > 0: # devo fare una serie
-               #qad_debug.breakPoint()
-               
+            if self.seriesLen > 0: # devo fare una serie              
                if self.adjust == True:
                   offSetX = offSetX / (self.seriesLen - 1)
                   offSetY = offSetY / (self.seriesLen - 1)
@@ -160,7 +155,7 @@ class Qad_copy_maptool(QadGetPoint):
       self.__rubberBand.show()          
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
       except:

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -26,9 +26,6 @@
 from PyQt4.QtCore import *
 
 
-import qad_debug
-
-
 # traduction class.
 class QadMsgClass():
 
@@ -40,7 +37,7 @@ class QadMsgClass():
    #============================================================================
    # translate
    #============================================================================
-   def translate(self, context, sourceText, disambiguation = None, encoding = QCoreApplication.CodecForTr, n = -1):
+   def translate(self, context, sourceText, disambiguation = None, encoding = QCoreApplication.UnicodeUTF8, n = -1):
       # contesti:
       # "QAD" per traduzioni generali
       # "Popup_menu_graph_window" per il menu popup nella finestra grafica

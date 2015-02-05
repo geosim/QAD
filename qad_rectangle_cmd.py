@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -10,7 +10,7 @@
         copyright            : (C) 2013 IREN Acqua Gas SpA
         email                : geosim.dev@gruppoiren.it
         developers           : bbbbb aaaaa ggggg
- ***************************************************************************/
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_rectangle_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -59,7 +58,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un rettangolo
-      # che non verr� salvato su un layer
+      # che non verrà salvato su un layer
       self.virtualCmd = False
       self.firstCorner = None
       self.gapType = 0 # 0 = Angoli retti; 1 = Raccorda i segmenti; 2 = Cima i segmenti
@@ -82,11 +81,11 @@ class QadRECTANGLECommandClass(QadCommandClass):
          del self.GetAngleClass
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      # quando si � in fase di richiesta distanza
+      # quando si é in fase di richiesta distanza
       if self.step == 3 or self.step == 4 or self.step == 5 or \
          self.step == 8 or self.step == 9 or self.step == 10 or self.step == 11:
          return self.GetDistClass.getPointMapTool()
-      # quando si � in fase di richiesta rotazione
+      # quando si é in fase di richiesta rotazione
       elif self.step == 13:
          return self.GetAngleClass.getPointMapTool()
       else:
@@ -173,12 +172,12 @@ class QadRECTANGLECommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_RECTANGLE", "La finestra non � stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_RECTANGLE", "La finestra non é stata specificata correttamente."))
                   self.WaitForFirstCorner()
                   return False
                else:
@@ -223,12 +222,12 @@ class QadRECTANGLECommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_RECTANGLE", "La finestra non � stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_RECTANGLE", "La finestra non é stata specificata correttamente."))
                   self.WaitForSecondCorner(currLayer)
                   return False
                else:
@@ -241,7 +240,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
 
          if type(value) == unicode:
             if value == QadMsg.translate("Command_RECTANGLE", "Area"):
-               msg = QadMsg.translate("Command_RECTANGLE", "Digitare l'area del rettangolo in unit� correnti <{0}>: ")
+               msg = QadMsg.translate("Command_RECTANGLE", "Digitare l'area del rettangolo in unità correnti <{0}>: ")
                # si appresta ad attendere un numero reale         
                # msg, inputType, default, keyWords, valori positivi
                self.waitFor(msg.format(str(self.area)), QadInputTypeEnum.FLOAT, \
@@ -294,7 +293,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                   self.gapType = 1 # 1 = Raccorda i segmenti
 
             self.WaitForFirstCorner()
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di distanza                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
 
       #=========================================================================
@@ -315,7 +314,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.GetDistClass.run(msgMapTool, msg)  
             else:   
                self.WaitForFirstCorner()
-               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di distanza                                 
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                                 
          return False # fine comando
  
       #=========================================================================
@@ -330,22 +329,21 @@ class QadRECTANGLECommandClass(QadCommandClass):
                   self.gapType = 2 # 2 = Cima i segmenti
                                    
             self.WaitForFirstCorner()
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di distanza                     
+            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di distanza                     
          return False # fine comando
  
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA AREA RETTANGOLO (da step = 2)
       elif self.step == 6: # dopo aver atteso un punto si riavvia il comando
-         #qad_debug.breakPoint()
          keyWords = QadMsg.translate("Command_RECTANGLE", "Lunghezza") + "/" + \
                     QadMsg.translate("Command_RECTANGLE", "lArghezza")
          
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
                   prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
@@ -366,7 +364,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if type(value) == float: # � stata inserita l'area
+         if type(value) == float: # é stata inserita l'area
             self.area = value
             self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
             prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
@@ -384,10 +382,10 @@ class QadRECTANGLECommandClass(QadCommandClass):
       elif self.step == 7: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.defaultValue
                   return True # fine comando
@@ -479,10 +477,10 @@ class QadRECTANGLECommandClass(QadCommandClass):
       elif self.step == 12: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = self.defaultValue
                else:
@@ -520,4 +518,4 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.rot = self.GetAngleClass.angle
                self.plugIn.setLastRot(self.rot)
                self.WaitForSecondCorner(currLayer)
-               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di rotazione                     
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di rotazione                     

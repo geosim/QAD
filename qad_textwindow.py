@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import sys
 import string
 
-import qad_debug
 from qad_ui_textwindow import Ui_QadTextWindow, Ui_QadCmdSuggestWindow
 from qad_msg import QadMsg
 import qad_utils
@@ -92,20 +91,17 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.setupUi(self)
       self.setAllowedAreas(Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
       self.plugin = plugin
-      self.chronologyEdit = None
-      self.edit = None
       self.cmdSuggestWindow = None
+      self.connect(self, SIGNAL("topLevelChanged(bool)"), self.topLevelChanged)
                 
    def initGui(self):
       self.chronologyEdit = QadChronologyEdit(self)
       self.chronologyEdit.setObjectName("QadChronologyEdit")
-      self.vboxlayout.addWidget(self.chronologyEdit)
-           
+     
       self.edit = QadEdit(self, self.chronologyEdit)
-      self.edit.displayPrompt(QadMsg.translate("QAD", "Comando: "))
-
       self.edit.setObjectName("QadTextEdit")
-      self.vboxlayout.addWidget(self.edit)
+ 
+      self.edit.displayPrompt(QadMsg.translate("QAD", "Comando: "))
       
       # Creo la finestra per il suggerimento dei comandi
       # lista composta da elementi con <nome comando>, <icona>, <note>
@@ -123,7 +119,11 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       
    def keyPressEvent(self, e):
       self.edit.keyPressEvent(e)
-        
+
+   def topLevelChanged(self, topLevel):
+      self.resizeEdits
+      self.setFocus()
+      
    def toggleShow(self):
       if self.isVisible():          
          self.hide()
@@ -135,15 +135,14 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):
-      # il valore di default del parametro di una funzione non pu� essere una traduzione
-      # perch� lupdate.exe non lo riesce ad interpretare
+      # il valore di default del parametro di una funzione non può essere una traduzione
+      # perché lupdate.exe non lo riesce ad interpretare
       self.edit.showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
    def showErr(self, err):
       self.showMsg(err, True) # ripete il prompt
 
    def showMsgOnChronologyEdit(self, msg):
-      #qad_debug.breakPoint()
       if self.chronologyEdit is not None:
          self.chronologyEdit.insertText(msg)
 
@@ -196,48 +195,54 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def getLastPoint(self):
       return self.plugin.lastPoint
 
+   def setLastPoint(self, pt):
+      return self.plugin.setLastPoint(pt)
+
    def getCurrenPointFromCommandMapTool(self):
       return self.plugin.getCurrenPointFromCommandMapTool()
 
    def resizeEdits(self):
       if self.edit is None or self.chronologyEdit is None:
          return
-      #qad_debug.breakPoint()
-      rect = self.childrenRect()
+            
+      rect = self.rect()
       h = rect.height()
       w = rect.width()
+   
       editHeight = self.edit.getOptimalHeight()
       if editHeight > h:
          editHeight = h
       chronologyEditHeight = h - editHeight
-      if not self.isFloating():                 
-         chronologyEditHeight = chronologyEditHeight - 20
-         
+      if not self.isFloating():
+         offsetY = 20
+         chronologyEditHeight = chronologyEditHeight - offsetY
+      else:            
+         offsetY = 0
+                  
       if chronologyEditHeight < 0:
          chronologyEditHeight = 0
       
-      if self.edit.size().height() != editHeight:
-         self.edit.resize(w, editHeight)
-         self.edit.move(0, chronologyEditHeight)
-         self.edit.ensureCursorVisible()
-
-         self.chronologyEdit.resize(w, chronologyEditHeight)     
-         self.chronologyEdit.ensureCursorVisible()
+      self.chronologyEdit.move(0, offsetY)
+      self.chronologyEdit.resize(w, chronologyEditHeight)     
+      self.chronologyEdit.ensureCursorVisible()
+      
+      self.edit.resize(w, editHeight)
+      self.edit.move(0, chronologyEditHeight + offsetY)
+      self.edit.ensureCursorVisible()
       
 
    def resizeEvent(self, e):
-      self.resizeEdits()
-      self.cmdSuggestWindow.resizeEvent(e)
+      if self:
+         self.resizeEdits()
+         self.cmdSuggestWindow.resizeEvent(e)
         
 #===============================================================================
 # QadChronologyEdit
 #===============================================================================
 class QadChronologyEdit(QTextEdit):
-   parent = None # plug in parente
    
    def __init__(self, parent):
-      QTextEdit.__init__(self)
-      self.parent = parent
+      QTextEdit.__init__(self, parent)
       
       self.set_Colors()
       self.setReadOnly(True)
@@ -251,7 +256,6 @@ class QadChronologyEdit(QTextEdit):
       self.setTextBackgroundColor(backGroundColor) 
 
    def insertText(self, txt):
-      #qad_debug.breakPoint()
       cursor = self.textCursor()
       for line in txt.split('\n'):
          if len(line) > 0: # to avoid one more empty line         
@@ -268,18 +272,16 @@ class QadChronologyEdit(QTextEdit):
 #===============================================================================
 class QadEdit(QTextEdit):
    PROMPT, KEY_WORDS = range(2)
-
-   parent = None # plug in parente
-   inputType = QadInputTypeEnum.COMMAND
-   default = None
-   inputMode = QadInputModeEnum.NONE
    
    def __init__(self, parent, chronologyEdit):
-      QTextEdit.__init__(self)
+      QTextEdit.__init__(self, parent)
 
-      self.parent = parent
       self.currentPrompt = ""
       self.currentPromptLength = 0
+
+      self.inputType = QadInputTypeEnum.COMMAND
+      self.default = None 
+      self.inputMode = QadInputModeEnum.NONE
 
       self.setTextInteractionFlags(Qt.TextEditorInteraction)
       self.setMinimumSize(30, 21)
@@ -354,12 +356,11 @@ class QadEdit(QTextEdit):
       i = txt.find("[")
       final = txt.rfind("]")
       if i >= 0 and final > i: # se ci sono opzioni
-         #qad_debug.breakPoint()
          i = i + 1
          pos = lastBlock.position() + i
          while i < final:
             if txt[i] != "/":
-               # se c'� un'opzione corrente deve essere evidenziata in modo diverso
+               # se c'é un'opzione corrente deve essere evidenziata in modo diverso
                if self.currentCmdOptionPos is not None and \
                   pos >= self.currentCmdOptionPos.initialPos and \
                   pos <= self.currentCmdOptionPos.finalPos :                  
@@ -392,30 +393,32 @@ class QadEdit(QTextEdit):
       return text[self.currentPromptLength:]
       
    def showMsgOnChronologyEdit(self, msg):
-      self.parent.showMsgOnChronologyEdit(msg)           
+      self.parentWidget().showMsgOnChronologyEdit(msg)           
 
    def showCmdSuggestWindow(self, mode = True, filter = ""):
-      self.parent.showCmdSuggestWindow(mode, filter)
+      self.parentWidget().showCmdSuggestWindow(mode, filter)
 
-   def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
+   def showMsg(self, msg, displayPromptAfterMsg = False, append = True):      
       if len(msg) > 0:
+         cursor = self.textCursor()
          sep = msg.rfind("\n")
          if sep >= 0:
             self.showMsgOnChronologyEdit(self.toPlainText() + msg[0:sep])
-            newMsg = msg[sep+1:]
-            self.clear()
+            newMsg = msg[sep + 1:]
+            cursor.movePosition(QTextCursor.Start, QTextCursor.MoveAnchor)
+            cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
          else:
             if append == True:
                cursor = self.textCursor()
                cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor) # fine documento
-               self.setTextCursor(cursor)
                newMsg = msg
             else:
-               self.clear()
+               cursor.movePosition(QTextCursor.Start, QTextCursor.MoveAnchor)
+               cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
                newMsg = self.currentPrompt + msg
 
+         self.setTextCursor(cursor)
          self.insertPlainText(newMsg)         
-         self.parent.resizeEdits()
 
          if self.inputType & QadInputTypeEnum.KEYWORDS:         
             self.textCursor().block().setUserState(QadEdit.KEY_WORDS)
@@ -442,7 +445,6 @@ class QadEdit(QTextEdit):
       self.showMsg("\n" + self.currentPrompt)
       
    def showNext(self):
-      #qad_debug.breakPoint()
       if self.historyIndex < len(self.history) and len(self.history) > 0:
          self.historyIndex += 1
          if self.historyIndex < len(self.history):
@@ -465,8 +467,8 @@ class QadEdit(QTextEdit):
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):      
-      # il valore di default del parametro di una funzione non pu� essere una traduzione
-      # perch� lupdate.exe non lo riesce ad interpretare
+      # il valore di default del parametro di una funzione non può essere una traduzione
+      # perché lupdate.exe non lo riesce ad interpretare
       if inputMsg is None: 
          inputMsg = QadMsg.translate("QAD", "Comando: ")
 
@@ -497,7 +499,6 @@ class QadEdit(QTextEdit):
       if initialPos == -1 or finalDelimiter == -1:
          return
       i = 0
-      #qad_debug.breakPoint() 
       while i < lenKeyWords:
          keyWord = self.keyWords[i]
          initialPos = prompt.find(keyWord, initialPos + 1, finalDelimiter)
@@ -511,7 +512,6 @@ class QadEdit(QTextEdit):
          i = i + 1
 
    def getCmdOptionPosUnderMouse(self, pos):
-      #qad_debug.breakPoint()
       cursor = self.cursorForPosition(pos)
       pos = cursor.position()
       for cmdOptionPos in self.cmdOptionPosList:
@@ -531,7 +531,6 @@ class QadEdit(QTextEdit):
          QTextEdit.mouseDoubleClickEvent(self, event)
       
    def mousePressEvent(self, event):
-      #qad_debug.breakPoint()
       cursor = self.cursorForPosition(event.pos())
       pos = cursor.position()
       if self.isCursorInEditionZone(pos):
@@ -546,19 +545,18 @@ class QadEdit(QTextEdit):
                self.showEvaluateMsg(cmdOptionPos.name)
                            
    def updateHistory(self, command):
-      # Se command � una lista di comandi
+      # Se command é una lista di comandi
       if isinstance(command, list):
          for line in command:
             self.updateHistory(line)
       elif not command == "":
-         # se lo storico � vuoto o se il comando da inserire � diverso dall'ultimo
+         # se lo storico é vuoto o se il comando da inserire é diverso dall'ultimo
          if len(self.history) <= 0 or command != self.history[-1]: 
             self.history.append(command)
             
          self.historyIndex = len(self.history)
        
    def keyPressEvent(self, e):
-      #qad_debug.breakPoint()
       cursor = self.textCursor()
 
       if self.inputType & QadInputTypeEnum.COMMAND:
@@ -566,37 +564,36 @@ class QadEdit(QTextEdit):
 
       #QMessageBox.warning(self.plugIn.TextWindow, "titolo" , 'msg')      
 
-      # Se � stato premuto il tasto CTRL (o META) + 9
+      # Se é stato premuto il tasto CTRL (o META) + 9
       if ((e.modifiers() & Qt.ControlModifier) or (e.modifiers() & Qt.MetaModifier)) and \
          e.key() == Qt.Key_9:
          # Accendo o spengo la finestra di testo
-         self.parent.toggleShow()
+         self.parentWidget().toggleShow()
          return
 
-      # Se � stato premuto il tasto F10
+      # Se é stato premuto il tasto F10
       if e.key() == Qt.Key_F10:
          # Attivo o disattivo lo snap
-         self.parent.togglePolarMode()
+         self.parentWidget().togglePolarMode()
          return
 
-      # Se � stato premuto il tasto F3
+      # Se é stato premuto il tasto F3
       if e.key() == Qt.Key_F3:
          # Attivo o disattivo lo snap
-         self.parent.toggleOsMode()
+         self.parentWidget().toggleOsMode()
          return
 
-      # Se � stato premuto il tasto F8
+      # Se é stato premuto il tasto F8
       if e.key() == Qt.Key_F8:
-         # Attivo o disattivo la modalit� ortogonale
-         self.parent.toggleOrthoMode()
+         # Attivo o disattivo la modalità ortogonale
+         self.parentWidget().toggleOrthoMode()
          return
       
       if e.key() == Qt.Key_Escape:
-         self.parent.abortCommand()
+         self.parentWidget().abortCommand()
          return
       
       # if the cursor isn't in the edit zone, don't do anything except Ctrl+C
-      #qad_debug.breakPoint()      
       if not self.isCursorInEditionZone():
          if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier:
             if e.key() == Qt.Key_C or e.key() == Qt.Key_A:
@@ -655,7 +652,6 @@ class QadEdit(QTextEdit):
             self.showCmdSuggestWindow(True, self.getCurrMsg())
       
    def entered(self):
-      #qad_debug.breakPoint()
       if self.inputType & QadInputTypeEnum.COMMAND:
          self.showCmdSuggestWindow(False)
       
@@ -668,14 +664,13 @@ class QadEdit(QTextEdit):
       """
       mostra e valuta il messaggio msg se diverso da None altrimenti usa il messaggio corrente
       """
-      #qad_debug.breakPoint()
       if msg is not None:
          self.showMsg(msg)         
       self.entered()
 
    def getCurrMsg(self):
       """
-      restituisce il messaggio gi� presente nella finestra di testo
+      restituisce il messaggio già presente nella finestra di testo
       """
       cursor = self.textCursor()
       prevPos = cursor.position()
@@ -695,11 +690,11 @@ class QadEdit(QTextEdit):
          self.inputType & QadInputTypeEnum.POINT3D:
          if self.inputType & QadInputTypeEnum.KEYWORDS and \
             (self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE):
-            return QadMsg.translate("QAD", "\n� richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nE' richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.KEYWORDS:
-            return QadMsg.translate("QAD", "\n� richiesto un punto o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nE' richiesto un punto o la parola chiave di un'opzione.\n")
          elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-            return QadMsg.translate("QAD", "\n� richiesto un punto o un numero reale.\n")
+            return QadMsg.translate("QAD", "\nE' richiesto un punto o un numero reale.\n")
          else:
             return QadMsg.translate("QAD", "\nPunto non valido.\n")         
       elif self.inputType & QadInputTypeEnum.KEYWORDS:
@@ -727,7 +722,6 @@ class QadEdit(QTextEdit):
       upperCmd = cmd.upper()
       selectedKeyWords = []
       for keyWord in self.keyWords:
-         #qad_debug.breakPoint()
          # estraggo la parte maiuscola della parola chiave
          upperPart = ""
          for letter in keyWord:
@@ -774,9 +768,9 @@ class QadEdit(QTextEdit):
          if cmd == "":
             cmd = unicode(self.showLast()) # ripeto ultimo comando
          
-         if self.parent.isValidCommand(cmd):
+         if self.parentWidget().isValidCommand(cmd):
             self.updateHistory(cmd)
-            self.parent.runCommand(cmd)
+            self.parentWidget().runCommand(cmd)
          else:
             msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
             self.showMsg(msg.format(cmd.encode('ascii','ignore')), True) # ripete il prompt
@@ -791,7 +785,7 @@ class QadEdit(QTextEdit):
                
          if cmd == "" and \
             not (self.inputMode & QadInputModeEnum.NOT_NULL): # permesso input nullo              
-            self.parent.continueCommand(None)         
+            self.parentWidget().continueCommand(None)         
             return
                        
       #------------------------------------------------------------------------------
@@ -800,9 +794,9 @@ class QadEdit(QTextEdit):
       if self.inputType & QadInputTypeEnum.POINT2D:
          snapType = qad_utils.str2snapTypeEnum(cmd)
          if snapType != QadSnapTypeEnum.NONE:
-            # se � stato forzato uno snap
+            # se é stato forzato uno snap
             snapParams = qad_utils.str2snapParams(cmd)
-            self.parent.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
+            self.parentWidget().forceCommandMapToolSnapTypeOnce(snapType, snapParams)
             self.showMsg(QadMsg.translate("QAD", "\n(impostato snap temporaneo)\n"), True) # ripeti il prompt
             return
          if (self.inputType & QadInputTypeEnum.INT) or \
@@ -815,12 +809,13 @@ class QadEdit(QTextEdit):
             oneNumberAllowed = True
             
          pt = qad_utils.str2QgsPoint(cmd, \
-                                     self.parent.getLastPoint(), \
-                                     self.parent.getCurrenPointFromCommandMapTool(), \
+                                     self.parentWidget().getLastPoint(), \
+                                     self.parentWidget().getCurrenPointFromCommandMapTool(), \
                                      oneNumberAllowed)
                       
          if pt is not None:
-            self.parent.continueCommand(pt)
+            self.parentWidget().setLastPoint(pt)
+            self.parentWidget().continueCommand(pt)
             return
             
       #------------------------------------------------------------------------------
@@ -836,7 +831,7 @@ class QadEdit(QTextEdit):
          keyWord = self.evaluateKeyWords(cmd)
                
          if keyWord is not None:
-            self.parent.continueCommand(keyWord)
+            self.parentWidget().continueCommand(keyWord)
             return
                       
       #------------------------------------------------------------------------------
@@ -844,7 +839,7 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.STRING:            
          if cmd is not None:            
-            self.parent.continueCommand(cmd)
+            self.parentWidget().continueCommand(cmd)
             return       
                      
       #------------------------------------------------------------------------------
@@ -860,7 +855,7 @@ class QadEdit(QTextEdit):
             num = None
                
          if num is not None:
-            self.parent.continueCommand(int(num))
+            self.parentWidget().continueCommand(int(num))
             return       
                      
       #------------------------------------------------------------------------------
@@ -876,7 +871,7 @@ class QadEdit(QTextEdit):
             num = None
             
          if num is not None:
-            self.parent.continueCommand(long(num))
+            self.parentWidget().continueCommand(long(num))
             return       
                      
       #------------------------------------------------------------------------------
@@ -892,10 +887,10 @@ class QadEdit(QTextEdit):
             num = None
             
          if num is not None:
-            if self.inputType & QadInputTypeEnum.ANGLE: # se � un angolo in gradi
+            if self.inputType & QadInputTypeEnum.ANGLE: # se é un angolo in gradi
                # i gradi vanno convertiti in radianti
                num = qad_utils.toRadians(num)            
-            self.parent.continueCommand(float(num))         
+            self.parentWidget().continueCommand(float(num))         
             return       
 
       #------------------------------------------------------------------------------
@@ -905,7 +900,7 @@ class QadEdit(QTextEdit):
          value = qad_utils.str2bool(cmd)
             
          if value is not None:
-            self.parent.continueCommand(value)
+            self.parentWidget().continueCommand(value)
             return       
 
       self.showMsg(self.getInvalidInputMsg())
@@ -921,11 +916,11 @@ class QadEdit(QTextEdit):
       fm = QFontMetrics(self.currentFont())
       pixelsWidth = fm.width(QadMsg.translate("QAD", "Comando: "))
       pixelsHeight = fm.height()
-      # + 8 perch� la QTextEdit ha un offset verticale sopra e sotto il testo
+      # + 8 perché la QTextEdit ha un offset verticale sopra e sotto il testo
       return max(self.document().size().height(), pixelsHeight + 8)
       
    def onTextChanged(self):
-      self.parent.resizeEdits()
+      self.parentWidget().resizeEdits()
 
          
 #===============================================================================
@@ -937,7 +932,6 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       # lista composta da elementi con <nome comando>, <icona>, <note>     
       QWidget.__init__(self, parent)
       self.setupUi(self)
-      self.parent = parent
       self.infoCmds = infoCmds[:] # copio la lista
                  
    def initGui(self):
@@ -952,7 +946,7 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       self.cmdNamesListView.keyPressEvent(e)
          
    def show(self, mode = True, filter = ""):
-      if mode == True:
+      if mode == True:         
          filteredInfoCmds = []
          upperFilter = filter.strip().upper()
          if len(upperFilter) > 0:               
@@ -964,34 +958,29 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
          if len(filteredInfoCmds) == 0:
             self.setVisible(False)
          else:
+            self.move(self.parentWidget().width() - self.width() - 15, 0)
             self.cmdNamesListView.set(filteredInfoCmds)
             self.setVisible(True)
-            self.move(self.parent.width() - self.width() - 15, 0)
       else:
          self.setVisible(False)
 
    def resizeEvent(self, e):
-      h = self.parent.height()
-      self.resize(200, self.parent.height())
-      self.move(self.parent.width() - self.width() - 15, 0)
+      self.resize(200, self.parentWidget().height())
+      self.move(self.parentWidget().width() - self.width() - 15, 0)
 
    def showEvaluateMsg(self, cmd):
       self.show(False)
-      self.parent.setFocus()
-      self.parent.abortCommand()
-      self.parent.showEvaluateMsg(cmd)
+      self.parentWidget().setFocus()
+      self.parentWidget().abortCommand()
+      self.parentWidget().showEvaluateMsg(cmd)
          
 #===============================================================================
 # QadCmdListView
 #===============================================================================
 class QadCmdSuggestListView(QListView):
 
-   parent = None # plug in parente
-   
    def __init__(self, parent):
-      QListView.__init__(self)
-
-      self.parent = parent
+      QListView.__init__(self, parent)
 
       self.setViewMode(QListView.ListMode)
       self.setSelectionBehavior(QAbstractItemView.SelectItems)
@@ -1022,9 +1011,9 @@ class QadCmdSuggestListView(QListView):
       # if Return is pressed, then perform the commands
       if e.key() == Qt.Key_Return:
          cmd = self.selectionModel().currentIndex().data()
-         self.parent.showEvaluateMsg(cmd)
+         self.parentWidget().showEvaluateMsg(cmd)
       
    def mouseReleaseEvent(self, e):
       cmd = self.selectionModel().currentIndex().data()
-      self.parent.showEvaluateMsg(cmd)
+      self.parentWidget().showEvaluateMsg(cmd)
       

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 import qad_utils
 from qad_generic_cmd import QadCommandClass
 import qad_layer
@@ -72,17 +71,16 @@ class QadINSERTCommandClass(QadCommandClass):
          del self.GetAngleClass
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      # quando si � in fase di richiesta distanza (scala)
+      # quando si é in fase di richiesta distanza (scala)
       if self.step == 2:
          return self.GetDistClass.getPointMapTool()
-      # quando si � in fase di richiesta rotazione
+      # quando si é in fase di richiesta rotazione
       elif self.step == 3:
          return self.GetAngleClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
         
    def addFeature(self, layer):
-      #qad_debug.breakPoint()
       transformedPoint = self.mapToLayerCoordinates(layer, self.insPt)
       g = QgsGeometry.fromPoint(transformedPoint)
       f = QgsFeature()
@@ -121,8 +119,8 @@ class QadINSERTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isSymbolLayer(currLayer) == False:
-         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non � di tipo simbolo.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo � un layer vettoriale di tipo punto senza etichetta.\n")
+         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non é di tipo simbolo.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo é un layer vettoriale di tipo punto senza etichetta.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
@@ -139,10 +137,10 @@ class QadINSERTCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

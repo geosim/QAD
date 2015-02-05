@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,14 +30,13 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_circle import *
-from qad_rubberband import createRubberBand
+from qad_rubberband import QadRubberBand
 
 
 #===============================================================================
@@ -50,7 +49,7 @@ class Qad_line_maptool_ModeEnum():
    FIRST_PT_KNOWN_ASK_FOR_SECOND_PT = 2      
    # nota l'entita del primo punto di tangenza si richiede il secondo punto
    FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT = 3
-   # nota l'entita del primo punto di perpendicolarit� si richiede il secondo punto
+   # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
    FIRST_PER_KNOWN_ASK_FOR_SECOND_PT = 4
    
 
@@ -66,35 +65,26 @@ class Qad_line_maptool(QadGetPoint):
       self.tan1 = None
       self.per1 = None
       self.geom1 = None
-      self.__lineRubberBand = None   
+      self.__rubberBand = QadRubberBand(self.canvas)   
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.__lineRubberBand is not None:
-         self.__lineRubberBand.hide()
+      self.__rubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.__lineRubberBand is not None:
-         self.__lineRubberBand.show()
+      self.__rubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.__lineRubberBand is not None:
-         self.__lineRubberBand.hide()
-         del self.__lineRubberBand
-         self.__lineRubberBand = None
+      self.__rubberBand.reset()
       self.mode = None
       
       
    def canvasMoveEvent(self, event):
-      #qad_debug.breakPoint()
       QadGetPoint.canvasMoveEvent(self, event)
       
-      if self.__lineRubberBand  is not None:
-         self.__lineRubberBand.hide()
-         del self.__lineRubberBand
-         self.__lineRubberBand = None
+      self.__rubberBand.reset()
          
       line = None
       
@@ -115,7 +105,7 @@ class Qad_line_maptool(QadGetPoint):
             if points is not None:
                line = [points[0], self.tmpPoint]
                break
-      # nota l'entita del primo punto di perpendicolarit� si richiede il secondo punto
+      # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
          snapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
@@ -130,21 +120,17 @@ class Qad_line_maptool(QadGetPoint):
                break
       
       if line is not None:
-         self.__lineRubberBand = createRubberBand(self.canvas, QGis.Line)
-         self.__lineRubberBand.addPoint(line[0], False)
-         self.__lineRubberBand.addPoint(line[1], True)
+         self.__rubberBand.setLine(line)
       
     
    def activate(self):
       QadGetPoint.activate(self)            
-      if self.__lineRubberBand is not None:
-         self.__lineRubberBand.show()
+      self.__rubberBand.show()
 
    def deactivate(self):
-      try: # necessario perch� se si chiude QGIS parte questo evento nonostante non ci sia pi� l'oggetto maptool !
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         if self.__lineRubberBand is not None:
-            self.__lineRubberBand.hide()
+         self.__rubberBand.hide()
       except:
          pass
 
@@ -161,6 +147,6 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di tangenza si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE) 
-      # nota l'entita del primo punto di perpendicolarit� si richiede il secondo punto
+      # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE) 

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.gui import *
 import math
 
 
-import qad_debug
 import qad_utils
 from qad_circle import *
 from qad_variables import *
@@ -99,7 +98,7 @@ class QadArc():
                                               self.startAngle,
                                               self.radius)
    def setStartAngleByPt(self, pt):
-      # da usare per modificare un arco gi� definito
+      # da usare per modificare un arco già efinito
       angle = qad_utils.getAngleBy2Pts(self.center, pt)
       if angle == self.endAngle:
          return False
@@ -112,7 +111,7 @@ class QadArc():
                                               self.endAngle,
                                               self.radius)
    def setEndAngleByPt(self, pt):
-      # da usare per modificare un arco gi� definito
+      # da usare per modificare un arco già definito
       angle = qad_utils.getAngleBy2Pts(self.center, pt)
       if angle == self.startAngle:
          return False
@@ -134,8 +133,6 @@ class QadArc():
       self.startAngle = dummy
 
    def getMiddlePt(self):
-      #qad_debug.breakPoint()      
-      
       halfAngle = self.totalAngle() / 2
       return qad_utils.getPolarPointByPtAngle(self.center,
                                               self.startAngle + halfAngle,
@@ -283,8 +280,6 @@ class QadArc():
       """
       ritorna una lista di punti che definisce l'arco
       """
-      #qad_debug.breakPoint()
-      
       if tolerance2ApproxCurve is None:
          tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       else:
@@ -297,14 +292,14 @@ class QadArc():
       
       # Calcolo la lunghezza del segmento con pitagora
       dummy      = self.radius - tolerance
-      if dummy <= 0: # se la tolleranza � troppo bassa rispetto al raggio
+      if dummy <= 0: # se la tolleranza é troppo bassa rispetto al raggio
          SegmentLen = self.radius
       else:
          dummy      = (self.radius * self.radius) - (dummy * dummy)
          SegmentLen = math.sqrt(dummy) # radice quadrata
          SegmentLen = SegmentLen * 2
       
-      if SegmentLen == 0: # se la tolleranza � troppo bassa la lunghezza del segmento diventa zero  
+      if SegmentLen == 0: # se la tolleranza é troppo bassa la lunghezza del segmento diventa zero  
          return None
          
       # calcolo quanti segmenti ci vogliono (non meno di _atLeastNSegment)
@@ -429,7 +424,6 @@ class QadArc():
       if startPt == endPt or angle == 0:
          return False
 
-      #qad_debug.breakPoint()
       chord = qad_utils.getDistance(startPt, endPt)
       half_chord = chord / 2   
       # Teorema della corda
@@ -468,8 +462,6 @@ class QadArc():
       if startPt == endPt:
          return False
       
-      #qad_debug.breakPoint()
-                
       angleSegment = qad_utils.getAngleBy2Pts(startPt, endPt)
       if tan == angleSegment or tan == angleSegment - math.pi:
          return False
@@ -543,7 +535,6 @@ class QadArc():
       raggio
       direzione della corda
       """
-      #qad_debug.breakPoint()
       if angle == 0 or angle == 2 * math.pi or radius <= 0:
          return False
 
@@ -564,7 +555,7 @@ class QadArc():
       """
       setta le caratteristiche del primo arco incontrato nella lista di punti
       partendo dalla posizione startVertex (0-indexed)
-      ritorna la posizione nella lista del punto iniziale e finale se � stato trovato un arco
+      ritorna la posizione nella lista del punto iniziale e finale se é stato trovato un arco
       altrimenti None
       """     
       if atLeastNSegment is None:
@@ -573,7 +564,7 @@ class QadArc():
          _atLeastNSegment = atLeastNSegment
       
       totPoints = len(points)
-      # perch� sia un arco ci vogliono almeno _atLeastNSegment segmenti
+      # perchésia un arco ci vogliono almeno _atLeastNSegment segmenti
       if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 
@@ -582,8 +573,6 @@ class QadArc():
       InfinityLinePerpOnMiddle1 = None
       InfinityLinePerpOnMiddle2 = None
                  
-      #qad_debug.breakPoint()
-      
       nSegment = 0
       i = startVertex
       while i < totPoints - 1:
@@ -614,29 +603,28 @@ class QadArc():
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
                   # calcolo il verso dell'arco e l'angolo dell'arco                 
-                  # se un punto intermedio dell'arco � a sinistra del
-                  # segmento che unisce i due punti allora il verso � antiorario
+                  # se un punto intermedio dell'arco è a sinistra del
+                  # segmento che unisce i due punti allora il verso è antiorario
                   startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
                   angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                  
-         else: # e sono gi� stati valutati almeno 2 segmenti
+         else: # e sono già stati valutati almeno 2 segmenti
             # calcolo la distanza del punto dal presunto centro
             dist = qad_utils.getDistance(center, points[i + 1])
             # calcolo il verso dell'arco e l'angolo                 
             clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
             angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
                        
-            # se la distanza � cos� vicina a quella del raggio
+            # se la distanza è così vicina a quella del raggio
             # il verso dell'arco deve essere quello iniziale
-            # l'angolo dell'arco non pu� essere >= 360 gradi
+            # l'angolo dell'arco non può essere >= 360 gradi
             if qad_utils.doubleNear(radius, dist, maxDifference) and \
                startClockWise == clockWise and \
                angle < 2 * math.pi:                              
                nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
             else: # questo segmento non fa parte del cerchio
-               #qad_debug.breakPoint()
                # se sono stati trovati un numero sufficiente di segmenti successivi
                if nSegment >= _atLeastNSegment:
-                  # se � un angolo giro e il primo punto = ultimo punto allora points � un cerchio
+                  # se é un angolo giro e il primo punto = ultimo punto allora points é un cerchio
                   if qad_utils.doubleNear(angle, 2 * math.pi) and points[0] == points[-1]: 
                      return None
                   break
@@ -646,18 +634,16 @@ class QadArc():
                   InfinityLinePerpOnMiddle2 = None
                
          i = i + 1
-         
-      #qad_debug.breakPoint()
-               
+                        
       # se sono stati trovati un numero sufficiente di segmenti successivi
       if nSegment >= _atLeastNSegment:
          nEndVertex = nStartVertex + nSegment
-         # se il punto iniziale e quello finale non coincidono � un arco         
+         # se il punto iniziale e quello finale non coincidono é un arco         
          if points[nStartVertex] != points[nEndVertex]:
             self.center = center
             self.radius = radius
                            
-            # se il verso � orario
+            # se il verso é orario
             if startClockWise:
                # inverto l'angolo iniziale con quello finale
                self.endAngle = qad_utils.getAngleBy2Pts(center, points[nStartVertex])
@@ -749,7 +735,7 @@ class QadArcList():
    #============================================================================
    def arcAt(self, afterVertex):
       """
-      cerca se esiste un arco al segmento il cui secondo vertice � <afterVertex>
+      cerca se esiste un arco al segmento il cui secondo vertice é <afterVertex>
       restituisce una lista con <arco>, <lista con indice del punto iniziale e finale>
       oppure None se arco non trovato
       """

@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_getpoint import *
 from qad_circle_maptool import *
 from qad_generic_cmd import QadCommandClass
@@ -59,7 +58,7 @@ class QadCIRCLECommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
-      # che non verr� salvato su un layer
+      # che non verrà salvato su un layer
       self.virtualCmd = False
       self.centerPt = None
       self.radius = None
@@ -112,13 +111,12 @@ class QadCIRCLECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA CENTRO
       elif self.step == 1: # dopo aver atteso un punto o enter o una parola chiave si riavvia il comando
-         #qad_debug.breakPoint()
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
-            # quindi � stato riattivato il comando che torna qui senza che il maptool
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi é stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -146,7 +144,7 @@ class QadCIRCLECommandClass(QadCommandClass):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare prima estremit� del diametro del cerchio: "))
+               self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare prima estremità del diametro del cerchio: "))
                self.step = 7     
             elif value == QadMsg.translate("Command_CIRCLE", "Ttr"):
                # imposto il map tool
@@ -154,7 +152,7 @@ class QadCIRCLECommandClass(QadCommandClass):
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
                self.step = 9     
-         elif type(value) == QgsPoint: # se � stato inserito il centro del cerchio           
+         elif type(value) == QgsPoint: # se é stato inserito il centro del cerchio           
             self.centerPt = value
             self.plugIn.setLastPoint(value)
             
@@ -183,10 +181,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -210,7 +208,7 @@ class QadCIRCLECommandClass(QadCommandClass):
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 3           
             elif value == QadMsg.translate("Command_CIRCLE", "Area"):
-               msg = QadMsg.translate("Command_CIRCLE", "Digitare l'area del cerchio in unit� correnti <{0}>: ")
+               msg = QadMsg.translate("Command_CIRCLE", "Digitare l'area del cerchio in unità correnti <{0}>: ")
                # si appresta ad attendere un numero reale         
                # msg, inputType, default, keyWords, valori positivi
                self.waitFor(msg.format(str(self.area)), QadInputTypeEnum.FLOAT, \
@@ -218,8 +216,8 @@ class QadCIRCLECommandClass(QadCommandClass):
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_CENTER_PT)
                self.step = 13         
-         elif type(value) == QgsPoint or type(value) == float: # se � stato inserito il raggio del cerchio            
-            if type(value) == QgsPoint: # se � stato inserito il raggio del cerchio con un punto                        
+         elif type(value) == QgsPoint or type(value) == float: # se é stato inserito il raggio del cerchio            
+            if type(value) == QgsPoint: # se é stato inserito il raggio del cerchio con un punto                        
                self.radius = qad_utils.getDistance(self.centerPt, value)
             else:
                self.radius = value
@@ -255,10 +253,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -269,9 +267,9 @@ class QadCIRCLECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if type(value) == QgsPoint: # se � stato inserito un punto          
+         if type(value) == QgsPoint: # se é stato inserito un punto          
             self.radius = qad_utils.getDistance(self.centerPt, value) / 2
-         elif type(value) == float: # se � stato inserito unnumero reale
+         elif type(value) == float: # se é stato inserito un numero reale
             self.radius = value
 
          self.plugIn.setLastRadius(self.radius)     
@@ -302,10 +300,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -319,7 +317,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
-         # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+         # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
          if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
             self.firstPt = None
             self.firstPtTan = value
@@ -328,7 +326,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.firstGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)
-         else: # altrimenti � un punto esplicito 
+         else: # altrimenti é un punto esplicito 
             self.firstPt = value
             self.plugIn.setLastPoint(value)    
             # imposto il map tool
@@ -346,10 +344,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 5:  # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -363,7 +361,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
-         # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+         # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
          if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
             self.secondPt = None
             self.secondPtTan = value
@@ -372,7 +370,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.secondGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT)
-         else: # altrimenti � un punto esplicito 
+         else: # altrimenti é un punto esplicito 
             self.secondPt = value
             self.plugIn.setLastPoint(value)    
             # imposto il map tool
@@ -390,10 +388,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 6:  # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -407,56 +405,55 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
-         # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+         # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
          if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
             self.thirdPt = None
             self.thirdPtTan = value
             self.thirdGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria         
             coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
             self.thirdGeomTan.transform(coordTransform)         
-         else: # altrimenti � un punto esplicito 
+         else: # altrimenti é un punto esplicito 
             self.thirdPt = value
             self.plugIn.setLastPoint(value)    
 
-         #qad_debug.breakPoint()
          circle = QadCircle()                  
          points = None
-         if self.firstPt is None: # se il primo punto � definito con un punto differito
-            if self.secondPt is None: # se il secondo punto � definito con un punto differito
-               if self.thirdPt is None: # se il terzo punto � definito con un punto differito
+         if self.firstPt is None: # se il primo punto é definito con un punto differito
+            if self.secondPt is None: # se il secondo punto é definito con un punto differito
+               if self.thirdPt is None: # se il terzo punto é definito con un punto differito
                   if circle.from3TanPts(self.firstGeomTan, self.firstPtTan, \
                                         self.secondGeomTan, self.secondPtTan, \
                                         self.thirdGeomTan, self.thirdPtTan) == True:
                      points = circle.asPolyline()
-               else: # se il terzo punto � definito con un punto esplicito
+               else: # se il terzo punto é definito con un punto esplicito
                   if circle.from1IntPt2TanPts(self.thirdPt, self.firstGeomTan, self.firstPtTan,
                                               self.secondGeomTan, self.secondPtTan) == True:
                      points = circle.asPolyline()
-            else: # se il secondo punto � definito con un punto esplicito
-               if self.thirdPt is None: # se il terzo punto � definito con un punto differito
+            else: # se il secondo punto é definito con un punto esplicito
+               if self.thirdPt is None: # se il terzo punto é definito con un punto differito
                   if circle.from1IntPt2TanPts(self.secondPt, self.firstGeomTan, self.firstPtTan,
                                               self.thirdGeomTan, self.thirdPtTan) == True:
                      points = circle.asPolyline()
-               else: # se il terzo punto � definito con un punto esplicito
+               else: # se il terzo punto é definito con un punto esplicito
                   if circle.from2IntPts1TanPt(self.secondPt, self.thirdPt, \
                                               self.firstGeomTan, self.firstPtTan) == True:
                      points = circle.asPolyline()
-         else: # se il primo punto � definito con un punto esplicito
-            if self.secondPt is None: # se il secondo punto � definito con un punto differito
-               if self.thirdPt is None: # se il terzo punto � definito con un punto differito
+         else: # se il primo punto é definito con un punto esplicito
+            if self.secondPt is None: # se il secondo punto é definito con un punto differito
+               if self.thirdPt is None: # se il terzo punto é definito con un punto differito
                   if circle.from1IntPt2TanPts(self.firstPt, self.secondGeomTan, self.secondPtTan,
                                               self.thirdGeomTan, self.thirdPtTan) == True:
                      points = circle.asPolyline()
-               else: # se il terzo punto � definito con un punto esplicito
+               else: # se il terzo punto é definito con un punto esplicito
                   if circle.from2IntPts1TanPt(self.firstPt, self.thirdPt, \
                                               self.secondGeomTan, self.secondPtTan) == True:
                      points = circle.asPolyline()
-            else: # se il secondo punto � definito con un punto esplicito
-               if self.thirdPt is None: # se il terzo punto � definito con un punto differito
+            else: # se il secondo punto é definito con un punto esplicito
+               if self.thirdPt is None: # se il terzo punto é definito con un punto differito
                   if circle.from2IntPts1TanPt(self.firstPt, self.secondPt, \
                                               self.thirdGeomTan, self.thirdPtTan) == True:
                      points = circle.asPolyline()
-               else: # se il terzo punto � definito con un punto esplicito
+               else: # se il terzo punto é definito con un punto esplicito
                   if circle.from3Pts(self.firstPt, self.secondPt, value) == True:
                      points = circle.asPolyline()
                      
@@ -480,10 +477,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 7:  # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -497,7 +494,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
-         # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+         # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
          if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
             self.firstDiamPt = None
             self.firstDiamPtTan = value
@@ -506,14 +503,14 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.firstDiamGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT)
-         else: # altrimenti � un punto esplicito 
+         else: # altrimenti é un punto esplicito 
             self.firstDiamPt = value        
             # imposto il map tool
             self.getPointMapTool().firstDiamPt = self.firstDiamPt
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT)
    
          # si appresta ad attendere un punto         
-         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremit� del diametro del cerchio: "))
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremità del diametro del cerchio: "))
          
          self.step = 8
          return False
@@ -523,10 +520,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 8:  # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -540,31 +537,31 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
-         # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+         # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
          if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
             self.secondDiamPt = None
             self.secondDiamPtTan = value
             self.secondDiamGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria
             coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
             self.secondDiamGeomTan.transform(coordTransform)            
-         else: # altrimenti � un punto esplicito 
+         else: # altrimenti é un punto esplicito 
             self.secondDiamPt = value  
          
          circle = QadCircle()                  
          points = None
-         if self.firstDiamPt is None: # se il diametro � definito con il primo punto differito
-            if self.secondDiamPt is None: # il diametro � definito con il secondo punto differito
+         if self.firstDiamPt is None: # se il diametro é definito con il primo punto differito
+            if self.secondDiamPt is None: # il diametro é definito con il secondo punto differito
                if circle.fromDiamEnds2TanPts(self.firstDiamGeomTan, self.firstDiamPtTan, \
                                              self.secondDiamGeomTan, self.secondDiamPtTan) == True:
                   points = circle.asPolyline()
-            else: # se il diametro � definito con il secondo punto esplicito
+            else: # se il diametro è definito con il secondo punto esplicito
                if circle.fromDiamEndsPtTanPt(self.secondDiamPt, self.firstDiamGeomTan, self.firstDiamPtTan) == True:
                   points = circle.asPolyline()
-         else: # se il diametro � definito con il primo punto esplicito
-            if self.secondDiamPt is None: # il diametro � definito con il secondo punto differito
+         else: # se il diametro è definito con il primo punto esplicito
+            if self.secondDiamPt is None: # il diametro è definito con il secondo punto differito
                if circle.fromDiamEndsPtTanPt(self.firstDiamPt, self.secondDiamGeomTan, self.secondDiamPtTan) == True:
                   points = circle.asPolyline()
-            else: # se il diametro � definito con il secondo punto esplicito
+            else: # se il diametro è definito con il secondo punto esplicito
                if circle.fromDiamEnds(self.firstDiamPt, self.secondDiamPt) == True:
                   points = circle.asPolyline()
                   
@@ -579,7 +576,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             return True # fine comand         
          
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremit� del diametro del cerchio: "))
+         self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare seconda estremità del diametro del cerchio: "))
          self.isValidPreviousInput = False # per gestire il comando anche in macro     
          return False
 
@@ -589,10 +586,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 9: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -606,7 +603,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.isValidPreviousInput = False # per gestire il comando anche in macro     
             return False
 
-         if not entity.isInitialized(): # se non � stata selezionata una entit�
+         if not entity.isInitialized(): # se non è stata selezionata una entità
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la prima tangente del cerchio: "))
             self.isValidPreviousInput = False # per gestire il comando anche in macro     
@@ -640,10 +637,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 10: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -657,7 +654,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.isValidPreviousInput = False # per gestire il comando anche in macro
             return False
 
-         if not entity.isInitialized(): # se non � stata selezionata una entit�
+         if not entity.isInitialized(): # se non è stata selezionata una entità
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare oggetto per la seconda tangente del cerchio: "))
             self.isValidPreviousInput = False # per gestire il comando anche in macro
@@ -696,10 +693,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 11: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -748,10 +745,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 12: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -788,10 +785,10 @@ class QadCIRCLECommandClass(QadCommandClass):
       elif self.step == 13: # dopo aver atteso un numero si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton != True: # se NON usato il tasto destro del mouse
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
@@ -800,7 +797,7 @@ class QadCIRCLECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if type(value) == float: # � stata inserita l'area
+         if type(value) == float: # è stata inserita l'area
             self.area = value
       
             circle = QadCircle()         

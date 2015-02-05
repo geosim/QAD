@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -32,7 +32,7 @@ from qgis.core import *
 import qad_rc
 import math
 
-import qad_debug
+
 import qad_utils
 from qad_maptool import QadMapTool
 from qad_variables import *
@@ -56,7 +56,7 @@ class Qad(QObject):
 
    
    # Map Tool attivo. Quando non ci sono comandi che necessitano di input dalla finestra grafica
-   # QadMapTool � quello attivo 
+   # QadMapTool é quello attivo 
    tool = None
    # Finestra grafica
    canvas = None
@@ -66,7 +66,7 @@ class Qad(QObject):
    QadCommands = None
    # Azione corrente
    currentAction = None
-   # Finestra testuale gi� collegata
+   # Finestra testuale già collegata
    __alreadyDockedTextWindow = False
    # ultimo punto selezionato
    lastPoint = None
@@ -92,15 +92,15 @@ class Qad(QObject):
    lastScale = 1.0
    # numero di segmenti per l'approssimazione delle curve (es. buffer)
    segments = 10
-   # ultima entit� inserita
+   # ultima entità inserita
    lastEntity = None
-   # ultimo set di entit�
+   # ultimo set di entità
    lastEntitySet = None
    # tipo di unione (es. editpl->unione)
    joinMode = 1 # 1=Estendi, 2=Aggiungi, 3=Entrambi
    # distanza di approssimazione nell'unione (es. editpl->unione)
    joinToleranceDist = 0.0
-   # modalit� di raccordo in comando raccordo
+   # modalità di raccordo in comando raccordo
    filletMode = 1 # 1=Taglia-estendi, 2=Non taglia-estendi
    # ultimo numero di lati per poligono
    lastPolygonSideNumber = 4
@@ -109,13 +109,13 @@ class Qad(QObject):
    lastPolygonConstructionModeByCenter = QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio")
 
 
-   # flag per identificare se un comando di QAD � attivo oppure no
+   # flag per identificare se un comando di QAD é attivo oppure no
    isQadActive = False
    
    # Quotatura
    dimStyles = QadDimStyles()                 # lista degli stili di quotatura caricati
    dimTextEntitySetRecodeOnSave = QadLayerEntitySet() # entity set dei testi delle quote da riallineare in salvataggio
-   beforeCommitChangesDimLayer = None         # layer da cui � scaturito il salvataggio delle quotature
+   beforeCommitChangesDimLayer = None         # layer da cui é scaturito il salvataggio delle quotature
    isSaveControlledByQAD = False
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -182,7 +182,7 @@ class Qad(QObject):
          self.segments = int(segments)      
 
    def setLastEntity(self, layer, featureId):
-      # memorizzo l'ultimo entit� creata
+      # memorizzo l'ultimo entità creata
       if self.lastEntity is None:
          self.lastEntity = QadEntity()
       self.lastEntity.set(layer, featureId)
@@ -191,13 +191,13 @@ class Qad(QObject):
       if self.lastEntity is None:
          return None
       else:
-         if self.lastEntity.exists() == False: # non esiste pi�
+         if self.lastEntity.exists() == False: # non esiste più
             return None
          else:
             return self.lastEntity
       
    def setLastEntitySet(self, entitySet):
-      # memorizzo l'ultimo set di entit�
+      # memorizzo l'ultimo set di entità
       if self.lastEntitySet is None:
          self.lastEntitySet = QadEntitySet()
       self.lastEntitySet.set(entitySet)
@@ -213,7 +213,7 @@ class Qad(QObject):
          self.joinToleranceDist = joinToleranceDist      
 
    def setFilletMode(self, filletMode):
-      # memorizzo modalit� di raccordo in comando raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
+      # memorizzo modalità di raccordo in comando raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       if filletMode == 1 or filletMode == 2:
          self.filletMode = int(filletMode)     
 
@@ -370,15 +370,30 @@ class Qad(QObject):
       # Inizializzo la finestra di testo
       self.TextWindow = QadTextWindow(self)
       self.TextWindow.initGui()
-      self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), False))
+      self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
             
       self.setStandardMapTool()
 
       # aggiungo i segnali di aggiunta e rimozione di layer per collegare ogni layer
       # all'evento <layerModified> per sapere se la modifica fatta su quel layer
-      # � stata fatta da QAD o dall'esterno
+      # é stata fatta da QAD o dall'esterno
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+
+
+   def unload(self):
+      # Remove the plugin menu item and icon
+      self.iface.removePluginVectorMenu("&QAD", self.mainAction)
+      self.iface.removeToolBarIcon(self.mainAction)
+      # remove toolbars and menubars
+      if self.toolBar is not None:
+         del self.toolBar
+      if self.dimToolBar is not None:
+         del self.dimToolBar
+      if self.menu is not None:
+         del self.menu
+      if self.TextWindow is not None:
+         self.TextWindow.close()
 
 
    #============================================================================
@@ -393,7 +408,6 @@ class Qad(QObject):
       QObject.connect(self.mainAction, SIGNAL("triggered()"), self.run)
       
       # PLINE
-      #qad_debug.breakPoint()
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "PLINEA"))
       self.pline_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.pline_action.setToolTip(cmd.getToolTipText())
@@ -803,7 +817,6 @@ class Qad(QObject):
 
 
    def layerAdded(self, layer):
-      #qad_debug.breakPoint()
       QObject.connect(layer, SIGNAL("layerModified()"), self.layerModified)
       QObject.connect(layer, SIGNAL("beforeCommitChanges()"), self.beforeCommitChanges)
       QObject.connect(layer, SIGNAL("committedFeaturesAdded(QString, QgsFeatureList)"), self.committedFeaturesAdded)
@@ -825,7 +838,6 @@ class Qad(QObject):
       # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
       # se bisogna fare la ricodifica delle quote
       if self.dimTextEntitySetRecodeOnSave.isEmpty() == False:
-         #qad_debug.breakPoint()
          # ricavo lo stile di quotatura
          dimStyle = self.dimStyles.getDimByLayer(self.dimTextEntitySetRecodeOnSave.layer)
          # salvo gli oggetti di quello stile di quotatura aggiornando i reference
@@ -844,7 +856,6 @@ class Qad(QObject):
       # questo segnale arriva alla fine del salvataggio di un layer dalla versione 2.3 di QGIS
       # se bisogna fare la ricodifica delle quote
       if self.dimTextEntitySetRecodeOnSave.isEmpty() == False:
-         #qad_debug.breakPoint()
          # ricavo lo stile di quotatura
          dimStyle = self.dimStyles.getDimByLayer(self.dimTextEntitySetRecodeOnSave.layer)
          # salvo gli oggetti di quello stile di quotatura aggiornando i reference
@@ -866,18 +877,16 @@ class Qad(QObject):
          dimStyle = self.dimStyles.getDimByLayer(layer)
          if dimStyle is not None:
             if dimStyle.getTextualLayer().id() != layer.id(): # se non si tratta del layer dei testi di quota
-               self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui � scaturito il salvataggio delle quotature
+               self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui é scaturito il salvataggio delle quotature
                self.isSaveControlledByQAD = True
-               #qad_debug.breakPoint()
                dimStyle.textCommitChangesOnSave() # salvo i testi delle quote per ricodifica ID
                dimStyle.startEditing()
                self.isSaveControlledByQAD = False
 
       
    def committedFeaturesAdded(self, layerId, addedFeatures):
-      #qad_debug.breakPoint()
       layer = qad_layer.getLayerById(layerId)    
-      # verifico se il layer che � stato salvato appartiene ad uno stile di quotatura
+      # verifico se il layer che é stato salvato appartiene ad uno stile di quotatura
       dimStyle = self.dimStyles.getDimByLayer(layer)
       if dimStyle is not None:
          # se si tratta del layer testuale delle quote
@@ -888,10 +897,9 @@ class Qad(QObject):
 
    def layerModified(self):
       if self.isQadActive == False:
-         #qad_debug.breakPoint()
-         # la modifica fatta su quel layer � stata fatta dall'esterno di QAD
+         # la modifica fatta su quel layer é stata fatta dall'esterno di QAD
          # quindi ho perso la sincronizzazione con lo stack di undo di QAD che
-         # viene svuotato perch� ormai inutilizzabile
+         # viene svuotato perché ormai inutilizzabile
          self.undoStack.clear()
          self.enableUndoRedoButtons()
    
@@ -908,10 +916,10 @@ class Qad(QObject):
 
    def beginEditCommand(self, text, layerList):
       if type(layerList) == list or type(layerList) == tuple:
-         # layerList � una lista di layer
+         # layerList é una lista di layer
          self.undoStack.beginEditCommand(text, layerList)
       else:
-         # layerList � un solo layer
+         # layerList é un solo layer
          self.undoStack.beginEditCommand(text, [layerList])
          
    def destroyEditCommand(self):
@@ -971,20 +979,7 @@ class Qad(QObject):
    def deactivate(self):
       self.mainAction.setChecked(False)
 
-   def unload(self):
-      # Remove the plugin menu item and icon
-      self.iface.removePluginMenu("&QAD", self.mainAction)
-      self.iface.removeToolBarIcon(self.mainAction)
-      # remove toolbars and menubars
-      if self.toolBar is not None:
-         del self.toolBar
-      if self.dimToolBar is not None:
-         del self.dimToolBar
-      if self.menu is not None:
-         del self.menu
-
    def setStandardMapTool(self):
-      #qad_debug.breakPoint()
       mc = self.canvas
       mc.setMapTool(self.tool)
       self.mainAction.setChecked(True)
@@ -1015,8 +1010,8 @@ class Qad(QObject):
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):
-      # il valore di default del parametro di una funzione non pu� essere una traduzione
-      # perch� lupdate.exe non lo riesce ad interpretare
+      # il valore di default del parametro di una funzione non può essere una traduzione
+      # perché lupdate.exe non lo riesce ad interpretare
       if inputMsg is None: 
          inputMsg = QadMsg.translate("QAD", "Comando: ")
       
@@ -1080,11 +1075,11 @@ class Qad(QObject):
          value = 1
          autosnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
          if (autosnap & 8) == True:
-            QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), autosnap - 8) # disattivo la modalit� polare 
-         msg = QadMsg.translate("QAD", "\n<Modalit� ortogonale attivata>")
+            QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), autosnap - 8) # disattivo la modalità polare 
+         msg = QadMsg.translate("QAD", "\n<Modalità ortogonale attivata>")
       else:
          value = 0
-         msg = QadMsg.translate("QAD", "\n<Modalit� ortogonale disattivata>")
+         msg = QadMsg.translate("QAD", "\n<Modalità ortogonale disattivata>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), value)
       QadVariables.save()
@@ -1095,11 +1090,11 @@ class Qad(QObject):
       value = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
       if (value & 8) == False:
          value = value + 8
-         QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), 0) # disattivo la modalit� orto 
-         msg = QadMsg.translate("QAD", "\n<Modalit� polare attivata>")
+         QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), 0) # disattivo la modalità orto 
+         msg = QadMsg.translate("QAD", "\n<Modalità polare attivata>")
       else:
          value = value - 8
-         msg = QadMsg.translate("QAD", "\n<Modalit� polare disattivata>")
+         msg = QadMsg.translate("QAD", "\n<Modalità polare disattivata>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
@@ -1128,7 +1123,6 @@ class Qad(QObject):
       self.showEvaluateMsg(cmdName)
 
    def runMacroAbortingTheCurrent(self, args):
-      #qad_debug.breakPoint()
       self.mainAction.setChecked(True)
       self.canvas.setFocus()
       self.abortCommand()      

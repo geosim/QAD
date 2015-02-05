@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 from qad_generic_cmd import QadCommandClass
 from qad_snapper import *
 from qad_getpoint import *
@@ -68,7 +67,7 @@ class QadBREAKCommandClass(QadCommandClass):
          del self.EntSelClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 1: # quando si � in fase di selezione entit�
+      if self.step == 1: # quando si é in fase di selezione entità
          return self.EntSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
@@ -93,7 +92,6 @@ class QadBREAKCommandClass(QadCommandClass):
    # breakFeatures
    #============================================================================
    def breakFeatures(self):
-      #qad_debug.breakPoint()
       layer = self.EntSelClass.entity.layer
       LineTempLayer = None
       self.plugIn.beginEditCommand("Feature broken", layer)
@@ -149,7 +147,6 @@ class QadBREAKCommandClass(QadCommandClass):
                self.plugIn.destroyEditCommand()
                return
             
-            #qad_debug.breakPoint()       
             updGeom = qad_utils.delSubGeom(f.geometry(), atSubGeom)         
 
             if updGeom is None or updGeom.isGeosEmpty(): # da cancellare
@@ -180,7 +177,6 @@ class QadBREAKCommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA SELEZIONE DI UN'ENTITA' (da step = 0)
       elif self.step == 1:
-         #qad_debug.breakPoint()         
          if self.EntSelClass.run(msgMapTool, msg) == True:
             if self.EntSelClass.entity.isInitialized():
                layer = self.EntSelClass.entity.layer
@@ -191,7 +187,7 @@ class QadBREAKCommandClass(QadCommandClass):
                prompt = QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione o [{0}]: ").format(keyWords)
                
                self.step = 2
-               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che pu� essere variato dal maptool di selezione entit�                     
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                    
                # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
@@ -209,10 +205,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 2: # dopo aver atteso un punto o una parola chiave si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   pass # opzione di default "secondo punto"
                else:
@@ -227,7 +223,7 @@ class QadBREAKCommandClass(QadCommandClass):
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_BREAK", "Specificare primo punto di interruzione: "))            
             self.step = 3
-         elif type(value) == QgsPoint: # se � stato inserito il secondo punto
+         elif type(value) == QgsPoint: # se é stato inserito il secondo punto
             self.secondPt = value
             self.plugIn.setLastPoint(self.secondPt)
             self.breakFeatures()            
@@ -240,10 +236,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 3: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:
@@ -268,10 +264,10 @@ class QadBREAKCommandClass(QadCommandClass):
       elif self.step == 4: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

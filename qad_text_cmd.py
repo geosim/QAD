@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 import qad_utils
 from qad_generic_cmd import QadCommandClass
 import qad_layer
@@ -76,18 +75,16 @@ class QadTEXTCommandClass(QadCommandClass):
          del self.GetAngleClass
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      #qad_debug.breakPoint()
-      # quando si � in fase di richiesta distanza (altezza testo)
+      # quando si éin fase di richiesta distanza (altezza testo)
       if self.step == 2:
          return self.GetDistClass.getPointMapTool()
-      # quando si � in fase di richiesta rotazione
+      # quando si éin fase di richiesta rotazione
       elif self.step == 3:
          return self.GetAngleClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
 
    def addFeature(self, layer):
-      #qad_debug.breakPoint()
       transformedPoint = self.mapToLayerCoordinates(layer, self.insPt)
       g = QgsGeometry.fromPoint(transformedPoint)
       f = QgsFeature()
@@ -122,7 +119,6 @@ class QadTEXTCommandClass(QadCommandClass):
       return qad_layer.addFeatureToLayer(self.plugIn, layer, f)       
 
    def initLabelFields(self, layer):
-      #qad_debug.breakPoint()     
       labelFieldNames = qad_label.get_labelFieldNames(layer)
       if len(labelFieldNames) > 0:
          self.labelFields = QgsFields()         
@@ -167,8 +163,8 @@ class QadTEXTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isTextLayer(currLayer) == False:
-         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non � di tipo testo.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo � un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
+         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non é di tipo testo.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
@@ -185,10 +181,10 @@ class QadTEXTCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # éstato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool éstato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

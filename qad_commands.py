@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 
 """
 /***************************************************************************
@@ -31,7 +31,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 from qad_maptool import QadMapTool
 from qad_msg import QadMsg
 from qad_cmd_aliases import *
@@ -74,7 +73,7 @@ class QadCommandsClass():
    # quando si aggiunge un nuovo comando bisogna
    # 1) aggiungerlo nella lista commands nella funzione __init__ 
    # 2) aggiungere la sua chiamata nella funzione getCommandObj
-   # 3) se il comando pu� essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
+   # 3) se il comando può essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
    #    e ricordarsi di inserire l'icona in resources.qrc e di ricompilare le risorse
    # 4) aggiungere funzione per l'avvio del comando "run<nome_comando>Command"
    
@@ -222,7 +221,7 @@ class QadCommandsClass():
    # run
    #============================================================================
    def run(self, command):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is not None:
          return
       
@@ -240,7 +239,7 @@ class QadCommandsClass():
    # runMacro
    #============================================================================
    def runMacro(self, args):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is not None:
          return
       
@@ -260,11 +259,11 @@ class QadCommandsClass():
    # continueCommandFromMapTool
    #============================================================================
    def continueCommandFromMapTool(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
       msg = None
-      # se � stato premuto il tasto destro del mouse valuto cosa � stato inserito nella finestra di testo
+      # se é stato premuto il tasto destro del mouse valuto cosa é stato inserito nella finestra di testo
       if self.actualCommand.getPointMapTool().rightButton == True:
          msg = self.actualCommand.getCurrMsgFromTxtWindow()
          if (msg is not None) and len(msg) > 0:
@@ -281,7 +280,7 @@ class QadCommandsClass():
    # continueCommandFromTextWindow
    #============================================================================
    def continueCommandFromTextWindow(self, msg):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
       if self.actualCommand.run(False, msg) == True: # comando terminato
@@ -292,7 +291,7 @@ class QadCommandsClass():
    # abortCommand
    #============================================================================
    def abortCommand(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
          self.plugIn.setStandardMapTool()               
@@ -317,13 +316,13 @@ class QadCommandsClass():
    # forceCommandMapToolSnapTypeOnce
    #============================================================================
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'� un maptool del comando attuale
+      # se non c'é un maptool del comando attuale
       if self.actualCommand.getPointMapTool() is None:
          return
-      # se il maptool del comando attuale se non � attivo
+      # se il maptool del comando attuale se non é attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
       self.actualCommand.getPointMapTool().forceSnapTypeOnce(snapType, snapParams)
@@ -333,26 +332,26 @@ class QadCommandsClass():
    # getCurrenPointFromCommandMapTool
    #============================================================================
    def getCurrenPointFromCommandMapTool(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return None
-      # se non c'� un maptool del comando attuale
-      if self.actualCommand.PointMapTool is None:
+      # se non c'é un maptool del comando attuale
+      if self.actualCommand.getPointMapTool() is None:
          return None
-      # se il maptool del comando attuale se non � attivo
+      # se il maptool del comando attuale se non é attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      return self.actualCommand.PointMapTool.tmpPoint
+      return self.actualCommand.getPointMapTool().tmpPoint
       
 
    #============================================================================
    # refreshCommandMapToolSnapType
    #============================================================================
    def refreshCommandMapToolSnapType(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'� un maptool attivo del comando attuale
+      # se non c'é un maptool attivo del comando attuale
       if self.actualCommand.getPointMapTool() is None:
          return
       self.actualCommand.getPointMapTool().refreshSnapType()
@@ -362,26 +361,26 @@ class QadCommandsClass():
    # refreshCommandMapToolOrthoMode
    #============================================================================
    def refreshCommandMapToolOrthoMode(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'� un maptool attivo del comando attuale
-      if self.actualCommand.PointMapTool is None:
+      # se non c'é un maptool attivo del comando attuale
+      if self.actualCommand.getPointMapTool() is None:
          return
-      self.actualCommand.PointMapTool.refreshOrthoMode()
+      self.actualCommand.getPointMapTool().refreshOrthoMode()
       
       
    #============================================================================
    # refreshCommandMapToolAutoSnap
    #============================================================================
    def refreshCommandMapToolAutoSnap(self):
-      # se non c'� alcun comando attivo
+      # se non c'é alcun comando attivo
       if self.actualCommand is None:
          return
-      # se non c'� un maptool attivo del comando attuale
-      if self.actualCommand.PointMapTool is None:
+      # se non c'é un maptool attivo del comando attuale
+      if self.actualCommand.getPointMapTool() is None:
          return
-      self.actualCommand.PointMapTool.refreshAutoSnap()
+      self.actualCommand.getPointMapTool().refreshAutoSnap()
             
             
 #===============================================================================
@@ -419,7 +418,6 @@ class QadMacroRunnerCommandClass(QadCommandClass):
    def setCmdAndOptionsToRun(self, CmdAndArglist):
       # primo eleemto della lista = nome comando
       # gli altri elementi sono gli argomenti del comando None = input dell'utente
-      #qad_debug.breakPoint()
       cmdName = CmdAndArglist[0]
       self.args = CmdAndArglist[1:] # copio la lista saltando il primo elemento
       
@@ -433,7 +431,6 @@ class QadMacroRunnerCommandClass(QadCommandClass):
       return True
             
    def run(self, msgMapTool = False, msg = None):
-      #qad_debug.breakPoint()
       
       if self.command.run(msgMapTool, msg) == True:
          return True
@@ -446,6 +443,5 @@ class QadMacroRunnerCommandClass(QadCommandClass):
             arg = self.args[self.argsIndex]
             if arg is not None:
                self.showEvaluateMsg(arg)
-               #qad_debug.breakPoint()
 
       return False

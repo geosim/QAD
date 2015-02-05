@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_offset_maptool import *
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
@@ -80,7 +79,9 @@ class QadOFFSETCommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
       self.rubberBand.hide()
+      self.plugIn.canvas.scene().removeItem(self.rubberBand)
       self.rubberBandPolygon.hide()
+      self.plugIn.canvas.scene().removeItem(self.rubberBandPolygon)
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
@@ -124,7 +125,6 @@ class QadOFFSETCommandClass(QadCommandClass):
                self.lastOffSetOnRightSide = offSetDistance            
                self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
 
-      #qad_debug.breakPoint()
       tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                   self.plugIn.canvas,\
                                                                   layer)
@@ -137,7 +137,7 @@ class QadOFFSETCommandClass(QadCommandClass):
       added = False
       for line in lines:        
          if layer.geometryType() == QGis.Polygon:
-            if line[0] == line[-1]: # se � una linea chiusa
+            if line[0] == line[-1]: # se é una linea chiusa
                offsetGeom = QgsGeometry.fromPolygon([line])
             else:
                offsetGeom = QgsGeometry.fromPolyline(line)
@@ -158,7 +158,6 @@ class QadOFFSETCommandClass(QadCommandClass):
    # undoGeomsInCache
    #============================================================================
    def undoGeomsInCache(self):
-      #qad_debug.breakPoint()
       tot = len(self.featureCache)
       if tot > 0:
          iEnd = self.undoFeatureCacheIndexes[-1]
@@ -174,8 +173,6 @@ class QadOFFSETCommandClass(QadCommandClass):
    # addFeatureToRubberBand
    #============================================================================
    def addFeatureToRubberBand(self, layer, feature):
-      qad_debug.breakPoint()
-
       if layer.geometryType() == QGis.Polygon:
          if feature.geometry().type() == QGis.Polygon:
             self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
@@ -195,7 +192,6 @@ class QadOFFSETCommandClass(QadCommandClass):
          layer = f[0]
          feature = f[1]
          if layer.geometryType() == QGis.Polygon:
-            #qad_debug.breakPoint()
             if feature.geometry().type() == QGis.Polygon:
                self.rubberBandPolygon.addGeometry(feature.geometry(), layer)
             else:
@@ -210,7 +206,6 @@ class QadOFFSETCommandClass(QadCommandClass):
    def offsetGeoms(self, currLayer):
       featuresLayers = [] # lista di (layer, features)
       
-      #qad_debug.breakPoint()   
       for f in self.featureCache:
          layer = f[0]
          feature = f[1]
@@ -234,7 +229,6 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.plugIn.beginEditCommand("Feature offseted", layerList)
 
       for featuresLayer in featuresLayers:
-         #qad_debug.breakPoint()
          if featuresLayer[0].crs() != currLayer.crs():
             coordTransform = QgsCoordinateTransform(featuresLayer[0].crs(),\
                                                     currLayer.crs()) # trasformo la geometria
@@ -439,10 +433,10 @@ class QadOFFSETCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.offSet < 0:
                      value = QadMsg.translate("Command_OFFSET", "Punto")
@@ -465,11 +459,11 @@ class QadOFFSETCommandClass(QadCommandClass):
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
             elif value == QadMsg.translate("Command_OFFSET", "Cancella"):
-               keyWords = QadMsg.translate("QAD", "S�") + "/" + \
+               keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                           QadMsg.translate("QAD", "No")                               
               
                if self.eraseEntity == True:
-                  default = QadMsg.translate("QAD", "S�")
+                  default = QadMsg.translate("QAD", "Sì")
                else: 
                   default = QadMsg.translate("QAD", "No")
                prompt = QadMsg.translate("Command_OFFSET", "Cancellare l'oggetto sorgente dopo l'offset ? [{0}] <{1}>: ").format(keyWords, default)
@@ -484,7 +478,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
                self.multi = True
                self.waitForBasePt()                         
-         elif type(value) == QgsPoint: # se � stato inserito il primo punto per il calcolo della distanza
+         elif type(value) == QgsPoint: # se é stato inserito il primo punto per il calcolo della distanza
             self.firstPt.set(value.x(), value.y())
             # imposto il map tool
             self.getPointMapTool().firstPt = self.firstPt           
@@ -508,10 +502,10 @@ class QadOFFSETCommandClass(QadCommandClass):
          entity = None
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   value = QadMsg.translate("Command_OFFSET", "Esci")
                else:
@@ -531,8 +525,8 @@ class QadOFFSETCommandClass(QadCommandClass):
                self.undoGeomsInCache()
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
-         elif type(value) == QgsPoint: # se � stato selezionato un punto
-            if entity is not None and entity.isInitialized(): # se � stata selezionata una entit�
+         elif type(value) == QgsPoint: # se é stato selezionato un punto
+            if entity is not None and entity.isInitialized(): # se é stata selezionata una entità
                self.entity.set(entity.layer, entity.featureId)
                self.getPointMapTool().layer = self.entity.layer
                geom = entity.getGeometry()
@@ -545,7 +539,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
                if dummy[2] is not None:
                   # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
-                  # la posizione � espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+                  # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
                   self.subGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])[0]
                   self.subGeomSelectedPt = QgsPoint(transformedPt)
                   
@@ -565,10 +559,10 @@ class QadOFFSETCommandClass(QadCommandClass):
       elif self.step == 3:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.multi == False: # default = esci                     
                      self.offsetGeoms(currLayer)
@@ -604,7 +598,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                      self.getPointMapTool().subGeom = self.subGeom
                   
                   self.waitForSidePt()                  
-            elif type(value) == QgsPoint: # se � stato selezionato un punto            
+            elif type(value) == QgsPoint: # se é stato selezionato un punto            
                self.addFeatureCache(value) 
                if self.multi == False:
                   # si appresta ad attendere la selezione di un oggetto
@@ -620,10 +614,10 @@ class QadOFFSETCommandClass(QadCommandClass):
       elif self.step == 4:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.multi == False: # default = esci                     
                      self.offsetGeoms(currLayer)
@@ -659,7 +653,7 @@ class QadOFFSETCommandClass(QadCommandClass):
                      self.getPointMapTool().subGeom = self.subGeom
                   
                   self.waitForPassagePt()     
-            elif type(value) == QgsPoint: # se � stato selezionato un punto            
+            elif type(value) == QgsPoint: # se é stato selezionato un punto            
                self.addFeatureCache(value)       
                if self.multi == False:
                   # si appresta ad attendere la selezione di un oggetto
@@ -675,7 +669,7 @@ class QadOFFSETCommandClass(QadCommandClass):
       elif self.step == 5: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
             if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
@@ -687,7 +681,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "S�"):
+            if value == QadMsg.translate("QAD", "Sì"):
                self.eraseEntity = True
                self.waitForDistance()
             elif value == QadMsg.translate("QAD", "No"):
@@ -701,10 +695,10 @@ class QadOFFSETCommandClass(QadCommandClass):
       elif self.step == 6: # dopo aver atteso un punto o un numero reale si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   return True # fine comando
                else:

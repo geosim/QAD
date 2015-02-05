@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 from qad_entity import *
 
 
@@ -40,9 +39,8 @@ from qad_entity import *
 def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = False):
    """
    la funzione crea un rubber band di tipo <geometryType> con le impostazioni di QGIS.
-   Se <alternativeBand> = True, il rubber band sar� impostato con pi� trasparenza e tipolinea punteggiato   
+   Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
    """
-   #qad_debug.breakPoint()
    settings = QSettings()
    width = int(settings.value( "/qgis/digitizing/line_width", 1))
    color = QColor(int(settings.value( "/qgis/digitizing/line_color_red", 1)), \
@@ -67,10 +65,26 @@ def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = Fals
 
 # Classe che gestisce rubber band di oggetti geometricamente non omogenei
 class QadRubberBand():
-   def __init__(self, mapCanvas):
-      self.__rubberBandPoint = createRubberBand(mapCanvas, QGis.Point)
-      self.__rubberBandLine = createRubberBand(mapCanvas, QGis.Line)
-      self.__rubberBandPolygon = createRubberBand(mapCanvas, QGis.Polygon)
+   def __init__(self, mapCanvas, alternativeBand = False):
+      """
+      Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
+      """
+      self.mapCanvas = mapCanvas
+      self.__rubberBandPoint = createRubberBand(self.mapCanvas, QGis.Point, alternativeBand)
+      self.__rubberBandLine = createRubberBand(self.mapCanvas, QGis.Line, alternativeBand)
+      self.__rubberBandPolygon = createRubberBand(self.mapCanvas, QGis.Polygon, alternativeBand)
+
+   def __del__(self):
+      self.hide()
+      
+      self.mapCanvas.scene().removeItem(self.__rubberBandPoint)
+      del self.__rubberBandPoint
+      
+      self.mapCanvas.scene().removeItem(self.__rubberBandLine)
+      del self.__rubberBandLine
+      
+      self.mapCanvas.scene().removeItem(self.__rubberBandPolygon)
+      del self.__rubberBandPolygon         
    
    def hide(self):
       self.__rubberBandPoint.hide()
@@ -83,7 +97,10 @@ class QadRubberBand():
       self.__rubberBandPolygon.show()
       
    def addGeometry(self, geom, layer):
-      geomType = geom.type()
+      # uso la geometria del layer per risolvere il caso ambiguo in cui
+      # si vuole inserire una linea chiusa in un layer poligono 
+      geomType = layer.geometryType()
+      #geomType = geom.type()
       if geomType == QGis.Point:      
          self.__rubberBandPoint.addGeometry(geom, layer)
       elif geomType == QGis.Line:      
@@ -96,7 +113,7 @@ class QadRubberBand():
          self.addGeometry(g, layer)
          
          
-   def setLine(self, points, layer):
+   def setLine(self, points):
       self.__rubberBandLine.reset(QGis.Line)
       tot = len(points) - 1
       i = 0
@@ -107,20 +124,31 @@ class QadRubberBand():
             self.__rubberBandLine.addPoint(points[i], True)
          i = i + 1
 
+   def setPolygon(self, points):
+      self.__rubberBandPolygon.reset(QGis.Polygon)
+      tot = len(points) - 1
+      i = 0
+      while i <= tot:
+         if i < tot:
+            self.__rubberBandPolygon.addPoint(points[i], False)
+         else: # ultimo punto
+            self.__rubberBandPolygon.addPoint(points[i], True)
+         i = i + 1
+
+   def addLinePoint(self, point, doUpdate = True, geometryIndex = 0):
+      self.__rubberBandLine.addPoint(point, doUpdate, geometryIndex)
+
+   def addPolygonPoint(self, point, doUpdate = True, geometryIndex = 0):
+      self.__rubberBandPolygon.addPoint(point, doUpdate, geometryIndex)
 
    def reset(self):
       self.__rubberBandPoint.reset(QGis.Point)
       self.__rubberBandLine.reset(QGis.Line)
       self.__rubberBandPolygon.reset(QGis.Polygon)
       
-   def __del__(self):
-      self.hide()
-      del self.__rubberBandPoint
-      del self.__rubberBandLine
-      del self.__rubberBandPolygon         
       
-      
-      
-      
+   def setLineStyle(self, penStyle):      
+      self.__rubberBandLine.setLineStyle(penStyle)
+      self.__rubberBandPolygon.setLineStyle(penStyle)
       
       

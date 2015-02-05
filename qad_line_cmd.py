@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-import qad_debug
 from qad_getpoint import *
 from qad_line_maptool import *
 from qad_generic_cmd import QadCommandClass
@@ -64,12 +63,13 @@ class QadLINECommandClass(QadCommandClass):
       self.firstPtTan = None
       self.firstPtPer = None      
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
-      # che non verr� salvata su un layer
+      # che non verrà salvata su un layer
       self.virtualCmd = False
 
    def __del__(self):
       QadCommandClass.__del__(self)
       self.rubberBand.hide()
+      self.plugIn.canvas.scene().removeItem(self.rubberBand)
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
@@ -103,7 +103,7 @@ class QadLINECommandClass(QadCommandClass):
       if numberOfVertices == 2:
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
-         # la linea non viene disegnata perci� sposto un pochino la x o la y                 
+         # la linea non viene disegnata perciò sposto un pochino la x o la y                 
          adjustedPoint = qad_utils.getAdjustedRubberBandVertex(self.rubberBand.getPoint(0, 0), point)                                                               
          self.rubberBand.addPoint(adjustedPoint, doUpdate)
       else:
@@ -163,10 +163,10 @@ class QadLINECommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
-            # � stato attivato un altro plugin che ha disattivato Qad
+            # é stato attivato un altro plugin che ha disattivato Qad
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
-            if self.getPointMapTool().point is None: # il maptool � stato attivato senza un punto
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
                      self.addLinesToLayer(currLayer)
@@ -210,7 +210,7 @@ class QadLINECommandClass(QadCommandClass):
                   else:
                      return True # fine comando
    
-               # se � stato selezionato un punto con la modalit� TAN_DEF � un punto differito
+               # se é stato selezionato un punto con la modalità TAN_DEF é un punto differito
                if snapTypeOnSel == QadSnapTypeEnum.TAN_DEF and entity.isInitialized():
                   # se era stato selezionato un punto esplicito
                   if (self.firstPtTan is None) and (self.firstPtPer is None):                     
@@ -223,14 +223,14 @@ class QadLINECommandClass(QadCommandClass):
                      self.getPointMapTool().tan1 = self.firstPtTan
                      self.getPointMapTool().geom1 = self.firstGeom
                      self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT)
-                  # se era stato selezionato un punto con la modalit� TAN_DEF   
+                  # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
                      coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFrom2TanPts(self.firstGeom, self.firstPtTan, secondGeom, value)
                      if tangent is not None:
-                        # prendo il punto pi� vicino a value
+                        # prendo il punto più vicino a value
                         if qad_utils.getDistance(tangent[0], value) < qad_utils.getDistance(tangent[1], value):                              
                            self.addVertex(tangent[1]) # aggiungo un nuovo vertice
                            self.addVertex(tangent[0]) # aggiungo un nuovo vertice
@@ -243,14 +243,14 @@ class QadLINECommandClass(QadCommandClass):
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
                         self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))
-                  # se era stato selezionato un punto con la modalit� PER_DEF              
+                  # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
                      coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFromTanPerPts(secondGeom, value, self.firstGeom, self.firstPtPer)
                      if tangent is not None:
-                        # prendo il punto pi� vicino a value
+                        # prendo il punto più vicino a value
                         if qad_utils.getDistance(tangent[0], value) < qad_utils.getDistance(tangent[1], value):                              
                            self.addVertex(tangent[1]) # aggiungo un nuovo vertice
                            self.addVertex(tangent[0]) # aggiungo un nuovo vertice
@@ -264,7 +264,7 @@ class QadLINECommandClass(QadCommandClass):
                      else:
                         self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))                        
                         
-               # se � stato selezionato un punto con la modalit� PER_DEF � un punto differito
+               # se é stato selezionato un punto con la modalità PER_DEF é un punto differito
                elif snapTypeOnSel == QadSnapTypeEnum.PER_DEF and entity.isInitialized():
                   # se era stato selezionato un punto esplicito
                   if (self.firstPtTan is None) and (self.firstPtPer is None):
@@ -277,15 +277,14 @@ class QadLINECommandClass(QadCommandClass):
                      self.getPointMapTool().per1 = self.firstPtPer
                      self.getPointMapTool().geom1 = self.firstGeom
                      self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT)               
-                  # se era stato selezionato un punto con la modalit� TAN_DEF   
+                  # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
-                     #qad_debug.breakPoint()
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
                      coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFromTanPerPts(self.firstGeom, self.firstPtTan, secondGeom, value)
                      if tangent is not None:
-                        # prendo il punto pi� vicino a value
+                        # prendo il punto più vicino a value
                         if qad_utils.getDistance(tangent[0], value) < qad_utils.getDistance(tangent[1], value):                              
                            self.addVertex(tangent[1]) # aggiungo un nuovo vertice
                            self.addVertex(tangent[0]) # aggiungo un nuovo vertice
@@ -298,14 +297,14 @@ class QadLINECommandClass(QadCommandClass):
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
                         self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna perpendicolare possibile"))
-                  # se era stato selezionato un punto con la modalit� PER_DEF              
+                  # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
                      coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      line = qad_utils.lineFrom2PerPts(self.firstGeom, self.firstPtPer, secondGeom, value)
                      if line is not None:
-                        # prendo il punto pi� vicino a value
+                        # prendo il punto più vicino a value
                         if qad_utils.getDistance(line[0], value) < qad_utils.getDistance(line[1], value):                              
                            self.addVertex(line[1]) # aggiungo un nuovo vertice
                            self.addVertex(line[0]) # aggiungo un nuovo vertice
@@ -318,10 +317,9 @@ class QadLINECommandClass(QadCommandClass):
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
                         self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna perpendicolare possibile"))
-               else: # altrimenti � un punto esplicito
-                  # se era stato selezionato un punto con la modalit� TAN_DEF
+               else: # altrimenti é un punto esplicito
+                  # se era stato selezionato un punto con la modalità TAN_DEF
                   if self.firstPtTan is not None:
-                     #qad_debug.breakPoint()
                      snapper = QadSnapper()
                      snapper.setSnapPointCRS(self.plugIn.canvas.mapRenderer().destinationCrs())
                      snapper.setSnapType(QadSnapTypeEnum.TAN)
@@ -338,7 +336,7 @@ class QadLINECommandClass(QadCommandClass):
 
                      if len(self.vertices) == 0:
                         self.showMsg(QadMsg.translate("Command_LINE", "\nNessuna tangente possibile"))                                          
-                  # se era stato selezionato un punto con la modalit� PER_DEF
+                  # se era stato selezionato un punto con la modalità PER_DEF
                   elif self.firstPtPer is not None:
                      snapper = QadSnapper()
                      snapper.setSnapPointCRS(self.plugIn.canvas.mapRenderer().destinationCrs())
@@ -368,7 +366,7 @@ class QadLINECommandClass(QadCommandClass):
                   if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
                      self.addLinesToLayer(currLayer)
                   return True # fine comando
-               # se il primo punto � esplicito
+               # se il primo punto é esplicito
                if len(self.vertices) > 0 is not None:
                   self.addVertex(value) # aggiungo un nuovo vertice    
                   # imposto il map tool

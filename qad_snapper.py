@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -30,7 +30,6 @@ import math
 import sys
 
 
-import qad_debug
 import qad_utils
 from qad_arc import *
 from qad_circle import *
@@ -50,7 +49,7 @@ class QadSnapTypeEnum():
    INS       = 64      # punto di inserimento
    PER       = 128     # punto perpendicolare
    TAN       = 256     # tangente
-   NEA       = 512     # punto pi� vicino
+   NEA       = 512     # punto più vicino
    C         = 1024    # pulisci all object snaps
    APP       = 2048    # intersezione apparente
    EXT       = 4096    # estensione
@@ -67,9 +66,9 @@ class QadSnapTypeEnum():
 # QadSnapModeEnum class.
 #===============================================================================
 class QadSnapModeEnum():
-   ONE_RESULT           = 0 # Viene restituito solo il punto pi� vicino
+   ONE_RESULT           = 0 # Viene restituito solo il punto più vicino
    RESULTS_FOR_SAME_POS = 1 # vengono restituiti diversi punti che hanno la stessa posizione.
-                            # Questo � utile per l'editing topologico
+                            # Questo é utile per l'editing topologico
    ALL_RESULTS          = 2 # Tutti i punti
 
 #===============================================================================
@@ -100,15 +99,15 @@ class QadSnapper():
       self.__snapPointCRS = None # sistema di coordinate in cui memorizzare i punti di snap      
       self.__startPoint = None
       self.__toleranceExtParlines = 0
-      self.__extLines = [] # lista delle linee da estendere (ogni elemento � una lista di 2 punti = linea)
-      self.__extArcs = [] # lista degli archi da estendere (ogni elemento � un arco)
-      self.__parLines = [] # lista delle linee per modo parallelo (ogni elemento � una lista di 2 punti = linea)
+      self.__extLines = [] # lista delle linee da estendere (ogni elemento é una lista di 2 punti = linea)
+      self.__extArcs = [] # lista degli archi da estendere (ogni elemento é un arco)
+      self.__parLines = [] # lista delle linee per modo parallelo (ogni elemento é una lista di 2 punti = linea)
       self.__intExtLine = [] # linea per intersezione su estensione (lista di 2 punti = linea)      
       self.__intExtArc = [] # arco per intersezione su estensione
       self.__cacheSnapPoints = []      
       self.__progressDistance = 0.0 # distanza progressiva dall'inizio della linea
       self.__distToExcludeNea = 0.0 # distanza entro la quale se ci sono dei punti di snap
-                                    # diversi da nearest questi hanno priorit� su nearest
+                                    # diversi da nearest questi hanno priorità su nearest
                                     # altrimenti nearest vincerebbe sempre
       self.tmpGeometries = [] # lista di geometria non ancora esistenti ma da contare per i punti di osnap (in map coordinates)
 
@@ -138,9 +137,9 @@ class QadSnapper():
       """
       Verifica quali geometrie vengono coinvolte dal tipo di snap impostato
       Ritorna una lista di 3 elementi: (point, line, polygon)
-      - se il primo elemento � vero il tipo punto � coinvolto altrimenti falso
-      - se il secondo elemento � vero il tipo linea � coinvolto altrimenti falso
-      - se il terzo elemento � vero il tipo poligono � coinvolto altrimenti falso
+      - se il primo elemento é vero il tipo punto é coinvolto altrimenti falso
+      - se il secondo elemento é vero il tipo linea é coinvolto altrimenti falso
+      - se il terzo elemento é vero il tipo poligono é coinvolto altrimenti falso
       """
       if self.getSnapType() == QadSnapTypeEnum.NONE or \
          self.getSnapType() & QadSnapTypeEnum.DISABLE:
@@ -150,7 +149,7 @@ class QadSnapper():
       line = False
       polygon = False
 
-      # <oggetto punto> o <punto di inserimento> o <punto pi� vicino>
+      # <oggetto punto> o <punto di inserimento> o <punto più vicino>
       if self.getSnapType() & QadSnapTypeEnum.NOD or \
          self.getSnapType() & QadSnapTypeEnum.INS or \
          self.getSnapType() & QadSnapTypeEnum.NEA:
@@ -158,7 +157,7 @@ class QadSnapper():
       
       # <punto finale> o <punto medio> o <centro (centroide o centro arco)> o 
       # <intersezione> o <punto perpendicolare> o <tangente> o
-      # <punto pi� vicino> o <intersezione apparente> o <estensione>
+      # <punto più vicino> o <intersezione apparente> o <estensione>
       # <parallelo> o <distanza progressiva> o <intersezione sull'estensione>
       if self.getSnapType() & QadSnapTypeEnum.END or \
          self.getSnapType() & QadSnapTypeEnum.END_PLINE or \
@@ -180,7 +179,7 @@ class QadSnapper():
          
       # <punto finale> o <punto medio> o <centro (centroide o centro arco)> o 
       # <punto quadrante> o <intersezione> o <punto perpendicolare> o <tangente> o
-      # <punto pi� vicino> o <intersezione apparente> o <estensione>
+      # <punto più vicino> o <intersezione apparente> o <estensione>
       # <parallelo> o <distanza progressiva> o <intersezione sull'estensione>
       if self.getSnapType() & QadSnapTypeEnum.END or \
          self.getSnapType() & QadSnapTypeEnum.MID or \
@@ -207,7 +206,7 @@ class QadSnapper():
    #============================================================================
    def setSnapMode(self, snapMode):
       """
-      Imposta la modalit� di snapping
+      Imposta la modalità di snapping
       """      
       self.__snapMode = snapMode
    def getSnapMode(self):
@@ -239,7 +238,7 @@ class QadSnapper():
    def setSnapPointCRS(self, snapPointCRS):
       """
       Imposta il sistema di coordinate in cui memorizzare i punti di snap
-      CRS � QgsCoordinateReferenceSystem
+      CRS é QgsCoordinateReferenceSystem
       """      
       if self.__snapPointCRS != snapPointCRS:
          self.__snapPointCRS = snapPointCRS
@@ -256,7 +255,7 @@ class QadSnapper():
    #============================================================================
    def setStartPoint(self, startPoint, CRS = None):
       """
-      il punto � espresso in __snapPointCRS se CRS = None
+      il punto é espresso in __snapPointCRS se CRS = None
       """
       if CRS is not None:
          self.__startPoint = self.__transformPoint(startPoint, CRS, self.getSnapPointCRS()) # trasformo il punto
@@ -270,7 +269,7 @@ class QadSnapper():
    def setDistToExcludeNea(self, distToExcludeNea):
       """
       setta la distanza entro la quale se ci sono dei punti di snap diversi da nearest 
-      questi hanno priorit� su nearest altrimenti nearest vincerebbe sempre
+      questi hanno priorità su nearest altrimenti nearest vincerebbe sempre
       """
       self.__distToExcludeNea = distToExcludeNea
 
@@ -371,10 +370,10 @@ class QadSnapper():
       ottiene i punti di snap (con esclusione dei punti in excludePoints).
       Resituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
-      - CRS = sistema di coordinate in cui � espressa la geom e il punto (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom e il punto (QgsCoordinateReferenceSystem)
       - excludePoints = lista di punti da escludere espressa in __snapPointCRS
       - polarAng angolo in radianti per il puntamento polare
-      - isTemporaryGeom flag che indica se geom � un oggetto temporaneo che ancora non esiste
+      - isTemporaryGeom flag che indica se geom é  un oggetto temporaneo che ancora non esiste
       """
 
       p = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto in coord dei punti di snap
@@ -397,12 +396,11 @@ class QadSnapper():
          allSnapPoints[item[0]] = item[1]
          
       # puntamento polare
-      #qad_debug.breakPoint()
       if (self.__startPoint is not None) and (polarAng is not None):
          allSnapPoints[QadSnapTypeEnum.POLAR] = self.getPolarCoord(point, polarAng)
 
       if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
-         # Viene restituito solo il punto pi� vicino
+         # Viene restituito solo il punto più vicino
          result = self.__getNearestPoints(p, allSnapPoints)
       elif self.__snapMode == QadSnapModeEnum.RESULTS_FOR_SAME_POS:
          # take all snapping Results within a certain tolerance because rounding differences may occur     
@@ -441,8 +439,8 @@ class QadSnapper():
       posizione del cursore.
       Resituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
-      - CRS = sistema di coordinate in cui � espressa la geom  (QgsCoordinateReferenceSystem)
-      - isTemporaryGeom flag che indica se geom � un oggetto temporaneo che ancora non esiste      
+      - CRS = sistema di coordinate in cui é espressa la geom  (QgsCoordinateReferenceSystem)
+      - isTemporaryGeom flag che indica se geom é  un oggetto temporaneo che ancora non esiste      
       """
      
       result = dict()
@@ -509,7 +507,7 @@ class QadSnapper():
       if self.__snapType & QadSnapTypeEnum.TAN_DEF:
          if geom is not None:
             whatIs = qad_utils.whatGeomIs(point, geom)
-            if (type(whatIs) != list and type(whatIs) != tuple): # se non � una linea
+            if (type(whatIs) != list and type(whatIs) != tuple): # se non é  una linea
                result[QadSnapTypeEnum.TAN_DEF] = self.getNeaPoints(geom, point, CRS)
          
       return result
@@ -521,15 +519,13 @@ class QadSnapper():
    def getEndPoints(self, geom, CRS = None, VertexSearchMode = QadVertexSearchModeEnum.ALL):
       """
       Cerca i punti iniziali e finali dei segmenti di una linea o di una multi-linea.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
 
       if geom is None:
          return result
-      
-      #qad_debug.breakPoint()      
       
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
       
@@ -554,14 +550,14 @@ class QadSnapper():
                if _arc is not None: # se questo punto appartiene ad un arco
                   startEnd = _arc[1]
                   # se il punto corrisponde al punto iniziale o finale dell'arco
-                  # (i - 1) perch� arcAt vuole il secondo punto del segmento 
+                  # (i - 1) perché arcAt vuole il secondo punto del segmento 
                   if i - 1 == startEnd[0] or i - 1 == startEnd[1]:
                      inser = True
                   else:
                      inser = False                                
                elif _circle is not None: # se questo punto appartiene ad un cerchio
                   inser = False
-               else: # se questo punto non appartiene n� ad un arco ne ad un cerchio 
+               else: # se questo punto non appartiene né ad un arco ne ad un cerchio 
                   inser = True
                
                if inser == True:
@@ -585,7 +581,7 @@ class QadSnapper():
    def getMidPoints(self, geom, CRS = None):
       """
       Cerca i punti medi dei segmenti di una linea o di una multi-linea.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -615,7 +611,7 @@ class QadSnapper():
                if first == True:
                   first = False
                else:
-                  # se questo punto non appartiene ad un arco n� ad un cerchio
+                  # se questo punto non appartiene ad un arco né ad un cerchio
                   if (arcList.arcAt(i) is None) and (circleList.circleAt(i) is None):                  
                      point = qad_utils.getMiddlePoint(prevPoint, ipoint)
                      self.__appendUniquePoint(result, point) # senza duplicazione
@@ -631,7 +627,7 @@ class QadSnapper():
    def getNodPoint(self, geom, CRS = None):
       """
       Cerca il punto di inserimento di un punto.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -659,7 +655,7 @@ class QadSnapper():
    def getQuaPoints(self, geom, CRS = None):
       """
       Cerca i punti quadrante.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -699,8 +695,8 @@ class QadSnapper():
    def getIntPoints(self, geom, CRS = None, isTemporaryGeom = False):
       """
       Cerca i punti di intersezione di un oggetto.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
-      - isTemporaryGeom flag che indica se geom � un oggetto temporaneo che ancora non esiste
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
+      - isTemporaryGeom flag che indica se geom é un oggetto temporaneo che ancora non esiste
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -710,12 +706,11 @@ class QadSnapper():
 
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
       
-      #qad_debug.breakPoint()
       for iLayer in self.__snapLayers: # ciclo sui layer da controllare
          if (iLayer.type() == QgsMapLayer.VectorLayer):
             iLayerCRS = iLayer.crs()
             geom_iLayerCoords = QgsGeometry(g)
-            if CRS is None: # se non c'� CRS la geom si intende nel sistema di coord dei punti di snap
+            if CRS is None: # se non c'é CRS la geom si intende nel sistema di coord dei punti di snap
                coordTransform = QgsCoordinateTransform(self.getSnapPointCRS(), iLayerCRS) # trasformo in coord ilayer
                geom_iLayerCoords.transform(coordTransform)
             else:
@@ -723,7 +718,7 @@ class QadSnapper():
                geom_iLayerCoords.transform(coordTransform)
 
             feature = QgsFeature()
-            # cerco le entit� che intersecano il rettangolo
+            # cerco le entità che intersecano il rettangolo
             # fetchAttributes, fetchGeometry, rectangle, useIntersect             
             for feature in iLayer.getFeatures(qad_utils.getFeatureRequest([], True, geom_iLayerCoords.boundingBox(), True)):
                g2 = self.__transformGeomToSnapPointCRS(feature.geometry(), iLayerCRS) # trasformo la geometria in coord dei punti di snap
@@ -740,7 +735,6 @@ class QadSnapper():
                # trasformo il punto in coord layer
                self.__appendUniquePoint(result, point) # senza duplicazione
 
-      #qad_debug.breakPoint()
       # lista di geometria non ancora esistenti ma da contare per i punti di osnap (in map coordinates)
       for tmpGeometry in self.tmpGeometries:
          intersectionPoints = qad_utils.getIntersectionPoints(g, tmpGeometry)
@@ -763,7 +757,7 @@ class QadSnapper():
    def getCenPoint(self, geom, point, CRS = None):
       """
       Cerca il punto centro di un arco o di un cerchio o il centroide di un poligono.
-      - CRS = sistema di coordinate in cui � espressa la geom (QgsCoordinateReferenceSystem)
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -771,7 +765,6 @@ class QadSnapper():
       if geom is None:
          return result
 
-      #qad_debug.breakPoint()
       wkbType = geom.wkbType()
       if wkbType == QGis.WKBPoint or wkbType == QGis.WKBMultiPoint:
          return result
@@ -792,7 +785,6 @@ class QadSnapper():
       if afterVertex is None:
          return result
 
-      #qad_debug.breakPoint()      
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
       
       # verifico se ci sono cerchi
@@ -820,7 +812,7 @@ class QadSnapper():
    def getPerPoints(self, geom, point, CRS = None):
       """
       Cerca il punto proiezione perpendicolare di self.__startPoint 
-      (espresso in __snapPointCRS) sul lato di geom pi� vicino a point.
+      (espresso in __snapPointCRS) sul lato di geom più vicino a point.
       - CRS = sistema di coordinate in cui sono espressi geom e point (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint 
       """         
@@ -923,7 +915,7 @@ class QadSnapper():
    #============================================================================
    def getNeaPoints(self, geom, point, CRS = None):
       """
-      Cerca il punto di un oggetto che � pi� vicino a point.
+      Cerca il punto di un oggetto che é più vicino a point.
       - CRS = sistema di coordinate in cui sono espressi geom e point (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
@@ -968,16 +960,16 @@ class QadSnapper():
    #============================================================================
    def toggleExtLine(self, pt1, pt2, CRS = None):
       """
-      Aggiunge una linea per la ricerca di punti con modalit� EXT (estensione)
+      Aggiunge una linea per la ricerca di punti con modalità EXT (estensione)
       se non ancora inserita in lista altrimenti la rimuove dalla lista
       pt1 e pt2 sono QgsPoint
-      sourceCRS � QgsCoordinateReferenceSystem opzionale
+      sourceCRS é QgsCoordinateReferenceSystem opzionale
       """
       self.toggleLine(QadSnapTypeEnum.EXT, pt1, pt2, CRS)
 
    def removeExtLines(self):
       """
-      Elimina tutte le linee per la ricerca di punti con modalit� EXT (estensione)
+      Elimina tutte le linee per la ricerca di punti con modalità EXT (estensione)
       """
       del self.__extLines[:] # svuoto la lista
 
@@ -986,15 +978,15 @@ class QadSnapper():
 
    def toggleExtArc(self, arc, CRS = None):
       """
-      Aggiunge un arco per la ricerca di punti con modalit� EXT (estensione)
+      Aggiunge un arco per la ricerca di punti con modalità EXT (estensione)
       se non ancora inserito in lista altrimenti lo rimuove dalla lista
-      sourceCRS � QgsCoordinateReferenceSystem opzionale
+      sourceCRS é QgsCoordinateReferenceSystem opzionale
       """
       self.toggleArc(QadSnapTypeEnum.EXT, arc, CRS)   
 
    def removeExtArcs(self):
       """
-      Elimina tutte gli archi per la ricerca di punti con modalit� EXT (estensione)
+      Elimina tutte gli archi per la ricerca di punti con modalità EXT (estensione)
       """
       del self.__extArcs[:] # svuoto la lista
 
@@ -1005,15 +997,14 @@ class QadSnapper():
       """
       Cerca i punti sui prolungamenti delle linee memorizzate nella lista __extLines e __extArcs.
       N.B. __extLines e point vanno espressi nello stesso sistema di coordinate
-      - point � un QgsPoint
-      - CRS = sistema di coordinate in cui � espresso point (QgsCoordinateReferenceSystem)
+      - point é un QgsPoint
+      - CRS = sistema di coordinate in cui é espresso point (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
       pt = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto
       
       if len(self.__extLines) > 0:         
-         #qad_debug.breakPoint()
          for line in self.__extLines:
             ExtPoint = qad_utils.getPerpendicularPointOnInfinityLine(line[0], line[1], pt)
             if qad_utils.getDistance(pt, ExtPoint) <= self.__toleranceExtParlines:
@@ -1037,16 +1028,16 @@ class QadSnapper():
    #============================================================================      
    def toggleParLine(self, pt1, pt2, CRS = None):
       """
-      Aggiunge una linea per la ricerca di punti con modalit� PAR (parallela)
+      Aggiunge una linea per la ricerca di punti con modalità PAR (parallela)
       se non ancora inserita in lista altrimenti la rimuove dalla lista
       pt1 e pt2 sono QgsPoint
-      sourceCRS � QgsCoordinateReferenceSystem opzionale
+      sourceCRS é QgsCoordinateReferenceSystem opzionale
       """
       self.toggleLine(QadSnapTypeEnum.PAR, pt1, pt2, CRS)   
 
    def removeParLines(self):
       """
-      Elimina tutte le linee per la ricerca di punti con modalit� PAR (parallela)
+      Elimina tutte le linee per la ricerca di punti con modalità PAR (parallela)
       """
       del self.__parLines[:] # svuoto la lista
 
@@ -1056,11 +1047,11 @@ class QadSnapper():
    def getParPoints(self, point, CRS):
       """
       Cerca i punti sulle rette parallele alle linee memorizzate nella lista __partLines
-      che passano per __startPoint e che sono pi� vicino a point.
+      che passano per __startPoint e che sono più vicino a point.
       N.B. __parLines, __startPoint e point vanno espressi nello stesso sistema di coordinate
-      - line � una lista di 2 punti
-      - point � un QgsPoint
-      - CRS = sistema di coordinate in cui � espresso point (QgsCoordinateReferenceSystem)
+      - line é una lista di 2 punti
+      - point é un QgsPoint
+      - CRS = sistema di coordinate in cui é espresso point (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -1077,13 +1068,12 @@ class QadSnapper():
          diffX = pt2.x() - pt1.x()
          diffY = pt2.y() - pt1.y()
                                                   
-         if diffX == 0: # se la retta passante per pt1 e pt2 � verticale
+         if diffX == 0: # se la retta passante per pt1 e pt2 é verticale
             parPoint = QgsPoint(self.__startPoint.x(), pt.y())
-         elif diffY == 0: # se la retta passante per pt1 e pt2 � orizzontle
+         elif diffY == 0: # se la retta passante per pt1 e pt2 é orizzontle
             parPoint = QgsPoint(pt.x(), self.__startPoint.y())
          else:
             # Calcolo l'equazione della retta passante per __startPoint con coefficente angolare noto
-            #qad_debug.breakPoint()
             p2.setX(self.__startPoint.x() + diffX)
             p2.setY(self.__startPoint.y() + diffY)
             parPoint = qad_utils.getPerpendicularPointOnInfinityLine(self.__startPoint, p2, pt)
@@ -1100,7 +1090,7 @@ class QadSnapper():
    def setProgressDistance(self, progressDistance):
       """
       Setta la distanza progressiva dall'inizio nel sistema __snapPointCRS 
-      per la ricerca con modalit� PR (progressiva)
+      per la ricerca con modalità PR (progressiva)
       """
       self.__progressDistance = progressDistance
       
@@ -1113,7 +1103,6 @@ class QadSnapper():
       Cerca il punto sulla geometria che si estende oltre il punto pt2
       Ritorna il punto e il coeff. angolare in quel punto. usato da <getProgressPoint>
       """
-      #qad_debug.breakPoint()
       # verifico se ci sono archi
       arc = None
       arcList = QadArcList()
@@ -1143,8 +1132,8 @@ class QadSnapper():
 
    def getProgressPoint(self, geom, point, CRS = None):
       """
-      Cerca il punto sulla geometria ad un certa distanza dal vertice pi� vicino al punto
-      (se la distanza � >=0 significa verso dall'inizio alla fine della linea,
+      Cerca il punto sulla geometria ad un certa distanza dal vertice più vicino al punto
+      (se la distanza >=0 significa verso dall'inizio alla fine della linea,
       se la distanza < 0 significa verso dalla fine all'inizio della linea.
       - CRS = sistema di coordinate in cui sono espressi geom e point (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint + una lista di coefficienti angolari dei segmenti
@@ -1166,7 +1155,7 @@ class QadSnapper():
       # Cerca i punti iniziali e finali dei segmenti di una linea.
       Vertexes = self.getEndPoints(g, CRS)     
       
-      # Cerco il vertice pi� vicino
+      # Cerco il vertice più vicino
       points = qad_utils.getNearestPoints(p, Vertexes)
       if len(points) == 0:
          return result
@@ -1210,7 +1199,7 @@ class QadSnapper():
                      segmentAngles.append(info[1])                           
                      break
                elif segmentLength > remain:
-                  # � in questo segmento
+                  # é in questo segmento
                   ProgressPoints.append(qad_utils.getPolarPointBy2Pts(pt1, pt2, remain))
                   segmentAngles.append(qad_utils.getAngleBy2Pts(pt1, pt2))               
                   break
@@ -1259,9 +1248,9 @@ class QadSnapper():
    #============================================================================      
    def toggleIntExtLine(self, geom, point, CRS = None):
       """
-      Aggiunge una linea per la ricerca di punti con modalit� EXT_INT (intersezione su estensione)
+      Aggiunge una linea per la ricerca di punti con modalità EXT_INT (intersezione su estensione)
       se non ancora inserita altrimenti la rimuove dalla lista
-      CRS � QgsCoordinateReferenceSystem opzionale
+      CRS é QgsCoordinateReferenceSystem opzionale
       """
       # usato solo per snap EXT_INT
       if not (self.__snapType & QadSnapTypeEnum.EXT_INT):
@@ -1291,11 +1280,11 @@ class QadSnapper():
          _arc = QadArc(arc)
          _arc.transformFromCRSToCRS(CRS, self.getSnapPointCRS()) # trasformo l'arco in coord layer
 
-         # se non � stato selezionato alcun arco o alcuna linea lo aggiungo 
+         # se non é stato selezionato alcun arco o alcuna linea lo aggiungo 
          if len(self.__intExtArc) == 0 and len(self.__intExtLine) == 0:
             self.__intExtArc.append(_arc)
          elif len(self.__intExtArc) > 0:
-            # se era gi� stato selezionato lo rimuovo
+            # se era già stato selezionato lo rimuovo
             if (_arc == self.__intExtArc[0]):
                self.removeIntExtArc()
       elif circle is None: # se non fa parte di un cerchio
@@ -1309,12 +1298,12 @@ class QadSnapper():
             __pt1 = pt1
             __pt2 = pt2
                   
-         # se non � stato selezionato alcun arco o alcuna linea la aggiungo 
+         # se non é stato selezionato alcun arco o alcuna linea la aggiungo 
          if len(self.__intExtArc) == 0 and len(self.__intExtLine) == 0:
             self.__intExtLine.append(__pt1)
             self.__intExtLine.append(__pt2)
          elif len(self.__intExtLine) > 0:
-            # se era gi� stata selezionata la rimuovo
+            # se era già stata selezionata la rimuovo
             if (__pt1 == self.__intExtLine[0] or __pt1 == self.__intExtLine[1]) and \
                (__pt2 == self.__intExtLine[0] or __pt2 == self.__intExtLine[1]):
                self.removeIntExtLine()
@@ -1322,7 +1311,7 @@ class QadSnapper():
 
    def removeIntExtLine(self):
       """
-      Elimina la linea per la ricerca di punti con modalit� EXT_INT (intersezione su estensione)
+      Elimina la linea per la ricerca di punti con modalità EXT_INT (intersezione su estensione)
       """
       del self.__intExtLine[:] # svuoto la lista
 
@@ -1331,7 +1320,7 @@ class QadSnapper():
 
    def removeIntExtArc(self):
       """
-      Elimina l'arco per la ricerca di punti con modalit� EXT_INT (intersezione su estensione)
+      Elimina l'arco per la ricerca di punti con modalità EXT_INT (intersezione su estensione)
       """
       del self.__intExtArc[:] # svuoto la lista
 
@@ -1341,8 +1330,8 @@ class QadSnapper():
    def getIntExtPoint(self, geom, point, CRS = None):
       """
       Cerca il punto di intersezione tra la geometria e una linea memorizzata in __intExtLine
-      - __intExtLine � lista di 2 punti = linea, > 2 punti = arco
-      - CRS = sistema di coordinate in cui � espressa geom (QgsCoordinateReferenceSystem)
+      - __intExtLine é lista di 2 punti = linea, > 2 punti = arco
+      - CRS = sistema di coordinate in cui é espressa geom (QgsCoordinateReferenceSystem)
       Ritorna una lista di punti QgsPoint
       """
       result = []
@@ -1350,7 +1339,7 @@ class QadSnapper():
       if geom is None:
          return result     
       
-      # se non � stato selezionato alcun arco o alcuna linea
+      # se non é stato selezionato alcun arco o alcuna linea
       if len(self.__intExtArc) == 0 and len(self.__intExtLine) == 0:
          return result
 
@@ -1361,7 +1350,6 @@ class QadSnapper():
       afterVertex = dummy[2]
       if afterVertex is None:
          return result
-      #qad_debug.breakPoint()
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
      
       # verifico se ci sono archi
@@ -1423,8 +1411,8 @@ class QadSnapper():
    #============================================================================
    def __appendUniquePoint(self, pointList, point, CRS = None):
       """
-      Aggiunge un punto alla lista verificando che non sia gi� presente.
-      Resituisce True se l'inserimento � avvenuto False se il punto c'era gi�.
+      Aggiunge un punto alla lista verificando che non sia già presente.
+      Resituisce True se l'inserimento é avvenuto False se il punto c'era già.
       """
       _point = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto
       return qad_utils.appendUniquePointToList(pointList, _point)
@@ -1468,7 +1456,7 @@ class QadSnapper():
    def __transformGeomToSnapPointCRS(self, geom, CRS = None):
       """
       Trasformala geometria nel sistema di coordinate dei punti di snap
-      CRS � QgsCoordinateReferenceSystem della geometria
+      CRS é QgsCoordinateReferenceSystem della geometria
       """
       if geom is None:
          return None
@@ -1481,15 +1469,15 @@ class QadSnapper():
       
    def __getNearestPoints(self, point, SnapPoints, tolerance = 0):
       """
-      Ritorna una lista con il primo elemento ch� il tipo di snap e 
-      il secondo elemento � il punto pi� vicino a point.
-      SnapPoints � un dizionario di liste di punti di snap
+      Ritorna una lista con il primo elemento che é il tipo di snap e 
+      il secondo elemento é il punto più vicino a point.
+      SnapPoints é un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       """   
       result = dict()   
       minDist = sys.float_info.max
       
-      if tolerance == 0: # solo il punto pi� vicino
+      if tolerance == 0: # solo il punto più vicino
          for item in SnapPoints.items():
             # escludo NEA che tratto dopo
             if (item[0] != QadSnapTypeEnum.NEA) and (item[1] is not None):
@@ -1500,12 +1488,11 @@ class QadSnapper():
                      snapType = item[0]
                      NearestPoint = pt
 
-         # se il punto trovato � pi� distante di <__distToExcludeNea> allora considero anche
+         # se il punto trovato é più distante di <__distToExcludeNea> allora considero anche
          # eventuali punti NEA
          if minDist > self.__distToExcludeNea:            
-            # se � stato selezionato lo snap di tipo NEA
+            # se é stato selezionato lo snap di tipo NEA
             if QadSnapTypeEnum.NEA in SnapPoints.keys():
-               #qad_debug.breakPoint()
                items = SnapPoints[QadSnapTypeEnum.NEA]
                if (items is not None):
                   for pt in items:
@@ -1519,7 +1506,7 @@ class QadSnapper():
             result[snapType] = [NearestPoint]
 
       else:
-         nearest = self.__getNearestPoints(point, SnapPoints) # punto pi� vicino
+         nearest = self.__getNearestPoints(point, SnapPoints) # punto più vicino
          dummy = nearest.items()
          dummy = dummy[0]
          NearestPoint = dummy[1]
@@ -1540,7 +1527,7 @@ class QadSnapper():
    def __delPoint(self, point, SnapPoints):
       """
       Cancella dalla lista SnapPoints il punto point (se esiste) 
-      SnapPoints � un dizionario di liste di punti di snap
+      SnapPoints é un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       """   
       for item in SnapPoints.items():
@@ -1552,10 +1539,10 @@ class QadSnapper():
 
    def toggleLine(self, snapType, pt1, pt2, CRS = None):
       """
-      Aggiunge una linea per la ricerca di punti con modalit� EXT p PAR
+      Aggiunge una linea per la ricerca di punti con modalità EXT p PAR
       se non ancora inserita in lista altrimenti la rimuove dalla lista
       pt1 e pt2 sono QgsPoint
-      CRS � QgsCoordinateReferenceSystem opzionale
+      CRS é QgsCoordinateReferenceSystem opzionale
       """
       __pt1 = QgsPoint(0, 0)
       __pt2 = QgsPoint(0, 0)
@@ -1574,7 +1561,7 @@ class QadSnapper():
          __pt1 = pt1
          __pt2 = pt2
       
-      # verifico che non ci sia gi�
+      # verifico che non ci sia già
       exist = False
       for line in lines:
          if (__pt1 == line[0] or __pt1 == line[1]) and (__pt2 == line[0] or __pt2 == line[1]):
@@ -1590,7 +1577,7 @@ class QadSnapper():
          line = [__pt1, __pt2]
          lines.append(line)
       else:
-         # se esiste di gi� la rimuovo
+         # se esiste di già la rimuovo
          if invertPoints == True:
             line = [__pt2, __pt1]
          else:
@@ -1599,10 +1586,10 @@ class QadSnapper():
               
    def toggleArc(self, snapType, arc, CRS = None):
       """
-      Aggiunge una linea per la ricerca di punti con modalit� EXT p PAR
+      Aggiunge una linea per la ricerca di punti con modalità EXT p PAR
       se non ancora inserita in lista altrimenti la rimuove dalla lista
       pt1 e pt2 sono QgsPoint
-      CRS � QgsCoordinateReferenceSystem opzionale
+      CRS é QgsCoordinateReferenceSystem opzionale
       """
       if snapType == QadSnapTypeEnum.EXT:
          arcs = self.__extArcs
@@ -1612,12 +1599,12 @@ class QadSnapper():
       _arc = QadArc(arc)
       _arc.transformFromCRSToCRS(CRS, self.getSnapPointCRS()) # trasformo l'arco in coord layer
       
-      # verifico che non ci sia gi�
+      # verifico che non ci sia già
       exist = False
       i = 0
       for iArc in arcs:
          if _arc == iArc:
-            # se esiste di gi� lo rimuovo
+            # se esiste di già lo rimuovo
             del arcs[i] 
             return
          i = i + 1

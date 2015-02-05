@@ -14,3 +14,5 @@ SOURCES += ..\*.py
 
 TRANSLATIONS += qad_en.ts \
                 qad_es.ts
+
+CODECFORSRC = UTF-8

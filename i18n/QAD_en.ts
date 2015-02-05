@@ -166,10 +166,6 @@
         <translation>Specify first point on the circle: </translation>
     </message>
     <message>
-        <source>Specificare prima estremità del diametro del cerchio: </source>
-        <translation>Specify first end of the circle diameter: </translation>
-    </message>
-    <message>
         <source>Specificare oggetto per la prima tangente del cerchio: </source>
         <translation>Specify first tangent element of the circle: </translation>
     </message>
@@ -188,10 +184,6 @@
     <message>
         <source>Specificare terzo punto sul cerchio: </source>
         <translation>Specify the third point on the circle: </translation>
-    </message>
-    <message>
-        <source>Specificare seconda estremità del diametro del cerchio: </source>
-        <translation>Specify second end of the circle diameter: </translation>
     </message>
     <message>
         <source>
@@ -219,10 +211,6 @@ The circle doesn&apos;t exist.</translation>
     <message>
         <source>Area</source>
         <translation>Area</translation>
-    </message>
-    <message>
-        <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
-        <translation>Enter circle area in current unit &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Cerchio definito da un punto centrale e un raggio</source>
@@ -268,6 +256,18 @@ The circle doesn&apos;t exist.</translation>
         <source>2PUnti</source>
         <translation>2POints</translation>
     </message>
+    <message>
+        <source>Specificare prima estremità del diametro del cerchio: </source>
+        <translation>Specify first end of the circle diameter: </translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
+        <translation>Enter circle area in current unit &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>Specificare seconda estremità del diametro del cerchio: </source>
+        <translation>Specify second end of the circle diameter: </translation>
+    </message>
 </context>
 <context>
     <name>Command_COPY</name>
@@ -278,10 +278,6 @@ The circle doesn&apos;t exist.</translation>
     <message>
         <source>Spostamento</source>
         <translation>Displacement</translation>
-    </message>
-    <message>
-        <source>mOdalità</source>
-        <translation>mOde</translation>
     </message>
     <message>
         <source>MUltiplo</source>
@@ -326,14 +322,6 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
 The value must be between 2 and 32767.</translation>
     </message>
     <message>
-        <source>Copia modalità = Multipla</source>
-        <translation>Copy mode = Multiple</translation>
-    </message>
-    <message>
-        <source>Copia modalità = Singola</source>
-        <translation>Copy mode = Single</translation>
-    </message>
-    <message>
         <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
         <translation>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;:</translation>
     </message>
@@ -350,7 +338,19 @@ The value must be between 2 and 32767.</translation>
         <translation>Specify second point or [{0}] &lt;use first point as displacement from origin point 0,0&gt;:</translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
+        <source>mOdalità</source>
+        <translation>mOde</translation>
+    </message>
+    <message>
+        <source>Copia modalità = Multipla</source>
+        <translation>Copy mode = Multiple</translation>
+    </message>
+    <message>
+        <source>Copia modalità = Singola</source>
+        <translation>Copy mode = Single</translation>
+    </message>
+    <message>
+        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
         <translation>Enter a copy mode option [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
@@ -570,14 +570,6 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation>Select second object or shift-select to apply corner or [Radius]: </translation>
     </message>
     <message>
-        <source>Modalità = Taglia-estendi</source>
-        <translation>Mode = Trim-extend</translation>
-    </message>
-    <message>
-        <source>Modalità = Non taglia-estendi</source>
-        <translation>Mode = No trim-extend</translation>
-    </message>
-    <message>
         <source>, Raggio = </source>
         <translation>, Radius = </translation>
     </message>
@@ -600,6 +592,14 @@ Il raccordo con raggio {0} non esiste.</source>
     <message>
         <source>Specificare modalità di taglio [{0}] &lt;{1}&gt;: </source>
         <translation>Specify trim mode [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Modalità= Taglia-estendi</source>
+        <translation>Mode = Trim-extend</translation>
+    </message>
+    <message>
+        <source>Modalità= Non taglia-estendi</source>
+        <translation>Mode = No trim-extend</translation>
     </message>
 </context>
 <context>
@@ -724,22 +724,22 @@ I punti devono essere distinti.</source>
 <context>
     <name>Command_MPOLYGON</name>
     <message>
-        <source>Disegna un poligono mediante diversi metodi.
-
-Un poligono è una sequenza chiusa di segmenti retti,
-archi o una combinazione dei due.</source>
-        <translation>Draws a polygon  by many methods.
-
-A Polygon is a closed sequence of straight line segments,
-arcs or a combination of two.</translation>
-    </message>
-    <message>
         <source>
 Poligono non valido.
 </source>
         <translation>
 Polygon not valid.
 </translation>
+    </message>
+    <message>
+        <source>Disegna un poligono mediante diversi metodi.
+
+Un poligono é una sequenza chiusa di segmenti retti,
+archi o una combinazione dei due.</source>
+        <translation>Draws a polygon  by many methods.
+
+A Polygon is a closed sequence of straight line segments,
+arcs or a combination of two.</translation>
     </message>
 </context>
 <context>
@@ -845,10 +845,6 @@ Polygon not valid.
         <translation>Join</translation>
     </message>
     <message>
-        <source>Edita</source>
-        <translation>Edit</translation>
-    </message>
-    <message>
         <source>Edita vertici</source>
         <translation>Edit vertex</translation>
     </message>
@@ -921,10 +917,6 @@ Polygon not valid.
         <translation>Insert</translation>
     </message>
     <message>
-        <source>INserisci_prima</source>
-        <translation>INsert_before</translation>
-    </message>
-    <message>
         <source>SPosta</source>
         <translation>Move</translation>
     </message>
@@ -983,16 +975,6 @@ Polygon not valid.
 </context>
 <context>
     <name>Command_PLINE</name>
-    <message>
-        <source>Disegna una polilinea mediante diversi metodi.
-
-Una polilinea è una sequenza di segmenti retti,
-archi o una combinazione dei due.</source>
-        <translation>Creates a polyline by many methods.
-
-A polyline is a single object that is composed of line
-and arc segments.</translation>
-    </message>
     <message>
         <source>Selezionare l&apos;oggetto nel punto finale di ricalco: </source>
         <translation>Select the object in the trace end point: </translation>
@@ -1113,6 +1095,16 @@ and arc segments.</translation>
         <source>Lunghezza corda</source>
         <translation>chord Length</translation>
     </message>
+    <message>
+        <source>Disegna una polilinea mediante diversi metodi.
+
+Una polilinea é una sequenza di segmenti retti,
+archi o una combinazione dei due.</source>
+        <translation>Creates a polyline by many methods.
+
+A polyline is a single object that is composed of line
+and arc segments.</translation>
+    </message>
 </context>
 <context>
     <name>Command_POLYGON</name>
@@ -1162,7 +1154,7 @@ and arc segments.</translation>
     </message>
     <message>
         <source>
-È richiesto un valore intero maggiore di 2.</source>
+é richiesto un valore intero maggiore di 2.</source>
         <translation>Enter an integer greater than 2.</translation>
     </message>
 </context>
@@ -1193,20 +1185,12 @@ and arc segments.</translation>
         <translation>Rotation</translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
-        <translation>Window not correct.</translation>
-    </message>
-    <message>
         <source>Specificare prima distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
         <translation>Specify first chamfer distance for rectangle &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specificare raggio di raccordo del rettangolo &lt;{0}&gt;: </source>
         <translation>Specify rectangle fillet radius &lt;{0}&gt;: </translation>
-    </message>
-    <message>
-        <source>Digitare l&apos;area del rettangolo in unità correnti &lt;{0}&gt;: </source>
-        <translation>Enter rectangle area in current units &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specificare lunghezza del rettangolo &lt;{0}&gt;: </source>
@@ -1259,6 +1243,14 @@ and arc segments.</translation>
     <message>
         <source>Calcolare le quote rettangolo in base alla [{0}] &lt;{1}&gt;: </source>
         <translation>Calcolate the rectangle dimensions based on [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>La finestra non é stata specificata correttamente.</source>
+        <translation>Window not correct.</translation>
+    </message>
+    <message>
+        <source>Digitare l&apos;area del rettangolo in unità correnti &lt;{0}&gt;: </source>
+        <translation>Enter rectangle area in current units &lt;{0}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1364,16 +1356,16 @@ Scala di una copia degli oggetti selezionati.</source>
         <translation>Select a layer of a graphical object.</translation>
     </message>
     <message>
-        <source>Selezionare l&apos;oggetto il cui layer diventerà quello corrente: </source>
-        <translation>Select object whose layer will be the current layer: </translation>
-    </message>
-    <message>
         <source>Non ci sono geometrie in questa posizione.</source>
         <translation>No geometries in this position.</translation>
     </message>
     <message>
+        <source>Selezionare l&apos;oggetto il cui layer diventerà quello corrente: </source>
+        <translation>Select object whose layer will be the current layer: </translation>
+    </message>
+    <message>
         <source>
-Il layer corrente è {0}.</source>
+Il layer corrente é {0}.</source>
         <translation>
 The current layer is {0}.</translation>
     </message>
@@ -1392,13 +1384,13 @@ Select objects whose layers will be the editable: </translation>
     </message>
     <message>
         <source>
-Il layer {0} è editabile.</source>
+Il layer {0} é editabile.</source>
         <translation>
 The layer {0} is editable.</translation>
     </message>
     <message>
         <source>
-Il layer corrente è {0}.</source>
+Il layer corrente é {0}.</source>
         <translation>
 The current layer is {0}.</translation>
     </message>
@@ -1546,12 +1538,12 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Specify opposite corner: </translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
-        <translation>Window not correct.</translation>
-    </message>
-    <message>
         <source> o [{0}]</source>
         <translation> or [{0}]</translation>
+    </message>
+    <message>
+        <source>La finestra non é stata specificata correttamente.</source>
+        <translation>Window not correct.</translation>
     </message>
 </context>
 <context>
@@ -1581,10 +1573,6 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation>Specify opposite corner: </translation>
     </message>
     <message>
-        <source>La finestra non è stata specificata correttamente.</source>
-        <translation>Window not correct.</translation>
-    </message>
-    <message>
         <source>Selezionare i vertici</source>
         <translation>Select vertices</translation>
     </message>
@@ -1607,6 +1595,10 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
     <message>
         <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
         <translation>Specify base point or [{0}] &lt;{0}&gt;: </translation>
+    </message>
+    <message>
+        <source>La finestra non é stata specificata correttamente.</source>
+        <translation>Window not correct.</translation>
     </message>
 </context>
 <context>
@@ -1707,16 +1699,6 @@ Selezionare i limiti di taglio...</source>
         <translation>Back</translation>
     </message>
     <message>
-        <source>
-Nessun gruppo è rimasto aperto.</source>
-        <translation>No open group.</translation>
-    </message>
-    <message>
-        <source>
-Non è possibile inserire un segno dentro un gruppo.</source>
-        <translation>A mark can&apos;t be inserted into a group.</translation>
-    </message>
-    <message>
         <source>Ripristina le ultime operazioni eseguite.</source>
         <translation>Reverses the effects of previous UNDO.</translation>
     </message>
@@ -1729,11 +1711,23 @@ Non è possibile inserire un segno dentro un gruppo.</source>
         <translation>Enter the number of operations to undo or [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
+        <source>
+Nessun gruppo é rimasto aperto.</source>
+        <translation>
+No open group.</translation>
+    </message>
+    <message>
+        <source>
+Non é possibile inserire un segno dentro un gruppo.</source>
+        <translation>
+A mark can&apos;t be inserted into a group.</translation>
+    </message>
+    <message>
         <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
         <translation>This will undo everything. OK ? &lt;{0}&gt;: </translation>
     </message>
     <message>
-        <source>È stato annullato tutto.</source>
+        <source>é stato annullato tutto.</source>
         <translation>All has been undone.</translation>
     </message>
 </context>
@@ -2210,26 +2204,14 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <translation>has not the textual layer for dimension.</translation>
     </message>
     <message>
-        <source>ha il layer per i testi delle quote che non è di tipo testo.</source>
-        <translation>has the textual layer for dimension which is not a textual layer.</translation>
-    </message>
-    <message>
         <source>non ha impostato il layer per i simboli delle quote.
 </source>
         <translation>has not the symbol layer for dimension.</translation>
     </message>
     <message>
-        <source>ha il layer per i simboli delle quote che non è di tipo simbolo.</source>
-        <translation>has the symbol layer for dimension which is not a symbol layer.</translation>
-    </message>
-    <message>
         <source>non ha impostato il layer per le linee delle quote.
 </source>
         <translation>has not the linear layer for dimension.</translation>
-    </message>
-    <message>
-        <source>ha il layer per le linee delle quote che non è di tipo linea.</source>
-        <translation>has the linear layer for dimension which is not a linear layer.</translation>
     </message>
     <message>
         <source>ha il layer per i testi delle quote non modificabile.
@@ -2249,6 +2231,18 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     <message>
         <source>non ha impostato i layer con lo stesso sistema di coordinate.</source>
         <translation>has not the layers with the same coordinate reference system.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i testi delle quote che non é di tipo testo.</source>
+        <translation>has the textual layer for dimension which is not a textual layer.</translation>
+    </message>
+    <message>
+        <source>ha il layer per i simboli delle quote che non é di tipo simbolo.</source>
+        <translation>has the symbol layer for dimension which is not a symbol layer.</translation>
+    </message>
+    <message>
+        <source>ha il layer per le linee delle quote che non é di tipo linea.</source>
+        <translation>has the linear layer for dimension which is not a linear layer.</translation>
     </message>
 </context>
 <context>
@@ -2393,10 +2387,6 @@ Invalid command &quot;{0}&quot;.</translation>
         <translation>QAD - Temporary polygons</translation>
     </message>
     <message>
-        <source>Sì</source>
-        <translation>Yes</translation>
-    </message>
-    <message>
         <source>No</source>
         <translation>No</translation>
     </message>
@@ -2409,30 +2399,6 @@ The value must be positive and not zero.</translation>
     <message>
         <source>Comando: </source>
         <translation>Command: </translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto, un numero reale o la parola chiave di un&apos;opzione.
-</source>
-        <translation>
-Enter a point, a real number or a keyword.
-</translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto o la parola chiave di un&apos;opzione.
-</source>
-        <translation>
-Enter a point or a keyword.
-</translation>
-    </message>
-    <message>
-        <source>
-È richiesto un punto o un numero reale.
-</source>
-        <translation>
-Enter a point or  a real number.
-</translation>
     </message>
     <message>
         <source>
@@ -2576,33 +2542,9 @@ I punti devono essere distinti.</source>
         <translation>polygon</translation>
     </message>
     <message>
-        <source>
-Il layer corrente non è di tipo vettoriale.
-</source>
-        <translation>
-The current layer is not a vector layer.
-</translation>
-    </message>
-    <message>
-        <source>
-Il tipo di geometria del layer corrente è {0} e non è valido.
-</source>
-        <translation>
-The geometry type of the current layet is {0} and it is not valid.
-</translation>
-    </message>
-    <message>
         <source>Ammessi solo layer di tipo {1}.
 </source>
         <translation>Admitted {1} layer type only.
-</translation>
-    </message>
-    <message>
-        <source>
-Il layer corrente non è modificabile.
-</source>
-        <translation>
-The current layer is not editable.
 </translation>
     </message>
     <message>
@@ -2639,6 +2581,49 @@ The current layer is not editable.
     </message>
     <message>
         <source>
+Stile di quotatura corrente non valido.
+Verificare il valore della variabile DIMSTYLE.
+</source>
+        <translation>
+Dimension style not valid.
+Verify the value of DIMSTYLE variable.
+</translation>
+    </message>
+    <message>
+        <source>
+Nessun layer corrente.
+</source>
+        <translation>
+No current layer.
+</translation>
+    </message>
+    <message>
+        <source>*Annullato*</source>
+        <translation>*Canceled*</translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto, un numero reale o la parola chiave di un&apos;opzione.
+</source>
+        <translation>
+Enter a point, a real number or a keyword.</translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto o la parola chiave di un&apos;opzione.
+</source>
+        <translation>
+Enter a point or a keyword.</translation>
+    </message>
+    <message>
+        <source>
+E&apos; richiesto un punto o un numero reale.
+</source>
+        <translation>
+Enter a point or  a real number.</translation>
+    </message>
+    <message>
+        <source>
 &lt;Modalità ortogonale attivata&gt;</source>
         <translation>
 &lt;Ortho on&gt;</translation>
@@ -2662,66 +2647,73 @@ The current layer is not editable.
 &lt;Polar off&gt;</translation>
     </message>
     <message>
-        <source>
-Un layer testo è un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
-</source>
-        <translation>
-A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.
-</translation>
+        <source>Il comando é stato completamente annullato.</source>
+        <translation>The command has been canceled.</translation>
     </message>
     <message>
         <source>
-Un layer simbolo è un layer vettoriale di tipo punto senza etichetta.
+Un layer testo é  un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
 </source>
         <translation>
-A symbol layer is a vectorial punctual layer without label.
-</translation>
+A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.</translation>
     </message>
     <message>
         <source>
-Stile di quotatura corrente non valido.
-Verificare il valore della variabile DIMSTYLE.
+Un layer simbolo é un layer vettoriale di tipo punto senza etichetta.
 </source>
         <translation>
-Dimension style not valid.
-Verify the value of DIMSTYLE variable.
-</translation>
+A symbol layer is a vectorial punctual layer without label.</translation>
     </message>
     <message>
         <source>
-Il layer corrente non è di tipo simbolo.</source>
+Il layer corrente non é di tipo simbolo.</source>
         <translation>
 Current layer is not a symbol layer.</translation>
     </message>
     <message>
         <source>
-Nessun layer corrente.
+Il layer corrente non é di tipo vettoriale.
 </source>
         <translation>
-No current layer.
-</translation>
+The current layer is not a vector layer.</translation>
     </message>
     <message>
         <source>
-Il layer corrente non è di tipo testo.</source>
+Il tipo di geometria del layer corrente é {0} e non é valido.
+</source>
+        <translation>
+The geometry type of the current layet is {0} and it is not valid.</translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non é modificabile.
+</source>
+        <translation>
+The current layer is not editable.</translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente appartiene allo stile di quotatura {0} e non é valido.
+</source>
+        <translation>
+Current layer is a layer referenced to {0} dimension style. and it is not valid.</translation>
+    </message>
+    <message>
+        <source>Sì</source>
+        <translation>Yes</translation>
+    </message>
+    <message>
+        <source>
+Il layer corrente non é di tipo testo.</source>
         <translation>
 Current layer is not a textual layer.</translation>
     </message>
     <message>
         <source>
-Il layer corrente appartiene allo stile di quotatura {0} e non è valido.
+Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
 </source>
         <translation>
-Current layer is a layer referenced to {0} dimension style. and it is not valid.
-</translation>
-    </message>
-    <message>
-        <source>*Annullato*</source>
-        <translation>*Canceled*</translation>
-    </message>
-    <message>
-        <source>Il comando è stato completamente annullato.</source>
-        <translation>The command has been canceled.</translation>
+A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.</translation>
     </message>
 </context>
 <context>

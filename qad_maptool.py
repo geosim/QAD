@@ -1,4 +1,4 @@
-# -*- coding: latin1 -*-
+# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  QAD Quantum Aided Design plugin
@@ -29,7 +29,6 @@ from qgis.core import *
 from qgis.gui import *
 
 
-import qad_debug
 import qad_utils
 from qad_variables import *
 from qad_msg import QadMsg
@@ -62,7 +61,6 @@ class QadMapTool(QgsMapTool):
 
 
    def canvasMoveEvent(self,event):
-      #qad_debug.breakPoint()
       pass
 
 
@@ -77,7 +75,6 @@ class QadMapTool(QgsMapTool):
 
 
    def keyPressEvent(self, event):
-      #qad_debug.breakPoint() 
       self.plugIn.keyPressEvent(event)
 
 
@@ -105,7 +102,6 @@ class QadMapTool(QgsMapTool):
       self.plugIn.QadCommands.continueCommandFromMapTool()
    
    def deactivate(self):
-      #qad_debug.breakPoint()
       pass
       
    def isTransient(self):
