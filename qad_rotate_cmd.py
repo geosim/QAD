@@ -44,9 +44,16 @@ from qad_dim import *
 
 # Classe che gestisce il comando RUOTA
 class QadROTATECommandClass(QadCommandClass):
-   
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadROTATECommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "RUOTA")
+
+   def getEnglishName(self):
+      return "ROTATE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runROTATECommand)
@@ -176,6 +183,8 @@ class QadROTATECommandClass(QadCommandClass):
       prompt = QadMsg.translate("Command_ROTATE", "Specificare angolo di rotazione o [{0}] <{1}>: ").format(keyWords, \
                str(qad_utils.toDegrees(self.plugIn.lastRot)))
       
+      englishKeyWords = "Copy" + "/" + "Reference"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
@@ -209,6 +218,8 @@ class QadROTATECommandClass(QadCommandClass):
          angle = self.plugIn.lastNewReferenceRot         
       prompt = QadMsg.translate("Command_ROTATE", "Specificare nuovo angolo o [{0}] <{1}>: ").format(keyWords, str(qad_utils.toDegrees(angle)))                        
          
+      englishKeyWords = "Points"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -297,12 +308,12 @@ class QadROTATECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ROTATE", "Copia"):
+            if value == QadMsg.translate("Command_ROTATE", "Copia") or value == "Copy":
                self.copyFeatures = True
                self.showMsg(QadMsg.translate("Command_ROTATE", "\nRotazione di una copia degli oggetti selezionati."))
                # si appresta ad attendere l'angolo di rotazione               
                self.waitForRotation()                
-            elif value == QadMsg.translate("Command_ROTATE", "Riferimento"):
+            elif value == QadMsg.translate("Command_ROTATE", "Riferimento") or value == "Reference":
                # si appresta ad attendere l'angolo di riferimento                      
                self.waitForReferenceRot()
          elif type(value) == QgsPoint or type(value) == float: # se é stato inserito l'angolo di rotazione
@@ -400,12 +411,10 @@ class QadROTATECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ROTATE", "Punti"):
+            if value == QadMsg.translate("Command_ROTATE", "Punti") or value == "Points":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_rotate_maptool_ModeEnum.ASK_FOR_FIRST_NEW_ROTATION_PT)
                # si appresta ad attendere un punto
-               QadMsg.translate("Command_ROTATE", "Punti")
-               
                self.waitForPoint(QadMsg.translate("Command_ROTATE", "Specificare primo punto: "))
                self.step = 7
          elif type(value) == QgsPoint or type(value) == float: # se é stato inserito l'angolo di rotazione

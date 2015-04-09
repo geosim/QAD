@@ -104,12 +104,13 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.edit.displayPrompt(QadMsg.translate("QAD", "Comando: "))
       
       # Creo la finestra per il suggerimento dei comandi
-      # lista composta da elementi con <nome comando>, <icona>, <note>
+      # lista composta da elementi con:
+      # <nome locale comando>, <nome inglese comando>, <icona>, <note>
       infoCmds = []   
       for cmdName in self.getCommandNames():
-         cmd = self.getCommandObj(cmdName)
+         cmd = self.getCommandObj(cmdName[0])
          if cmd is not None:
-            infoCmds.append([cmdName, cmd.getIcon(), cmd.getNote()])
+            infoCmds.append([cmd.getName(), cmd.getEnglishName(), cmd.getIcon(), cmd.getNote()])
       self.cmdSuggestWindow = QadCmdSuggestWindow(self, infoCmds)      
       self.cmdSuggestWindow.initGui()
       self.cmdSuggestWindow.show(False)
@@ -295,7 +296,10 @@ class QadEdit(QTextEdit):
       self.history = []
       self.historyIndex = 0
 
-      self.keyWords = []
+      # stringa contenente le parole chiave separate da "/".
+      # la stringa può contenere il carattere speciale "_" per separare le parole chiave
+      # in lingua locale da quelle in inglese (es. "Si/No/Altra opzione_Yes/No/Other option")
+      self.englishKeyWords = [] # parole chiave in inglese
       self.cmdOptionPosList = [] # lista delle posizioni delle opzioni del comando corrente
       self.currentCmdOptionPos = None
 
@@ -478,12 +482,17 @@ class QadEdit(QTextEdit):
       self.inputType = inputType
       self.default = default
       self.inputMode = inputMode
-      if inputType & QadInputTypeEnum.KEYWORDS and (keyWords is not None):         
-         self.keyWords = keyWords.split("/") # carattere separatore delle parole chiave
+      if inputType & QadInputTypeEnum.KEYWORDS and (keyWords is not None):
+         # carattere separatore tra le parole chiave in lingua locale e quelle in inglese 
+         localEnglishKeyWords = keyWords.split("_")
+         self.keyWords = localEnglishKeyWords[0].split("/") # carattere separatore delle parole chiave
+         if len(localEnglishKeyWords) > 1:
+            self.englishKeyWords = localEnglishKeyWords[1].split("/") # carattere separatore delle parole chiave
+         else:
+            del self.englishKeyWords[:]
          self.displayKeyWordsPrompt(inputMsg)
       else:
-         del self.keyWords[:]         
-         self.displayPrompt(inputMsg)
+        self.displayPrompt(inputMsg)
                   
       return
 
@@ -713,7 +722,7 @@ class QadEdit(QTextEdit):
          return ""
       
 
-   def evaluateKeyWords(self, cmd):
+   def __evaluateKeyWords(self, cmd, keyWordList):
       # The required portion of the keyword is specified in uppercase characters, 
       # and the remainder of the keyword is specified in lowercase characters.
       # The uppercase abbreviation can be anywhere in the keyword
@@ -721,7 +730,7 @@ class QadEdit(QTextEdit):
          return None
       upperCmd = cmd.upper()
       selectedKeyWords = []
-      for keyWord in self.keyWords:
+      for keyWord in keyWordList:
          # estraggo la parte maiuscola della parola chiave
          upperPart = ""
          for letter in keyWord:
@@ -759,6 +768,28 @@ class QadEdit(QTextEdit):
          self.showMsg(Msg)            
          
       return None
+
+   def evaluateKeyWords(self, cmd):
+      # The required portion of the keyword is specified in uppercase characters, 
+      # and the remainder of the keyword is specified in lowercase characters.
+      # The uppercase abbreviation can be anywhere in the keyword
+      if cmd == "": # se cmd = "" la funzione find ritorna 0 (no comment)
+         return None
+      
+      if cmd[0] == "_": # versione inglese
+         keyWord = self.__evaluateKeyWords(cmd[1:], self.englishKeyWords)
+         if keyWord is None:
+            return None
+         # cerco la corrispondente parola chiave in lingua locale
+         i = 0
+         for k in self.englishKeyWords:
+            if k == keyWord:
+               return self.keyWords[i]
+            i = i + 1
+         return None
+      else:
+         return self.__evaluateKeyWords(cmd, self.keyWords)
+      
    
    def evaluate(self, cmd):      
       #------------------------------------------------------------------------------
@@ -929,7 +960,8 @@ class QadEdit(QTextEdit):
 class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
          
    def __init__(self, parent, infoCmds):
-      # lista composta da elementi con <nome comando>, <icona>, <note>     
+      # lista composta da elementi con:
+      # <nome locale comando>, <nome inglese comando>, <icona>, <note>
       QWidget.__init__(self, parent)
       self.setupUi(self)
       self.infoCmds = infoCmds[:] # copio la lista
@@ -949,11 +981,20 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       if mode == True:         
          filteredInfoCmds = []
          upperFilter = filter.strip().upper()
-         if len(upperFilter) > 0:               
-            # lista composta da elementi con <nome comando>, <icona>, <note>     
-            for infoCmd in self.infoCmds:
-               if string.find(infoCmd[0].upper(), upperFilter) == 0 or filter == "*": # se incomincia per
-                  filteredInfoCmds.append(infoCmd)
+         if len(upperFilter) > 0: 
+            if upperFilter[0] == "_": # versione inglese 
+               upperFilter = upperFilter[1:]
+               # lista composta da elementi con:
+               # <nome locale comando>, <nome inglese comando>, <icona>, <note>
+               for infoCmd in self.infoCmds:
+                  if string.find(infoCmd[1].upper(), upperFilter) == 0 or filter == "*": # se incomincia per
+                     filteredInfoCmds.append(["_" + infoCmd[1], infoCmd[2], infoCmd[3]])
+            else: # versione italiana
+               # lista composta da elementi con:
+               # <nome locale comando>, <nome inglese comando>, <icona>, <note>
+               for infoCmd in self.infoCmds:
+                  if string.find(infoCmd[0].upper(), upperFilter) == 0 or filter == "*": # se incomincia per
+                     filteredInfoCmds.append([infoCmd[0], infoCmd[2], infoCmd[3]])
                   
          if len(filteredInfoCmds) == 0:
             self.setVisible(False)

@@ -36,8 +36,15 @@ from qad_msg import QadMsg
 # Classe che gestisce il comando ID
 class QadIDCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadIDCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "ID")
+
+   def getEnglishName(self):
+      return "ID"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runIDCommand)

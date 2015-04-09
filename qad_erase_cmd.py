@@ -38,9 +38,16 @@ import qad_layer
 
 # Classe che gestisce il comando ERASE
 class QadERASECommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadERASECommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "CANCELLA")
+
+   def getEnglishName(self):
+      return "ERASE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runERASECommand)

@@ -47,6 +47,10 @@ import qad_utils
 #===============================================================================
 class QadSSGetClass(QadCommandClass):
 # Classe che gestisce la selezione di oggetti geometrici
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSSGetClass(self.plugIn)
       
    def __init__(self, plugIn):
       self.init(plugIn)
@@ -321,6 +325,11 @@ class QadSSGetClass(QadCommandClass):
                  QadMsg.translate("Command_SSGET", "AUto") + "/" + \
                  QadMsg.translate("Command_SSGET", "SIngolo") + "/" + \
                  QadMsg.translate("Command_SSGET", "Help")
+      englishKeyWords = "Window" + "/" + "Last" + "/" + "Crossing" + "/" + "Box" + "/" \
+                         + "All" + "/" + "Fence" + "/" + "WPolygon" + "/" + "CPolygon" + "/" \
+                         + "WCircle" + "/" + "CCircle" + "/" + "WObjects" + "/" + "CObjects" + "/" \
+                         + "WBuffer" + "/" + "CBuffer" + "/" + "Add" + "/" + "Remove" + "/" \
+                         + "Previous" + "/" + "Undo" + "/" + "AUto" + "/" + "SIngle" + "/" + "Help"
                  
       if self.AddOnSelection == True:
          prompt = QadMsg.translate("Command_SSGET", "Selezionare oggetti")
@@ -339,6 +348,7 @@ class QadSSGetClass(QadCommandClass):
       self.getPointMapTool().layersToCheck = self.getLayersToCheck()
       self.points = []
            
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -397,8 +407,8 @@ class QadSSGetClass(QadCommandClass):
          if type(value) == unicode:
             self.currSelectionMode = value
             
-            if value == QadMsg.translate("Command_SSGET", "Finestra") or \
-               value == QadMsg.translate("Command_SSGET", "Interseca"):
+            if value == QadMsg.translate("Command_SSGET", "Finestra") or value == "Window" or \
+               value == QadMsg.translate("Command_SSGET", "Interseca") or value == "Crossing":
                # "Finestra" = Seleziona tutti gli oggetti che si trovano completamente all'interno di un rettangolo definito da due punti
                # "Interseca" = Seleziona gli oggetti che intersecano o si trovano all'interno di un'area definita da due punti
                # imposto il map tool
@@ -407,7 +417,7 @@ class QadSSGetClass(QadCommandClass):
                # si appresta ad attendere un punto
                self.waitForPoint(value == QadMsg.translate("Command_SSGET", "Specificare primo angolo: "))
                self.step = 2
-            if value == QadMsg.translate("Command_SSGET", "Ultimo"): 
+            if value == QadMsg.translate("Command_SSGET", "Ultimo") or value == "Last": 
                # Seleziona l'ultima entità inserita
                if self.plugIn.getLastEntity() is None:
                   self.showMsgOnAddRemove(0)
@@ -417,7 +427,7 @@ class QadSSGetClass(QadCommandClass):
                      self.plugIn.setLastEntitySet(self.entitySet)
                      return True # fine               
                self.WaitForFirstPoint()                          
-            elif value == QadMsg.translate("Command_SSGET", "Riquadro"):
+            elif value == QadMsg.translate("Command_SSGET", "Riquadro") or value == "Box":
                # Seleziona tutti gli oggetti che intersecano o si trovano all'interno di un rettangolo specificato da due punti.
                # Se i punti del rettangolo sono specificati da destra a sinistra, Riquadro equivale ad Interseca,
                # altrimenti é equivalente a Finestra
@@ -427,7 +437,7 @@ class QadSSGetClass(QadCommandClass):
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_SSGET", "Specificare primo angolo: "))
                self.step = 2           
-            elif value == QadMsg.translate("Command_SSGET", "Tutto"):
+            elif value == QadMsg.translate("Command_SSGET", "Tutto") or value == "All":
                # Seleziona tutti gli oggetti 
                selSet = qad_utils.getSelSet("X", self.getPointMapTool(), None, \
                                             self.getLayersToCheck())
@@ -436,7 +446,7 @@ class QadSSGetClass(QadCommandClass):
                   self.plugIn.setLastEntitySet(self.entitySet)
                   return True # fine         
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "iNTercetta"):
+            elif value == QadMsg.translate("Command_SSGET", "iNTercetta") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -444,8 +454,8 @@ class QadSSGetClass(QadCommandClass):
                self.PLINECommand.virtualCmd = True   
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 4
-            elif value == QadMsg.translate("Command_SSGET", "FPoligono") or \
-                 value == QadMsg.translate("Command_SSGET", "IPoligono"):
+            elif value == QadMsg.translate("Command_SSGET", "FPoligono") or value == "WPolygon" or \
+                 value == QadMsg.translate("Command_SSGET", "IPoligono") or value == "CPolygon":
                # "FPoligono" = Seleziona oggetti che si trovano completamente all'interno di un poligono definito da punti
                # "IPoligono" = Seleziona gli oggetti che intersecano o si trovano all'interno di un poligono definito specificando dei punti
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
@@ -454,8 +464,8 @@ class QadSSGetClass(QadCommandClass):
                self.MPOLYGONCommand.virtualCmd = True   
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 7
-            elif value == QadMsg.translate("Command_SSGET", "FCerchio") or \
-                 value == QadMsg.translate("Command_SSGET", "ICerchio"):
+            elif value == QadMsg.translate("Command_SSGET", "FCerchio") or value == "WCircle" or \
+                 value == QadMsg.translate("Command_SSGET", "ICerchio") or value == "CCircle":
                # "FCerchio" = Seleziona oggetti che si trovano completamente all'interno di un cerchio
                # "ICerchio" = Seleziona oggetti che intersecano o si trovano all'interno di un cerchio
                self.CIRCLECommand = QadCIRCLECommandClass(self.plugIn)
@@ -464,15 +474,15 @@ class QadSSGetClass(QadCommandClass):
                self.CIRCLECommand.virtualCmd = True   
                self.CIRCLECommand.run(msgMapTool, msg)
                self.step = 5
-            elif value == QadMsg.translate("Command_SSGET", "FOggetti") or \
-                 value == QadMsg.translate("Command_SSGET", "IOggetti"):
+            elif value == QadMsg.translate("Command_SSGET", "FOggetti") or value == "WObjects" or \
+                 value == QadMsg.translate("Command_SSGET", "IOggetti") or value == "CObjects":
                # "FOggetti" = Seleziona oggetti che si trovano completamente all'interno di oggetti da selezionare
                # "IOggetti" = Seleziona oggetti che intersecano o si trovano all'interno di oggetti da selezionare
                self.SSGetClass = QadSSGetClass(self.plugIn)
                self.SSGetClass.run(msgMapTool, msg)
                self.step = 6
-            elif value == QadMsg.translate("Command_SSGET", "FBuffer") or \
-                 value == QadMsg.translate("Command_SSGET", "IBuffer"):
+            elif value == QadMsg.translate("Command_SSGET", "FBuffer") or value == "WBuffer" or \
+                 value == QadMsg.translate("Command_SSGET", "IBuffer") or value == "CBuffer":
                # "FBuffer" = Seleziona oggetti che si trovano completamente all'interno di buffer intorno ad oggetti da selezionare
                # "IBuffer" = Seleziona oggetti che intersecano o si trovano all'interno di buffer intorno ad oggetti da selezionare
                self.MBUFFERCommand = QadMBUFFERCommandClass(self.plugIn)
@@ -481,15 +491,15 @@ class QadSSGetClass(QadCommandClass):
                self.MBUFFERCommand.virtualCmd = True   
                self.MBUFFERCommand.run(msgMapTool, msg)
                self.step = 8
-            elif value == QadMsg.translate("Command_SSGET", "AGgiungi"):
+            elif value == QadMsg.translate("Command_SSGET", "AGgiungi") or value == "Add":
                # Passa al metodo Aggiungi: gli oggetti selezionati possono essere aggiunti al gruppo di selezione 
                self.AddOnSelection = True
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "Elimina"):
+            elif value == QadMsg.translate("Command_SSGET", "Elimina") or value == "Remove":
                # Passa al metodo Rimuovi: gli oggetti possono essere rimossi dal gruppo di selezione
                self.AddOnSelection = False
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "Precedente"):
+            elif value == QadMsg.translate("Command_SSGET", "Precedente") or value == "Previous":
                # Seleziona il gruppo di selezione più recente
                if self.plugIn.lastEntitySet is None:
                   self.showMsgOnAddRemove(0)
@@ -516,7 +526,7 @@ class QadSSGetClass(QadCommandClass):
                      self.plugIn.setLastEntitySet(self.entitySet)
                      return True # fine                                   
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "Annulla"):
+            elif value == QadMsg.translate("Command_SSGET", "Annulla") or value == "Undo":
                # Annulla la selezione dell'oggetto aggiunto più recentemente al gruppo di selezione.
                # Inverto il tipo di selezione
                prevAddOnSelection = self.AddOnSelection
@@ -528,13 +538,13 @@ class QadSSGetClass(QadCommandClass):
                   self.plugIn.setLastEntitySet(self.entitySet)
                   return True # fine               
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "AUto"):
+            elif value == QadMsg.translate("Command_SSGET", "AUto") or value == "AUto":
                # Passa alla selezione automatica: vengono selezionati gli oggetti sui quali si posiziona il puntatore.
                # Facendo clic su un'area vuota all'interno o all'esterno di un oggetto, 
                # si crea il primo angolo di un rettangolo di selezione, come per il metodo Riquadro
                self.SingleSelection = False
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "SIngolo"):
+            elif value == QadMsg.translate("Command_SSGET", "SIngolo") or value == "SIngle":
                # Passa al metodo Singolo: viene selezionato il primo oggetto o gruppo di oggetti indicato,
                # senza che vengano richieste altre selezioni.
                self.SingleSelection = True
@@ -542,7 +552,7 @@ class QadSSGetClass(QadCommandClass):
                   self.plugIn.setLastEntitySet(self.entitySet)
                   return True # fine               
                self.WaitForFirstPoint()
-            elif value == QadMsg.translate("Command_SSGET", "Help"):
+            elif value == QadMsg.translate("Command_SSGET", "Help") or value == "Help":
                self.help = True
                self.WaitForFirstPoint()
          elif type(value) == QgsPoint: # se é stato inserito il punto iniziale del rettangolo
@@ -633,12 +643,14 @@ class QadSSGetClass(QadCommandClass):
          if type(value) == QgsPoint:
             self.points.append(value)
             
-            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "Riquadro"):
+            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "Riquadro") or \
+               self.currSelectionMode == "Box":
                if self.points[0].x() < value.x():
                   mode = "W"
                else:
                   mode = "C"
-            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "Finestra"): 
+            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "Finestra") or \
+               self.currSelectionMode == "Window": 
                mode = "W"
             else: # "Interseca"
                mode = "C"
@@ -691,9 +703,11 @@ class QadSSGetClass(QadCommandClass):
                circle = QadCircle()
                circle.set(self.CIRCLECommand.centerPt, self.CIRCLECommand.radius)
                points = circle.asPolyline()
-               if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FCerchio"):
+               if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FCerchio") or \
+                  self.currSelectionMode == "WCircle":
                   self.AddRemoveSelSetByPolygon("WP", points)
-               elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "ICerchio"):
+               elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "ICerchio") or \
+                  self.currSelectionMode == "CCircle":
                   self.AddRemoveSelSetByPolygon("CP", points)               
             
             del self.CIRCLECommand
@@ -715,9 +729,11 @@ class QadSSGetClass(QadCommandClass):
             destCRS = self.SSGetClass.getPointMapTool().canvas.mapRenderer().destinationCrs()
             geoms = self.SSGetClass.entitySet.getGeometryCollection(destCRS) # trasformo la geometria
             
-            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FOggetti"):
+            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FOggetti") or \
+               self.currSelectionMode == "WObjects":
                self.AddRemoveSelSetByGeometry("WO", geoms)
-            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IOggetti"):
+            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IOggetti") or \
+               self.currSelectionMode == "CObjects":
                self.AddRemoveSelSetByGeometry("CO", geoms)
                                  
             del self.SSGetClass
@@ -736,9 +752,11 @@ class QadSSGetClass(QadCommandClass):
       elif self.step == 7: # dopo aver atteso un punto si riavvia il comando
          if self.MPOLYGONCommand.run(msgMapTool, msg) == True:
             self.showMsg("\n")              
-            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FPoligono"):
+            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FPoligono") or \
+               self.currSelectionMode == "WPolygon":
                self.AddRemoveSelSetByPolygon("WP", self.MPOLYGONCommand.vertices)
-            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IPoligono"):
+            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IPoligono") or \
+               self.currSelectionMode == "CPolygon":
                self.AddRemoveSelSetByPolygon("CP", self.MPOLYGONCommand.vertices)               
             
             del self.MPOLYGONCommand
@@ -767,10 +785,13 @@ class QadSSGetClass(QadCommandClass):
                for geom in geoms:
                   bufferGeoms.append(geom.buffer(width, self.MBUFFERCommand.segments))
                         
-            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FBuffer"):
+            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "FBuffer") or \
+               self.currSelectionMode == "WBuffer":
                self.AddRemoveSelSetByGeometry("WO", bufferGeoms)
-            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IBuffer"):
-               self.AddRemoveSelSetByGeometry("CO", bufferGeoms)
+            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "IBuffer") or \
+               self.currSelectionMode == "CBuffer":
+               self.AddRemoveSelSetByGeometry("CO", bufferGeoms) or \
+               self.currSelectionMode == "CPolygon"
                                  
             del self.MBUFFERCommand
             self.MBUFFERCommand = None

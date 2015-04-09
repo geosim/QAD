@@ -40,9 +40,16 @@ import qad_layer
 
 # Classe che gestisce il comando MPOLYGON
 class QadMPOLYGONCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadMPOLYGONCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "MPOLIGONO")
+
+   def getEnglishName(self):
+      return "MPOLYGON"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runMPOLYGONCommand)

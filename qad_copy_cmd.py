@@ -44,9 +44,16 @@ from qad_dim import *
 
 # Classe che gestisce il comando COPY
 class QadCOPYCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadCOPYCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "COPIA")
+
+   def getEnglishName(self):
+      return "COPY"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runCOPYCommand)
@@ -176,13 +183,18 @@ class QadCOPYCommandClass(QadCommandClass):
       if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
          keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
                     QadMsg.translate("Command_COPY", "mOdalità")
+         englishKeyWords = "Displacement" + "/" + "mOde"
+                    
       else:
          keyWords = QadMsg.translate("Command_COPY", "Spostamento") + "/" + \
                     QadMsg.translate("Command_COPY", "mOdalità") + "/" + \
                     QadMsg.translate("Command_COPY", "MUltiplo")
+         englishKeyWords = "Displacement" + "/" + "mOde" + "/" + "Multiple"
+
       default = QadMsg.translate("Command_COPY", "Spostamento")                   
       prompt = QadMsg.translate("Command_COPY", "Specificare il punto base o [{0}] <{1}>: ").format(keyWords, default)
       
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -221,6 +233,8 @@ class QadCOPYCommandClass(QadCommandClass):
          default = QadMsg.translate("Command_COPY", "Esci")
          prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}] <{1}>: ").format(keyWords, default)
    
+         englishKeyWords = "Array" + "/" + "Exit" + "/" + "Undo" + "/" + "Exit"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \
@@ -231,6 +245,8 @@ class QadCOPYCommandClass(QadCommandClass):
          keyWords = QadMsg.translate("Command_COPY", "Serie")
          prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}] <utilizzare il primo punto come spostamento dal punto di origine 0,0>: ").format(keyWords)
                    
+         englishKeyWords = "Array"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \
@@ -246,10 +262,13 @@ class QadCOPYCommandClass(QadCommandClass):
    def waitForSecondPtBySeries(self):
       if self.adjust == False:
          keyWords = QadMsg.translate("Command_COPY", "Adatta")
+         englishKeyWords = "Fit"        
       else:
          keyWords = QadMsg.translate("Command_COPY", "Serie")
+         englishKeyWords = "Array"        
       prompt = QadMsg.translate("Command_COPY", "Specificare il secondo punto o [{0}]: ").format(keyWords)
 
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
       self.waitFor(prompt, \
@@ -317,7 +336,7 @@ class QadCOPYCommandClass(QadCommandClass):
             value = QadMsg.translate("Command_COPY", "Spostamento")
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_COPY", "Spostamento"):
+            if value == QadMsg.translate("Command_COPY", "Spostamento") or value == "Displacement":
                self.basePt.set(0, 0)
                self.getPointMapTool().basePt = self.basePt
                self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)                                
@@ -329,15 +348,18 @@ class QadCOPYCommandClass(QadCommandClass):
                             self.plugIn.lastOffsetPt, \
                             "", QadInputModeEnum.NONE)                                      
                self.step = 4
-            elif value == QadMsg.translate("Command_COPY", "mOdalità"):
+            elif value == QadMsg.translate("Command_COPY", "mOdalità") or value == "mOde":
                keyWords = QadMsg.translate("Command_COPY", "Singola") + "/" + \
                           QadMsg.translate("Command_COPY", "Multipla")
+               englishKeyWords = "Single" + "/" + "Multiple"
+                          
                if self.copyMode == 0: # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                   default = QadMsg.translate("Command_COPY", "Multipla")
                else:
                   default = QadMsg.translate("Command_COPY", "Singola")               
                prompt = QadMsg.translate("Command_COPY", "Digitare un'opzione di modalità di copia [{0}] <{1}>: ").format(keyWords, default)
 
+               keyWords += "_" + englishKeyWords
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
@@ -345,7 +367,7 @@ class QadCOPYCommandClass(QadCommandClass):
                             default, \
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5      
-            elif value == QadMsg.translate("Command_COPY", "MUltiplo"):
+            elif value == QadMsg.translate("Command_COPY", "MUltiplo") or value == "Multiple":
                self.copyMode = 0 # Imposta il comando COPIA in modo che venga ripetuto automaticamente
                self.waitForBasePt()                         
          elif type(value) == QgsPoint: # se é stato inserito il punto base
@@ -390,11 +412,11 @@ class QadCOPYCommandClass(QadCommandClass):
                return True # fine comando
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_COPY", "Serie"):
+            if value == QadMsg.translate("Command_COPY", "Serie") or value == "Array":
                self.waitForSeries()               
-            elif value == QadMsg.translate("Command_COPY", "Esci"):
+            elif value == QadMsg.translate("Command_COPY", "Esci") or value == "Exit":
                return True # fine comando
-            elif value == QadMsg.translate("Command_COPY", "Annulla"):
+            elif value == QadMsg.translate("Command_COPY", "Annulla") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
@@ -453,11 +475,11 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_COPY", "Singola"):
+            if value == QadMsg.translate("Command_COPY", "Singola") or value == "Single":
                self.copyMode = 1
                QadVariables.set(QadMsg.translate("Environment variables", "COPYMODE"), 1)
                QadVariables.save()
-            elif value == QadMsg.translate("Command_COPY", "Multipla"):
+            elif value == QadMsg.translate("Command_COPY", "Multipla") or value == "Multiple":
                self.copyMode = 0
                QadVariables.set(QadMsg.translate("Environment variables", "COPYMODE"), 0)
                QadVariables.save()
@@ -508,11 +530,11 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_COPY", "Serie"):
+            if value == QadMsg.translate("Command_COPY", "Serie") or value == "Array":
                self.adjust = False
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()
-            elif value == QadMsg.translate("Command_COPY", "Adatta"):
+            elif value == QadMsg.translate("Command_COPY", "Adatta") or value == "Fit":
                self.adjust = True
                self.getPointMapTool().adjust = self.adjust
                self.waitForSecondPtBySeries()

@@ -133,7 +133,11 @@ class QadCommandClass():
    # funzioni da sovrascrivere con le classi ereditate da questa
    #============================================================================
    def getName(self):
-      # impostare il nome del comando in maiuscolo
+      """ impostare il nome del comando in maiuscolo """
+      return ""
+
+   def getEnglishName(self):
+      """ impostare il nome del comando in inglese maiuscolo """
       return ""
 
    def connectQAction(self, action):
@@ -146,7 +150,7 @@ class QadCommandClass():
       return None
 
    def getNote(self):
-      # impostare le note esplicative del comando
+      """ impostare le note esplicative del comando """
       return ""
    
    def __init__(self, plugIn):
@@ -161,8 +165,14 @@ class QadCommandClass():
       # self.mapTool = QadGetPoint(self.plugIn) # per selezione di un punto
          
    def __del__(self):
-      # distruttore
+      """ distruttore """
       self.hidePointMapToolMarkers()
+      if self.PointMapTool:
+         del self.PointMapTool
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return None
    
    def run(self, msgMapTool = False, msg = None):
       """

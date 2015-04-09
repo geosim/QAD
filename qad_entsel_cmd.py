@@ -41,6 +41,10 @@ import qad_utils
 # QadEntSelClass
 #===============================================================================
 class QadEntSelClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadEntSelClass(self.plugIn)
       
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -95,6 +99,8 @@ class QadEntSelClass(QadCommandClass):
                   
          keyWords = QadMsg.translate("Command_ENTSEL", "Ultimo")
                   
+         englishKeyWords = "Last"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(self.msg, \
@@ -131,7 +137,7 @@ class QadEntSelClass(QadCommandClass):
             return True # fine comando
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ENTSEL", "Ultimo"):
+            if value == QadMsg.translate("Command_ENTSEL", "Ultimo") or value == "Last":
                # Seleziona l'ultima entità inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:

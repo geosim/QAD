@@ -44,8 +44,15 @@ import qad_label
 # Classe che gestisce il comando MIRROR
 class QadMIRRORCommandClass(QadCommandClass):
    
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadMIRRORCommandClass(self.plugIn)
+   
    def getName(self):
       return QadMsg.translate("Command_list", "SPECCHIO")
+
+   def getEnglishName(self):
+      return "MIRROR"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runMIRRORCommand)
@@ -270,6 +277,8 @@ class QadMIRRORCommandClass(QadCommandClass):
             default = QadMsg.translate("QAD", "No")
          prompt = QadMsg.translate("Command_MIRROR", "Cancellare gli oggetti sorgente ? [{0}] <{1}>: ").format(keyWords, default)
              
+         englishKeyWords = "Yes" + "/" + "No"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \
@@ -299,9 +308,9 @@ class QadMIRRORCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì"):
+            if value == QadMsg.translate("QAD", "Sì") or value == "Yes":
                self.copyFeatures = False
-            elif value == QadMsg.translate("QAD", "No"):
+            elif value == QadMsg.translate("QAD", "No") or value == "No":
                self.copyFeatures = True
                      
             self.mirrorGeoms()

@@ -39,9 +39,16 @@ import qad_layer
 
 # Classe che gestisce il comando POLYGON
 class QadPOLYGONCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadPOLYGONCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "POLIGONO")
+
+   def getEnglishName(self):
+      return "POLYGON"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runPOLYGONCommand)
@@ -103,6 +110,8 @@ class QadPOLYGONCommandClass(QadCommandClass):
       keyWords = QadMsg.translate("Command_POLYGON", "Spigolo")
       prompt = QadMsg.translate("Command_POLYGON", "Specificare centro del poligono [{0}]: ").format(keyWords)
      
+      englishKeyWords = "Edge"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter
       #                        msg, inputType,              default, keyWords, nessun controllo         
       self.waitFor(prompt, \
@@ -120,6 +129,8 @@ class QadPOLYGONCommandClass(QadCommandClass):
       prompt = QadMsg.translate("Command_POLYGON", "Digitare un'opzione [{0}] <{1}>: ").format(keyWords, \
                                                                                                self.constructionModeByCenter)
 
+      englishKeyWords = "Inscribed in circle" + "/" + "Circumscribed about circle" + "/" + "Area"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, \
@@ -250,7 +261,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_POLYGON", "Spigolo"):
+            if value == QadMsg.translate("Command_POLYGON", "Spigolo") or value == "Edge":
                self.WaitForFirstEdgePt()
          elif type(value) == QgsPoint:
             self.centerPt = value
@@ -278,11 +289,11 @@ class QadPOLYGONCommandClass(QadCommandClass):
          else: # la parola chiave arriva come parametro della funzione
             value = msg        
          
-         if type(value) == unicode:        
+         if type(value) == unicode:
             self.constructionModeByCenter = value
-            self.plugIn.setLastPolygonConstructionModeByCenter(self.constructionModeByCenter)        
+            self.plugIn.setLastPolygonConstructionModeByCenter(self.constructionModeByCenter)
             self.getPointMapTool().constructionModeByCenter = self.constructionModeByCenter
-            if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Area"):
+            if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Area") or self.constructionModeByCenter == "Area":
                self.WaitForArea()
             else:
                self.WaitForRadius(currLayer)
@@ -318,7 +329,12 @@ class QadPOLYGONCommandClass(QadCommandClass):
                
             self.plugIn.setLastRadius(self.radius)     
 
-            mode = True if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio") else False
+            if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio") or \
+               self.constructionModeByCenter == "Inscribed in circle":
+               mode = True
+            else:
+               mode = False
+               
             self.vertices.extend(qad_utils.getPolygonByNsidesCenterRadius(self.sideNumber, self.centerPt, self.radius, \
                                                                           mode, ptStart))
 

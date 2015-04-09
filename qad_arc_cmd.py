@@ -41,9 +41,16 @@ import qad_layer
 
 # Classe che gestisce il comando PLINE
 class QadARCCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadARCCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "ARCO")
+
+   def getEnglishName(self):
+      return "ARC"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runARCCommand)
@@ -85,8 +92,11 @@ class QadARCCommandClass(QadCommandClass):
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_START_PT)        
          keyWords = QadMsg.translate("Command_ARC", "Centro")
+         
          prompt = QadMsg.translate("Command_ARC", "Specificare punto iniziale dell'arco o [{0}]: ").format(keyWords)                 
          
+         englishKeyWords = "Center"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo di modo
          self.waitFor(prompt, \
@@ -132,8 +142,11 @@ class QadARCCommandClass(QadCommandClass):
                                 
             keyWords = QadMsg.translate("Command_ARC", "Centro") + "/" + \
                        QadMsg.translate("Command_ARC", "Fine")
+            
             prompt = QadMsg.translate("Command_ARC", "Specificare secondo punto dell'arco o [{0}]: ").format(keyWords)                 
             
+            englishKeyWords = "Center" + "/" + "End"
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords
             self.waitFor(prompt, \
@@ -172,13 +185,13 @@ class QadARCCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ARC", "Centro"):
+            if value == QadMsg.translate("Command_ARC", "Centro") or value == "Center":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_KNOWN_ASK_FOR_CENTER_PT)
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_ARC", "Specificare centro dell'arco: "))
                self.step = 4           
-            elif value == QadMsg.translate("Command_ARC", "Fine"):
+            elif value == QadMsg.translate("Command_ARC", "Fine") or value == "End":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_KNOWN_ASK_FOR_END_PT)
                # si appresta ad attendere un punto
@@ -216,10 +229,10 @@ class QadARCCommandClass(QadCommandClass):
             value = msg
 
          self.endPt = value
-         self.plugIn.setLastPoint(value)
          
          arc = QadArc()         
          if arc.fromStartSecondEndPts(self.startPt, self.secondPt, self.endPt) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -263,9 +276,12 @@ class QadARCCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT)
          
          keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
-                    QadMsg.translate("Command_ARC", "Lunghezza corda")         
+                    QadMsg.translate("Command_ARC", "Lunghezza corda")
+                             
          prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
                          
+         englishKeyWords = "Angle" + "/" + "chord Length"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, valori nulli non ammessi
          self.waitFor(prompt, \
@@ -296,7 +312,7 @@ class QadARCCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:  
-            if value == QadMsg.translate("Command_ARC", "Angolo"):
+            if value == QadMsg.translate("Command_ARC", "Angolo") or value == "Angle":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_ANGLE)
                # si appresta ad attendere un punto o un numero reale         
@@ -307,7 +323,7 @@ class QadARCCommandClass(QadCommandClass):
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
                self.step = 6
                return False                              
-            elif value == QadMsg.translate("Command_ARC", "Lunghezza"):
+            elif value == QadMsg.translate("Command_ARC", "Lunghezza corda") or value == "chord Length":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_CHORD)
                # si appresta ad attendere un punto o un numero reale         
@@ -320,10 +336,10 @@ class QadARCCommandClass(QadCommandClass):
                return False                              
          elif type(value) == QgsPoint: # se é stato inserito il punto finale dell'arco
             self.endPt = value
-            self.plugIn.setLastPoint(value)
                      
             arc = QadArc()         
             if arc.fromStartCenterEndPts(self.startPt, self.centerPt, self.endPt) == True:
+               self.plugIn.setLastPoint(arc.getEndPt())
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -339,6 +355,8 @@ class QadARCCommandClass(QadCommandClass):
                        QadMsg.translate("Command_ARC", "Lunghezza corda")
             prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
 
+            englishKeyWords = "Angle" + "/" + "chord Length"
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori nulli non ammessi
             self.waitFor(prompt, \
@@ -374,6 +392,7 @@ class QadARCCommandClass(QadCommandClass):
 
          arc = QadArc()         
          if arc.fromStartCenterPtsAngle(self.startPt, self.centerPt, self.angle) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())            
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -420,6 +439,7 @@ class QadARCCommandClass(QadCommandClass):
 
          arc = QadArc()         
          if arc.fromStartCenterPtsChord(self.startPt, self.centerPt, self.chord) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -469,8 +489,11 @@ class QadARCCommandClass(QadCommandClass):
          keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
                     QadMsg.translate("Command_ARC", "Direzione") + "/" + \
                     QadMsg.translate("Command_ARC", "Raggio")
+                    
          prompt = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [{0}]: ").format(keyWords)                 
 
+         englishKeyWords = "Angle" + "/" + "Direction" + "/" + "Radius"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, valori nulli non ammessi
          self.waitFor(prompt, \
@@ -501,7 +524,7 @@ class QadARCCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ARC", "Angolo"):
+            if value == QadMsg.translate("Command_ARC", "Angolo") or value == "Angle":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_ANGLE)
                # si appresta ad attendere un punto o un numero reale         
@@ -511,7 +534,7 @@ class QadARCCommandClass(QadCommandClass):
                             None, "", QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
                self.step = 10
                return False                              
-            elif value == QadMsg.translate("Command_ARC", "Direzione"):
+            elif value == QadMsg.translate("Command_ARC", "Direzione") or value == "Direction":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_TAN)
                # si appresta ad attendere un punto o un numero reale         
@@ -521,7 +544,7 @@ class QadARCCommandClass(QadCommandClass):
                             None, "", QadInputModeEnum.NOT_NULL)
                self.step = 11
                return False            
-            elif value == QadMsg.translate("Command_ARC", "Raggio"):
+            elif value == QadMsg.translate("Command_ARC", "Raggio") or value == "Radius":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_RADIUS)
                # si appresta ad attendere un punto o un numero reale         
@@ -534,10 +557,10 @@ class QadARCCommandClass(QadCommandClass):
                return False                              
          elif type(value) == QgsPoint: # se é stato inserito il centro dell'arco
             self.centerPt = value
-            self.plugIn.setLastPoint(value)
 
             arc = QadArc()         
             if arc.fromStartCenterEndPts(self.startPt, self.centerPt, self.endPt) == True:
+               self.plugIn.setLastPoint(arc.getEndPt())
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -552,8 +575,11 @@ class QadARCCommandClass(QadCommandClass):
             keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
                        QadMsg.translate("Command_ARC", "Direzione") + "/" + \
                        QadMsg.translate("Command_ARC", "Raggio")
+                       
             prompt = QadMsg.translate("Command_ARC", "Specificare centro dell'arco o [{0}]: ").format(keyWords)                 
                       
+            englishKeyWords = "Angle" + "/" + "Direction" + "/" + "Radius"
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, isNullable
             self.waitFor(prompt, \
@@ -589,6 +615,7 @@ class QadARCCommandClass(QadCommandClass):
             
          arc = QadArc()         
          if arc.fromStartEndPtsAngle(self.startPt, self.endPt, self.angle) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -635,6 +662,7 @@ class QadARCCommandClass(QadCommandClass):
 
          arc = QadArc()         
          if arc.fromStartEndPtsTan(self.startPt, self.endPt, self.angleTan) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -682,6 +710,7 @@ class QadARCCommandClass(QadCommandClass):
          
          arc = QadArc()
          if arc.fromStartEndPtsRadius(self.startPt, self.endPt, self.radius) == True:
+            self.plugIn.setLastPoint(arc.getEndPt())
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -761,10 +790,13 @@ class QadARCCommandClass(QadCommandClass):
          self.getPointMapTool().arcStartPt = self.startPt
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT)
          
-         keyWords = QadMsg.translate("Command_ARC", "Angolo") + " " + \
+         keyWords = QadMsg.translate("Command_ARC", "Angolo") + "/" + \
                     QadMsg.translate("Command_ARC", "Lunghezza corda")
+         
          prompt = QadMsg.translate("Command_ARC", "Specificare punto finale dell'arco o [{0}]: ").format(keyWords)                 
                            
+         englishKeyWords = "Angle" + "/" + "chord Length"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o una parola chiave         
          # msg, inputType, default, keyWords, isNullable
          self.waitFor(prompt, \

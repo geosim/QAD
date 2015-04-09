@@ -36,9 +36,16 @@ from qad_textwindow import *
 
 # Classe che gestisce il comando UNDO
 class QadUNDOCommandClass(QadCommandClass):
-   
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadUNDOCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "ANNULLA")
+
+   def getEnglishName(self):
+      return "UNDO"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runUNDOCommand)
@@ -64,6 +71,8 @@ class QadUNDOCommandClass(QadCommandClass):
          default = 1
          prompt = QadMsg.translate("Command_UNDO", "Digitare il numero di operazioni da annullare o [{0}] <{1}>: ").format(keyWords, str(default))
          
+         englishKeyWords = "BEgin" + "/" + "End" + "/" + "Mark" + "/" + "Back"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un numero intero positivo o enter o una parola chiave         
          # msg, inputType, default, keyWords, valori positivi
          self.waitFor(prompt, \
@@ -94,21 +103,23 @@ class QadUNDOCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_UNDO", "INIzio"):
+            if value == QadMsg.translate("Command_UNDO", "INIzio") or value == "BEgin":
                self.plugIn.insertBeginGroup()
-            elif value == QadMsg.translate("Command_UNDO", "Fine"):
+            elif value == QadMsg.translate("Command_UNDO", "Fine") or value == "End":
                if self.plugIn.insertEndGroup() == False:
                   self.showMsg(QadMsg.translate("Command_UNDO", "\nNessun gruppo é rimasto aperto."))                  
-            elif value == QadMsg.translate("Command_UNDO", "Segno"):
+            elif value == QadMsg.translate("Command_UNDO", "Segno") or value == "Mark":
                if self.plugIn.insertBookmark() == False:
                   self.showMsg(QadMsg.translate("Command_UNDO", "\nNon é possibile inserire un segno dentro un gruppo."))                  
-            elif value == QadMsg.translate("Command_UNDO", "INDietro"):
+            elif value == QadMsg.translate("Command_UNDO", "INDietro") or value == "Back":
                if self.plugIn.getPrevBookmarkPos() == -1: # non ci sono bookmark precedenti
                   keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                              QadMsg.translate("QAD", "No")                                                 
                   default = QadMsg.translate("QAD", "Sì")
                   prompt = QadMsg.translate("Command_UNDO", "Questa operazione annullerà tutto. OK ? <{0}>: ").format(default)
                   
+                  englishKeyWords = "Yes" + "/" + "No"
+                  keyWords += "_" + englishKeyWords
                   # si appresta ad attendere enter o una parola chiave         
                   # msg, inputType, default, keyWords, nessun controllo
                   self.waitFor(prompt, \
@@ -146,7 +157,7 @@ class QadUNDOCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì"):
+            if value == QadMsg.translate("QAD", "Sì") or value == "Yes":
                self.showMsg(QadMsg.translate("Command_UNDO", "é stato annullato tutto."))
                self.plugIn.undoUntilBookmark()
 
@@ -156,8 +167,15 @@ class QadUNDOCommandClass(QadCommandClass):
 # Classe che gestisce il comando REDO
 class QadREDOCommandClass(QadCommandClass):
    
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadREDOCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "RIPRISTINA")
+
+   def getEnglishName(self):
+      return "REDO"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runREDOCommand)

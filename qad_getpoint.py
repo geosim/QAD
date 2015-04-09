@@ -138,6 +138,8 @@ class QadGetPoint(QgsMapTool):
    def __del__(self):
       if self.__RubberBand is not None:
          self.canvas.scene().removeItem(self.__RubberBand)
+      del self.__QadSnapper
+      del self.__QadSnapPointsDisplayManager
    
    def setDrawMode(self, drawMode):
       self.__drawMode = drawMode
@@ -595,8 +597,10 @@ class QadGetPoint(QgsMapTool):
       self.plugIn.keyPressEvent(event)    
     
    def activate(self):
-      __QadSnapper = None
-      __QadSnapPointsDisplayManager = None
+      #del self.__QadSnapper
+      #del self.__QadSnapPointsDisplayManager   
+      #__QadSnapper = None
+      #__QadSnapPointsDisplayManager = None
       
       self.point = None
       self.tmpPoint = None

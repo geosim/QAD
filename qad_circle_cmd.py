@@ -39,11 +39,18 @@ import qad_utils
 import qad_layer
 
 
-# Classe che gestisce il comando PLINE
+# Classe che gestisce il comando CIRCLE
 class QadCIRCLECommandClass(QadCommandClass):
+   
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadCIRCLECommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "CERCHIO")
+
+   def getEnglishName(self):
+      return "CIRCLE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runCIRCLECommand)
@@ -98,6 +105,8 @@ class QadCIRCLECommandClass(QadCommandClass):
                     QadMsg.translate("Command_CIRCLE", "Ttr (tangente tangente raggio)")
          prompt = QadMsg.translate("Command_CIRCLE", "Specificare punto centrale del cerchio o [{0}]: ").format(keyWords)
 
+         englishKeyWords = "3Points" + "/" + "2POints" + "/" + "Ttr (tangent tangent radius)"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \
@@ -134,19 +143,20 @@ class QadCIRCLECommandClass(QadCommandClass):
                return True # fine comando
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_CIRCLE", "3Punti"):
+            if value == QadMsg.translate("Command_CIRCLE", "3Punti") or value == "3Points":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare primo punto sul cerchio: "))
                self.step = 4           
-            elif value == QadMsg.translate("Command_CIRCLE", "2PUnti"):
+            elif value == QadMsg.translate("Command_CIRCLE", "2PUnti") or value == "2POoints":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_DIAM_PT)
                # si appresta ad attendere un punto
                self.waitForPoint(QadMsg.translate("Command_CIRCLE", "Specificare prima estremità del diametro del cerchio: "))
                self.step = 7     
-            elif value == QadMsg.translate("Command_CIRCLE", "Ttr"):
+            elif value == QadMsg.translate("Command_CIRCLE", "Ttr (tangente tangente raggio)") or \
+                 value == "Ttr (tangent tangent radius)":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_TAN)
                # si appresta ad attendere un punto
@@ -164,6 +174,8 @@ class QadCIRCLECommandClass(QadCommandClass):
                        QadMsg.translate("Command_CIRCLE", "Area")
             prompt = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [{0}]: ").format(keyWords)
             
+            englishKeyWords = "Diameter" + "/" + "Area"
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
             self.waitFor(prompt, \
@@ -196,7 +208,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_CIRCLE", "Diametro"):
+            if value == QadMsg.translate("Command_CIRCLE", "Diametro") or value == "Diameter":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_DIAM)
                # si appresta ad attendere un punto o un numero reale   
@@ -207,7 +219,7 @@ class QadCIRCLECommandClass(QadCommandClass):
                             "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
                self.step = 3           
-            elif value == QadMsg.translate("Command_CIRCLE", "Area"):
+            elif value == QadMsg.translate("Command_CIRCLE", "Area") or value == "Area":
                msg = QadMsg.translate("Command_CIRCLE", "Digitare l'area del cerchio in unità correnti <{0}>: ")
                # si appresta ad attendere un numero reale         
                # msg, inputType, default, keyWords, valori positivi
@@ -239,6 +251,8 @@ class QadCIRCLECommandClass(QadCommandClass):
                        QadMsg.translate("Command_CIRCLE", "Area")
             prompt = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio o [{0}]: ").format(keyWords)
                                  
+            englishKeyWords = "Diameter" + "/" + "Area"
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
             self.waitFor(prompt, \

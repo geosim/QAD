@@ -28,10 +28,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lunghezza</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specificare angolo inscritto: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -155,10 +151,6 @@
     <name>Command_CIRCLE</name>
     <message>
         <source>Disegna un cerchio mediante diversi metodi.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ttr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -504,10 +496,6 @@ Selezionare i limiti di estensione...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuna</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -517,6 +505,10 @@ Selezionare i limiti di estensione...</source>
     </message>
     <message>
         <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nessuna estensione </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -552,19 +544,11 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare la polilinea o [Raggio]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Raggio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>NonTaglia</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [RAggio]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -597,6 +581,14 @@ Il raccordo con raggio {0} non esiste.</source>
     </message>
     <message>
         <source>Modalità= Non taglia-estendi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare la polilinea o [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1058,10 +1050,6 @@ archi o una combinazione dei due.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CEntro</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1181,10 +1169,6 @@ archi o una combinazione dei due.</source>
     </message>
     <message>
         <source>Specificare lunghezza del rettangolo &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SCegli</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

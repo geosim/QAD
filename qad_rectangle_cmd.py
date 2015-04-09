@@ -41,9 +41,16 @@ from qad_getangle_cmd import QadGetAngleClass
 
 # Classe che gestisce il comando RECTANGLE
 class QadRECTANGLECommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadRECTANGLECommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "RETTANGOLO")
+
+   def getEnglishName(self):
+      return "RECTANGLE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runRECTANGLECommand)
@@ -114,7 +121,9 @@ class QadRECTANGLECommandClass(QadCommandClass):
       keyWords = QadMsg.translate("Command_RECTANGLE", "Cima") + "/" + \
                  QadMsg.translate("Command_RECTANGLE", "Raccordo")
       prompt = QadMsg.translate("Command_RECTANGLE", "Specificare primo angolo o [{0}]: ").format(keyWords)
-     
+
+      englishKeyWords = "Chamfer" + "/" + "Fillet"
+      keyWords += "_" + englishKeyWords     
       # si appresta ad attendere un punto o enter
       #                        msg, inputType,              default, keyWords, nessun controllo         
       self.waitFor(prompt, \
@@ -138,7 +147,9 @@ class QadRECTANGLECommandClass(QadCommandClass):
                  QadMsg.translate("Command_RECTANGLE", "Quote") + "/" + \
                  QadMsg.translate("Command_RECTANGLE", "Rotazione")
       prompt = QadMsg.translate("Command_RECTANGLE", "Specificare angolo opposto o [{0}]: ").format(keyWords)
-     
+
+      englishKeyWords = "Area" + "/" + "Dimensions" + "/" + "Rotation"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter
       #                        msg, inputType,              default, keyWords, nessun controllo         
       self.waitFor(prompt, \
@@ -189,7 +200,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_RECTANGLE", "Cima"):
+            if value == QadMsg.translate("Command_RECTANGLE", "Cima") or value == "Chamfer":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -199,7 +210,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
                self.step = 4
                self.GetDistClass.run(msgMapTool, msg)     
-            elif value == QadMsg.translate("Command_RECTANGLE", "Raccordo"):
+            elif value == QadMsg.translate("Command_RECTANGLE", "Raccordo") or value == "Fillet":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -239,7 +250,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_RECTANGLE", "Area"):
+            if value == QadMsg.translate("Command_RECTANGLE", "Area") or value == "Area":
                msg = QadMsg.translate("Command_RECTANGLE", "Digitare l'area del rettangolo in unità correnti <{0}>: ")
                # si appresta ad attendere un numero reale         
                # msg, inputType, default, keyWords, valori positivi
@@ -249,7 +260,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.getPointMapTool().setMode(Qad_rectangle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_CORNER)
                   
                self.step = 6
-            elif value == QadMsg.translate("Command_RECTANGLE", "Quote"):
+            elif value == QadMsg.translate("Command_RECTANGLE", "Quote") or value == "Dimensions":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -258,11 +269,13 @@ class QadRECTANGLECommandClass(QadCommandClass):
                self.GetDistClass.dist = self.dim1
                self.step = 10
                self.GetDistClass.run(msgMapTool, msg)              
-            elif value == QadMsg.translate("Command_RECTANGLE", "Rotazione"):
+            elif value == QadMsg.translate("Command_RECTANGLE", "Rotazione") or value == "Rotation":
                keyWords = QadMsg.translate("Command_RECTANGLE", "SCegli punti")
                self.defaultValue = self.rot
                prompt = QadMsg.translate("Command_RECTANGLE", "Specificare l'angolo di rotazione o [{0}] <{1}>: ").format(keyWords, str(qad_utils.toDegrees(self.rot)))
                
+               englishKeyWords = "Points"
+               keyWords += "_" + englishKeyWords
                # si appresta ad attendere un punto o un numero reale         
                # msg, inputType, default, keyWords, valori non nulli
                self.waitFor(prompt, \
@@ -337,6 +350,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
       elif self.step == 6: # dopo aver atteso un punto si riavvia il comando
          keyWords = QadMsg.translate("Command_RECTANGLE", "Lunghezza") + "/" + \
                     QadMsg.translate("Command_RECTANGLE", "lArghezza")
+         englishKeyWords = "Length" + "/" + "Width"
          
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
@@ -348,6 +362,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
                   self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
                   prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
                         
+                  keyWords += "_" + englishKeyWords
                   # si appresta ad attendere una parola chiave         
                   # msg, inputType, default, keyWords, valori positivi
                   self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, \
@@ -369,6 +384,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
             self.defaultValue = QadMsg.translate("Command_RECTANGLE", "Lunghezza")
             prompt = QadMsg.translate("Command_RECTANGLE", "Calcolare le quote rettangolo in base alla [{0}] <{1}>: ").format(keyWords, self.defaultValue)
                   
+            keyWords += "_" + englishKeyWords
             # si appresta ad attendere una parola chiave         
             # msg, inputType, default, keyWords, valori positivi
             self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, \
@@ -397,7 +413,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if value == QadMsg.translate("Command_RECTANGLE", "Lunghezza"):
+         if value == QadMsg.translate("Command_RECTANGLE", "Lunghezza") or value == "Length":
             if self.GetDistClass is not None:
                del self.GetDistClass
             self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -406,7 +422,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
             self.GetDistClass.dist = self.dim1
             self.step = 8
             self.GetDistClass.run(msgMapTool, msg)              
-         elif value == QadMsg.translate("Command_RECTANGLE", "lArghezza"):
+         elif value == QadMsg.translate("Command_RECTANGLE", "lArghezza") or value == "Width":
             if self.GetDistClass is not None:
                del self.GetDistClass
             self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -492,7 +508,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_RECTANGLE", "SCegli"):
+            if value == QadMsg.translate("Command_RECTANGLE", "SCegli punti") or value == "Points":
                # si appresta ad attendere l'angolo di rotazione                      
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                  

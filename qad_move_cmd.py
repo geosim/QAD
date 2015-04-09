@@ -43,9 +43,16 @@ from qad_dim import *
 
 # Classe che gestisce il comando MOVE
 class QadMOVECommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadMOVECommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "SPOSTA")
+
+   def getEnglishName(self):
+      return "MOVE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runMOVECommand)
@@ -175,6 +182,8 @@ class QadMOVECommandClass(QadCommandClass):
          keyWords = QadMsg.translate("Command_MOVE", "Spostamento")
          prompt = QadMsg.translate("Command_MOVE", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)
          
+         englishKeyWords = "Displacement"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \

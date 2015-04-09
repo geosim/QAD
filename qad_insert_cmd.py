@@ -42,8 +42,15 @@ from qad_msg import QadMsg
 # Classe che gestisce il comando INSERT
 class QadINSERTCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadINSERTCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "INSER")
+
+   def getEnglishName(self):
+      return "INSERT"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runINSERTCommand)

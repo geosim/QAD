@@ -42,8 +42,15 @@ import qad_layer
 # Classe che gestisce il comando MBUFFER
 class QadMBUFFERCommandClass(QadCommandClass):
    
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadMBUFFERCommandClass(self.plugIn)
+   
    def getName(self):
       return QadMsg.translate("Command_list", "MBUFFER")
+
+   def getEnglishName(self):
+      return "MBUFFER"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runMBUFFERCommand)

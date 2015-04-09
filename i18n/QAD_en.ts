@@ -28,10 +28,6 @@
         <translation>Angle</translation>
     </message>
     <message>
-        <source>Lunghezza</source>
-        <translation>Length</translation>
-    </message>
-    <message>
         <source>Specificare angolo inscritto: </source>
         <translation>Specify the included angle: </translation>
     </message>
@@ -156,10 +152,6 @@
     <message>
         <source>Disegna un cerchio mediante diversi metodi.</source>
         <translation>Draws a circlerc by many methods.</translation>
-    </message>
-    <message>
-        <source>Ttr</source>
-        <translation>Ttr</translation>
     </message>
     <message>
         <source>Specificare primo punto sul cerchio: </source>
@@ -482,7 +474,7 @@ The value must be between 2 and 32767.</translation>
     </message>
     <message>
         <source>Spigolo</source>
-        <translation>Endge</translation>
+        <translation>Edge</translation>
     </message>
     <message>
         <source>Annulla</source>
@@ -506,10 +498,6 @@ Selezionare i limiti di estensione...</source>
         <translation>Extend</translation>
     </message>
     <message>
-        <source>Nessuna</source>
-        <translation>No</translation>
-    </message>
-    <message>
         <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: </source>
         <translation>Select the object to extend or shift-select to trim or [{0}]: </translation>
     </message>
@@ -520,6 +508,10 @@ Selezionare i limiti di estensione...</source>
     <message>
         <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
         <translation>Specify an extension mode [{0}] &lt;{1}&gt;: </translation>
+    </message>
+    <message>
+        <source>Nessuna estensione </source>
+        <translation>No extend</translation>
     </message>
 </context>
 <context>
@@ -554,20 +546,12 @@ Il raccordo con raggio {0} non esiste.</source>
         <translation>Multiple</translation>
     </message>
     <message>
-        <source>Selezionare la polilinea o [Raggio]: </source>
-        <translation>Select polyline or [Radius]: </translation>
-    </message>
-    <message>
         <source>Raggio</source>
         <translation>Radius</translation>
     </message>
     <message>
         <source>NonTaglia</source>
         <translation>No</translation>
-    </message>
-    <message>
-        <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [RAggio]: </source>
-        <translation>Select second object or shift-select to apply corner or [Radius]: </translation>
     </message>
     <message>
         <source>, Raggio = </source>
@@ -600,6 +584,14 @@ Il raccordo con raggio {0} non esiste.</source>
     <message>
         <source>Modalità= Non taglia-estendi</source>
         <translation>Mode = No trim-extend</translation>
+    </message>
+    <message>
+        <source>Selezionare la polilinea o [{0}]: </source>
+        <translation>Select polyline or [{0}]:</translation>
+    </message>
+    <message>
+        <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [{0}]: </source>
+        <translation>Select second object or shift-select to apply corner or [{0}]:  </translation>
     </message>
 </context>
 <context>
@@ -1068,10 +1060,6 @@ arcs or a combination of two.</translation>
         <translation>Specify the final point of the arc: </translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [Angolo]: </source>
-        <translation>Specify the final point of the arc or [Angle]: </translation>
-    </message>
-    <message>
         <source>CEntro</source>
         <translation>CEnter</translation>
     </message>
@@ -1081,7 +1069,7 @@ arcs or a combination of two.</translation>
     </message>
     <message>
         <source>Secondo punto</source>
-        <translation>second point</translation>
+        <translation>Second point</translation>
     </message>
     <message>
         <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
@@ -1195,10 +1183,6 @@ and arc segments.</translation>
     <message>
         <source>Specificare lunghezza del rettangolo &lt;{0}&gt;: </source>
         <translation>Specify length for rectangle &lt;{0}&gt;: </translation>
-    </message>
-    <message>
-        <source>SCegli</source>
-        <translation>Points</translation>
     </message>
     <message>
         <source>Specificare seconda distanza di cimatura del rettangolo &lt;{0}&gt;: </source>

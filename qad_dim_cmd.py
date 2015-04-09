@@ -69,9 +69,16 @@ def getStartEndPointClosestPartWithContext(entity, point, destCrs):
 
 # Classe che gestisce il comando DIMLINEAR
 class QadDIMLINEARCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadDIMLINEARCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "DIMLINEARE")
+
+   def getEnglishName(self):
+      return "DIMLINEAR"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDIMLINEARCommand)
@@ -210,6 +217,8 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                  QadMsg.translate("Command_DIM", "Ruotato")      
       prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [{0}]: ").format(keyWords)
       
+      englishKeyWords = "Text" + "/" + "Angle" + "/" + "Horizontal" + "/" + "Vertical" + "/" + "Rotated"
+      keyWords += "_" + englishKeyWords
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
@@ -351,13 +360,13 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_DIM", "Testo"):
+            if value == QadMsg.translate("Command_DIM", "Testo") or value == "Text":
                prompt = QadMsg.translate("Command_DIM", "Digitare il testo di quota <{0}>: ")
                dist = qad_utils.getDistance(self.dimPt1, self.dimPt2)
                self.waitForString(prompt.format(str(dist)), dist)
                self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT)
                self.step = 5         
-            elif value == QadMsg.translate("Command_DIM", "Angolo"):
+            elif value == QadMsg.translate("Command_DIM", "Angolo") or value == "Angle":
                # si appresta ad attendere l'angolo di rotazione del testo
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
@@ -367,17 +376,17 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6
                self.GetAngleClass.run(msgMapTool, msg)               
-            elif value == QadMsg.translate("Command_DIM", "Orizzontale"):
+            elif value == QadMsg.translate("Command_DIM", "Orizzontale") or value == "Horizontal":
                # allineamento della linea di quota orizzontale
                self.forcedDimLineAlignment = QadDimStyleAlignmentEnum.HORIZONTAL # allineamento della linea di quota forzato               
                self.forcedDimLineRot = 0.0             
                self.waitForDimensionLinePos()
-            elif value == QadMsg.translate("Command_DIM", "Verticale"):
+            elif value == QadMsg.translate("Command_DIM", "Verticale") or value == "Vertical":
                # allineamento della linea di quota verticale               
                self.forcedDimLineAlignment = QadDimStyleAlignmentEnum.VERTICAL # allineamento della linea di quota forzato
                self.forcedDimLineRot = 0.0             
                self.waitForDimensionLinePos()
-            elif value == QadMsg.translate("Command_DIM", "Ruotato"):
+            elif value == QadMsg.translate("Command_DIM", "Ruotato") or value == "Rotated":
                # si appresta ad attendere l'angolo di rotazionedella linea di quotatura
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
@@ -437,8 +446,15 @@ class QadDIMLINEARCommandClass(QadCommandClass):
 # Classe che gestisce il comando DIMALIGNED
 class QadDIMALIGNEDCommandClass(QadCommandClass):
    
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadDIMALIGNEDCommandClass(self.plugIn)
+   
    def getName(self):
       return QadMsg.translate("Command_list", "DIMALLINEATA")
+
+   def getEnglishName(self):
+      return "DIMALIGNED"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDIMALIGNEDCommand)
@@ -751,9 +767,16 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       
 # Classe che gestisce il comando DIMARC da finire
 class QadDIMARCCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadDIMARCCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "ARCOQUOTA")
+
+   def getEnglishName(self):
+      return "DIMARC"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDIMARCCommand)

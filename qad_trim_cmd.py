@@ -42,9 +42,16 @@ from qad_ssget_cmd import QadSSGetClass
 
 # Classe che gestisce il comando TRIM
 class QadTRIMCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadTRIMCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "TAGLIA")
+
+   def getEnglishName(self):
+      return "TRIM"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runTRIMCommand)
@@ -212,6 +219,8 @@ class QadTRIMCommandClass(QadCommandClass):
                  QadMsg.translate("Command_TRIM", "Annulla")      
       prompt = QadMsg.translate("Command_TRIM", "Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: ").format(keyWords)                        
       
+      englishKeyWords = "Fence" + "/" + "Crossing" + "/" + "Edge" + "/" + "Undo"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -277,7 +286,7 @@ class QadTRIMCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_TRIM", "iNTercetta"):
+            if value == QadMsg.translate("Command_TRIM", "iNTercetta") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -286,7 +295,7 @@ class QadTRIMCommandClass(QadCommandClass):
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 3
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Interseca"):
+            elif value == QadMsg.translate("Command_TRIM", "Interseca") or value == "Crossing":
                # Seleziona tutti gli oggetti che intersecano un rettangolo                                  
                self.RECTANGLECommand = QadRECTANGLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -295,7 +304,7 @@ class QadTRIMCommandClass(QadCommandClass):
                self.RECTANGLECommand.run(msgMapTool, msg)
                self.step = 4
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Spigolo"):
+            elif value == QadMsg.translate("Command_TRIM", "Spigolo") or value == "Edge":
                # Per estendere un oggetto usando anche le estensioni degli oggetti di riferimento
                # vedi variabile EDGEMODE
                keyWords = QadMsg.translate("Command_TRIM", "Estensione") + "/" + \
@@ -306,6 +315,8 @@ class QadTRIMCommandClass(QadCommandClass):
                   self.defaultValue = QadMsg.translate("Command_TRIM", "Estensione")
                prompt = QadMsg.translate("Command_TRIM", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
                    
+               englishKeyWords = "Extend" + "/" + "No extend"
+               keyWords += "_" + englishKeyWords
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
@@ -314,7 +325,7 @@ class QadTRIMCommandClass(QadCommandClass):
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5               
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Annulla"):
+            elif value == QadMsg.translate("Command_TRIM", "Annulla") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
@@ -418,13 +429,13 @@ class QadTRIMCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_TRIM", "Nessuna"):
+            if value == QadMsg.translate("Command_TRIM", "Nessuna") or value == "No extend":
                self.edgeMode = 0
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()
                # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
                self.waitForObjectSel()
-            elif value == QadMsg.translate("Command_TRIM", "Estensione"):
+            elif value == QadMsg.translate("Command_TRIM", "Estensione") or value == "Extend":
                self.edgeMode = 1
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()

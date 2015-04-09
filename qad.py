@@ -382,6 +382,11 @@ class Qad(QObject):
 
 
    def unload(self):
+      # Disconnect to signals
+      QObject.disconnect(self.canvas, SIGNAL("mapToolSet(QgsMapTool*)"), self.deactivate)            
+      QObject.disconnect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
+      QObject.disconnect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+      
       # Remove the plugin menu item and icon
       self.iface.removePluginVectorMenu("&QAD", self.mainAction)
       self.iface.removeToolBarIcon(self.mainAction)
@@ -394,6 +399,8 @@ class Qad(QObject):
          del self.menu
       if self.TextWindow is not None:
          self.TextWindow.close()
+      if self.tool:
+         del self.tool
 
 
    #============================================================================
@@ -1037,11 +1044,10 @@ class Qad(QObject):
       self.QadCommands.abortCommand()
       
    def isValidCommand(self, command):
-      upperCommand = command.upper()
-      return upperCommand in self.QadCommands.commands
-
+      return self.QadCommands.isValidCommand(command)
+      
    def getCommandNames(self):
-      return self.QadCommands.commands
+      return self.QadCommands.getCommandNames()
    
    def getCommandObj(self, cmdName):
       return self.QadCommands.getCommandObj(cmdName)

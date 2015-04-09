@@ -40,8 +40,15 @@ from qad_msg import QadMsg
 # Classe che gestisce il comando DSETTINGS
 class QadDSETTINGSCommandClass(QadCommandClass):
    
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadDSETTINGSCommandClass(self.plugIn)
+   
    def getName(self):
       return QadMsg.translate("Command_list", "IMPOSTADIS")
+
+   def getEnglishName(self):
+      return "DSETTINGS"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDSETTINGSCommand)

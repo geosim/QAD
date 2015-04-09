@@ -42,9 +42,16 @@ from qad_rubberband import createRubberBand
 
 # Classe che gestisce il comando LINE
 class QadLINECommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadLINECommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "LINEA")
+
+   def getEnglishName(self):
+      return "LINE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runLINECommand)
@@ -183,7 +190,7 @@ class QadLINECommandClass(QadCommandClass):
             snapTypeOnSel = QadSnapTypeEnum.NONE
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_LINE", "Annulla"):               
+            if value == QadMsg.translate("Command_LINE", "Annulla") or value == "Undo":               
                self.delLastVertex() # cancello ultimo vertice
                # imposto il map tool
                if len(self.vertices) == 0:
@@ -196,7 +203,7 @@ class QadLINECommandClass(QadCommandClass):
                else:
                   self.getPointMapTool().firstPt = self.vertices[-1]
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)        
-            elif value == QadMsg.translate("Command_LINE", "Chiudi"):
+            elif value == QadMsg.translate("Command_LINE", "Chiudi") or VALUE == "Close":
                newPt = self.vertices[0]
                self.addVertex(newPt) # aggiungo un nuovo vertice
                if self.virtualCmd == False: # se si vuole veramente salvare in un layer   
@@ -380,6 +387,8 @@ class QadLINECommandClass(QadCommandClass):
             keyWords = QadMsg.translate("Command_LINE", "Annulla")
          prompt = QadMsg.translate("Command_LINE", "Specificare punto successivo o [{0}]: ").format(keyWords)
             
+         englishKeyWords = "Close" + "/" + "Undo"
+         keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o enter o una parola chiave         
          # msg, inputType, default, keyWords, nessun controllo
          self.waitFor(prompt, \

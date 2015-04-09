@@ -153,9 +153,15 @@ class QadSnapPointsDisplayManager():
       arco per intersezione su estensione per la modalità di snap EXT_INT
       """
       self.hide()
+
       # svuoto la lista dei marker
+      for vertexMarker in self.__vertexMarkers:
+         self.__mapCanvas.scene().removeItem(vertexMarker)
       del self.__vertexMarkers[:]
+      
       # svuoto la linea di estensione
+      for lineMarker in self.__lineMarkers:
+         self.__mapCanvas.scene().removeItem(lineMarker)
       del self.__lineMarkers[:]
       
       # punti di snap

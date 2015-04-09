@@ -43,8 +43,15 @@ from qad_variables import *
 # Classe che gestisce il comando FILLET
 class QadFILLETCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadFILLETCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "RACCORDO")
+
+   def getEnglishName(self):
+      return "FILLET"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runFILLETCommand)
@@ -306,6 +313,8 @@ class QadFILLETCommandClass(QadCommandClass):
                  QadMsg.translate("Command_FILLET", "Multiplo")
       prompt = QadMsg.translate("Command_FILLET", "Selezionare il primo oggetto o [{0}]: ").format(keyWords)
                
+      englishKeyWords = "Undo" + "/" + "Polyline" + "/" + "Radius" + "/" + "Trim" + "/" + "Multiple"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
       self.waitFor(prompt, \
@@ -323,14 +332,17 @@ class QadFILLETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_POLYLINE)
       self.getPointMapTool().radius = self.radius      
 
-      msg = QadMsg.translate("Command_FILLET", "Selezionare la polilinea o [Raggio]: ")                        
-               
+      keyWords = QadMsg.translate("Command_FILLET", "Raggio")
+      prompt = QadMsg.translate("Command_FILLET", "Selezionare la polilinea o [{0}]: ").format(keyWords)
+
+      englishKeyWords = "Radius"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
-                   QadMsg.translate("Command_FILLET", "Raggio"), QadInputModeEnum.NOT_NULL)      
+                   keyWords, QadInputModeEnum.NOT_NULL)      
             
         
    #============================================================================
@@ -343,12 +355,16 @@ class QadFILLETCommandClass(QadCommandClass):
 
       keyWords = QadMsg.translate("Command_FILLET", "Taglia-estendi") + "/" + \
                  QadMsg.translate("Command_FILLET", "Non taglia-estendi")
+
       if self.filletMode == 1:
          default = QadMsg.translate("Command_FILLET", "Taglia-estendi")
       elif self.filletMode == 2:
-         default = QadMsg.translate("Command_FILLET", "Non taglia-estendi")                 
+         default = QadMsg.translate("Command_FILLET", "Non taglia-estendi") 
+                         
       prompt = QadMsg.translate("Command_FILLET", "Specificare modalità di taglio [{0}] <{1}>: ").format(keyWords, default)
 
+      englishKeyWords = "Trim-extend" + "/" + "No trim-extend"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, QadInputTypeEnum.KEYWORDS, default, \
@@ -367,14 +383,17 @@ class QadFILLETCommandClass(QadCommandClass):
                                            self.partAt1, self.pointAt1)      
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING)
 
-      msg = QadMsg.translate("Command_FILLET", "Selezionare il secondo oggetto o selezionare l'oggetto tenendo premuto il tasto Maiusc per applicare l'angolo o [RAggio]: ")                        
-               
+      keyWords = QadMsg.translate("Command_FILLET", "RAggio")                   
+      prompt = QadMsg.translate("Command_FILLET", "Selezionare il secondo oggetto o selezionare l'oggetto tenendo premuto il tasto Maiusc per applicare l'angolo o [{0}]: ").format(keyWords)
+
+      englishKeyWords = "Radius"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
-      self.waitFor(msg, \
+      self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
                    None, \
-                   QadMsg.translate("Command_FILLET", "RAggio"), QadInputModeEnum.NOT_NULL)      
+                   keyWords, QadInputModeEnum.NOT_NULL)      
 
         
    def run(self, msgMapTool = False, msg = None):
@@ -415,7 +434,7 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "aNnulla"):
+            if value == QadMsg.translate("Command_FILLET", "aNnulla") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
@@ -423,9 +442,9 @@ class QadFILLETCommandClass(QadCommandClass):
                   self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
                   
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
-            elif value == QadMsg.translate("Command_FILLET", "Polilinea"):
+            elif value == QadMsg.translate("Command_FILLET", "Polilinea") or value == "Polyline":
                self.WaitForPolyline()
-            elif value == QadMsg.translate("Command_FILLET", "RAggio"):
+            elif value == QadMsg.translate("Command_FILLET", "RAggio") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -435,9 +454,9 @@ class QadFILLETCommandClass(QadCommandClass):
                self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
                self.step = 3
                self.GetDistClass.run(msgMapTool, msg)
-            elif value == QadMsg.translate("Command_FILLET", "Taglia"):
+            elif value == QadMsg.translate("Command_FILLET", "Taglia") or value == "Trim":
                self.waitForFilletMode()
-            elif value == QadMsg.translate("Command_FILLET", "Multiplo"):
+            elif value == QadMsg.translate("Command_FILLET", "Multiplo") or value == "Multiple":
                self.multi = True
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
                            
@@ -494,7 +513,7 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "Raggio"):
+            if value == QadMsg.translate("Command_FILLET", "Raggio") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
@@ -576,9 +595,9 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "Taglia"):
+            if value == QadMsg.translate("Command_FILLET", "Taglia") or value == "Trim":
                self.filletMode = 1
-            elif value == QadMsg.translate("Command_FILLET", "NonTaglia"):
+            elif value == QadMsg.translate("Command_FILLET", "NonTaglia") or value == "No":
                self.filletMode = 2
             self.plugIn.setFilletMode(self.filletMode)
             
@@ -617,7 +636,7 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "RAggio"):
+            if value == QadMsg.translate("Command_FILLET", "RAggio") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)

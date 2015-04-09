@@ -43,9 +43,16 @@ from qad_rubberband import createRubberBand
 
 # Classe che gestisce il comando OFFSET
 class QadOFFSETCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadOFFSETCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "OFFSET")
+
+   def getEnglishName(self):
+      return "OFFSET"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runOFFSETCommand)
@@ -298,6 +305,8 @@ class QadOFFSETCommandClass(QadCommandClass):
          default = self.offSet
       prompt = QadMsg.translate("Command_OFFSET", "Specificare distanza di offset o [{0}] <{1}>: ").format(keyWords, str(default))
 
+      englishKeyWords = "Through" + "/" + "Erase"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -324,6 +333,8 @@ class QadOFFSETCommandClass(QadCommandClass):
       default = QadMsg.translate("Command_OFFSET", "Esci")
       prompt = QadMsg.translate("Command_OFFSET", "Selezionare oggetto di cui eseguire l'offset o [{0}] <{1}>: ").format(keyWords, default)
       
+      englishKeyWords = "Exit" + "/" + "Undo"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -345,18 +356,22 @@ class QadOFFSETCommandClass(QadCommandClass):
                     QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
          default = QadMsg.translate("Command_OFFSET", "Esci")
+         englishKeyWords = "Exit" + "/" + "Multiple" + "/" + "Undo"
       else:
          keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
+         englishKeyWords = "Exit" + "/" + "Undo"
 
       if self.OnlySegment == False:
          keyWords = keyWords + "/" + \
                     QadMsg.translate("Command_OFFSET", "Segmento")
+         englishKeyWords = englishKeyWords + "/" + "Segment"
 
       prompt = QadMsg.translate("Command_OFFSET", "Specificare punto sul lato di cui eseguire l'offset o [{0}] <{1}>: ")
 
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
       self.waitFor(prompt.format(keyWords, defaultMsg), \
@@ -378,18 +393,22 @@ class QadOFFSETCommandClass(QadCommandClass):
                     QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "Esci")        
          default = QadMsg.translate("Command_OFFSET", "Esci")
+         englishKeyWords = "Exit" + "/" + "Multiple" + "/" + "Undo"
       else:
          keyWords = QadMsg.translate("Command_OFFSET", "Esci") + "/" + \
                     QadMsg.translate("Command_OFFSET", "ANnulla")
          defaultMsg = QadMsg.translate("Command_OFFSET", "oggetto successivo")
          default = None
+         englishKeyWords = "Exit" + "/" + "Undo"
 
       if self.OnlySegment == False:
          keyWords = keyWords + "/" + \
                     QadMsg.translate("Command_OFFSET", "Segmento")
+         englishKeyWords = englishKeyWords + "/" + "Segment"
 
       prompt = QadMsg.translate("Command_OFFSET", "Specificare punto di passaggio o [{0}] <{1}>: ")
 
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valore nullo non permesso
       self.waitFor(prompt.format(keyWords, defaultMsg), \
@@ -451,14 +470,14 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_OFFSET", "Punto"):
+            if value == QadMsg.translate("Command_OFFSET", "Punto") or value == "Through":
                self.offSet = -1
                self.getPointMapTool().offSet = self.offSet
                QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offSet)
                QadVariables.save()               
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
-            elif value == QadMsg.translate("Command_OFFSET", "Cancella"):
+            elif value == QadMsg.translate("Command_OFFSET", "Cancella") or value == "Erase":
                keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
                           QadMsg.translate("QAD", "No")                               
               
@@ -468,14 +487,16 @@ class QadOFFSETCommandClass(QadCommandClass):
                   default = QadMsg.translate("QAD", "No")
                prompt = QadMsg.translate("Command_OFFSET", "Cancellare l'oggetto sorgente dopo l'offset ? [{0}] <{1}>: ").format(keyWords, default)
                    
-               # si appresta ad attendere enter o una parola chiave         
+               englishKeyWords = "Yes" + "/" + "No"
+               keyWords += "_" + englishKeyWords
+               # si appresta ad attendere enter o una parola chiave
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
                             QadInputTypeEnum.KEYWORDS, \
                             default, \
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5
-            elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
+            elif value == QadMsg.translate("Command_OFFSET", "MUltiplo") or value == "Multiple":
                self.multi = True
                self.waitForBasePt()                         
          elif type(value) == QgsPoint: # se é stato inserito il primo punto per il calcolo della distanza
@@ -518,10 +539,10 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_OFFSET", "Esci"):
+            if value == QadMsg.translate("Command_OFFSET", "Esci") or value == "Exit":
                self.offsetGeoms(currLayer)
                return True
-            elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
+            elif value == QadMsg.translate("Command_OFFSET", "ANnulla") or value == "Undo":
                self.undoGeomsInCache()
                # si appresta ad attendere la selezione di un oggetto
                self.waitForObjectSel()
@@ -580,17 +601,17 @@ class QadOFFSETCommandClass(QadCommandClass):
             self.waitForObjectSel()
          else:
             if type(value) == unicode:
-               if value == QadMsg.translate("Command_OFFSET", "Esci"):
+               if value == QadMsg.translate("Command_OFFSET", "Esci") or value == "Exit":
                   self.offsetGeoms(currLayer)
                   return True # fine comando
-               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
+               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo") or value == "Multiple":
                   self.multi = True
                   self.waitForSidePt()               
-               elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
+               elif value == QadMsg.translate("Command_OFFSET", "ANnulla") or value == "Undo":
                   self.undoGeomsInCache()               
                   # si appresta ad attendere la selezione di un oggetto
                   self.waitForObjectSel()
-               elif value == QadMsg.translate("Command_OFFSET", "Segmento"):
+               elif value == QadMsg.translate("Command_OFFSET", "Segmento") or value == "Segment":
                   self.OnlySegment = True   
                   linearObject = qad_utils.QadLinearObject()
                   if linearObject.setByClosestSegmentOfGeom(self.subGeomSelectedPt, self.subGeom) == True:
@@ -635,17 +656,17 @@ class QadOFFSETCommandClass(QadCommandClass):
             self.waitForObjectSel()
          else:
             if type(value) == unicode:
-               if value == QadMsg.translate("Command_OFFSET", "Esci"):
+               if value == QadMsg.translate("Command_OFFSET", "Esci") or value == "Exit":
                   self.offsetGeoms(currLayer)
                   return True # fine comando
-               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo"):
+               elif value == QadMsg.translate("Command_OFFSET", "MUltiplo") or value == "Multiple":
                   self.multi = True
                   self.waitForPassagePt()     
-               elif value == QadMsg.translate("Command_OFFSET", "ANnulla"):
+               elif value == QadMsg.translate("Command_OFFSET", "ANnulla") or value == "Undo":
                   self.undoGeomsInCache()               
                   # si appresta ad attendere la selezione di un oggetto
                   self.waitForObjectSel()
-               elif value == QadMsg.translate("Command_OFFSET", "Segmento"):
+               elif value == QadMsg.translate("Command_OFFSET", "Segmento") or value == "Segment":
                   self.OnlySegment = True                  
                   linearObject = qad_utils.QadLinearObject()
                   if linearObject.setByClosestSegmentOfGeom(self.subGeomSelectedPt, self.subGeom) == True:
@@ -681,10 +702,10 @@ class QadOFFSETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì"):
+            if value == QadMsg.translate("QAD", "Sì") or value == "Yes":
                self.eraseEntity = True
                self.waitForDistance()
-            elif value == QadMsg.translate("QAD", "No"):
+            elif value == QadMsg.translate("QAD", "No") or value == "No":
                self.eraseEntity = False
                self.waitForDistance()
          

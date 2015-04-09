@@ -41,6 +41,10 @@ import qad_utils
 # QadGetAngleClass
 #===============================================================================
 class QadGetAngleClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadGetAngleClass(self.plugIn)
       
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

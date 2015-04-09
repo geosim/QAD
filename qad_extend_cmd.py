@@ -42,9 +42,16 @@ from qad_ssget_cmd import QadSSGetClass
 
 # Classe che gestisce il comando EXTEND
 class QadEXTENDCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadEXTENDCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "ESTENDI")
+
+   def getEnglishName(self):
+      return "EXTEND"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runEXTENDCommand)
@@ -214,6 +221,8 @@ class QadEXTENDCommandClass(QadCommandClass):
                  QadMsg.translate("Command_EXTEND", "Annulla")
       prompt = QadMsg.translate("Command_EXTEND", "Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: ").format(keyWords)
       
+      englishKeyWords = "Fence" + "/" + "Crossing" + "/" + "Edge" + "/" + "Undo"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -279,7 +288,7 @@ class QadEXTENDCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_EXTEND", "iNTercetta"):
+            if value == QadMsg.translate("Command_EXTEND", "iNTercetta") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -288,7 +297,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 3
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Interseca"):
+            elif value == QadMsg.translate("Command_EXTEND", "Interseca") or value == "Crossing":
                # Seleziona tutti gli oggetti che intersecano un rettangolo                                  
                self.RECTANGLECommand = QadRECTANGLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -297,18 +306,20 @@ class QadEXTENDCommandClass(QadCommandClass):
                self.RECTANGLECommand.run(msgMapTool, msg)
                self.step = 4
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Spigolo"):
+            elif value == QadMsg.translate("Command_EXTEND", "Spigolo") or value == "Edge":
                # Per estendere un oggetto usando anche le estensioni degli oggetti di riferimento
                # vedi variabile EDGEMODE
                keyWords = QadMsg.translate("Command_EXTEND", "Estensione") + "/" + \
                           QadMsg.translate("Command_EXTEND", "Nessuna estensione")                                              
 
                if self.edgeMode == 0: # 0 = nessuna estensione
-                  self.defaultValue = QadMsg.translate("Command_EXTEND", "Nessuna")
+                  self.defaultValue = QadMsg.translate("Command_EXTEND", "Nessuna estensione")
                else: 
                   self.defaultValue = QadMsg.translate("Command_EXTEND", "Estensione")                   
                prompt = QadMsg.translate("Command_EXTEND", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)
                    
+               englishKeyWords = "Extend" + "/" + "No extend"
+               keyWords += "_" + englishKeyWords
                # si appresta ad attendere enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
@@ -317,7 +328,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5               
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Annulla"):
+            elif value == QadMsg.translate("Command_EXTEND", "Annulla") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
@@ -430,13 +441,13 @@ class QadEXTENDCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_EXTEND", "Nessuna"):
+            if value == QadMsg.translate("Command_EXTEND", "Nessuna estensione ") or value == "No extend":
                self.edgeMode = 0
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()
                # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
                self.waitForObjectSel()
-            elif value == QadMsg.translate("Command_EXTEND", "Estensione"):
+            elif value == QadMsg.translate("Command_EXTEND", "Estensione") or value == "Extend":
                self.edgeMode = 1
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()

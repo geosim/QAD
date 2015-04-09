@@ -71,7 +71,7 @@ from qad_polygon_cmd import QadPOLYGONCommandClass
 # Classe che gestisce i comandi di Qad
 class QadCommandsClass():
    # quando si aggiunge un nuovo comando bisogna
-   # 1) aggiungerlo nella lista commands nella funzione __init__ 
+   # 1) aggiungerlo nella lista cmdNames nella funzione __init__ 
    # 2) aggiungere la sua chiamata nella funzione getCommandObj
    # 3) se il comando può essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
    #    e ricordarsi di inserire l'icona in resources.qrc e di ricompilare le risorse
@@ -79,48 +79,54 @@ class QadCommandsClass():
    
    def __init__(self, plugIn):   
       self.plugIn = plugIn
-      self.commands = []  # lista dei comandi
+      
+      self.__cmdObjs = [] # lista interna degli oggetti comandi
+      self.__cmdObjs.append(QadIDCommandClass(self.plugIn)) # ID
+      self.__cmdObjs.append(QadSETVARCommandClass(self.plugIn)) # SETVAR
+      self.__cmdObjs.append(QadPLINECommandClass(self.plugIn)) # PLINE
+      self.__cmdObjs.append(QadSETCURRLAYERBYGRAPHCommandClass(self.plugIn))# SETCURRLAYERBYGRAPH
+      self.__cmdObjs.append(QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(self.plugIn)) # SETCURRUPDATEABLELAYERBYGRAPH
+      self.__cmdObjs.append(QadARCCommandClass(self.plugIn)) # ARC
+      self.__cmdObjs.append(QadCIRCLECommandClass(self.plugIn)) # CIRCLE
+      self.__cmdObjs.append(QadDSETTINGSCommandClass(self.plugIn)) # DSETTINGS
+      self.__cmdObjs.append(QadLINECommandClass(self.plugIn)) # LINE
+      self.__cmdObjs.append(QadERASECommandClass(self.plugIn)) # ERASE
+      self.__cmdObjs.append(QadMPOLYGONCommandClass(self.plugIn)) # MPOLYGON
+      self.__cmdObjs.append(QadMBUFFERCommandClass(self.plugIn)) # MBUFFER
+      self.__cmdObjs.append(QadROTATECommandClass(self.plugIn)) # ROTATE
+      self.__cmdObjs.append(QadMOVECommandClass(self.plugIn)) # MOVE
+      self.__cmdObjs.append(QadSCALECommandClass(self.plugIn)) # SCALE
+      self.__cmdObjs.append(QadCOPYCommandClass(self.plugIn)) # COPY
+      self.__cmdObjs.append(QadOFFSETCommandClass(self.plugIn)) # OFFSET
+      self.__cmdObjs.append(QadEXTENDCommandClass(self.plugIn)) # EXTEND
+      self.__cmdObjs.append(QadTRIMCommandClass(self.plugIn)) # TRIM
+      self.__cmdObjs.append(QadRECTANGLECommandClass(self.plugIn)) # RECTANGLE
+      self.__cmdObjs.append(QadMIRRORCommandClass(self.plugIn)) # MIRROR
+      self.__cmdObjs.append(QadUNDOCommandClass(self.plugIn)) # UNDO
+      self.__cmdObjs.append(QadREDOCommandClass(self.plugIn)) # REDO
+      self.__cmdObjs.append(QadINSERTCommandClass(self.plugIn)) # INSERT
+      self.__cmdObjs.append(QadTEXTCommandClass(self.plugIn)) # TEXT
+      self.__cmdObjs.append(QadSTRETCHCommandClass(self.plugIn)) # STRETCH
+      self.__cmdObjs.append(QadBREAKCommandClass(self.plugIn)) # BREAK
+      self.__cmdObjs.append(QadPEDITCommandClass(self.plugIn)) # PEDIT
+      self.__cmdObjs.append(QadFILLETCommandClass(self.plugIn)) # FILLET
+      self.__cmdObjs.append(QadDIMLINEARCommandClass(self.plugIn)) # DIMLINEAR
+      self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
+      self.__cmdObjs.append(QadPOLYGONCommandClass(self.plugIn)) # POLYGON
+     
       self.actualCommand = None  # Comando in corso di esecuzione
-
-      self.commands.append(QadMsg.translate("Command_list", "ID"))
-      self.commands.append(QadMsg.translate("Command_list", "MODIVAR"))
-      self.commands.append(QadMsg.translate("Command_list", "PLINEA"))
-      self.commands.append(QadMsg.translate("Command_list", "SETCURRLAYERDAGRAFICA"))
-      self.commands.append(QadMsg.translate("Command_list", "SETCURRMODIFLAYERDAGRAFICA"))
-      self.commands.append(QadMsg.translate("Command_list", "ARCO"))
-      self.commands.append(QadMsg.translate("Command_list", "CERCHIO"))
-      self.commands.append(QadMsg.translate("Command_list", "IMPOSTADIS"))
-      self.commands.append(QadMsg.translate("Command_list", "LINEA"))
-      self.commands.append(QadMsg.translate("Command_list", "CANCELLA"))
-      self.commands.append(QadMsg.translate("Command_list", "MPOLIGONO"))
-      self.commands.append(QadMsg.translate("Command_list", "MBUFFER"))
-      self.commands.append(QadMsg.translate("Command_list", "RUOTA"))
-      self.commands.append(QadMsg.translate("Command_list", "SPOSTA"))
-      self.commands.append(QadMsg.translate("Command_list", "SCALA"))
-      self.commands.append(QadMsg.translate("Command_list", "COPIA"))
-      self.commands.append(QadMsg.translate("Command_list", "OFFSET"))
-      self.commands.append(QadMsg.translate("Command_list", "ESTENDI"))
-      self.commands.append(QadMsg.translate("Command_list", "TAGLIA"))
-      self.commands.append(QadMsg.translate("Command_list", "RETTANGOLO"))
-      self.commands.append(QadMsg.translate("Command_list", "SPECCHIO"))
-      self.commands.append(QadMsg.translate("Command_list", "ANNULLA"))
-      self.commands.append(QadMsg.translate("Command_list", "RIPRISTINA"))
-      self.commands.append(QadMsg.translate("Command_list", "INSER"))
-      self.commands.append(QadMsg.translate("Command_list", "TESTO"))
-      self.commands.append(QadMsg.translate("Command_list", "STIRA"))
-      self.commands.append(QadMsg.translate("Command_list", "SPEZZA"))
-      self.commands.append(QadMsg.translate("Command_list", "EDITPL"))
-      self.commands.append(QadMsg.translate("Command_list", "RACCORDO"))
-      self.commands.append(QadMsg.translate("Command_list", "DIMLINEARE"))
-      self.commands.append(QadMsg.translate("Command_list", "DIMALLINEATA"))
-      self.commands.append(QadMsg.translate("Command_list", "POLIGONO"))
    
       # carico alias dei comandi
       self.commandAliases = QadCommandAliasesClass()
       self.commandAliases.load()
-      for alias in self.commandAliases.getCommandAliasDict().keys():
-         self.commands.append(alias)
       
+   def isValidCommand(self, command):
+      cmd = self.getCommandObj(command)
+      if cmd:
+         del cmd
+         return True
+      else:
+         return False
    
    def showCommandPrompt(self):
       if self.plugIn is not None:
@@ -141,87 +147,52 @@ class QadCommandsClass():
    def getCommandObj(self, cmdName, useAlias = True):
       if cmdName is None:
          return None
-      command = cmdName.upper()
-         
-      if command == QadMsg.translate("Command_list", "ID"):
-         return QadIDCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "MODIVAR"):
-         return QadSETVARCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "PLINEA"):
-         return QadPLINECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SETCURRLAYERDAGRAFICA"):
-         return QadSETCURRLAYERBYGRAPHCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SETCURRMODIFLAYERDAGRAFICA"):
-         return QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "ARCO"):
-         return QadARCCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "CERCHIO"):
-         return QadCIRCLECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "IMPOSTADIS"):
-         return QadDSETTINGSCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "LINEA"):
-         return QadLINECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "CANCELLA"):
-         return QadERASECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "MPOLIGONO"):
-         return QadMPOLYGONCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "MBUFFER"):
-         return QadMBUFFERCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "RUOTA"):
-         return QadROTATECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SPOSTA"):
-         return QadMOVECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SCALA"):
-         return QadSCALECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "COPIA"):
-         return QadCOPYCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "OFFSET"):
-         return QadOFFSETCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "ESTENDI"):
-         return QadEXTENDCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "TAGLIA"):
-         return QadTRIMCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "RETTANGOLO"):
-         return QadRECTANGLECommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SPECCHIO"):
-         return QadMIRRORCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "ANNULLA"):
-         return QadUNDOCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "RIPRISTINA"):
-         return QadREDOCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "INSER"):
-         return QadINSERTCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "TESTO"):
-         return QadTEXTCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "STIRA"):
-         return QadSTRETCHCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "SPEZZA"):
-         return QadBREAKCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "EDITPL"):
-         return QadPEDITCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "RACCORDO"):
-         return QadFILLETCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "DIMLINEARE"):
-         return QadDIMLINEARCommandClass(self.plugIn)
-      elif command == QadMsg.translate("Command_list", "DIMALLINEATA"):
-         return QadDIMALIGNEDCommandClass(self.plugIn)      
-      elif command == QadMsg.translate("Command_list", "POLIGONO"):
-         return QadPOLYGONCommandClass(self.plugIn)      
+      upperCommand = cmdName.upper()
+      if upperCommand[0] == "_":
+         englishName = True
+         upperCommand = upperCommand[1:] # salto il primo carattere di "_"
+      else:
+         englishName = False 
       
-      elif command == "MACRO_RUNNER":
+      for cmd in self.__cmdObjs:
+         if englishName:
+            if upperCommand == cmd.getEnglishName(): # in inglese
+               return cmd.instantiateNewCmd()
+         else:
+            if upperCommand == cmd.getName(): # in lingua locale
+               return cmd.instantiateNewCmd()
+      
+      if cmdName == "MACRO_RUNNER":
          return QadMacroRunnerCommandClass(self.plugIn)
       else:
          if useAlias:
-            command = self.commandAliases.getCommandName(command)
+            command = self.commandAliases.getCommandName(cmdName)
             return self.getCommandObj(command, False)
          else:
             return None
+
+
+   #============================================================================
+   # getCommandNames
+   #============================================================================
+   def getCommandNames(self):
+      """ Return a list of pairs : [(<local cmd name>, <english cmd name>)...]"""     
+      cmdNames = []
+      # ricavo la lista dei nomi dei comandi
+      for cmd in self.__cmdObjs:
+         cmdNames.append([cmd.getName(), cmd.getEnglishName]) # in lingua locale, in inglese
+      # aggiungo gli alias
+      for alias in self.commandAliases.getCommandAliasDict().keys():
+         cmdNames.append([alias, alias])
+         
+      return cmdNames
+         
    
    #============================================================================
    # run
    #============================================================================
    def run(self, command):
-      # se non c'é alcun comando attivo
+      # se c'é un comando attivo
       if self.actualCommand is not None:
          return
       
@@ -389,11 +360,18 @@ class QadCommandsClass():
 class QadMacroRunnerCommandClass(QadCommandClass):
    # Classe che gestisce l'esecuzione di altri comandi
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadMacroRunnerCommandClass(self.plugIn)
+
    def getName(self):
       if self.command is None:
          return "MACRO_RUNNER"
       else:
          return self.command.getName()
+
+   def getEnglishName(self):
+      return "MACRO_RUNNER"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runREDOCommand)

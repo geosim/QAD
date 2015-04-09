@@ -44,9 +44,16 @@ from qad_dim import *
 
 # Classe che gestisce il comando SCALA
 class QadSCALECommandClass(QadCommandClass):
-   
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSCALECommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "SCALA")
+
+   def getEnglishName(self):
+      return "SCALE"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSCALECommand)
@@ -178,6 +185,8 @@ class QadSCALECommandClass(QadCommandClass):
       default = self.plugIn.lastScale
       prompt = QadMsg.translate("Command_SCALE", "Specificare fattore di scala o [{0}] <{1}>: ").format(keyWords, str(default))                        
       
+      englishKeyWords = "Copy" + "/" + "Reference"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(prompt, \
@@ -212,6 +221,8 @@ class QadSCALECommandClass(QadCommandClass):
          default = self.plugIn.lastNewReferenceLen
       prompt = QadMsg.translate("Command_SCALE", "Specificare nuova lunghezza o [{0}] <{1}>: ").format(keyWords, str(default))                        
          
+      englishKeyWords = "Points"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(prompt, \
@@ -300,12 +311,12 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_SCALE", "Copia"):
+            if value == QadMsg.translate("Command_SCALE", "Copia") or value == "Copy":
                self.copyFeatures = True
                self.showMsg(QadMsg.translate("Command_SCALE", "\nScala di una copia degli oggetti selezionati."))
                # si appresta ad attendere la scala               
                self.waitForScale()                
-            elif value == QadMsg.translate("Command_SCALE", "Riferimento"):
+            elif value == QadMsg.translate("Command_SCALE", "Riferimento") or value == "Reference":
                # si appresta ad attendere la lunghezza di riferimento                      
                self.waitForReferenceLen()
          elif type(value) == QgsPoint or type(value) == float: # se é stato inserita la scala
@@ -415,7 +426,7 @@ class QadSCALECommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_SCALE", "Punti"):
+            if value == QadMsg.translate("Command_SCALE", "Punti") or value == "Points":
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_NEW_LEN_PT)
                # si appresta ad attendere un punto

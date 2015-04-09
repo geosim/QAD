@@ -40,6 +40,10 @@ import qad_utils
 # QadGetDistClass
 #===============================================================================
 class QadGetDistClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadGetDistClass(self.plugIn)
       
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

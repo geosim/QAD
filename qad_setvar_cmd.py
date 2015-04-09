@@ -37,10 +37,15 @@ from qad_variables import *
 # Classe che gestisce il comando SETVAR
 class QadSETVARCommandClass(QadCommandClass):
 
-   varName = ""
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSETVARCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "MODIVAR")
+
+   def getEnglishName(self):
+      return "SETVAR"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETVARCommand)
@@ -51,6 +56,8 @@ class QadSETVARCommandClass(QadCommandClass):
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
+      self.varName = ""
+
          
    def run(self, msgMapTool = False, msg = None):
       if self.step == 0: # inizio del comando

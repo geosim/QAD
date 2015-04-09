@@ -42,8 +42,15 @@ from qad_msg import QadMsg
 # Classe che gestisce il comando SETCURRLAYERBYGRAPH
 class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSETCURRLAYERBYGRAPHCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "SETCURRLAYERDAGRAFICA")
+
+   def getEnglishName(self):
+      return "SETCURRLAYERBYGRAPH"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETCURRLAYERBYGRAPHCommand)
@@ -108,8 +115,15 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
 # Classe che gestisce il comando SETCURRUPDATEABLELAYERBYGRAPH
 class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "SETCURRMODIFLAYERDAGRAFICA")
+
+   def getEnglishName(self):
+      return "SETCURRUPDATEABLELAYERBYGRAPH"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETCURRUPDATEABLELAYERBYGRAPHCommand)

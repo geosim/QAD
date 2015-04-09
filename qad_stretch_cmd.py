@@ -42,9 +42,16 @@ import qad_layer
 
 # Classe che gestisce il comando STRETCH
 class QadSTRETCHCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadSTRETCHCommandClass(self.plugIn)
    
    def getName(self):
       return QadMsg.translate("Command_list", "STIRA")
+
+   def getEnglishName(self):
+      return "STRETCH"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSTRETCHCommand)
@@ -236,6 +243,8 @@ class QadSTRETCHCommandClass(QadCommandClass):
          prompt = QadMsg.translate("Command_STRETCH", "Rimuovere i vertici")
       prompt = prompt + QadMsg.translate("Command_STRETCH", " da stirare tramite una finestra o [{0}]: ").format(keyWords)                        
 
+      englishKeyWords = "Polygon" + "/" + "Add" + "/" + "Remove"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
@@ -254,6 +263,8 @@ class QadSTRETCHCommandClass(QadCommandClass):
       keyWords = QadMsg.translate("Command_STRETCH", "Spostamento")
       prompt = QadMsg.translate("Command_STRETCH", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)                        
          
+      englishKeyWords = "Displacement"
+      keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -297,7 +308,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_STRETCH", "Poligono"):
+            if value == QadMsg.translate("Command_STRETCH", "Poligono") or value == "Polygon":
                # Seleziona tutti gli oggetti che sono interni al poligono
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -306,10 +317,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 2
                return False               
-            elif value == QadMsg.translate("Command_SSGET", "AGgiungi"):
+            elif value == QadMsg.translate("Command_SSGET", "AGgiungi") or value == "Add":
                # Passa al metodo Aggiungi: gli oggetti selezionati possono essere aggiunti al gruppo di selezione 
                self.AddOnSelection = True
-            elif value == QadMsg.translate("Command_SSGET", "Elimina"):
+            elif value == QadMsg.translate("Command_SSGET", "Elimina") or value == "Remove":
                # Passa al metodo Rimuovi: gli oggetti possono essere rimossi dal gruppo di selezione
                self.AddOnSelection = False                        
          elif type(value) == QgsPoint: # se é stato selezionato un punto

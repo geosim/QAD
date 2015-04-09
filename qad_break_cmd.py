@@ -41,8 +41,15 @@ import qad_layer
 # Classe che gestisce il comando BREAK
 class QadBREAKCommandClass(QadCommandClass):
 
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadBREAKCommandClass(self.plugIn)
+
    def getName(self):
       return QadMsg.translate("Command_list", "SPEZZA")
+
+   def getEnglishName(self):
+      return "BREAK"
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runBREAKCommand)
@@ -187,7 +194,10 @@ class QadBREAKCommandClass(QadCommandClass):
                prompt = QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione o [{0}]: ").format(keyWords)
                
                self.step = 2
-               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                    
+               self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità
+                                   
+               englishKeyWords = "First point"
+               keyWords += "_" + englishKeyWords
                # si appresta ad attendere un punto o enter o una parola chiave         
                # msg, inputType, default, keyWords, nessun controllo
                self.waitFor(prompt, \
