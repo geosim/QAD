@@ -144,7 +144,7 @@ class QadSSGetClass(QadCommandClass):
          self.showMsgOnAddRemove(0)
          return
       # controllo su layer delle quotature
-      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(layer) is not None:
+      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(entity.layer) is not None:
          self.showMsgOnAddRemove(0)
          return
       
@@ -211,7 +211,7 @@ class QadSSGetClass(QadCommandClass):
          self.showMsgOnAddRemove(0)
          return
       # controllo su layer delle quotature
-      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(layer) is not None:
+      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(entity.layer) is not None:
          self.showMsgOnAddRemove(0)
          return
       

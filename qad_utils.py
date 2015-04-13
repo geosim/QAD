@@ -5834,14 +5834,20 @@ def generalClosedPointPairClipping(partList, dualClippedPartList, offSetDist):
                circle.set(MinDistancePts[0], offSetDist)
                # ottengo le parti di GCPPCPart esterne al cerchio 
                splittedParts = GCPPCPart.getPartsExternalToCircle(circle)
-               # le sostituisco a GCPPCPart
-               for splittedPart in splittedParts.defList:
-                  GCPPCList.insert(i, splittedPart)
+               # se la splittedParts è composta da una sola parte che è uguale a GCPPCPart
+               # ad es. se GCPPCPart è tangente al cerchio allora non faccio niente
+               if splittedParts.qty() == 0 or \
+                  splittedParts.qty() == 1 and splittedParts.getLinearObjectAt(0) == GCPPCPart:
                   i = i + 1
-               GCPPCList.remove(i)
-               if splittedParts.qty() > 0:
-                  splitted = True
-                  i = i - splittedParts.qty() # torno alla prima parte risultato dello split
+               else:
+                  # le sostituisco a GCPPCPart
+                  for splittedPart in splittedParts.defList:
+                     GCPPCList.insert(i, splittedPart)
+                     i = i + 1
+                  GCPPCList.remove(i)
+                  if splittedParts.qty() > 0:
+                     splitted = True
+                     i = i - splittedParts.qty() # torno alla prima parte risultato dello split
             else:
                i = i + 1
                        
@@ -6627,6 +6633,26 @@ class QadLinearObject():
       """
       return False if self.defList is None else True
 
+
+   #============================================================================
+   # __eq__
+   #============================================================================
+   def __eq__(self, other):
+      """
+      la funzione ritorna True se l'oggetto é uguale a other.
+      """
+      if self.isInitialized() == False and other.isInitialized() == False:
+         return True
+      if self.isInitialized() and other.isInitialized():
+         if self.isSegment() and other.isSegment():
+            return self.getStartPt() == other.getStartPt() and self.getEndPt() == other.getEndPt() 
+         elif self.isArc() and other.isArc():
+            return self.getArc() == other.getArc()
+         else:
+            return False
+      else:
+         return False     
+   
    
    #============================================================================
    # clear
