@@ -3,10 +3,10 @@
 /***************************************************************************
  QAD Quantum Aided Design plugin
 
- comando DSETTINGS per impostazione disegno
+ comando DSETTINGS per impostazione stili di quotatura
  
                               -------------------
-        begin                : 2013-05-22
+        begin                : 2015-05-19
         copyright            : (C) 2013 IREN Acqua Gas SpA
         email                : geosim.dev@gruppoiren.it
         developers           : bbbbb aaaaa ggggg
@@ -30,40 +30,40 @@ from qgis.core import *
 from qgis.core import QgsApplication
 
 
-from qad_dsettings_dlg import QadDSETTINGSDialog
+from qad_dimstyle_dlg import QadDIMSTYLEDialog
 
 
 from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 
 
-# Classe che gestisce il comando DSETTINGS
-class QadDSETTINGSCommandClass(QadCommandClass):
+# Classe che gestisce il comando DIMSTYLE
+class QadDIMSTYLECommandClass(QadCommandClass):
    
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
-      return QadDSETTINGSCommandClass(self.plugIn)
+      return QadDIMSTYLECommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "IMPOSTADIS")
+      return QadMsg.translate("Command_list", "DIMSTILE")
 
    def getEnglishName(self):
-      return "DSETTINGS"
+      return "DIMSTYLE"
 
    def connectQAction(self, action):
-      QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDSETTINGSCommand)
+      QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runDIMSTYLECommand)
 
    def getIcon(self):
-      return QIcon(":/plugins/qad/icons/dsettings.png")
+      return QIcon(":/plugins/qad/icons/dimStyle.png")
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DSETTINGS", "Impostazioni per il disegno(tipo di snap, ecc.).")
+      return QadMsg.translate("Command_DIMSTYLE", "Crea e modifica gli stili di quota.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
             
-   def run(self, msgMapTool = False, msg = None):    
-      Form = QadDSETTINGSDialog(self.plugIn)
+   def run(self, msgMapTool = False, msg = None):
+      Form = QadDIMSTYLEDialog(self.plugIn)
       Form.exec_()
       return True

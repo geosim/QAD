@@ -48,6 +48,53 @@ from qad_entity import *
 
 # Modulo che gestisce varie funzionalità di Qad
 
+#===============================================================================
+# isNumericField
+#===============================================================================
+def isNumericField(field):
+   """
+   La funzione verifica che il campo di tipo QgsField sia numerico
+   """
+   fldType = field.type()
+   if fldType == QVariant.Double or fldType == QVariant.LongLong or fldType == QVariant.Int or \
+      fldType == QVariant.ULongLong or fldType == QVariant.UInt:
+      return True
+   else:
+      return False
+
+
+#===============================================================================
+# checkUniqueNewName
+#===============================================================================
+def checkUniqueNewName(newName, nameList, prefix = None, suffix = None, caseSensitive = True):
+   """
+   La funzione verifica che il nuovo nome non esistà già nella lista <nameList>.
+   Se nella lista dovesse già esistere allora aggiunge un prefisso (se <> None) o un suffisso (se <> None)
+   finchè il nome non è più presnete nella lista
+   """
+   ok = False
+   result = newName 
+   while ok == False:
+      ok = True
+      for name in nameList:
+         if caseSensitive == True:
+            if name == result:
+               ok = False
+               break
+         else:
+            if name.upper() == result.upper():
+               ok = False
+               break
+        
+      if ok == True:
+         return result
+      if prefix is not None:
+         result = prefix + result
+      else:
+         if suffix is not None:
+            result = result + suffix
+   
+   return None
 
 #===============================================================================
 # wildCard2regularExpr
@@ -215,49 +262,73 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
 def str2snapTypeEnum(s):
    """
    Ritorna la conversione di una stringa in una combinazione di tipi di snap
+   oppure -1 se non ci sono snap indicati.
    """
    snapType = QadSnapTypeEnum.NONE
    snapTypeStrList = s.strip().split(",")
    for snapTypeStr in snapTypeStrList:
       snapTypeStr = snapTypeStr.strip().upper()
-            
-      if snapTypeStr == QadMsg.translate("Snap", "FIN"): # "FIN" punti finali di ogni segmento
+      
+      # "NES" nessuno snap
+      if snapTypeStr == QadMsg.translate("Snap", "NES") or snapTypeStr == "_NON":         
+         return QadSnapTypeEnum.NONE
+      # "FIN" punti finali di ogni segmento
+      elif snapTypeStr == QadMsg.translate("Snap", "FIN") or snapTypeStr == "_END":
          snapType = snapType | QadSnapTypeEnum.END
-      elif snapTypeStr == QadMsg.translate("Snap", "FIN_PL"): # "FIN_PL" punti finali dell'intera polilinea  
+      # "FIN_PL" punti finali dell'intera polilinea
+      elif snapTypeStr == QadMsg.translate("Snap", "FIN_PL") or snapTypeStr == "_END_PL":  
          snapType = snapType | QadSnapTypeEnum.END_PLINE
-      elif snapTypeStr == QadMsg.translate("Snap", "MED"): # "MED" punto medio  
+      # "MED" punto medio
+      elif snapTypeStr == QadMsg.translate("Snap", "MED") or snapTypeStr == "_MID":  
          snapType = snapType | QadSnapTypeEnum.MID
-      elif snapTypeStr == QadMsg.translate("Snap", "CEN"): # "CEN" centro (centroide)  
+      # "CEN" centro (centroide)
+      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":  
          snapType = snapType | QadSnapTypeEnum.CEN
-      elif snapTypeStr == QadMsg.translate("Snap", "NOD"): # "NOD" oggetto punto 
+      # "NOD" oggetto punto
+      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD": 
          snapType = snapType | QadSnapTypeEnum.NOD
-      elif snapTypeStr == QadMsg.translate("Snap", "QUA"): # "QUA" punto quadrante
+      # "QUA" punto quadrante
+      elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
          snapType = snapType | QadSnapTypeEnum.QUA
-      elif snapTypeStr == QadMsg.translate("Snap", "INT"): # "INT" intersezione
+      # "INT" intersezione
+      elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
          snapType = snapType | QadSnapTypeEnum.INT
-      elif snapTypeStr == QadMsg.translate("Snap", "INS"): # "INS" punto di inserimento 
+      # "INS" punto di inserimento
+      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS": 
          snapType = snapType | QadSnapTypeEnum.INS
-      elif snapTypeStr == QadMsg.translate("Snap", "PER"): # "PER" punto perpendicolare
+      # "PER" punto perpendicolare
+      elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
          snapType = snapType | QadSnapTypeEnum.PER
-      elif snapTypeStr == QadMsg.translate("Snap", "TAN"): # "TAN" tangente
+      # "TAN" tangente
+      elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
          snapType = snapType | QadSnapTypeEnum.TAN
-      elif snapTypeStr == QadMsg.translate("Snap", "VIC"): # "VIC" punto più vicino
+      # "VIC" punto più vicino
+      elif snapTypeStr == QadMsg.translate("Snap", "VIC") or snapTypeStr == "_NEA":
          snapType = snapType | QadSnapTypeEnum.NEA
-      elif snapTypeStr == QadMsg.translate("Snap", "APP"): # "APP" intersezione apparente
+      # "APP" intersezione apparente
+      elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
          snapType = snapType | QadSnapTypeEnum.APP
-      elif snapTypeStr == QadMsg.translate("Snap", "EST"): # "EST" Estensione
+      # "EST" Estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EST") or snapTypeStr == "_EXT":
          snapType = snapType | QadSnapTypeEnum.EXT
-      elif snapTypeStr == QadMsg.translate("Snap", "PAR"): # "PAR" Parallelo
+      # "PAR" Parallelo
+      elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
          snapType = snapType | QadSnapTypeEnum.PAR         
-      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0: # se inizia per "PR" distanza progressiva
+      # se inizia per "PR" distanza progressiva
+      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+           string.find(snapTypeStr, QadMsg.translate("Snap", "_PR")) == 0:
          # la parte successiva PR può essere vuota o numerica
-         param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
+         else:
+            param = snapTypeStr[len(QadMsg.translate("Snap", "_PR")):]
          if len(param) == 0 or str2float(param) is not None:
             snapType = snapType | QadSnapTypeEnum.PR
-      elif snapTypeStr == QadMsg.translate("Snap", "EST_INT"): # "EST_INT" intersezione su estensione
+      # "EST_INT" intersezione su estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EST_INT") or snapTypeStr == "_EXT_INT":
          snapType = snapType | QadSnapTypeEnum.EXT_INT
-
-   return snapType
+   
+   return snapType if snapType != QadSnapTypeEnum.NONE else -1
 
 
 #===============================================================================
@@ -271,8 +342,14 @@ def str2snapParams(s):
    snapTypeStrList = s.strip().split(",")
    for snapTypeStr in snapTypeStrList:
       snapTypeStr = snapTypeStr.strip().upper()
-      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0: # se inizia per "PR" distanza progressiva
-         param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
+      # se inizia per "PR" distanza progressiva
+      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+         string.find(snapTypeStr, QadMsg.translate("Snap", "_PR")) == 0:
+         # la parte successiva PR può essere vuota o numerica
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
+         else:
+            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "_PR")):]) # fino alla fine della stringa
          if param is not None:
             params.append([QadSnapTypeEnum.PR, param])         
 
@@ -463,7 +540,8 @@ def getGetPointCursor():
    """
    Ritorna l'immagine del cursore per la selezione di un punto 
    """
-   
+   #return QCursor(Qt.BlankCursor) roby
+    
    pickBox = QadVariables.get(QadMsg.translate("Environment variables", "CURSORSIZE"))
    size = 1 + pickBox * 2
    # <width/cols> <height/rows> <colors> <char on pixel>
@@ -590,17 +668,21 @@ def getEntSel(point, mQgsMapTool, \
 
          selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
                                    layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
-                                           
+         
+         featureRequest = getFeatureRequest()
+         featureRequest.setFilterRect(selectRect) # rectangle
+         featureRequest.setFlags(QgsFeatureRequest.ExactIntersect) # useIntersect
+         featureRequest.setSubsetOfAttributes([]) # fetchAttributes
+         featureIterator = layer.getFeatures(featureRequest)
+         
          # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
-            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
-            for feature in layer.getFeatures(getFeatureRequest([], True, selectRect, True)):
+            for feature in featureIterator:
                #QApplication.restoreOverrideCursor()
                return feature, layer, point
          else:
             # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
-            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
-            for feature in layer.getFeatures(getFeatureRequest([], True, selectRect, True)):
+            for feature in featureIterator:
                # Riduco le geometrie in point o polyline
                geoms = asPointOrPolyline(feature.geometry())
                for g in geoms:
@@ -8890,7 +8972,7 @@ def getFilletLinearObjectList(poly1, partAt1, pointAt1, poly2, partAt2, pointAt2
 
 
 #============================================================================
-# QadRawConfigParser class
+# QadRawConfigParser class suppporting unicode
 #============================================================================
 class QadRawConfigParser(ConfigParser.RawConfigParser):
 
@@ -8922,7 +9004,20 @@ class QadRawConfigParser(ConfigParser.RawConfigParser):
       except:
          return default
 
-
+   def write(self, fp):
+      """Fixed for Unicode output"""
+      if self._defaults:
+         fp.write("[%s]\n" % DEFAULTSECT)
+         for (key, value) in self._defaults.items():
+            fp.write("%s = %s\n" % (key, unicode(value).replace('\n', '\n\t')))
+         fp.write("\n")
+      for section in self._sections:
+         fp.write("[%s]\n" % section)
+         for (key, value) in self._sections[section].items():
+            if key != "__name__":
+               fp.write("%s = %s\n" % (key, unicode(value).replace('\n','\n\t')))
+         fp.write("\n")
+ 
 
 #===============================================================================
 # Timer class for profiling

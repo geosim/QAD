@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dimStyle_dialog</class>
+ <widget class="QDialog" name="dimStyle_dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>481</width>
+    <height>315</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QAD - Gestione stili di quota</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Stile di quota corrente:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="currentDimStyle">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>10</y>
+     <width>331</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>nessuno</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>47</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Stili</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="dimStyleList">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>171</width>
+     <height>141</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="SetCurrent">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>60</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Rende corrente lo stile selezionato nella'area Stili. Lo stile corrente è applicato alle quota create dall'uente.</string>
+   </property>
+   <property name="text">
+    <string>Imposta corrente</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="new_2">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>90</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Definisce un nuovo stile di quota.</string>
+   </property>
+   <property name="text">
+    <string>Nuovo...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Mod">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>120</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Modifica lo stile di quota selezionato nella'area Stili.</string>
+   </property>
+   <property name="text">
+    <string>Modifica...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="TempMod">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>150</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Imposta modifiche locali per lo stile selezionato nella'area Stili. Le modifiche locali sono modifiche che non verranno salvate.</string>
+   </property>
+   <property name="text">
+    <string>Sostituisci...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Diff">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>180</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</string>
+   </property>
+   <property name="text">
+    <string>Confronta...</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>461</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Descrizione</string>
+   </property>
+   <widget class="QLabel" name="descriptionSelectedStyle">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>441</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>nessuna</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="Preview" native="true">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>60</y>
+     <width>171</width>
+     <height>141</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>40</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Anteprima di:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="selectedStyle">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>40</y>
+     <width>201</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>nessuna</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>317</x>
+     <y>280</y>
+     <width>151</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="closeButton">
+      <property name="text">
+       <string>Chiudi</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="helpButton">
+      <property name="text">
+       <string>?</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>SetCurrent</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>setCurrentStyle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>404</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>new_2</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>createNewStyle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>438</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>467</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mod</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>modStyle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>429</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>129</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimStyleList</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>displayPopupMenu()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>292</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>TempMod</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>temporaryModStyle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>422</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>475</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>helpButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>ButtonHELP_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>423</x>
+     <y>291</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>475</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Diff</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>showDiffBetweenStyles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>477</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>237</x>
+     <y>291</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>291</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>setCurrentStyle()</slot>
+  <slot>createNewStyle()</slot>
+  <slot>modStyle()</slot>
+  <slot>displayPopupMenu()</slot>
+  <slot>temporaryModStyle()</slot>
+  <slot>ButtonHELP_Pressed()</slot>
+  <slot>showDiffBetweenStyles()</slot>
+ </slots>
+</ui>

@@ -2326,6 +2326,219 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <source>DIMSTYLE</source>
         <translation>DIMSTYLE</translation>
     </message>
+    <message>
+        <source>Numero minimo di segmenti per approssimare un arco.
+Tipo intero.</source>
+        <translation>Minumun numer of segment to approximate an arc.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap.
+Inoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, nonché quella della modalità orto.
+L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
+0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto.
+1 = Attiva il contrassegno di AutoSnap.
+2 = Attiva le descrizioni dei comandi di AutoSnap.
+4 = Attiva la calamita di AutoSnap.
+8 = Attiva il puntamento polare.
+16 = Attiva il puntamento con snap ad oggetto.
+32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto.
+Tipo intero.</source>
+        <translation>Controls the display of the AutoSnap marker, tooltip, and magnet.
+Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips.
+The setting is stored as a bitcode using the sum of the following values:
+0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode
+1 = Turns on the AutoSnap marker
+2 = Turns on the AutoSnap tooltips
+4 = Turns on the AutoSnap magnet
+8 = Turns on polar tracking
+16 = Turns on object snap tracking
+32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Numero minimo di segmenti per approssimare un cerchio.
+Tipo intero.</source>
+        <translation>Minumun numer of segment to approximate a circle.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Imposta il numero massimo di comandi precedenti.
+Tipo intero.</source>
+        <translation>Sets the maximum number of previous input values that are stored for a prompt in a command.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Verifica se il comando COPIA viene ripetuto automaticamente:
+0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente.
+1 = Imposta il comando COPIA in modo da creare una singola copia.
+Tipo intero.</source>
+        <translation>Controls whether the COPY command repeats automatically:
+0 = Sets the COPY command to repeat automatically.
+1 = Sets the COPY command to create a single copy.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Determina le dimensioni del puntatore a croce come percentuale della dimensione dello schermo.
+Tipo intero.</source>
+        <translation>Determines the size of the crosshairs as a percentage of the screen size.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Nome dello stile di quotatura corrente.
+Tipo carattere.</source>
+        <translation>Stores the name of the current dimension style.
+Character type.</translation>
+    </message>
+    <message>
+        <source>Controlla la modalità in cui i comandi TAGLIA ed ESTENDI determinano i limiti di taglio e di estensione:
+0 = Utilizza lo spigolo selezionato senza estensioni.
+1 = Estende o taglia l&apos;oggetto selezionato fino ad un&apos;estensione immaginaria del limite di taglio o di estensione.
+Tipo intero.</source>
+        <translation>Controls how the TRIM and EXTEND commands determine cutting and boundary edges:
+0 = Uses the selected edge without an extensions.
+1 = Extends or trims the selected object to an imaginary extension of the cutting or boundary edge.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Memorizza il raggio di raccordo corrente.Se si utilizza il comando RACCORDO per modificare il raggio di un raccordo, il valore di questa variabile di sistema cambia di conseguenza.
+Tipo reale.</source>
+        <translation>Stores the current fillet radius.
+Real type.</translation>
+    </message>
+    <message>
+        <source>Distanza di offset di default:
+&lt;0 = Esegue l&apos;offset di un oggetto attraverso un punto specificato.
+&gt;=0 = Imposta la distanza di offset di default.
+Tipo reale.</source>
+        <translation>Sets the default offset distance:
+&lt;0 = Offsets an object through a specified point.
+&gt;=0 = Sets the default offset distance.
+Real type.</translation>
+    </message>
+    <message>
+        <source>Controlla la gestione dei potenziali spazi tra segmenti quando viene eseguito l&apos;offset delle polilinee:
+0 = Estende i segmenti di linea alle relative intersezioni proiettate.
+1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate. Il raggio di ciascun segmento di arco è uguale alla distanza di offset.
+2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate. La distanza perpendicolare da ciascuna cima al rispettivo vertice sull&apos;oggetto originale è uguale alla distanza di offset.
+Tipo intero.</source>
+        <translation>Controls how potential gaps between segments are treated when polylines are offset:
+0 = Extends line segments to their projected intersections.
+1 = Fillets line segments at their projected intersections. The radius of each arc segment is equal to the offset distance.
+2 = Chamfers line segments at their projected intersections. The perpendicular distance from each chamfer to its corresponding vertex on the original object is equal to the offset distance.
+Real type.</translation>
+    </message>
+    <message>
+        <source>Limita il movimento del cursore alla direzione perpendicolare.
+Quando ORTHOMODE è attivata, il cursore può essere spostato solo verticalmente oppure orizzontalmente:
+0 = Disattiva la modalità orto.
+1 = Attiva la modalità orto.
+Tipo intero.</source>
+        <translation>Constrains cursor movement to the perpendicular.
+When ORTHOMODE is turned on, the cursor can move only horizontally or vertically:
+0 = Turns off Ortho mode
+1 = Turns on Ortho mode
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Colore (RGB) dei simboli di osnap (es. #FF0000 = rosso).
+Tipo carattere.</source>
+        <translation>Osnap symbols color (RGB, #FF0000 = red).
+Character type.</translation>
+    </message>
+    <message>
+        <source>Modalità degli snap ad oggetto.
+L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
+0 = Nessuno.
+1 = Punti finali (FIN).
+2 = Punto medio (MED).
+4 = Centro-centroide (CEN).
+8 = Inserimento di un oggetto puntuale (NOD).
+16 = Punto quadrante (QUA).
+32 = Intersezione (INT).
+64 = Inserimento di un oggetto puntuale (INS).
+128 = Perpendicolare (PER).
+256 = Tangente (TAN).
+512 = Vicino (NEA).
+1024 = Cancella tutti gli snap ad oggetto (C).
+2048 = Intersezione apparente (APP).
+4096 = Estensione (EST).
+8192 = Parallelo (PAR).
+65536 = Distanza progressiva (PR[dist]).
+131072 = Intersezione sull&apos;estensione (EXT_INT).
+2097152 = Punti finali dell&apos;intera polilinea (FIN_PL).
+Tipo intero.</source>
+        <translation>Sets running object snaps.
+The setting is stored as a bitcode using the sum of the following values:
+0 = NONe.
+1 = ENDpoint.
+2 = MIDpoint.
+4 = CENter.
+8 = NODe.
+16 = QUAdrant.
+32 = INTersection.
+64 = INSertion.
+128 = PERpendicular.
+256 = TANgent.
+512 = NEArest.
+1024 = QUIck.
+2048 = APParent Intersection.
+4096 = EXTension.
+8192 = PARallel.
+65536 = PRogressive distance (PR[dist]).
+131072 = Intersection on extension (EXT_INT).
+2097152 = Final points on polyline (FIN_PL).
+Integer type.
+</translation>
+    </message>
+    <message>
+        <source>Distanza progressiva per snap &lt;Distanza progressiva&gt;.
+Tipo reale.</source>
+        <translation>Progressive distance for &lt;Progressive distance&gt; snap mode.
+Real type.</translation>
+    </message>
+    <message>
+        <source>Dimensione in pixel dei simboli di osnap
+Tipo intero.</source>
+        <translation>Osnap symbol size in pixel.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Altezza in pixel del quadratino di selezione degli oggetti.
+Tipo intero.</source>
+        <translation>Sets the object selection target height, in pixels.
+Integer type.</translation>
+    </message>
+    <message>
+        <source>Colore (RGB) del quadratino di selezione degli oggetti (es. #FF0000 = rosso).
+Tipo carattere.</source>
+        <translation>Sets the object selection target color (RGB, #FF0000 = red).
+Character type.</translation>
+    </message>
+    <message>
+        <source>Incremento dell&apos;angolo polare per il puntamento polare (gradi).
+Tipo reale.</source>
+        <translation>Sets the polar angle increment (degree).
+Real type.</translation>
+    </message>
+    <message>
+        <source>Path di ricerca per i files di supporto.
+Tipo carattere.</source>
+        <translation>Searching path for support files.
+Character type.</translation>
+    </message>
+    <message>
+        <source>Visualizza la finestra di testo all&apos;avvio.
+Tipo booleano.</source>
+        <translation>Show the text window at startup.
+Boolean type.</translation>
+    </message>
+    <message>
+        <source>Massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti.
+Tipo reale.</source>
+        <translation>Maximum error approximating a curve to segments.
+Real type.</translation>
+    </message>
 </context>
 <context>
     <name>Popup_menu_graph_window</name>

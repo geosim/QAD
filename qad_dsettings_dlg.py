@@ -42,7 +42,7 @@ import qad_utils
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
-class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
+class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_dSettings_dialog):
    def __init__(self, plugIn):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
@@ -54,9 +54,6 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       
       # Inizializzazione del TAB che riguarda il puntamento polare
       self.init_polar_tab()
-
-      # Inizializzazione del TAB che riguarda la quotatura
-      self.init_dimension_tab()
       
       self.tabWidget.setCurrentIndex(0)
             
@@ -105,21 +102,6 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.checkBox_PolarPickPoint.setChecked(AutoSnap & 8)
 
 
-   def init_dimension_tab(self):
-      # Inizializzazione del TAB che riguarda la quotatura      
-      for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
-         self.comboBox_current_dim_style.addItem(dimStyle.name, dimStyle)
-
-      # sort
-      self.comboBox_current_dim_style.model().sort(0)
-      
-      # leggo lo stile di quotatura corrente
-      currentDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
-      currDimStyle = self.plugIn.dimStyles.findDimStyle(currentDimStyleName)     
-      if currDimStyle is not None:
-         self.comboBox_current_dim_style.setCurrentIndex(self.comboBox_current_dim_style.findText(currDimStyle.name))
-         
-         
    def eventFilter(self, obj, event):
       if event is not None:
          if event.type() == QEvent.FocusOut:
@@ -223,11 +205,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       SProgrDist = self.lineEdit_ProgrDistance.text()
       ProgrDist = qad_utils.str2float(SProgrDist)
       QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
-      
-      # Quotatura
-      if self.comboBox_current_dim_style.currentText() != "":
-         QadVariables.set(QadMsg.translate("Environment variables", "DIMSTYLE"), self.comboBox_current_dim_style.currentText())
-       
+
       QadVariables.save()
 
       

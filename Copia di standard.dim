@@ -1,9 +1,9 @@
 [dimension_options]
-name = standard
+name = Copia di standard
 description = 
-dimtype = 0.0
-textprefix = 
-textsuffix = 
+dimtype = AL
+textprefix = p
+textsuffix = s
 textsuppressleadingzeros = False
 textdecimazerossuppression = True
 textheight = 2.5
@@ -39,17 +39,16 @@ extlineoffsetdimline = 1.0
 extlineoffsetorigpoints = 0.0
 extlineisfixedlen = False
 extlinefixedlen = 1.0
-textuallayername = quotatura_testo
-linearlayername = quotatura_linea
-symbollayername = quotatura_simbolo
+textuallayername = 
+linearlayername = 
+symbollayername = 
 componentfieldname = type
 symbolfieldname = block
 linetypefieldname = line_type
-colorfieldname = color
+colorfieldname = 
 idfieldname = id
 idparentfieldname = id_parent
 dimstylefieldname = dim_style
-dimtypefieldname = dim_type
+dimtypefieldname = id
 scalefieldname = scale
-rotfieldname = rot
 

@@ -31,6 +31,7 @@ from qgis.gui import *
 
 import qad_utils
 from qad_variables import *
+from qad_rubberband import *
 from qad_msg import QadMsg
 
 
@@ -42,8 +43,16 @@ class QadMapTool(QgsMapTool):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface
       self.canvas = self.plugIn.iface.mapCanvas()      
-      self.cursor = qad_utils.getGetPointCursor()
+      self.cursor = QCursor(Qt.BlankCursor)
+      self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
 
+
+   def UpdatedVariablesEvent(self):
+      # aggiorna in base alle nuove impostazioni delle variabili
+      if self.__csrRubberBand is not None:
+         del self.__csrRubberBand 
+      self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
+      
 
    #============================================================================
    # INIZIO - eventi per il mouse
@@ -61,7 +70,7 @@ class QadMapTool(QgsMapTool):
 
 
    def canvasMoveEvent(self,event):
-      pass
+      self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
 
 
    def canvasReleaseEvent(self, event):
@@ -88,8 +97,8 @@ class QadMapTool(QgsMapTool):
    #============================================================================
 
 
-   def wheelEvent(self,event):
-      pass
+   def wheelEvent(self, event):
+      self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
 
 
    #============================================================================
@@ -99,10 +108,11 @@ class QadMapTool(QgsMapTool):
    
    def activate(self):
       self.canvas.setCursor(self.cursor)
+      self.__csrRubberBand.show()
       self.plugIn.QadCommands.continueCommandFromMapTool()
    
    def deactivate(self):
-      pass
+      self.__csrRubberBand.hide()
       
    def isTransient(self):
       return False
@@ -112,7 +122,7 @@ class QadMapTool(QgsMapTool):
 
 
    #============================================================================
-   # dispalyPopupMenu
+   # displayPopupMenu
    #============================================================================
    def displayPopupMenu(self, pos):
       popupMenu = QMenu(self.canvas)

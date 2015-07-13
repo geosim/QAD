@@ -27,6 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
+import codecs
 import ConfigParser
 import math
 
@@ -58,7 +59,7 @@ Il layer simbolo deve avere tutte le caratteristiche del layer simbolo di QAD ed
 - componentFieldName = "type"; nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum) (opzionale)
 - symbolFieldName = "block"; nome del campo che contiene il nome del simbolo (opzionale)
 - idParentFieldName = "id_parent"; nome del campo che contiene il codice del testo della quota (opzionale)
-- scaleFieldName = "scale"; nome del campo che contiene il fattore di sclaa del simbolo (opzionale)
+- scaleFieldName = "scale"; nome del campo che contiene il fattore di scala del simbolo (opzionale)
 - rotFieldName = "rot"; nome del campo che contiene la rotazione del simbolo 
 - la rotazione deve essere letta dal campo indicato da rotFieldName (360-rotFieldName)
 
@@ -90,8 +91,8 @@ class QadDimTypeEnum():
 # QadDimComponentEnum class.
 #===============================================================================
 class QadDimComponentEnum():
-   DIM_LINE1 = "D1" # linea di quota ("Dimension line")
-   DIM_LINE2 = "D2" # linea di quota ("Dimension line")
+   DIM_LINE1 = "D1" # linea di quota ("Dimension line 1")
+   DIM_LINE2 = "D2" # linea di quota ("Dimension line 2")
    EXT_LINE1 = "E1" # prima linea di estensione ("Extension line 1")
    EXT_LINE2 = "E2" # seconda linea di estensione ("Extension line 2")
    LEADER_LINE = "L" # linea porta quota usata quando il testo é fuori dalla quota ("Leader")
@@ -179,6 +180,8 @@ class QadDimStyleTextBlocksAdjustEnum():
 #===============================================================================
 class QadDimStyle():   
    name = "standard" # nome dello stile
+   description = ""
+   path = "" # percorso e nome del file in cui è stato salvato/caricato
    dimType = QadDimTypeEnum.ALIGNED # tipo di quotatura
    
    # testo di quota
@@ -189,11 +192,11 @@ class QadDimStyle():
    textHeight = 1.0 # altezza testo (DIMTXT) in unità di mappa
    textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE # posizione verticale del testo rispetto la linea di quota (DIMTAD)
    textHorizontalPos = QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE # posizione orizzontale del testo rispetto la linea di quota (DIMTAD)
-   textOffsetDist = 0.5 # distanza aggiunta intorno al testo quando per inserirlo viene spezzata la linea di quota
-   textRotMode = QadDimStyleTxtRotModeEnum.ALIGNED_LINE # modalità di rotazione del testo
+   textOffsetDist = 0.5 # distanza aggiunta intorno al testo quando per inserirlo viene spezzata la linea di quota (DIMGAP)
+   textRotMode = QadDimStyleTxtRotModeEnum.ALIGNED_LINE # modalità di rotazione del testo (DIMTIH e DIMTOH)
    textForcedRot = 0.0 # rotazione forzata del testo
-   textDecimals = 2 # numero di decimali
-   textDecimalSep = "." # Separatore dei decimali
+   textDecimals = 2 # numero di decimali (DIMDEC)
+   textDecimalSep = "." # Separatore dei decimali (DIMDSEP)
    textFont = "Arial" # nome del font di testo (DIMTXSTY)
    textDirection = QadDimStyleTxtDirectionEnum.SX_TO_DX # specifica la direzione del testo di quota (DIMTXTDIRECTION) 0 = da sx a dx, 1 = da dx a sx
    arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT # disegna o meno il simbolo dell'arco con DIMARC (DIMARCSYM). 
@@ -212,13 +215,13 @@ class QadDimStyle():
    blockLeaderName = "triangle2" # nome del simbolo da usare come punta della freccia sulla linea della direttrice (DIMLDRBLK)
    blockWidth = 0.5 # larghezza del simbolo (in orizzontale) quando la dimensione in unità di mappa = 1 (vedi "triangle2")
    blockScale = 1.0 # scala della dimensione del simbolo (DIMASZ)
-   blockSuppressionForNoSpace = False # Sopprime le punte della frecce se non c'é spazio sufficiente all'interno delle linee di estensione (DIMSOXD)
    centerMarkSize = 0.0 # disegna o meno il marcatore di centro o le linee d'asse per le quote create con
                         # DIMCENTER, DIMDIAMETER, e DIMRADIUS (DIMCEN).
                         # 0 = niente, > 0 dimensione marcatore di centro, < 0 dimensione linee d'asse
 
    # adattamento del testo e delle frecce
-   textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.WHICHEVER_FITS_BEST
+   textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.WHICHEVER_FITS_BEST # (DIMATFIT)
+   blockSuppressionForNoSpace = False # Sopprime le punte della frecce se non c'é spazio sufficiente all'interno delle linee di estensione (DIMSOXD)
    
    # linee di estensione
    extLine1Show = True # Mostra o nasconde la prima linea di estensione (DIMSE1)
@@ -252,13 +255,13 @@ class QadDimStyle():
    __symbolFeaturePrototype = None
    
    componentFieldName = "type"      # nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum)
-   symbolFieldName = "block"        # nome del campo che contiene il nome del simbolo
    lineTypeFieldName = "line_type"  # nome del campo che contiene il tipolinea
    colorFieldName = "color"         # nome del campo che contiene il colore 'r,g,b,alpha'; alpha é opzionale (0=trasparente, 255=opaco)
    idFieldName = "id"               # nome del campo che contiene il codice del della quota nel layer di tipo testo
    idParentFieldName = "id_parent"  # nome del campo che contiene il codice della quota nei layer simbolo e linea 
    dimStyleFieldName = "dim_style"  # nome del campo che contiene il nome dello stile di quota
-   dimTypeFieldName = "dim_type"    # nome del campo che contiene il tipo dello stile di quota
+   dimTypeFieldName = "dim_type"    # nome del campo che contiene il tipo dello stile di quota   
+   symbolFieldName = "block"        # nome del campo che contiene il nome del simbolo
    scaleFieldName = "scale"         # nome del campo che contiene la dimensione
    rotFieldName = "rot"             # nome del campo che contiene rotazione in gradi
    
@@ -275,6 +278,8 @@ class QadDimStyle():
 
    def set(self, dimStyle):
       self.name = dimStyle.name
+      self.description = dimStyle.description
+      self.path = dimStyle.path
       self.dimType = dimStyle.dimType
       
       # testo di quota
@@ -348,6 +353,140 @@ class QadDimStyle():
       self.dimTypeFieldName = dimStyle.dimTypeFieldName
       self.scaleFieldName = dimStyle.scaleFieldName
       self.rotFieldName = dimStyle.rotFieldName
+
+
+   #============================================================================
+   # getPropList
+   #============================================================================
+   def getPropList(self):
+      proplist = dict() # dizionario di nome con lista [descrizione, valore]
+      proplist["name"] = [QadMsg.translate("Dimension", "Nome"), \
+                          self.name]
+      proplist["description"] = [QadMsg.translate("Dimension", "Descrizione"), \
+                                 self.description]
+      proplist["path"] = [QadMsg.translate("Dimension", "Percorso file"), \
+                          self.path]
+      
+      # testo di quota
+      value = self.textPrefix
+      if len(self.textPrefix) > 0:
+         value += "<>"
+      value += self.textSuffix
+      proplist["textPrefix"] = [QadMsg.translate("Dimension", "Prefisso e suffisso testo"), \
+                                value]
+      proplist["textSuppressLeadingZeros"] = [QadMsg.translate("Dimension", "Soppressione degli zero inizio testo"), \
+                                              self.textSuppressLeadingZeros]
+      proplist["textDecimaZerosSuppression"] = [QadMsg.translate("Dimension", "Soppressione degli zero fine testo"), \
+                                                self.textDecimaZerosSuppression]
+      proplist["textHeight"] = [QadMsg.translate("Dimension", "Altezza del testo"), \
+                                self.textHeight]
+      proplist["textVerticalPos"] = [QadMsg.translate("Dimension", "Posizione verticale testo"), \
+                                     self.textVerticalPos]
+      proplist["textHorizontalPos"] = [QadMsg.translate("Dimension", "Posizione orizzontale testo"), \
+                                       self.textHorizontalPos]
+      proplist["textOffsetDist"] = [QadMsg.translate("Dimension", "Offset testo"), \
+                                    self.textOffsetDist]
+      proplist["textRotMode"] = [QadMsg.translate("Dimension", "Allineamento testo"), \
+                                 self.textRotMode]
+      proplist["textForcedRot"] = [QadMsg.translate("Dimension", "Rotazione fissa testo"), \
+                                   self.textForcedRot]
+      proplist["textDecimals"] = [QadMsg.translate("Dimension", "Precisione"), \
+                                   self.textDecimals]
+      proplist["textDecimalSep"] = [QadMsg.translate("Dimension", "Separatore decimale"), \
+                                    self.textDecimalSep]
+      proplist["textFont"] = [QadMsg.translate("Dimension", "Carattere testo"), \
+                              self.textFont]
+      if self.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
+         value = QadMsg.translate("Dimension", "da sinistra a destra")
+      else:
+         value = QadMsg.translate("Dimension", "da destra a sinistra")
+      proplist["textDirection"] = [QadMsg.translate("Dimension", "Direzione testo"), \
+                                   value]
+      proplist["arcSymbPos"] = [QadMsg.translate("Dimension", "Simbolo lungh. arco"), \
+                                self.arcSymbPos]
+      
+      # linee di quota
+      proplist["dimLine1Show"] = [QadMsg.translate("Dimension", "Linea di quota 1 visibile"), \
+                                  self.dimLine1Show]
+      proplist["dimLine2Show"] = [QadMsg.translate("Dimension", "Linea di quota 2 visibile"), \
+                                  self.dimLine2Show]
+      proplist["dimLineLineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di quota"), \
+                                     self.dimLineLineType]
+      proplist["dimLineColor"] = [QadMsg.translate("Dimension", "Colore linea di quota"), \
+                                  self.dimLineColor]
+      proplist["dimLineSpaceOffset"] = [QadMsg.translate("Dimension", "Spaziatura linea di quota"), \
+                                        self.dimLineSpaceOffset]
+   
+      # simboli per linee di quota
+      proplist["block1Name"] = [QadMsg.translate("Dimension", "Freccia 1"), \
+                                self.block1Name]
+      proplist["block2Name"] = [QadMsg.translate("Dimension", "Freccia 2"), \
+                                self.block2Name]
+      proplist["blockLeaderName"] = [QadMsg.translate("Dimension", "Freccia direttrice"), \
+                                     self.blockLeaderName]
+      proplist["blockWidth"] = [QadMsg.translate("Dimension", "Larghezza frecce"), \
+                                self.blockWidth]
+      proplist["blockScale"] = [QadMsg.translate("Dimension", "Scala frecce"), \
+                                self.blockScale]
+      proplist["centerMarkSize"] = [QadMsg.translate("Dimension", "Dimensione centro"), \
+                                    self.centerMarkSize]
+   
+      # adattamento del testo e delle frecce
+      proplist["textBlockAdjust"] = [QadMsg.translate("Dimension", "Adatta: freccia e testo"), \
+                                    self.textBlockAdjust]
+      proplist["blockSuppressionForNoSpace"] = [QadMsg.translate("Dimension", "Sopprime frecce per mancanza di spazio"), \
+                                                self.blockSuppressionForNoSpace]
+      
+      # linee di estensione
+      proplist["extLine1Show"] = [QadMsg.translate("Dimension", "Linea di est. 1 visibile"), \
+                                  self.extLine1Show]
+      proplist["extLine2Show"] = [QadMsg.translate("Dimension", "Linea di est. 2 visibile"), \
+                                  self.extLine2Show]
+      proplist["extLine1LineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di est. 1"), \
+                                      self.extLine1LineType]
+      proplist["extLine2LineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di est. 2"), \
+                                      self.extLine2LineType]
+      proplist["extLineColor"] = [QadMsg.translate("Dimension", "Colore linea di est."), \
+                                  self.extLineColor]
+      proplist["extLineOffsetDimLine"] = [QadMsg.translate("Dimension", "Estensione linea di est."), \
+                                          self.extLineOffsetDimLine]
+      proplist["extLineOffsetOrigPoints"] = [QadMsg.translate("Dimension", "Offset linea di est."), \
+                                             self.extLineOffsetOrigPoints]
+      proplist["extLineIsFixedLen"] = [QadMsg.translate("Dimension", "Linea di est. fissa attivata"), \
+                                       self.extLineIsFixedLen]
+      proplist["extLineFixedLen"] = [QadMsg.translate("Dimension", "Lunghezza linea di est. fissa"), \
+                                     self.extLineFixedLen]
+      
+      # layer e loro caratteristiche
+      proplist["textualLayerName"] = [QadMsg.translate("Dimension", "Layer per i testi"), \
+                                     self.textualLayerName]
+      proplist["linearLayerName"] = [QadMsg.translate("Dimension", "Layer per le linee"), \
+                                     self.linearLayerName]
+      proplist["symbolLayerName"] = [QadMsg.translate("Dimension", "Layer per le frecce"), \
+                                     self.symbolLayerName]
+     
+      proplist["componentFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di componente"), \
+                                        self.componentFieldName]
+      proplist["lineTypeFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di linea"), \
+                                       self.lineTypeFieldName]
+      proplist["colorFieldName"] = [QadMsg.translate("Dimension", "Campo per colore"), \
+                                    self.colorFieldName]
+      proplist["idFieldName"] = [QadMsg.translate("Dimension", "Campo per codice quota nei testi"), \
+                                 self.idFieldName]
+      proplist["idParentFieldName"] = [QadMsg.translate("Dimension", "Campo per codice quota nelle linee e frecce"), \
+                                       self.idParentFieldName]
+      proplist["dimStyleFieldName"] = [QadMsg.translate("Dimension", "Campo per nome stile di quota"), \
+                                       self.dimStyleFieldName]
+      proplist["dimTypeFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di quota"), \
+                                      self.dimTypeFieldName]
+      proplist["symbolFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di quota"), \
+                                     self.symbolFieldName]
+      proplist["scaleFieldName"] = [QadMsg.translate("Dimension", "Campo per scala frecce"), \
+                                    self.scaleFieldName]
+      proplist["rotFieldName"] = [QadMsg.translate("Dimension", "Campo per rotazione frecce"), \
+                                  self.rotFieldName]
+      
+      return proplist
 
 
    #============================================================================
@@ -435,18 +574,32 @@ class QadDimStyle():
    #============================================================================
    # save
    #============================================================================
-   def save(self, path):
+   def save(self, path = "", overwrite = True):
       """
       Salva le impostazioni dello stile di quotatura in un file.
       """
-      if path is None or path == "":
-         return False
-
-      if os.path.dirname(path) == "":
-         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/qad/" + path)
-      else:
-         _path = path
+      if path == "" and self.path != "":
+         _path = self.path
+      else:         
+         dir, base = os.path.split(path)
+         if dir == "":
+            dir = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/"
+         else:
+            dir = QDir.cleanPath(dir) + "/"
          
+         name, ext = os.path.splitext(base)
+         if name == "":
+            name = self.name
+         
+         if ext == "": # se non c'è estensione la aggiungo
+            ext = ".dim"
+         
+         _path = dir + name + ext
+      
+      if overwrite == False: # se non si vuole sovrascrivere
+         if os.path.exists(_path):
+            return False
+      
       dir = QFileInfo(_path).absoluteDir() 
       if not dir.exists():
          os.makedirs(dir.absolutePath())
@@ -454,6 +607,7 @@ class QadDimStyle():
       config = qad_utils.QadRawConfigParser(allow_no_value=True)
       config.add_section("dimension_options")
       config.set("dimension_options", "name", str(self.name))
+      config.set("dimension_options", "description", self.description)
       config.set("dimension_options", "dimType", str(self.dimType))
                            
       # testo di quota
@@ -516,10 +670,13 @@ class QadDimStyle():
       config.set("dimension_options", "dimStyleFieldName", str(self.dimStyleFieldName))
       config.set("dimension_options", "dimTypeFieldName", str(self.dimTypeFieldName))
       config.set("dimension_options", "scaleFieldName", str(self.scaleFieldName))
-      config.set("dimension_options", "dimTypeFieldName", str(self.rotFieldName))
+      config.set("dimension_options", "rotFieldName", str(self.rotFieldName))
 
-      with open(_path, 'wb') as configfile:
-          config.write(configfile)
+      with codecs.open(_path, 'w', 'utf-8') as configFile: 
+          config.write(configFile)
+          
+      self.path = _path
+      
       return True
 
    
@@ -534,7 +691,7 @@ class QadDimStyle():
          return False
       
       if os.path.dirname(path) == "":
-         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/qad/" + path)
+         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/" + path)
       else:
          _path = path
          
@@ -542,9 +699,11 @@ class QadDimStyle():
          return False
 
       config = qad_utils.QadRawConfigParser(allow_no_value=True)
-      config.read(_path)
+      config.readfp(codecs.open(_path, "r", "utf-8"))
+      #config.read(_path)
 
       self.name = config.get("dimension_options", "name")
+      self.description = config.get("dimension_options", "description")
       self.dimType = config.get("dimension_options", "dimType")
                            
       # testo di quota
@@ -611,10 +770,68 @@ class QadDimStyle():
       self.scaleFieldName = config.get("dimension_options", "scaleFieldName")
       self.rotFieldName = config.get("dimension_options", "rotFieldName")
       
+      self.path = _path
+      
+      return True
+
+
+   #============================================================================
+   # remove
+   #============================================================================
+   def remove(self):
+      """
+      Cancella il file delle impostazioni dello stile di quotatura.
+      """
+      currDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
+      if self.name == currDimStyleName: # lo stile da cancellare è quello corrente
+         return False
+      
+      if self.path is not None and self.path != "":
+         if os.path.exists(self.path):
+            try:
+               os.remove(self.path)
+            except:
+               return False
             
       return True
-   
+
+   #============================================================================
+   # rename
+   #============================================================================
+   def rename(self, newName):
+      """
+      Rinomina il nome dello stile e del file delle impostazioni dello stile di quotatura.
+      """
+      if newName == self.name: # nome uguale
+         return True
+      oldName = self.name
       
+      if self.path is not None or self.path != "":
+         if os.path.exists(self.path):
+            try:
+               dir, base = os.path.split(self.path)
+               dir = QDir.cleanPath(dir) + "/"
+               
+               name, ext = os.path.splitext(base)
+               newPath = dir + "/" + newName + ext
+               
+               os.rename(self.path, newPath)
+               self.path = newPath
+               self.name = newName
+               self.save()
+            except:
+               return False
+      else:
+         self.name = newName
+
+      currDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
+      if oldName == currDimStyleName: # lo stile da rinominare è quello corrente
+         QadVariables.set(QadMsg.translate("Environment variables", "DIMSTYLE"), newName)
+
+      self.name = newName
+      return True
+
+
    #============================================================================
    # getInValidErrMsg
    #============================================================================
@@ -2578,10 +2795,13 @@ class QadDimStyles():
       return None
 
 
-   def addDimStyle(self, dimStyle):
+   def addDimStyle(self, dimStyle, toFile = False, filePath = ""):
       d = self.findDimStyle(dimStyle)
       if d is None: 
          self.dimStyleList.append(QadDimStyle(dimStyle))
+         if toFile:
+            if dimStyle.save(filePath, False) == False: # senza sovrascrivere file
+               return False
          return True
             
       return False     
@@ -2590,17 +2810,34 @@ class QadDimStyles():
    #============================================================================
    # removeDimStyle
    #============================================================================
-   def removeDimStyle(self, dimStyleName):
+   def removeDimStyle(self, dimStyleName, toFile = False):
       i = 0
       for dimStyle in self.dimStyleList:
          if dimStyle.name == dimStyleName:
             del self.dimStyleList[i]
+            if toFile:
+               dimStyle.remove()
             return True
          else:
             i = i + 1
             
       return False
       
+      
+   #============================================================================
+   # renameDimStyle
+   #============================================================================
+   def renameDimStyle(self, dimStyleName, newDimStyleName):
+      if dimStyleName == newDimStyleName: # nome uguale
+         return True
+
+      if self.findDimStyle(newDimStyleName) is not None:
+         return False
+      dimStyle = self.findDimStyle(dimStyleName)
+      if dimStyle is None:
+         return False
+      return dimStyle.rename(newDimStyleName)
+
       
    #============================================================================
    # load
@@ -2611,36 +2848,39 @@ class QadDimStyles():
       se dir = None verranno utilizzati i percorsi dei file di supporto + il percorso locale di qad
       """
       if dir is None:
+         if append == False:
+            self.clear()
+        
          path = QadVariables.get(QadMsg.translate("Environment variables", "SUPPORTPATH"))
-         path = path + ";" + QgsApplication.qgisSettingsDirPath() + "/python/plugins/qad/"        
+         if len(path) > 0:
+            path += ";"        
+         path += QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/"        
          # lista di directory separate da ";"
          dirList = path.strip().split(";")
          for _dir in dirList:
-            self.load(_dir, True) # in append         
+            self.load(_dir, True) # in append
       else:
-         _dir = dir
-
-      _dir = QDir.cleanPath(_dir)
-      if _dir == "":
-         return False
-         
-      if _dir.endswith("/") == False:
-         _dir = _dir + "/"
-         
-      if not os.path.exists(_dir):
-         return False
-      
-      if append == False:
-         self.clear()
-      dimStyle = QadDimStyle()
+         _dir = QDir.cleanPath(dir)
+         if _dir == "":
+            return False
             
-      fileNames = os.listdir(_dir)
-      for fileName in fileNames:
-         if fileName.endswith(".dim"):
-            path = _dir + fileName            
-            if dimStyle.load(path) == True:
-               if self.findDimStyle(dimStyle.name) is None:              
-                  self.addDimStyle(dimStyle)
+         if _dir.endswith("/") == False:
+            _dir = _dir + "/"
+            
+         if not os.path.exists(_dir):
+            return False
+         
+         if append == False:
+            self.clear()
+         dimStyle = QadDimStyle()
+               
+         fileNames = os.listdir(_dir)
+         for fileName in fileNames:
+            if fileName.endswith(".dim"):
+               path = _dir + fileName            
+               if dimStyle.load(path) == True:
+                  if self.findDimStyle(dimStyle.name) is None:              
+                     self.addDimStyle(dimStyle)
                
       return True
 

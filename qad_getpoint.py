@@ -35,7 +35,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_entity import *
 from qad_variables import *
-from qad_rubberband import createRubberBand
+from qad_rubberband import *
 
 
 #===============================================================================
@@ -56,14 +56,6 @@ class QadGetPointDrawModeEnum():
    ELASTIC_RECTANGLE = 2     # rettangolo elastico dal punto __startPoint   
 
 
-#===============================================================================
-# QadCursorTypeEnum class.
-#===============================================================================
-class QadCursorTypeEnum():
-   BOX   = 0     # un quadratino usato per selezionare entità
-   CROSS = 1     # una croce usata per selezionare un punto
-
-
 from qad_dsettings_dlg import QadDSETTINGSDialog
 
 
@@ -77,6 +69,10 @@ class QadGetPoint(QgsMapTool):
       self.iface = plugIn.iface
       self.canvas = plugIn.iface.mapCanvas()
       self.plugIn = plugIn
+      
+      # cursore
+      self.__csrRubberBand = None
+      
       self.__QadSnapper = None
       self.__QadSnapPointsDisplayManager = None
       self.__oldSnapType = None
@@ -133,9 +129,12 @@ class QadGetPoint(QgsMapTool):
       self.tmpEntity = QadEntity() # entità selezionata dal movimento del mouse
       
       self.snapTypeOnSelection = None # snap attivo al momento del click
-
+      
 
    def __del__(self):
+      if self.__csrRubberBand is not None:
+         del self.__csrRubberBand
+      
       if self.__RubberBand is not None:
          self.canvas.scene().removeItem(self.__RubberBand)
       del self.__QadSnapper
@@ -191,7 +190,7 @@ class QadGetPoint(QgsMapTool):
       else:
          return self.__RubberBand.numberOfVertices()
                              
-   def clear(self):
+   def clear(self):     
       self.hidePointMapToolMarkers()
       if self.__RubberBand is not None:
          del self.__RubberBand
@@ -342,16 +341,11 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # CursorType
    #============================================================================
-   def setCursorType(self, cursorType = None):
-      if cursorType == QadCursorTypeEnum.BOX:
-         # un quadratino usato per selezionare entità
-         self.__cursor = qad_utils.getEntSelCursor()
-      elif cursorType == QadCursorTypeEnum.CROSS:
-         # una croce usata per selezionare un punto
-         self.__cursor = qad_utils.getGetPointCursor()
-      else:
-         return
-      
+   def setCursorType(self, cursorType):
+      if self.__csrRubberBand is not None:
+         del self.__csrRubberBand
+      self.__csrRubberBand = QadCursorRubberBand(self.canvas, cursorType)
+      self.__cursor = QCursor(Qt.BlankCursor)     
       self.__cursorType = cursorType
       
    def getCursorType(self):
@@ -424,6 +418,8 @@ class QadGetPoint(QgsMapTool):
          self.__QadSnapper.toggleIntExtLine(geom, point, crs)
       
    def canvasMoveEvent(self, event):
+      self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
+      
       # se l'obiettivo é selezionare un'entità
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
          result = qad_utils.getEntSel(event.pos(), self, \
@@ -597,6 +593,9 @@ class QadGetPoint(QgsMapTool):
       self.plugIn.keyPressEvent(event)    
     
    def activate(self):
+      if self.__csrRubberBand is not None:
+         self.__csrRubberBand.show()
+      
       #del self.__QadSnapper
       #del self.__QadSnapPointsDisplayManager   
       #__QadSnapper = None
@@ -619,6 +618,8 @@ class QadGetPoint(QgsMapTool):
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         if self.__csrRubberBand is not None:
+            self.__csrRubberBand.hide()
          self.hidePointMapToolMarkers()
       except:
          pass

@@ -20,6 +20,7 @@
         <file>icons/circleByCenterDiameter.png</file>
         <file>icons/circleByCenterRadius.png</file>
         <file>icons/copy.png</file>
+        <file>icons/copyEnt.png</file>
         <file>icons/dimAligned.png</file>
         <file>icons/dimLinear.png</file>
         <file>icons/dsettings.png</file>
@@ -63,5 +64,6 @@
         <file>icons/trim.png</file>
         <file>icons/u.png</file>
         <file>icons/undo.png</file>
+        <file>icons/dimStyle.png</file>
     </qresource>    
 </RCC>

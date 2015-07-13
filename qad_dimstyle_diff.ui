@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dimStyle_diff_dialog</class>
+ <widget class="QDialog" name="dimStyle_diff_dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>443</width>
+    <height>526</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Confronta stili di quota</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Confronta:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Con:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="dimStyle1">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>211</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Specifica il primo stile di quota per il confronto.</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="dimStyle2">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>40</y>
+     <width>211</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>421</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="msg">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>321</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>277</x>
+     <y>490</y>
+     <width>158</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="closeButton">
+      <property name="text">
+       <string>Chiudi</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="helpButton">
+      <property name="text">
+       <string>?</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>110</y>
+     <width>421</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="copyButton">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>80</y>
+     <width>31</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Copia il risultato del confronto negli Appunti.</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/plugins/qad/icons/copy.png</normaloff>:/plugins/qad/icons/copy.png</iconset>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>helpButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_diff_dialog</receiver>
+   <slot>ButtonHELP_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>426</x>
+     <y>500</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimStyle1</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_diff_dialog</receiver>
+   <slot>DimStyleName1Changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimStyle2</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_diff_dialog</receiver>
+   <slot>DimStyleName2Changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>235</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_diff_dialog</receiver>
+   <slot>copyToClipboard()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>427</x>
+     <y>91</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dimStyle_diff_dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>504</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>210</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>ButtonHELP_Pressed()</slot>
+  <slot>DimStyleName1Changed()</slot>
+  <slot>DimStyleName2Changed()</slot>
+  <slot>copyToClipboard()</slot>
+ </slots>
+</ui>

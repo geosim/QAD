@@ -64,8 +64,9 @@ from qad_stretch_cmd import QadSTRETCHCommandClass
 from qad_break_cmd import QadBREAKCommandClass
 from qad_pedit_cmd import QadPEDITCommandClass
 from qad_fillet_cmd import QadFILLETCommandClass
-from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
 from qad_polygon_cmd import QadPOLYGONCommandClass
+from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
+from qad_dimstyle_cmd import QadDIMSTYLECommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -110,9 +111,10 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadBREAKCommandClass(self.plugIn)) # BREAK
       self.__cmdObjs.append(QadPEDITCommandClass(self.plugIn)) # PEDIT
       self.__cmdObjs.append(QadFILLETCommandClass(self.plugIn)) # FILLET
+      self.__cmdObjs.append(QadPOLYGONCommandClass(self.plugIn)) # POLYGON
       self.__cmdObjs.append(QadDIMLINEARCommandClass(self.plugIn)) # DIMLINEAR
       self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
-      self.__cmdObjs.append(QadPOLYGONCommandClass(self.plugIn)) # POLYGON
+      self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
      
       self.actualCommand = None  # Comando in corso di esecuzione
    

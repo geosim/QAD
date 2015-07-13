@@ -824,7 +824,7 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.POINT2D:
          snapType = qad_utils.str2snapTypeEnum(cmd)
-         if snapType != QadSnapTypeEnum.NONE:
+         if snapType != -1:
             # se é stato forzato uno snap
             snapParams = qad_utils.str2snapParams(cmd)
             self.parentWidget().forceCommandMapToolSnapTypeOnce(snapType, snapParams)

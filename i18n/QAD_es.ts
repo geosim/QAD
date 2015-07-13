@@ -2237,6 +2237,156 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <source>DIMSTYLE</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Numero minimo di segmenti per approssimare un arco.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap.
+Inoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, nonché quella della modalità orto.
+L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
+0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto.
+1 = Attiva il contrassegno di AutoSnap.
+2 = Attiva le descrizioni dei comandi di AutoSnap.
+4 = Attiva la calamita di AutoSnap.
+8 = Attiva il puntamento polare.
+16 = Attiva il puntamento con snap ad oggetto.
+32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numero minimo di segmenti per approssimare un cerchio.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imposta il numero massimo di comandi precedenti.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verifica se il comando COPIA viene ripetuto automaticamente:
+0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente.
+1 = Imposta il comando COPIA in modo da creare una singola copia.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Determina le dimensioni del puntatore a croce come percentuale della dimensione dello schermo.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nome dello stile di quotatura corrente.
+Tipo carattere.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controlla la modalità in cui i comandi TAGLIA ed ESTENDI determinano i limiti di taglio e di estensione:
+0 = Utilizza lo spigolo selezionato senza estensioni.
+1 = Estende o taglia l&apos;oggetto selezionato fino ad un&apos;estensione immaginaria del limite di taglio o di estensione.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Memorizza il raggio di raccordo corrente.Se si utilizza il comando RACCORDO per modificare il raggio di un raccordo, il valore di questa variabile di sistema cambia di conseguenza.
+Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distanza di offset di default:
+&lt;0 = Esegue l&apos;offset di un oggetto attraverso un punto specificato.
+&gt;=0 = Imposta la distanza di offset di default.
+Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controlla la gestione dei potenziali spazi tra segmenti quando viene eseguito l&apos;offset delle polilinee:
+0 = Estende i segmenti di linea alle relative intersezioni proiettate.
+1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate. Il raggio di ciascun segmento di arco è uguale alla distanza di offset.
+2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate. La distanza perpendicolare da ciascuna cima al rispettivo vertice sull&apos;oggetto originale è uguale alla distanza di offset.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limita il movimento del cursore alla direzione perpendicolare.
+Quando ORTHOMODE è attivata, il cursore può essere spostato solo verticalmente oppure orizzontalmente:
+0 = Disattiva la modalità orto.
+1 = Attiva la modalità orto.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colore (RGB) dei simboli di osnap (es. #FF0000 = rosso).
+Tipo carattere.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modalità degli snap ad oggetto.
+L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
+0 = Nessuno.
+1 = Punti finali (FIN).
+2 = Punto medio (MED).
+4 = Centro-centroide (CEN).
+8 = Inserimento di un oggetto puntuale (NOD).
+16 = Punto quadrante (QUA).
+32 = Intersezione (INT).
+64 = Inserimento di un oggetto puntuale (INS).
+128 = Perpendicolare (PER).
+256 = Tangente (TAN).
+512 = Vicino (NEA).
+1024 = Cancella tutti gli snap ad oggetto (C).
+2048 = Intersezione apparente (APP).
+4096 = Estensione (EST).
+8192 = Parallelo (PAR).
+65536 = Distanza progressiva (PR[dist]).
+131072 = Intersezione sull&apos;estensione (EXT_INT).
+2097152 = Punti finali dell&apos;intera polilinea (FIN_PL).
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distanza progressiva per snap &lt;Distanza progressiva&gt;.
+Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimensione in pixel dei simboli di osnap
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Altezza in pixel del quadratino di selezione degli oggetti.
+Tipo intero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colore (RGB) del quadratino di selezione degli oggetti (es. #FF0000 = rosso).
+Tipo carattere.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Incremento dell&apos;angolo polare per il puntamento polare (gradi).
+Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path di ricerca per i files di supporto.
+Tipo carattere.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Visualizza la finestra di testo all&apos;avvio.
+Tipo booleano.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti.
+Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Popup_menu_graph_window</name>

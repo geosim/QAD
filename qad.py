@@ -228,6 +228,10 @@ class Qad(QObject):
       self.lastPolygonConstructionModeByCenter = mode
 
 
+   def loadDimStyles(self):
+      # carico gli stili di quotatura
+      self.dimStyles.load()
+      
    #============================================================================
    # __initLocalization
    #============================================================================
@@ -270,14 +274,14 @@ class Qad(QObject):
             if self.__initLocalization(language) == False:            
                # provo a caricare la lingua inglese
                self.__initLocalization("en")
-                  
-      self.canvas = self.iface.mapCanvas()
-      self.tool = QadMapTool(self)
-      
+                        
       # carico le variabili d'ambiente
       QadVariables.load()
       # carico gli stili di quotatura
-      self.dimStyles.load()
+      self.loadDimStyles()
+
+      self.canvas = self.iface.mapCanvas()
+      self.tool = QadMapTool(self)
       
       # Lista dei comandi
       self.QadCommands = QadCommandsClass(self)
@@ -285,7 +289,7 @@ class Qad(QObject):
       self.undoStack = qad_undoredo.QadUndoStack()
 
    def initGui(self):
-      # creao tutte le azioni e le collego ai comandi
+      # creo tutte le azioni e le collego ai comandi
       self.initActions()
 
       # Connect to signals
@@ -329,39 +333,40 @@ class Qad(QObject):
       self.toolBar.addAction(self.mainAction)
 
       # aggiunge le toolbar per i comandi 
-      self.toolBar.addAction(self.pline_action)
       self.toolBar.addAction(self.setCurrLayerByGraph_action)
       self.toolBar.addAction(self.setCurrUpdateableLayerByGraph_action)
+      self.toolBar.addAction(self.u_action)
+      self.toolBar.addAction(self.redo_action)
+      self.toolBar.addAction(self.line_action)
+      self.toolBar.addAction(self.pline_action)
       # arco
-      self.arcToolButton = self.createArcToolButton()      
+      self.arcToolButton = self.createArcToolButton()
       self.toolBar.addWidget(self.arcToolButton)
       # cerchio
-      self.circleToolButton = self.createCircleToolButton()      
+      self.circleToolButton = self.createCircleToolButton()
       self.toolBar.addWidget(self.circleToolButton)
+
+      self.toolBar.addAction(self.rectangle_action)
+      self.toolBar.addAction(self.polygon_action)
+      self.toolBar.addAction(self.mpolygon_action)
+      self.toolBar.addAction(self.mbuffer_action)
+      self.toolBar.addAction(self.insert_action)
+      self.toolBar.addAction(self.text_action)
             
-      self.toolBar.addAction(self.dsettings_action)
-      self.toolBar.addAction(self.line_action)
       self.toolBar.addAction(self.erase_action)
-      self.toolBar.addAction(self.mpolygon_action)      
-      self.toolBar.addAction(self.mbuffer_action)      
-      self.toolBar.addAction(self.rotate_action)      
-      self.toolBar.addAction(self.move_action)      
-      self.toolBar.addAction(self.scale_action)      
-      self.toolBar.addAction(self.copy_action)      
+      self.toolBar.addAction(self.rotate_action)
+      self.toolBar.addAction(self.move_action)
+      self.toolBar.addAction(self.scale_action)
+      self.toolBar.addAction(self.copy_action)
       self.toolBar.addAction(self.offset_action)
       self.toolBar.addAction(self.extend_action)
       self.toolBar.addAction(self.trim_action)
-      self.toolBar.addAction(self.rectangle_action)
-      self.toolBar.addAction(self.polygon_action)
       self.toolBar.addAction(self.mirror_action)
-      self.toolBar.addAction(self.u_action)
-      self.toolBar.addAction(self.redo_action)
-      self.toolBar.addAction(self.insert_action)
-      self.toolBar.addAction(self.text_action)
       self.toolBar.addAction(self.stretch_action)
       self.toolBar.addAction(self.break_action)
       self.toolBar.addAction(self.pedit_action)
       self.toolBar.addAction(self.fillet_action)
+      self.toolBar.addAction(self.dsettings_action)
       self.enableUndoRedoButtons()
 
       # aggiunge la toolbar per la quotatura 
@@ -390,6 +395,7 @@ class Qad(QObject):
       # Remove the plugin menu item and icon
       self.iface.removePluginVectorMenu("&QAD", self.mainAction)
       self.iface.removeToolBarIcon(self.mainAction)
+      
       # remove toolbars and menubars
       if self.toolBar is not None:
          del self.toolBar
@@ -676,6 +682,11 @@ class Qad(QObject):
       self.dimAligned_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.dimAligned_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.dimAligned_action)
+      # DIMSTYLE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMSTILE"))
+      self.dimStyle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimStyle_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimStyle_action)
 
 
    #============================================================================
@@ -683,6 +694,11 @@ class Qad(QObject):
    #============================================================================
 
 
+   def UpdatedVariablesEvent(self):
+      # aggiorna in base alle nuove impostazioni delle variabili
+      self.tool.UpdatedVariablesEvent()
+      
+      
    #============================================================================
    # INIZIO - Gestione MENU (da chiamare prima di creare TOOLBAR)
    #============================================================================
@@ -774,6 +790,7 @@ class Qad(QObject):
       dimMenu = QMenu(QadMsg.translate("QAD", "Quotatura"))
       dimMenu.addAction(self.dimLinear_action)
       dimMenu.addAction(self.dimAligned_action)
+      dimMenu.addAction(self.dimStyle_action)
       return dimMenu
       
    #============================================================================
@@ -810,6 +827,7 @@ class Qad(QObject):
       toolBar.setObjectName(QadMsg.translate("QAD", "QAD - Quotatura"))
       toolBar.addAction(self.dimLinear_action)
       toolBar.addAction(self.dimAligned_action)
+      toolBar.addAction(self.dimStyle_action)
       return toolBar
 
 
@@ -1361,12 +1379,15 @@ class Qad(QObject):
 
    def runFILLETCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "RACCORDO"))
-
+      
+   def runPOLYGONCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "POLIGONO"))      
+      
    def runDIMLINEARCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMLINEARE"))
 
    def runDIMALIGNEDCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMALLINEATA"))
-      
-   def runPOLYGONCommand(self):
-      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "POLIGONO"))      
+
+   def runDIMSTYLECommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMSTILE"))

@@ -78,25 +78,29 @@ class QadSETVARCommandClass(QadCommandClass):
             self.step = 3
             return False
          else:
-            varValue = QadVariables.get(self.varName)
-            if varValue is None:
-               
+            variable = QadVariables.getVariable(self.varName)
+            if variable is None:               
                msg = QadMsg.translate("Command_SETVAR", "\nNome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.")
                self.showErr(msg.format(QadMsg.translate("Command_list", "MODIVAR")))
                return False
             else:
+               varValue = variable.value
+               varDescr = variable.descr
+               varType = str(type(varValue))
+               if len(varDescr) > 0:
+                  self.showMsg("\n" + varDescr)
+               
                msg = QadMsg.translate("Command_SETVAR", "Digitare nuovo valore per {0} <{1}>: ")
-               vartype = str(type(varValue))
-               if vartype == "<type 'str'>":
+               if varType == "<type 'str'>":
                   # si appresta ad attendere una stringa
                   self.waitForString(msg.format(self.varName, varValue), varValue)
-               elif vartype == "<type 'int'>":
+               elif varType == "<type 'int'>":
                   # si appresta ad attendere un numero intero
                   self.waitForInt(msg.format(self.varName, varValue), varValue)
-               elif vartype == "<type 'float'>":
+               elif varType == "<type 'float'>":
                   # si appresta ad attendere un numero reale
                   self.waitForFloat(msg.format(self.varName, varValue), varValue)
-               elif vartype == "<type 'bool'>":
+               elif varType == "<type 'bool'>":
                   # si appresta ad attendere un numero reale
                   self.waitForBool(msg.format(self.varName, varValue), varValue)
                self.step = 2
@@ -107,6 +111,8 @@ class QadSETVARCommandClass(QadCommandClass):
          # il valore della variabile arriva come parametro della funzione
          QadVariables.set(self.varName, msg)
          QadVariables.save()
+         self.plugIn.UpdatedVariablesEvent()
+         
          return True
       elif self.step == 3: # dopo aver atteso il nome della variabile si riavvia il comando
          if msgMapTool == True: # niente può arrivare da grafica
@@ -125,4 +131,7 @@ class QadSETVARCommandClass(QadCommandClass):
             if varValue is not None:
                msg = "\n" + self.varName + "=" + str(varValue)
                self.showMsg(msg)
+               
+         self.plugIn.UpdatedVariablesEvent()
+               
          return True

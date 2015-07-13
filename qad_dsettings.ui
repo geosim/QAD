@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DSettings_Dialog</class>
- <widget class="QDialog" name="DSettings_Dialog">
+ <class>dSettings_dialog</class>
+ <widget class="QDialog" name="dSettings_dialog">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -571,42 +571,11 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>Quotatura</string>
-    </attribute>
-    <widget class="QComboBox" name="comboBox_current_dim_style">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>20</y>
-       <width>241</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="insertPolicy">
-      <enum>QComboBox::InsertAlphabetically</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_current_dim_style">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>141</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Stile di quotatura corrente:</string>
-     </property>
-    </widget>
-   </widget>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>200</x>
      <y>420</y>
      <width>239</width>
      <height>25</height>
@@ -614,12 +583,16 @@ p, li { white-space: pre-wrap; }
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QDialogButtonBox" name="buttonBox">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+     <widget class="QPushButton" name="okButton">
+      <property name="text">
+       <string>OK</string>
       </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="cancelButton">
+      <property name="text">
+       <string>Annulla</string>
       </property>
      </widget>
     </item>
@@ -638,41 +611,9 @@ p, li { white-space: pre-wrap; }
  </resources>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>DSettings_Dialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>266</x>
-     <y>443</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>DSettings_Dialog</receiver>
-   <slot>ButtonBOX_Accepted()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>266</x>
-     <y>443</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>120</x>
-     <y>460</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>pushButton_DeSelectALL</sender>
    <signal>pressed()</signal>
-   <receiver>DSettings_Dialog</receiver>
+   <receiver>dSettings_dialog</receiver>
    <slot>ButtonDeselectALL_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -688,7 +629,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_SelectALL</sender>
    <signal>pressed()</signal>
-   <receiver>DSettings_Dialog</receiver>
+   <receiver>dSettings_dialog</receiver>
    <slot>ButtonSelectALL_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -704,16 +645,48 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_HELP</sender>
    <signal>clicked()</signal>
-   <receiver>DSettings_Dialog</receiver>
+   <receiver>dSettings_dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>309</x>
+     <x>391</x>
      <y>439</y>
     </hint>
     <hint type="destinationlabel">
      <x>372</x>
      <y>426</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dSettings_dialog</receiver>
+   <slot>ButtonBOX_Accepted()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>433</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>dSettings_dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>142</x>
+     <y>428</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>413</y>
     </hint>
    </hints>
   </connection>

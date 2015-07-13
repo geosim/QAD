@@ -70,7 +70,7 @@ class QadCommandAliasesClass():
       self.__commandAliases.clear()
       if Path == "":
          # Se la path non é indicata uso il file "qad.pgp" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "/python/plugins/qad/"
+         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "python/plugins/qad/"
          Path = Path + "qad.pgp"
 
       if not os.path.exists(Path):

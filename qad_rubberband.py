@@ -31,6 +31,153 @@ from qgis.gui import *
 
 
 from qad_entity import *
+from qad_variables import *
+
+
+#===============================================================================
+# QadCursorTypeEnum class.
+#===============================================================================
+class QadCursorTypeEnum():
+   BOX   = 1     # un quadratino usato per selezionare entità
+   CROSS = 2     # una croce usata per selezionare un punto
+
+
+#===============================================================================
+# createCursorRubberBand
+#===============================================================================
+# Classe che gestisce rubber band per disegnare il cursore a croce e il quadratino di pickbox
+class QadCursorRubberBand():
+   def __init__(self, mapCanvas, cursorType):
+      self.mapCanvas = mapCanvas
+      self.cursorType = cursorType
+      
+      if cursorType & QadCursorTypeEnum.BOX:
+         self.__boxRubberBand = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__boxRubberBand.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "PICKBOXCOLOR"))))
+         self.__pickSize = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX"))
+      else:
+         self.__boxRubberBand = None
+     
+      if cursorType & QadCursorTypeEnum.CROSS:
+         csrColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CURSORCOLOR")))
+         csrSize = QadVariables.get(QadMsg.translate("Environment variables", "CURSORSIZE"))
+         self.__crosshairRubberBandSx = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__crosshairRubberBandSx.setColor(csrColor)
+         self.__crosshairRubberBandDx = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__crosshairRubberBandDx.setColor(csrColor)
+         self.__crosshairRubberBandDw = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__crosshairRubberBandDw.setColor(csrColor)
+         self.__crosshairRubberBandUp = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__crosshairRubberBandUp.setColor(csrColor)
+         screenRect = QApplication.desktop().screenGeometry(mapCanvas)
+         self.__halfScreenSize = max(screenRect.height(), screenRect.width())
+         if csrSize < 100:
+            self.__halfScreenSize = self.__halfScreenSize / 2
+         self.__halfScreenSize = self.__halfScreenSize * QadVariables.get(QadMsg.translate("Environment variables", "CURSORSIZE")) / 100
+      else:
+         self.__crosshairRubberBandSx = None
+         self.__crosshairRubberBandDx = None
+         self.__crosshairRubberBandDw = None
+         self.__crosshairRubberBandUp = None
+
+   def __del__(self):     
+      if self.__boxRubberBand is not None:
+         self.mapCanvas.scene().removeItem(self.__boxRubberBand)
+         del self.__boxRubberBand
+         
+      if self.__crosshairRubberBandSx is not None:
+         self.mapCanvas.scene().removeItem(self.__crosshairRubberBandSx)
+         self.mapCanvas.scene().removeItem(self.__crosshairRubberBandDx)
+         self.mapCanvas.scene().removeItem(self.__crosshairRubberBandDw)
+         self.mapCanvas.scene().removeItem(self.__crosshairRubberBandUp)
+         del self.__crosshairRubberBandSx
+         del self.__crosshairRubberBandDx
+         del self.__crosshairRubberBandDw
+         del self.__crosshairRubberBandUp
+
+   def moveEvent(self, point):
+      # point è risultato di toMapCoordinates      
+      if self.cursorType & QadCursorTypeEnum.BOX:
+         pickSize = self.__pickSize * self.mapCanvas.mapUnitsPerPixel()
+
+         self.__boxRubberBand.reset(QGis.Line)
+         
+         point1 = QgsPoint(point.x() - pickSize / 2, point.y() - pickSize / 2)
+         self.__boxRubberBand.addPoint(point1, False)
+         point1.setX(point1.x() + pickSize)
+         self.__boxRubberBand.addPoint(point1, False)
+         point1.setY(point1.y() + pickSize)
+         self.__boxRubberBand.addPoint(point1, False)
+         point1.setX(point1.x() - pickSize)
+         self.__boxRubberBand.addPoint(point1, False)
+         point1.setY(point1.y() - pickSize)
+         self.__boxRubberBand.addPoint(point1, True)
+
+      if self.cursorType & QadCursorTypeEnum.CROSS:
+         halfScreenSize = self.__halfScreenSize * self.mapCanvas.mapUnitsPerPixel()
+         
+         self.__crosshairRubberBandSx.reset(QGis.Line)
+         self.__crosshairRubberBandDx.reset(QGis.Line)
+         self.__crosshairRubberBandDw.reset(QGis.Line)
+         self.__crosshairRubberBandUp.reset(QGis.Line)
+         
+         if self.cursorType & QadCursorTypeEnum.BOX:
+            halfPickSize = pickSize / 2
+            point1 = QgsPoint(point.x() - halfScreenSize, point.y())
+            point2 = QgsPoint(point.x() - halfPickSize, point.y())
+            self.__crosshairRubberBandSx.addPoint(point1, False)
+            self.__crosshairRubberBandSx.addPoint(point2, True)
+
+            point1.setX(point.x() + halfScreenSize)
+            point2.setX(point.x() + halfPickSize)
+            self.__crosshairRubberBandDx.addPoint(point1, False)
+            self.__crosshairRubberBandDx.addPoint(point2, True)
+            
+            point1.set(point.x(), point.y() - halfScreenSize)
+            point2.set(point.x(), point.y() - halfPickSize)
+            self.__crosshairRubberBandDw.addPoint(point1, False)
+            self.__crosshairRubberBandDw.addPoint(point2, True)
+            
+            point1.setY(point.y() + halfScreenSize)
+            point2.setY(point.y() + halfPickSize)           
+            self.__crosshairRubberBandUp.addPoint(point1, False)
+            self.__crosshairRubberBandUp.addPoint(point2, True)            
+         else:
+            point1 = QgsPoint(point.x() - halfScreenSize, point.y())
+            self.__crosshairRubberBandSx.addPoint(point, False)
+            self.__crosshairRubberBandSx.addPoint(point1, True)
+            
+            point1.setX(point.x() + halfScreenSize)
+            self.__crosshairRubberBandDx.addPoint(point, False)
+            self.__crosshairRubberBandDx.addPoint(point1, True)
+            
+            point1.set(point.x(), point.y() - halfScreenSize)
+            self.__crosshairRubberBandDw.addPoint(point, False)
+            self.__crosshairRubberBandDw.addPoint(point1, True)
+            
+            point1.setY(point.y() + halfScreenSize)
+            self.__crosshairRubberBandUp.addPoint(point, False)
+            self.__crosshairRubberBandUp.addPoint(point1, True)
+
+   def hide(self):
+      if self.__boxRubberBand is not None:
+         self.__boxRubberBand.hide()
+         
+      if self.__crosshairRubberBandSx is not None:
+         self.__crosshairRubberBandSx.hide()
+         self.__crosshairRubberBandDx.hide()
+         self.__crosshairRubberBandDw.hide()
+         self.__crosshairRubberBandUp.hide()
+      
+   def show(self):
+      if self.__boxRubberBand is not None:
+         self.__boxRubberBand.show()
+         
+      if self.__crosshairRubberBandSx is not None:
+         self.__crosshairRubberBandSx.show()
+         self.__crosshairRubberBandDx.show()
+         self.__crosshairRubberBandDw.show()
+         self.__crosshairRubberBandUp.show()
 
 
 #===============================================================================
@@ -144,8 +291,7 @@ class QadRubberBand():
    def reset(self):
       self.__rubberBandPoint.reset(QGis.Point)
       self.__rubberBandLine.reset(QGis.Line)
-      self.__rubberBandPolygon.reset(QGis.Polygon)
-      
+      self.__rubberBandPolygon.reset(QGis.Polygon)      
       
    def setLineStyle(self, penStyle):      
       self.__rubberBandLine.setLineStyle(penStyle)
