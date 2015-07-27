@@ -77,15 +77,9 @@ class Qad_mirror_maptool(QadGetPoint):
    #============================================================================
    # mirror
    #============================================================================
-   def mirror(self, f, pt1, pt2, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
+   def mirror(self, f, pt1, pt2, layerEntitySet, entitySet):
+      # verifico se la feature appartiene ad una quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
       
       if dimEntity is None:
          # specchio la feature e la rimuovo da entitySet (é la prima)
@@ -111,16 +105,13 @@ class Qad_mirror_maptool(QadGetPoint):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
 
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-         
          transformedFirstMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.firstMirrorPt)
          transformedNewPtMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
 
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
-            f = layerEntitySet.getFeature(featureId)        
-            self.mirror(f, transformedFirstMirrorPt, transformedNewPtMirrorPt, layerEntitySet, entitySet, dimStyle)
+            f = layerEntitySet.getFeature(featureId)
+            self.mirror(f, transformedFirstMirrorPt, transformedNewPtMirrorPt, layerEntitySet, entitySet)
                      
       
    def canvasMoveEvent(self, event):

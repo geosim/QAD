@@ -92,15 +92,7 @@ class QadMIRRORCommandClass(QadCommandClass):
    #============================================================================
    # scale
    #============================================================================
-   def mirror(self, f, pt1, pt2, rotFldName, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
+   def mirror(self, f, pt1, pt2, rotFldName, layerEntitySet, entitySet, dimEntity):
       
       if dimEntity is None:
          # scalo la feature e la rimuovo da entitySet (é la prima)
@@ -149,10 +141,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       self.plugIn.beginEditCommand("Feature mirrored", self.entitySet.getLayerList())
 
       for layerEntitySet in entitySet.layerEntitySetList:
-         layer = layerEntitySet.layer
-         
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
+         layer = layerEntitySet.layer        
 
          transformedBasePt = self.mapToLayerCoordinates(layer, self.firstMirrorPt)
          transformedNewPt = self.mapToLayerCoordinates(layer, self.secondMirrorPt)
@@ -170,7 +159,19 @@ class QadMIRRORCommandClass(QadCommandClass):
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
 
-            if self.mirror(f, transformedBasePt, transformedNewPt, rotFldName, layerEntitySet, entitySet, dimStyle) == False:  
+            entity = QadEntity()
+            entity.set(layer, featureId)
+            # verifico se l'entità appartiene ad uno stile di quotatura
+            dimStyle, dimId = self.plugIn.dimStyles.getDimIdByEntity(entity)
+
+            if dimStyle is not None:
+               dimEntity = QadDimEntity()
+               if dimEntity.initByDimId(dimStyle, dimId) == False:
+                  dimEntity = None
+            else:
+               dimEntity = None
+
+            if self.mirror(f, transformedBasePt, transformedNewPt, rotFldName, layerEntitySet, entitySet, dimEntity) == False:  
                self.plugIn.destroyEditCommand()
                return
 

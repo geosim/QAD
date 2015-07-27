@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="DBTab">
     <attribute name="title">
@@ -419,6 +419,19 @@
       </property>
      </widget>
     </widget>
+    <widget class="QPushButton" name="previewDummy">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>20</y>
+       <width>251</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PushButton</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="LineTab">
     <attribute name="title">
@@ -488,7 +501,7 @@
        <string>Sopprimi:</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="dimLine1Show">
+     <widget class="QCheckBox" name="dimLine1Hide">
       <property name="geometry">
        <rect>
         <x>70</x>
@@ -504,7 +517,7 @@
        <string>Linea quota 1</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="dimLine2Show">
+     <widget class="QCheckBox" name="dimLine2Hide">
       <property name="geometry">
        <rect>
         <x>170</x>
@@ -624,7 +637,7 @@
        <string>Sopprimi:</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="extLine1Show">
+     <widget class="QCheckBox" name="extLine1Hide">
       <property name="geometry">
        <rect>
         <x>70</x>
@@ -640,7 +653,7 @@
        <string>Linea est. 1</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="extLine2Show">
+     <widget class="QCheckBox" name="extLine2Hide">
       <property name="geometry">
        <rect>
         <x>170</x>
@@ -968,7 +981,7 @@
        <x>10</x>
        <y>10</y>
        <width>271</width>
-       <height>81</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -978,7 +991,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>80</y>
         <width>111</width>
         <height>21</height>
        </rect>
@@ -991,7 +1004,7 @@
       <property name="geometry">
        <rect>
         <x>180</x>
-        <y>50</y>
+        <y>80</y>
         <width>81</width>
         <height>22</height>
        </rect>
@@ -1035,12 +1048,38 @@
        <string>Tipo di carattere del testo di quota.</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="textColorDummy">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>50</y>
+        <width>181</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>51</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Colore:</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_10">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>220</y>
        <width>271</width>
        <height>141</height>
       </rect>
@@ -1162,12 +1201,12 @@
       </property>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_11">
+    <widget class="QGroupBox" name="textAlignment_groupBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>290</x>
        <y>250</y>
-       <width>271</width>
+       <width>241</width>
        <height>111</height>
       </rect>
      </property>
@@ -1241,7 +1280,7 @@
      <widget class="QDoubleSpinBox" name="textForcedRot">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>150</x>
         <y>80</y>
         <width>81</width>
         <height>22</height>
@@ -1342,7 +1381,7 @@
        <string>Testo</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="textBlockAdjustBothOutside_2">
+     <widget class="QRadioButton" name="textBlockAdjustBothOutside">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1526,7 +1565,7 @@ di estensione</string>
        <string>Iniziale</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="textDecimaZerosSuppression">
+     <widget class="QCheckBox" name="textDecimalZerosSuppression">
       <property name="geometry">
        <rect>
         <x>170</x>
@@ -1550,7 +1589,7 @@ di estensione</string>
     <rect>
      <x>338</x>
      <y>410</y>
-     <width>221</width>
+     <width>239</width>
      <height>25</height>
     </rect>
    </property>
@@ -1636,8 +1675,8 @@ di estensione</string>
    <slot>textRotModeFixedRotToggled()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>371</y>
+     <x>360</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>82</x>
@@ -1656,8 +1695,8 @@ di estensione</string>
      <y>311</y>
     </hint>
     <hint type="destinationlabel">
-     <x>234</x>
-     <y>412</y>
+     <x>567</x>
+     <y>318</y>
     </hint>
    </hints>
   </connection>
@@ -1684,8 +1723,8 @@ di estensione</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
-     <y>425</y>
+     <x>339</x>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>56</x>
@@ -1700,12 +1739,764 @@ di estensione</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>185</x>
-     <y>428</y>
+     <x>420</x>
+     <y>429</y>
     </hint>
     <hint type="destinationlabel">
      <x>179</x>
      <y>442</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>currentTabChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>369</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineTypeFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>linetypeFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>202</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>5</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>symbolFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>symbolFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>220</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>225</x>
+     <y>-2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>scaleFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>scaleFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>idFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>idFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimStyleFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>dimStyleFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>161</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimTypeFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>dimTypeFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>142</x>
+     <y>374</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>378</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>colorFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>colorFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>564</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>rotFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>564</x>
+     <y>320</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>componentFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>componentFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>466</x>
+     <y>347</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>563</x>
+     <y>348</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>idParentFieldName</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>idParentFieldNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>486</x>
+     <y>372</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>566</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimLineLineType</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>dimLineLineTypeChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>123</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimLine1Hide</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>dimLine1HideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>155</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dimLine2Hide</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>dimLine2HideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>185</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLine1LineType</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLine1LineTypeChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>272</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLine2LineType</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLine2LineTypeChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>154</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLine1Hide</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLine1HideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLine2Hide</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLine2HideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>238</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>386</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLineOffsetDimLine</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLineOffsetDimLineChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>496</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLineOffsetOrigPoints</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLineOffsetOrigPointsChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>524</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extLineFixedLen</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>extLineFixedLenChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>346</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>565</x>
+     <y>406</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>block1Name</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>block1NameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>72</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>block2Name</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>block2NameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>103</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blockLeaderName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>blockLeaderNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-8</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blockWidth</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>blockWidthChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blockScale</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>blockScaleChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textFont</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textFontChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textHeight</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textHeightChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>237</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-9</x>
+     <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textVerticalPos</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textVerticalPosChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>293</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>158</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textHorizontalPos</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textHorizontalPosChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>189</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textDirection</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textDirectionChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>353</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>222</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textOffsetDist</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textOffsetDistChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>383</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textForcedRot</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textForcedRotChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>505</x>
+     <y>383</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blockSuppressionForNoSpace</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>blockSuppressionForNoSpaceToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>227</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textDecimals</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textDecimalsChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>144</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>59</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textDecimalSep</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textDecimalSepChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textPrefix</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textPrefixChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textSuffix</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textSuffixChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textSuppressLeadingZeros</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textSuppressLeadingZerosToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>63</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>216</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textDecimalZerosSuppression</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textDecimalZerosSuppressionToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>220</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>33</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textRotModeHorizontal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textRotModeHorizontalToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>338</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textRotModeAligned</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textRotModeAlignedToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>427</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>566</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textRotModeISO</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textRotModeISOToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>382</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>566</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textBlockAdjustWhicheverFitsBestOutside</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textBlockAdjustWhicheverFitsBestOutsideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>82</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textBlockAdjustFirstSymbolOutside</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textBlockAdjustFirstSymbolOutsideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>140</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textBlockAdjustFirstTextOutside</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textBlockAdjustFirstTextOutsideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>41</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1</x>
+     <y>173</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>textBlockAdjustBothOutside</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dimStyle_details_dialog</receiver>
+   <slot>textBlockAdjustBothOutsideToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
@@ -1717,5 +2508,54 @@ di estensione</string>
   <slot>textRotModeFixedRotToggled()</slot>
   <slot>extLineIsFixedLenToggled()</slot>
   <slot>ButtonHELP_Pressed()</slot>
+  <slot>currentTabChanged()</slot>
+  <slot>redrawDimOnDBTabChanged()</slot>
+  <slot>linetypeFieldNameChanged()</slot>
+  <slot>symbolFieldNameChanged()</slot>
+  <slot>scaleFieldNameChanged()</slot>
+  <slot>idFieldNameChanged()</slot>
+  <slot>dimStyleFieldNameChanged()</slot>
+  <slot>dimTypeFieldNameChanged()</slot>
+  <slot>colorFieldNameChanged()</slot>
+  <slot>rotFieldNameChanged()</slot>
+  <slot>componentFieldNameChanged()</slot>
+  <slot>idParentFieldNameChanged()</slot>
+  <slot>dimLineLineTypeChanged()</slot>
+  <slot>dimLine1HideToggled()</slot>
+  <slot>dimLine2HideToggled()</slot>
+  <slot>extLine1LineTypeChanged()</slot>
+  <slot>extLine2LineTypeChanged()</slot>
+  <slot>extLine1HideToggled()</slot>
+  <slot>extLine2HideToggled()</slot>
+  <slot>extLineOffsetDimLineChanged()</slot>
+  <slot>extLineOffsetOrigPointsChanged()</slot>
+  <slot>extLineIsFixedLengthChanged()</slot>
+  <slot>extLineFixedLenChanged()</slot>
+  <slot>block1NameChanged()</slot>
+  <slot>block2NameChanged()</slot>
+  <slot>blockLeaderNameChanged()</slot>
+  <slot>blockWidthChanged()</slot>
+  <slot>blockScaleChanged()</slot>
+  <slot>textFontChanged()</slot>
+  <slot>textHeightChanged()</slot>
+  <slot>textVerticalPosChanged()</slot>
+  <slot>textHorizontalPosChanged()</slot>
+  <slot>textDirectionChanged()</slot>
+  <slot>textOffsetDistChanged()</slot>
+  <slot>textForcedRotChanged()</slot>
+  <slot>blockSuppressionForNoSpaceToggled()</slot>
+  <slot>textDecimalsChanged()</slot>
+  <slot>textDecimalSepChanged()</slot>
+  <slot>textPrefixChanged()</slot>
+  <slot>textSuffixChanged()</slot>
+  <slot>textSuppressLeadingZerosToggled()</slot>
+  <slot>textDecimalZerosSuppressionToggled()</slot>
+  <slot>textRotModeHorizontalToggled()</slot>
+  <slot>textRotModeAlignedToggled()</slot>
+  <slot>textRotModeISOToggled()</slot>
+  <slot>textBlockAdjustWhicheverFitsBestOutsideToggled()</slot>
+  <slot>textBlockAdjustFirstSymbolOutsideToggled()</slot>
+  <slot>textBlockAdjustFirstTextOutsideToggled()</slot>
+  <slot>textBlockAdjustBothOutsideToggled()</slot>
  </slots>
 </ui>

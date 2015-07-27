@@ -215,7 +215,7 @@ class Qad_fillet_maptool(QadGetPoint):
          layerList = []
          for layer in self.plugIn.canvas.layers():
             if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
-               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList
@@ -234,7 +234,7 @@ class Qad_fillet_maptool(QadGetPoint):
             if layer.type() == QgsMapLayer.VectorLayer and \
                (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                layer.isEditable():
-               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList

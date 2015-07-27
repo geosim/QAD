@@ -33,6 +33,7 @@ from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_entity import *
+from qad_dim import *
 from qad_getpoint import *
 from qad_pline_cmd import QadPLINECommandClass
 from qad_circle_cmd import QadCIRCLECommandClass
@@ -116,7 +117,7 @@ class QadSSGetClass(QadCommandClass):
               (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
-               self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
          
       return layerList
@@ -143,8 +144,10 @@ class QadSSGetClass(QadCommandClass):
          (self.checkPolygonLayer == False and entity.layer.geometryType() == QGis.Polygon):
          self.showMsgOnAddRemove(0)
          return
+      
       # controllo su layer delle quotature
-      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(entity.layer) is not None:
+      dimStyle, dimId = self.plugIn.dimStyles.getDimIdByEntity(entity)
+      if self.checkDimLayers == False and dimStyle is not None:
          self.showMsgOnAddRemove(0)
          return
       
@@ -159,13 +162,12 @@ class QadSSGetClass(QadCommandClass):
       self.entitySet.clear()
       self.entitySet.addEntity(entity)
 
-      if self.checkDimLayers == True:
-         dimEntitySet = QadEntitySet()
-         dimEntitySet.addEntity(entity)
-         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
-         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
-         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
-         self.entitySet.unite(dimEntitySet)
+      if self.checkDimLayers == True and dimStyle is not None:
+         # Mi ricavo tutti i componenti della quotatura
+         dimEntity = QadDimEntity()
+         dimEntity.initByDimId(dimStyle, dimId)
+         # Aggiungo i componenenti della quotatura a set <entitySet>
+         self.entitySet.unite(dimEntity.getEntitySet())
 
       self.showMsgOnAddRemove(self.entitySet.count())
       self.entitySet.selectOnLayer(False) # incremental = False
@@ -211,7 +213,7 @@ class QadSSGetClass(QadCommandClass):
          self.showMsgOnAddRemove(0)
          return
       # controllo su layer delle quotature
-      if self.checkDimLayers == False and self.plugIn.dimStyles.getDimByLayer(entity.layer) is not None:
+      if self.checkDimLayers == False and len(self.plugIn.dimStyles.getDimListByLayer(entity.layer)) > 0:
          self.showMsgOnAddRemove(0)
          return
       

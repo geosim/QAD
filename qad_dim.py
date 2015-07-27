@@ -60,8 +60,9 @@ Il layer simbolo deve avere tutte le caratteristiche del layer simbolo di QAD ed
 - symbolFieldName = "block"; nome del campo che contiene il nome del simbolo (opzionale)
 - idParentFieldName = "id_parent"; nome del campo che contiene il codice del testo della quota (opzionale)
 - scaleFieldName = "scale"; nome del campo che contiene il fattore di scala del simbolo (opzionale)
+  la scala deve essere impostata su attraverso Stile->avanzato->campo di dimensione della scala->diametro scala
 - rotFieldName = "rot"; nome del campo che contiene la rotazione del simbolo 
-- la rotazione deve essere letta dal campo indicato da rotFieldName (360-rotFieldName)
+  la rotazione deve essere letta dal campo indicato da rotFieldName (360-rotFieldName)
 
 Il layer linea deve avere tutte le caratteristiche del layer linea ed in più:
 - componentFieldName = "type"; nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum) (opzionale)
@@ -188,7 +189,7 @@ class QadDimStyle():
    textPrefix = "" # prefisso per il testo della quota
    textSuffix = "" # suffisso per il testo della quota
    textSuppressLeadingZeros = False # per sopprimere o meno gli zero all'inizio del testo
-   textDecimaZerosSuppression = True # per sopprimere gli zero finali nei decimali
+   textDecimalZerosSuppression = True # per sopprimere gli zero finali nei decimali
    textHeight = 1.0 # altezza testo (DIMTXT) in unità di mappa
    textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE # posizione verticale del testo rispetto la linea di quota (DIMTAD)
    textHorizontalPos = QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE # posizione orizzontale del testo rispetto la linea di quota (DIMTAD)
@@ -198,6 +199,7 @@ class QadDimStyle():
    textDecimals = 2 # numero di decimali (DIMDEC)
    textDecimalSep = "." # Separatore dei decimali (DIMDSEP)
    textFont = "Arial" # nome del font di testo (DIMTXSTY)
+   textColor = "255,255,255,255" # Colore per i testi della quota (DIMCLRT); bianco con opacità totale
    textDirection = QadDimStyleTxtDirectionEnum.SX_TO_DX # specifica la direzione del testo di quota (DIMTXTDIRECTION) 0 = da sx a dx, 1 = da dx a sx
    arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT # disegna o meno il simbolo dell'arco con DIMARC (DIMARCSYM). 
    
@@ -286,7 +288,7 @@ class QadDimStyle():
       self.textPrefix = dimStyle.textPrefix
       self.textSuffix = dimStyle.textSuffix
       self.textSuppressLeadingZeros = dimStyle.textSuppressLeadingZeros
-      self.textDecimaZerosSuppression = dimStyle.textDecimaZerosSuppression
+      self.textDecimaZerosSuppression = dimStyle.textDecimalZerosSuppression
       self.textHeight = dimStyle.textHeight
       self.textVerticalPos = dimStyle.textVerticalPos
       self.textHorizontalPos = dimStyle.textHorizontalPos
@@ -296,6 +298,7 @@ class QadDimStyle():
       self.textDecimals = dimStyle.textDecimals
       self.textDecimalSep = dimStyle.textDecimalSep
       self.textFont = dimStyle.textFont
+      self.textColor = dimStyle.textColor
       self.textDirection = dimStyle.textDirection
       self.arcSymbPos = dimStyle.arcSymbPos
       
@@ -376,8 +379,8 @@ class QadDimStyle():
                                 value]
       proplist["textSuppressLeadingZeros"] = [QadMsg.translate("Dimension", "Soppressione degli zero inizio testo"), \
                                               self.textSuppressLeadingZeros]
-      proplist["textDecimaZerosSuppression"] = [QadMsg.translate("Dimension", "Soppressione degli zero fine testo"), \
-                                                self.textDecimaZerosSuppression]
+      proplist["textDecimalZerosSuppression"] = [QadMsg.translate("Dimension", "Soppressione degli zero fine testo"), \
+                                                 self.textDecimalZerosSuppression]
       proplist["textHeight"] = [QadMsg.translate("Dimension", "Altezza del testo"), \
                                 self.textHeight]
       proplist["textVerticalPos"] = [QadMsg.translate("Dimension", "Posizione verticale testo"), \
@@ -396,6 +399,8 @@ class QadDimStyle():
                                     self.textDecimalSep]
       proplist["textFont"] = [QadMsg.translate("Dimension", "Carattere testo"), \
                               self.textFont]
+      proplist["textColor"] = [QadMsg.translate("Dimension", "Colore testo"), \
+                              self.textColor]
       if self.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
          value = QadMsg.translate("Dimension", "da sinistra a destra")
       else:
@@ -614,7 +619,7 @@ class QadDimStyle():
       config.set("dimension_options", "textPrefix", str(self.textPrefix))
       config.set("dimension_options", "textSuffix", str(self.textSuffix))
       config.set("dimension_options", "textSuppressLeadingZeros", str(self.textSuppressLeadingZeros))
-      config.set("dimension_options", "textDecimaZerosSuppression", str(self.textDecimaZerosSuppression))
+      config.set("dimension_options", "textDecimalZerosSuppression", str(self.textDecimalZerosSuppression))
       config.set("dimension_options", "textHeight", str(self.textHeight))
       config.set("dimension_options", "textVerticalPos", str(self.textVerticalPos))
       config.set("dimension_options", "textHorizontalPos", str(self.textHorizontalPos))
@@ -624,6 +629,7 @@ class QadDimStyle():
       config.set("dimension_options", "textDecimals", str(self.textDecimals))
       config.set("dimension_options", "textDecimalSep", str(self.textDecimalSep))
       config.set("dimension_options", "textFont", str(self.textFont))
+      config.set("dimension_options", "textColor", str(self.textColor))
       config.set("dimension_options", "textDirection", str(self.textDirection))
       config.set("dimension_options", "arcSymbPos", str(self.arcSymbPos))
 
@@ -710,7 +716,7 @@ class QadDimStyle():
       self.textPrefix = config.get("dimension_options", "textPrefix")
       self.textSuffix = config.get("dimension_options", "textSuffix")
       self.textSuppressLeadingZeros = config.getboolean("dimension_options", "textSuppressLeadingZeros")
-      self.textDecimaZerosSuppression = config.getboolean("dimension_options", "textDecimaZerosSuppression")
+      self.textDecimalZerosSuppression = config.getboolean("dimension_options", "textDecimalZerosSuppression")
       self.textHeight = config.getfloat("dimension_options", "textHeight")
       self.textVerticalPos = config.getint("dimension_options", "textVerticalPos")
       self.textHorizontalPos = config.getint("dimension_options", "textHorizontalPos")
@@ -720,8 +726,8 @@ class QadDimStyle():
       self.textDecimals = config.getint("dimension_options", "textDecimals")
       self.textDecimalSep = config.get("dimension_options", "textDecimalSep")
       self.textFont = config.get("dimension_options", "textFont")
+      self.textColor = config.get("dimension_options", "textColor")
       self.textDirection = config.getint("dimension_options", "textDirection")
-      self.textFont = config.get("dimension_options", "textFont")
       self.arcSymbPos = config.getint("dimension_options", "arcSymbPos")
 
       # linee di quota
@@ -1425,7 +1431,10 @@ class QadDimStyle():
       isDimPt1 = se True si tratta del punto di quotatura 1 altrimenti del punto di quotatura 2
       sourceCrs = sistema di coordinate di insPt
       """
-      f = QgsFeature(self.getSymbolFeaturePrototype())
+      symbolFeaturePrototype = self.getSymbolFeaturePrototype()
+      if symbolFeaturePrototype is None:
+         return None
+      f = QgsFeature(symbolFeaturePrototype)
       g = QgsGeometry.fromPoint(insPt)
            
       if (sourceCrs is not None) and sourceCrs != self.getSymbolLayer().crs():
@@ -1472,7 +1481,7 @@ class QadDimStyle():
          for i in xrange(0, self.textDecimals - len(strDecPart), 1):  # aggiunge "0" per arrivare al numero di decimali
             strDecPart = strDecPart + "0"
             
-         if self.textDecimaZerosSuppression == True: # per sopprimere gli zero finali nei decimali
+         if self.textDecimalZerosSuppression == True: # per sopprimere gli zero finali nei decimali
             strDecPart = strDecPart.rstrip("0")
          
          formattedText = "-" if measure < 0 else "" # segno
@@ -1842,20 +1851,22 @@ class QadDimStyle():
             textVerticalPos = QadDimStyleTxtVerticalPosEnum.CENTERED_LINE
          # testo posizionato nella parte opposta ai punti di quotatura
          elif self.textVerticalPos == QadDimStyleTxtVerticalPosEnum.EXTERN_LINE:
-            textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE
-            # la linea di quota ha la stessa Y dei punti di quotatura
-            if qad_utils.doubleNear(dimLinePt1.y(), dimPt1.y()) and qad_utils.doubleNear(dimLinePt2.y(), dimPt2.y()):
-               # la linea di quota é a destra dei punti di quotatura
-               if dimLinePt1.x() > dimPt1.x() and dimLinePt2.x() > dimPt2.x():
-                  textVerticalPos = QadDimStyleTxtVerticalPosEnum.BELOW_LINE            
-            # la linea di quota é sotto i punti di quotatura
-            elif dimLinePt1.y() < dimPt1.x() and dimLinePt2.y() < dimPt2.x():
+            # angolo dal primo punto di quota al primo punto della linea di quota
+            dimPtToDimLinePt_rot = qad_utils.getAngleBy2Pts(dimPt1, dimLinePt1)
+            if dimPtToDimLinePt_rot > 0 and \
+               (dimPtToDimLinePt_rot < math.pi or qad_utils.doubleNear(dimPtToDimLinePt_rot,  math.pi)):
+               textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE
+            else:
                textVerticalPos = QadDimStyleTxtVerticalPosEnum.BELOW_LINE
          else:
             textVerticalPos = self.textVerticalPos
-            
-         textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1Offset, dimLinePt2Offset, textWidth, textHeight, \
-                                                         self.textHorizontalPos, textVerticalPos, self.textRotMode)
+         
+         if self.textRotMode == QadDimStyleTxtRotModeEnum.ISO:
+            textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1Offset, dimLinePt2Offset, textWidth, textHeight, \
+                                                            self.textHorizontalPos, textVerticalPos, QadDimStyleTxtRotModeEnum.ALIGNED_LINE)
+         else:
+            textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1Offset, dimLinePt2Offset, textWidth, textHeight, \
+                                                            self.textHorizontalPos, textVerticalPos, self.textRotMode)
          
          rect = self.textRectToQadLinearObjectList(textInsPt, textWidth, textHeight, textRot)
          spaceForBlock1, spaceForBlock2 = self.getSpaceForBlock1AndBlock2(rect, dimLinePt1, dimLinePt2)
@@ -1869,9 +1880,13 @@ class QadDimStyle():
                block1Rot = None
                block2Rot = None
                
-               # considero il testo senza frecce 
-               textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
-                                                               self.textHorizontalPos, textVerticalPos, self.textRotMode)
+               # considero il testo senza frecce
+               if self.textRotMode == QadDimStyleTxtRotModeEnum.ISO:
+                  textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                  self.textHorizontalPos, textVerticalPos, QadDimStyleTxtRotModeEnum.ALIGNED_LINE)
+               else:
+                  textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                  self.textHorizontalPos, textVerticalPos, self.textRotMode)
                
                rect = self.textRectToQadLinearObjectList(textInsPt, textWidth, textHeight, textRot)
                spaceForBlock1, spaceForBlock2 = self.getSpaceForBlock1AndBlock2(rect, dimLinePt1, dimLinePt2)
@@ -1893,9 +1908,13 @@ class QadDimStyle():
                # sposta prima le frecce poi, se non basta, anche il testo
                elif self.textBlockAdjust == QadDimStyleTextBlocksAdjustEnum.FIRST_BLOCKS_THEN_TEXT:
                   block1Rot, block2Rot = self.getBlocksRot(dimLinePt1, dimLinePt2, False) # frecce esterne 
-                  # considero il testo senza frecce 
-                  textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
-                                                                  self.textHorizontalPos, textVerticalPos, self.textRotMode)
+                  # considero il testo senza frecce
+                  if self.textRotMode == QadDimStyleTxtRotModeEnum.ISO:
+                     textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                     self.textHorizontalPos, textVerticalPos, QadDimStyleTxtRotModeEnum.ALIGNED_LINE)
+                  else:
+                     textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                     self.textHorizontalPos, textVerticalPos, self.textRotMode)
                   
                   rect = self.textRectToQadLinearObjectList(textInsPt, textWidth, textHeight, textRot)
                   spaceForBlock1, spaceForBlock2 = self.getSpaceForBlock1AndBlock2(rect, dimLinePt1, dimLinePt2)
@@ -1924,9 +1943,13 @@ class QadDimStyle():
                      textLinearDimComponentOn = QadDimComponentEnum.DIM_LINE1
                      block1Rot, block2Rot = self.getBlocksRot(dimLinePt1, dimLinePt2, False) # frecce esterne
                      
-                     # considero il testo senza frecce 
-                     textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
-                                                                     self.textHorizontalPos, textVerticalPos, self.textRotMode)
+                     # considero il testo senza frecce
+                     if self.textRotMode == QadDimStyleTxtRotModeEnum.ISO:                     
+                        textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                        self.textHorizontalPos, textVerticalPos, QadDimStyleTxtRotModeEnum.ALIGNED_LINE)
+                     else:
+                        textInsPt, textRot = self.getTextPositionOnLine(dimLinePt1, dimLinePt2, textWidth, textHeight, \
+                                                                        self.textHorizontalPos, textVerticalPos, self.textRotMode)
                      
                      rect = self.textRectToQadLinearObjectList(textInsPt, textWidth, textHeight, textRot)
                      spaceForBlock1, spaceForBlock2 = self.getSpaceForBlock1AndBlock2(rect, dimLinePt1, dimLinePt2)
@@ -1983,7 +2006,7 @@ class QadDimStyle():
          else: # c'é spazio per i blocchi
             block1Rot, block2Rot = self.getBlocksRot(dimLinePt1, dimLinePt2, True) # frecce interne
                
-      # il testo é sopra e allineato alla prima linea di estensione         
+      # il testo é sopra e allineato alla seconda linea di estensione         
       elif self.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.SECOND_EXT_LINE_UP:
          # angolo della linea che va dal punto di quota all'inizio della linea di quota
          rotLine = qad_utils.getAngleBy2Pts(dimPt2, dimLinePt2)
@@ -2037,7 +2060,10 @@ class QadDimStyle():
       _pt = QgsPoint(0,0) if pt is None else pt
       _rot = 0 if rot is None else rot
       
-      f = QgsFeature(self.getTextualFeaturePrototype())
+      textualFeaturePrototype = self.getTextualFeaturePrototype()
+      if textualFeaturePrototype is None:
+         return None
+      f = QgsFeature(textualFeaturePrototype)
       g = QgsGeometry.fromPoint(_pt)
       
       if (sourceCrs is not None) and sourceCrs != self.getTextualLayer().crs():
@@ -2069,7 +2095,7 @@ class QadDimStyle():
       # imposto il colore
       try:
          if len(self.colorFieldName) > 0:
-            f.setAttribute(self.colorFieldName, self.dimLineColor)         
+            f.setAttribute(self.colorFieldName, self.textColor)
       except:
          pass
       
@@ -2148,7 +2174,10 @@ class QadDimStyle():
       if leaderLines is None:
          return None
 
-      f = QgsFeature(self.getLinearFeaturePrototype())
+      linearFeaturePrototype = self.getLinearFeaturePrototype()
+      if linearFeaturePrototype is None:
+         return None
+      f = QgsFeature(linearFeaturePrototype)
        
       pts = []
       first = True
@@ -2413,7 +2442,9 @@ class QadDimStyle():
       # 4 lista = feature del primo e del secondo simbolo per la linea di quota (possono essere None); QgsFeature 1, QgsFeature 2
       # 5 lista = feature della prima e della seconda linea di estensione (possono essere None); QgsFeature 1, QgsFeature 2
       # 6 elemento = feature della linea di leader (può essere None); QgsFeature
-      """      
+      """
+      self.dimType = QadDimTypeEnum.LINEAR
+      
       # punti di quotatura
       dimPt1Feature = self.getDimPointFeature(dimPt1, True, \
                                               canvas.mapRenderer().destinationCrs()) # True = primo punto di quotatura
@@ -2535,6 +2566,8 @@ class QadDimStyle():
       """
       Aggiunge ai layers le features che compongono una quota lineare.
       """
+      self.dimType = QadDimTypeEnum.LINEAR
+      
       dimEntity, textOffsetRect = self.getLinearDimFeatures(plugIn.canvas, \
                                                             dimPt1, \
                                                             dimPt2, \
@@ -2548,13 +2581,13 @@ class QadDimStyle():
       # prima di tutto inserisco il testo di quota
       # plugIn, layer, feature, coordTransform, refresh, check_validity
       if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, None, False, False) == False:
-         self.plugIn.destroyEditCommand()
+         plugIn.destroyEditCommand()
          return False
       dimId = dimEntity.textualFeature.id()
       if self.setDimId(dimId, [dimEntity.textualFeature], False) == True: # setto id
          # plugIn, layer, feature, refresh, check_validity
          if qad_layer.updateFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, False, False) == False:
-            self.plugIn.destroyEditCommand()
+            plugIn.destroyEditCommand()
             return False
          
       # features puntuali
@@ -2601,6 +2634,8 @@ class QadDimStyle():
       # 5 lista = feature della prima e della seconda linea di estensione (possono essere None); QgsFeature 1, QgsFeature 2
       # 6 elemento = feature della linea di leader (può essere None); QgsFeature
       """
+      self.dimType = QadDimTypeEnum.ALIGNED
+      
       # punti di quotatura
       dimPt1Feature = self.getDimPointFeature(dimPt1, True, \
                                               canvas.mapRenderer().destinationCrs()) # True = primo punto di quotatura
@@ -2719,8 +2754,18 @@ class QadDimStyle():
                             preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL, \
                             dimLineRotation = 0.0):
       """
+      dimPt1 = primo punto da quotare (in unita di mappa)
+      dimPt2 = secondo punto da quotare (in unita di mappa)
+      linePosPt = punto per indicare dove deve essere posizionata la linea di quota (in unita di mappa)
+      measure = indica se la misura é predeterminata oppure (se = None) deve essere calcolata
+      preferredAlignment = se lo stile di quota é lineare, indica se ci si deve allienare ai punti di quota
+                           in modo orizzontale o verticale (se i punti di quota formano una linea obliqua)      
+      dimLineRotation = angolo della linea di quotatura (default = 0) 
+
       Aggiunge ai layers le features che compongono una quota allineata.
       """
+      self.dimType = QadDimTypeEnum.ALIGNED
+      
       dimEntity, textOffsetRect = self.getAlignedDimFeatures(plugIn.canvas, \
                                                              dimPt1, \
                                                              dimPt2, \
@@ -2732,13 +2777,13 @@ class QadDimStyle():
       # prima di tutto inserisco il testo di quota
       # plugIn, layer, feature, coordTransform, refresh, check_validity
       if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, None, False, False) == False:
-         self.plugIn.destroyEditCommand()
+         plugIn.destroyEditCommand()
          return False
       dimId = dimEntity.textualFeature.id()
       if self.setDimId(dimId, [dimEntity.textualFeature], False) == True: # setto id
          # plugIn, layer, feature, refresh, check_validity
          if qad_layer.updateFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, False, False) == False:
-            self.plugIn.destroyEditCommand()
+            plugIn.destroyEditCommand()
             return False
          
       # features puntuali
@@ -2901,17 +2946,47 @@ class QadDimStyles():
 
 
    #============================================================================
-   # getDimByLayer
+   # getDimEntity
    #============================================================================
-   def getDimByLayer(self, layer):
+   def getDimEntity(self, layer, fid = None):
       """
-      La funzione, dato un layer, verifica se fa parte di uno stile di quotatura della lista e,
-      in caso di successo, restituisce lo stile di quotatura.
+         la funzione può essere richiamata in 2 modi:
+         con un solo parametro di tipo QadEntity
+         con due parametri, il primo QgsVectorLayer e il secondo l'id della feature
       """
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      if type(layer) == QgsVectorLayer:
+         entity = QadEntity()
+         entity.set(layer, fid)
+         dimStyle, dimId = self.getDimIdByEntity(entity)
+      else: # il parametro layer puo essere un oggetto QadEntity
+         dimStyle, dimId = self.getDimIdByEntity(layer)
+      
+      if (dimStyle is None) or (dimId is None):
+         return None
+         
+      dimEntity = QadDimEntity()
+      if dimEntity.initByDimId(dimStyle, dimId) == False:
+         return None
+
+      return dimEntity
+
+
+   #============================================================================
+   # getDimListByLayer
+   #============================================================================
+   def getDimListByLayer(self, layer):
+      """
+      La funzione, dato un layer, verifica se fa parte di uno o più stili di quotatura della lista e,
+      in caso di successo, restituisce la lista degli stili di quotatura di appartenenza.
+      """
+      result = []
       for dimStyle in self.dimStyleList:
          if dimStyle.isDimLayer(layer):
-            return dimStyle
-      return None
+            if dimStyle not in result:
+               result.append(dimStyle)
+
+      return result
 
 
    #============================================================================
@@ -2924,18 +2999,18 @@ class QadDimStyles():
       """
       entity = QadEntity()
       for layerEntitySet in entitySet.layerEntitySetList:           
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.getDimByLayer(layerEntitySet.layer)
-         if dimStyle is not None:
-            remove = False
-            if onlyEditableLayers == True:
-               # se anche un solo layer non é modificabile 
-               if dimStyle.getTextualLayer().isEditable() == False or \
-                  dimStyle.getSymbolLayer().isEditable() == False or \
-                  dimStyle.getLinearLayer().isEditable() == False:
-                  remove = True
-            features = layerEntitySet.getFeatureCollection()
-            if len(features) > 0:
+         # verifico se il layer appartiene ad uno o più stili di quotatura
+         dimStyleList = self.getDimListByLayer(layerEntitySet.layer)
+         for dimStyle in dimStyleList: # per tutti gli stili di quotatura
+            if dimStyle is not None:
+               remove = False
+               if onlyEditableLayers == True:
+                  # se anche un solo layer non é modificabile 
+                  if dimStyle.getTextualLayer().isEditable() == False or \
+                     dimStyle.getSymbolLayer().isEditable() == False or \
+                     dimStyle.getLinearLayer().isEditable() == False:
+                     remove = True
+               features = layerEntitySet.getFeatureCollection()
                for feature in features:
                   entity.set(layerEntitySet.layer, feature.id())
                   dimId = dimStyle.getDimIdByEntity(entity)
@@ -2963,7 +3038,7 @@ class QadDimStyles():
 #===============================================================================
 # QadDimEntity dimension entity class
 #===============================================================================
-class QadDimEntity():      
+class QadDimEntity():
 
    #============================================================================
    # __init__
@@ -2976,8 +3051,12 @@ class QadDimEntity():
          self.textualFeature = None
          self.linearFeatures = []
          self.symbolFeatures = []
+
          
-                  
+   def whatIs(self):
+      return "DIMENTITY"
+
+
    #============================================================================
    # getTextualLayer
    #============================================================================
@@ -3125,10 +3204,17 @@ class QadDimEntity():
    # initByEntity
    #============================================================================
    def initByEntity(self, dimStyle, entity):
-      self.dimStyle = QadDimStyle(dimStyle)
-      dimId = self.dimStyle.getDimIdByEntity(entity)
+      dimId = dimStyle.getDimIdByEntity(entity)
       if dimId is None:
          return False
+      return self.initByDimId(dimStyle, dimId)
+
+
+   #============================================================================
+   # initByDimId
+   #============================================================================
+   def initByDimId(self, dimStyle, dimId):
+      self.dimStyle = QadDimStyle(dimStyle)
       entitySet = self.dimStyle.getEntitySet(dimId)
 
       self.textualFeature = None

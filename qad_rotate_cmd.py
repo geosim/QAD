@@ -95,15 +95,9 @@ class QadROTATECommandClass(QadCommandClass):
    #============================================================================
    # rotate
    #============================================================================
-   def rotate(self, f, basePt, angle, rotFldName, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
+   def rotate(self, f, basePt, angle, rotFldName, layerEntitySet, entitySet):
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
       
       if dimEntity is None:
          # ruoto la feature e la rimuovo da entitySet (é la prima)
@@ -149,9 +143,6 @@ class QadROTATECommandClass(QadCommandClass):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-                                 
          transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
 
          rotFldName = ""
@@ -167,7 +158,7 @@ class QadROTATECommandClass(QadCommandClass):
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
 
-            if self.rotate(f, transformedBasePt, angle, rotFldName, layerEntitySet, entitySet, dimStyle) == False:  
+            if self.rotate(f, transformedBasePt, angle, rotFldName, layerEntitySet, entitySet) == False:  
                self.plugIn.destroyEditCommand()
                return
 

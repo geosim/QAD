@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_diff.ui'
 #
-# Created: Tue Jul 07 13:52:39 2015
+# Created: Mon Jul 20 07:49:14 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,6 +89,6 @@ class Ui_dimStyle_diff_dialog(object):
         self.msg.setText(_translate("dimStyle_diff_dialog", "TextLabel", None))
         self.closeButton.setText(_translate("dimStyle_diff_dialog", "Chiudi", None))
         self.helpButton.setText(_translate("dimStyle_diff_dialog", "?", None))
-        self.tableWidget.setToolTip(_translate("dimStyle_diff_dialog", "<html><head/><body><p>Visualizza i risultati dl confronto degl istili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</p></body></html>", None))
+        self.tableWidget.setToolTip(_translate("dimStyle_diff_dialog", "<html><head/><body><p>Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</p></body></html>", None))
         self.copyButton.setToolTip(_translate("dimStyle_diff_dialog", "Copia il risultato del confronto negli Appunti.", None))
 

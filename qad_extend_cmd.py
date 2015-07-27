@@ -208,7 +208,7 @@ class QadEXTENDCommandClass(QadCommandClass):
       for layer in self.plugIn.canvas.layers():
          if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and \
             layer.isEditable():
-            if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+            if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
       
       self.getPointMapTool().layersToCheck = layerList
@@ -346,7 +346,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                layerList = []
                for layer in self.plugIn.canvas.layers():
                   if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
-                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
@@ -381,7 +381,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                layerList = []
                for layer in self.plugIn.canvas.layers():
                   if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
-                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                
                self.entitySet = qad_utils.getSelSet("F", self.getPointMapTool(), self.PLINECommand.vertices, \
@@ -410,7 +410,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                layerList = []
                for layer in self.plugIn.canvas.layers():
                   if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
-                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                         
                self.entitySet = qad_utils.getSelSet("F", self.getPointMapTool(), self.RECTANGLECommand.vertices, \

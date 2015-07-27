@@ -165,7 +165,7 @@ class Qad_pedit_maptool(QadGetPoint):
             if layer.type() == QgsMapLayer.VectorLayer and \
                (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                layer.isEditable():
-               if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList

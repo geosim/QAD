@@ -982,7 +982,7 @@ class QadPEDITCommandClass(QadCommandClass):
                   if layer.type() == QgsMapLayer.VectorLayer and \
                      (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                      layer.isEditable():
-                     if self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),

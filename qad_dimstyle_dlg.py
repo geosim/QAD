@@ -36,7 +36,7 @@ from qad_variables import *
 from qad_dim import *
 from qad_msg import QadMsg
 from qad_dimstyle_new_dlg import QadDIMSTYLE_NEW_Dialog
-from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog
+from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog, QadPreviewDim
 from qad_dimstyle_diff_dlg import QadDIMSTYLE_DIFF_Dialog
 import qad_utils
 
@@ -53,7 +53,20 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_dimStyle_dialog):
       
       self.setupUi(self)
       self.dimStyleList.setContextMenuPolicy(Qt.CustomContextMenu)
+      
+      # aggiungo il canvans di preview della quota chiamato QadPreviewDim 
+      # che eredita la posizione di previewDummy (che viene nascosto)      
+      self.previewDummy.setHidden(True)
+      self.previewDim = QadPreviewDim(self.previewDummy.parent(), self.plugIn)
+      self.previewDim.setGeometry(self.previewDummy.geometry())
+      self.previewDim.setObjectName("previewDim")
+      
       self.init()
+
+
+   def closeEvent(self, event):
+      del self.previewDim # cancello il canvans di preview della quota chiamato QadPreviewDim 
+      return QDialog.closeEvent(self, event)
 
    def init(self):
       # Inizializzazione dello stile corrente
@@ -97,6 +110,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_dimStyle_dialog):
       self.selectedDimStyle = item.data()
       self.selectedStyle.setText(self.selectedDimStyle.name)
       self.descriptionSelectedStyle.setText(self.selectedDimStyle.description)
+      
+      self.previewDim.drawDim(self.selectedDimStyle)
 
    def dimStyleListcloseEditor(self, editor, hint):
       self.renSelectedDimStyle(editor.text())
@@ -147,6 +162,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_dimStyle_dialog):
             self.init()
 
    def createNewStyle(self):
+      self.previewDim.eraseDim()
+
       Form = QadDIMSTYLE_NEW_Dialog(self.plugIn, self.selectedDimStyle.name if self.selectedDimStyle is not None else None)
       if Form.exec_() == QDialog.Accepted:
          Form.dimStyle.path = ""
@@ -155,27 +172,39 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_dimStyle_dialog):
          # setto lo stile corrente
          QadVariables.set(QadMsg.translate("Environment variables", "DIMSTYLE"), self.selectedDimStyle.name)
          self.init()      
+      
+      self.previewDim.drawDim(self.selectedDimStyle)
 
    def modStyle(self):
       if self.selectedDimStyle is None:
          return
+      self.previewDim.eraseDim()
+      
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Modifica stile di quota: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
          self.selectedDimStyle.save()
-         self.init()      
+         self.init()
+         
+      self.previewDim.drawDim(self.selectedDimStyle)
+
 
    def temporaryModStyle(self):
       if self.selectedDimStyle is None:
          return
+      self.previewDim.eraseDim()
+
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Modifica locale allo stile corrente: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
-         self.init()      
+         self.init()
+         
+      self.previewDim.drawDim(self.selectedDimStyle)
+
 
    def showDiffBetweenStyles(self):
       Form = QadDIMSTYLE_DIFF_Dialog(self.plugIn, self.selectedDimStyle.name)

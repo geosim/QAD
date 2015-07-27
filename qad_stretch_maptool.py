@@ -81,16 +81,10 @@ class Qad_stretch_maptool(QadGetPoint):
    #============================================================================
    # stretch
    #============================================================================
-   def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
-      
+   def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet):
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+
       if dimEntity is None:
          # stiro la feature e la rimuovo da entitySet (é la prima)
          stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
@@ -125,9 +119,6 @@ class Qad_stretch_maptool(QadGetPoint):
          for layerEntitySet in entitySet.layerEntitySetList:
             layer = layerEntitySet.layer
 
-            # verifico se il layer appartiene ad uno stile di quotatura
-            dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-            
             tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
                                                                         self.canvas,\
                                                                         layer)                              
@@ -150,7 +141,7 @@ class Qad_stretch_maptool(QadGetPoint):
             while len(layerEntitySet.featureIds) > 0:
                featureId = layerEntitySet.featureIds[0]
                f = layerEntitySet.getFeature(featureId)        
-               self.stretch(f, g, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet, dimStyle)
+               self.stretch(f, g, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet)
             
       
    def canvasMoveEvent(self, event):

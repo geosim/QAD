@@ -629,7 +629,7 @@ def getEntSel(point, mQgsMapTool, \
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto
+   di dimensioni PICKBOX centrato sul punto <point>
    layer = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
    checkLineLayer = opzionale, considera i layer di tipo linea
@@ -669,16 +669,11 @@ def getEntSel(point, mQgsMapTool, \
          selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
                                    layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
          
-         featureRequest = getFeatureRequest()
-         featureRequest.setFilterRect(selectRect) # rectangle
-         featureRequest.setFlags(QgsFeatureRequest.ExactIntersect) # useIntersect
-         featureRequest.setSubsetOfAttributes([]) # fetchAttributes
-         featureIterator = layer.getFeatures(featureRequest)
-         
+         featureIterator = layer.getFeatures(getFeatureRequest([], True,  selectRect, True))
+
          # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
             for feature in featureIterator:
-               #QApplication.restoreOverrideCursor()
                return feature, layer, point
          else:
             # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
@@ -688,6 +683,22 @@ def getEntSel(point, mQgsMapTool, \
                for g in geoms:
                   if g.intersects(selectRect):
                      return feature, layer, point
+
+#          # test per usare la cache (ancora più lento...)
+#          dummy, snappingResults = layer.snapWithContext(layerCoords, ToleranceInMapUnits,
+#                                                         QgsSnapper.SnapToVertex if layer.geometryType() == QGis.Point else QgsSnapper.SnapToSegment)
+#          if len(snappingResults) > 0:
+#             featureId = snappingResults[0][1].snappedAtGeometry()
+#             feature = getFeatureById(layer, featureId)
+#          
+#             # se é un layer contenente poligoni allora verifico se considerare solo i bordi
+#             if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
+#                return feature, layer, point
+#             else:
+#                geoms = asPointOrPolyline(feature.geometry())
+#                for g in geoms:
+#                   if g.intersects(selectRect):
+#                      return feature, layer, point
    
    #QApplication.restoreOverrideCursor()
    return None

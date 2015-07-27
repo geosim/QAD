@@ -80,16 +80,7 @@ class Qad_copy_maptool(QadGetPoint):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
-      
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity):
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
@@ -113,19 +104,27 @@ class Qad_copy_maptool(QadGetPoint):
       
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
-         
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-         
+
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
          transformedNewPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
+         entity = QadEntity()
 
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
-         
+
+            entity.set(layer, f.id())
+            # verifico se l'entità appartiene ad uno stile di quotatura
+            dimStyle, dimId = self.plugIn.dimStyles.getDimIdByEntity(entity)
+            if (dimStyle is not None) and (dimId is not None):
+               dimEntity = QadDimEntity()
+               if dimEntity.initByDimId(dimStyle, dimId) == False:
+                  dimEntity = None
+            else:
+               dimEntity = None
+
             if self.seriesLen > 0: # devo fare una serie              
                if self.adjust == True:
                   offSetX = offSetX / (self.seriesLen - 1)
@@ -135,11 +134,11 @@ class Qad_copy_maptool(QadGetPoint):
                deltaY = offSetY
                   
                for i in xrange(1, self.seriesLen, 1):
-                  self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimStyle)                                       
+                  self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimEntity)
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY     
             else:
-               self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle)
+               self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity)
             
       
    def canvasMoveEvent(self, event):

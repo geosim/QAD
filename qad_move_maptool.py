@@ -77,15 +77,9 @@ class Qad_move_maptool(QadGetPoint):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
       
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
@@ -111,9 +105,6 @@ class Qad_move_maptool(QadGetPoint):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-         
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
          transformedNewPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
@@ -122,7 +113,7 @@ class Qad_move_maptool(QadGetPoint):
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
-            self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle)
+            self.move(f, offSetX, offSetY, layerEntitySet, entitySet)
             
       
    def canvasMoveEvent(self, event):

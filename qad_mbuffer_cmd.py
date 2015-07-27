@@ -176,10 +176,15 @@ class QadMBUFFERCommandClass(QadCommandClass):
             return True # fine comando
          
          # il layer corrente non deve appartenere a quotature
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(currLayer)
-         if dimStyle is not None:
+         dimStyleList = self.plugIn.dimStyles.getDimListByLayer(currLayer)
+         if len(dimStyleList) > 0:
+            dimStyleNames = ""
+            for i in xrange(0, len(dimStyleList), 1):
+               if i > 0:
+                  dimStyleNames += ", "
+               dimStyleNames += dimStyleList[i].name
             errMsg = QadMsg.translate("QAD", "\nIl layer corrente appartiene allo stile di quotatura {0} e non é valido.\n")                        
-            self.showErr(errMsg.format(dimStyle.name))
+            self.showErr(errMsg.format(dimStyleNames))
             return True # fine comando
             
       #=========================================================================

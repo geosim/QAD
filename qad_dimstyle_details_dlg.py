@@ -48,6 +48,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.dimStyle = QadDimStyle(dimStyle) # copio lo stile di quotatura
       self.iface = self.plugIn.iface.mainWindow()
       QDialog.__init__(self, self.iface)
+
+      self.onInit = False # vero se si è in fase di inizializzazione
       
       self.setupUi(self)
       
@@ -57,6 +59,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.init_text_tab()
       self.init_adjust_tab()
       self.init_primaryUnits_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def closeEvent(self, event):
+      del self.previewDim # cancello il canvans di preview della quota chiamato QadPreviewDim 
+      return QDialog.closeEvent(self, event)
         
    def setupUi(self, Dialog):
       qad_dimstyle_details_ui.Ui_dimStyle_details_dialog.setupUi(self, self)
@@ -66,22 +73,46 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.dimLineColor = QgsColorButtonV2(self.dimLineColorDummy.parent())      
       self.dimLineColor.setGeometry(self.dimLineColorDummy.geometry())
       self.dimLineColor.setObjectName("dimLineColor")
+      QObject.connect(self.dimLineColor, SIGNAL("colorChanged(QColor)"), self.dimLineColorChanged)
+      
       # aggiungo il bottone di qgis QgsColorButtonV2 chiamato extLineColor 
       # che eredita la posizione di extLineColorDummy (che viene nascosto)      
       self.extLineColorDummy.setHidden(True)
       self.extLineColor = QgsColorButtonV2(self.extLineColorDummy.parent())      
       self.extLineColor.setGeometry(self.extLineColorDummy.geometry())
       self.extLineColor.setObjectName("extLineColor")
-            
+      QObject.connect(self.extLineColor, SIGNAL("colorChanged(QColor)"), self.extLineColorChanged)
+      
+      # aggiungo il bottone di qgis QgsColorButtonV2 chiamato textColor 
+      # che eredita la posizione di textColorDummy (che viene nascosto)      
+      self.textColorDummy.setHidden(True)
+      self.textColor = QgsColorButtonV2(self.textColorDummy.parent())      
+      self.textColor.setGeometry(self.textColorDummy.geometry())
+      self.textColor.setObjectName("textColor")
+      QObject.connect(self.textColor, SIGNAL("colorChanged(QColor)"), self.textColorChanged)
+
+      # aggiungo il canvans di preview della quota chiamato QadPreviewDim 
+      # che eredita la posizione di previewDummy (che viene nascosto)      
+      self.previewDummy.setHidden(True)
+      self.previewDim = QadPreviewDim(self.previewDummy.parent(), self.plugIn)
+      self.previewDim.setGeometry(self.previewDummy.geometry())
+      self.previewDim.setObjectName("previewDim")
+
       self.tabWidget.setCurrentIndex(0)
       # retranslateUi
       #self.dimLineColor.setText(_translate("Dialog", "PushButton", None))
+
+   def currentTabChanged(self, index):
+      self.previewDim.setParent(self.tabWidget.widget(index))
+      self.previewDim.show()
+      
 
    ####################################################################
    # Inizializzazione del TAB che riguarda i campi di database - inizio
    ####################################################################
 
-   def init_db_tab(self):     
+   def init_db_tab(self):
+      self.onInit = True 
       # layer linee
       for index, layer in enumerate(self.plugIn.iface.legendInterface().layers()):      
          if (layer.type() == QgsMapLayer.VectorLayer) and layer.geometryType() == QGis.Line:
@@ -111,6 +142,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          index = self.textualLayerName.findText(self.dimStyle.textualLayerName)
          self.textualLayerName.setCurrentIndex(index)
          self.textualLayerNameChanged(index)
+      self.onInit = False 
 
    def accept_db_tab(self):     
       # layer linee
@@ -133,6 +165,33 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.dimStyle.dimStyleFieldName = self.dimStyleFieldName.currentText()
       self.dimStyle.dimTypeFieldName = self.dimTypeFieldName.currentText()
 
+   def redrawDimOnDBTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_db_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def colorFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def componentFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def dimStyleFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def dimTypeFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def idFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def idParentFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def linetypeFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
    def linearLayerNameChanged(self, index):
       if index == -1:
          return
@@ -141,22 +200,26 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       layer = iface.legendInterface().layers()[legendIndex]
       if layer is not None:
          self.lineTypeFieldName.clear() # remove all items
-         self.colorFieldName.clear() # remove all items
 
          for field in layer.pendingFields():
             if field.type() == QVariant.String:
                self.lineTypeFieldName.addItem(field.name(), field)
-               self.colorFieldName.addItem(field.name(), field)
 
          # seleziono un elemento della lista
          if self.dimStyle.lineTypeFieldName is not None:
             index = self.lineTypeFieldName.findText(self.dimStyle.lineTypeFieldName)
             self.lineTypeFieldName.setCurrentIndex(index)
+      self.redrawDimOnDBTabChanged()
 
-         if self.dimStyle.colorFieldName is not None:
-            index = self.colorFieldName.findText(self.dimStyle.colorFieldName)
-            self.colorFieldName.setCurrentIndex(index)
-               
+   def rotFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def scaleFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
+   def symbolFieldNameChanged(self, index):
+      self.redrawDimOnDBTabChanged()
+
    def symbolLayerNameChanged(self, index):
       if index == -1:
          return
@@ -197,6 +260,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          if self.dimStyle.idParentFieldName is not None:
             index = self.idParentFieldName.findText(self.dimStyle.idParentFieldName)
             self.idParentFieldName.setCurrentIndex(index)
+      self.redrawDimOnDBTabChanged()
 
    def textualLayerNameChanged(self, index):
       if index == -1:
@@ -208,10 +272,13 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          self.idFieldName.clear() # remove all items
          self.dimStyleFieldName.clear() # remove all items
          self.dimTypeFieldName.clear() # remove all items
+         self.colorFieldName.clear() # remove all items
+         
          for field in layer.pendingFields():
             if field.type() == QVariant.String:
                self.dimStyleFieldName.addItem(field.name(), field)
                self.dimTypeFieldName.addItem(field.name(), field)
+               self.colorFieldName.addItem(field.name(), field)
             elif qad_utils.isNumericField(field):
                self.idFieldName.addItem(field.name(), field)
 
@@ -225,6 +292,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          if self.dimStyle.dimTypeFieldName is not None:
             index = self.dimTypeFieldName.findText(self.dimStyle.dimTypeFieldName)
             self.dimTypeFieldName.setCurrentIndex(index)
+         if self.dimStyle.colorFieldName is not None:
+            index = self.colorFieldName.findText(self.dimStyle.colorFieldName)
+            self.colorFieldName.setCurrentIndex(index)
+      self.redrawDimOnDBTabChanged()
+
 
    ####################################################################
    # Inizializzazione del TAB che riguarda i campi di database - fine
@@ -232,40 +304,89 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    ####################################################################
    
    def init_lines_tab(self):
+      self.onInit = True 
       self.dimLineColor.setColor(QColor(self.dimStyle.dimLineColor))
       self.dimLineLineType.setText(self.dimStyle.dimLineLineType)
-      self.dimLine1Show.setChecked(self.dimStyle.dimLine1Show)
-      self.dimLine2Show.setChecked(self.dimStyle.dimLine2Show)
+      self.dimLine1Hide.setChecked(not self.dimStyle.dimLine1Show)
+      self.dimLine2Hide.setChecked(not self.dimStyle.dimLine2Show)
       
       self.extLineColor.setColor(QColor(self.dimStyle.extLineColor))
       self.extLine1LineType.setText(self.dimStyle.extLine1LineType)
       self.extLine2LineType.setText(self.dimStyle.extLine2LineType)
-      self.extLine1Show.setChecked(self.dimStyle.extLine1Show)
-      self.extLine2Show.setChecked(self.dimStyle.extLine2Show)
+      self.extLine1Hide.setChecked(not self.dimStyle.extLine1Show)
+      self.extLine2Hide.setChecked(not self.dimStyle.extLine2Show)
       self.extLineOffsetDimLine.setValue(self.dimStyle.extLineOffsetDimLine)
       self.extLineOffsetOrigPoints.setValue(self.dimStyle.extLineOffsetOrigPoints)
       self.extLineIsFixedLen.setChecked(self.dimStyle.extLineIsFixedLen)
       self.extLineFixedLen.setValue(self.dimStyle.extLineFixedLen)
       self.extLineIsFixedLenToggled(self.dimStyle.extLineIsFixedLen)
+      self.onInit = False 
 
    def accept_lines_tab(self):     
       self.dimStyle.dimLineColor = self.dimLineColor.color().name()
       self.dimStyle.dimLineLineType = self.dimLineLineType.text()
-      self.dimStyle.dimLine1Show = self.dimLine1Show.isChecked()
-      self.dimStyle.dimLine2Show = self.dimLine2Show.isChecked()
+      self.dimStyle.dimLine1Show = not self.dimLine1Hide.isChecked()
+      self.dimStyle.dimLine2Show = not self.dimLine2Hide.isChecked()
 
       self.dimStyle.extLineColor = self.extLineColor.color().name()
       self.dimStyle.extLine1LineType = self.extLine1LineType.text()
       self.dimStyle.extLine2LineType = self.extLine2LineType.text()
-      self.dimStyle.extLine1Show = self.extLine1Show.isChecked()
-      self.dimStyle.extLine2Show = self.extLine2Show.isChecked()
+      self.dimStyle.extLine1Show = not self.extLine1Hide.isChecked()
+      self.dimStyle.extLine2Show = not self.extLine2Hide.isChecked()
       self.dimStyle.extLineOffsetDimLine = self.extLineOffsetDimLine.value()
       self.dimStyle.extLineOffsetOrigPoints = self.extLineOffsetOrigPoints.value()
       self.dimStyle.extLineIsFixedLen = self.extLineIsFixedLen.isChecked()
       self.dimStyle.extLineFixedLen = self.extLineFixedLen.value()
 
+   def redrawDimOnLinesTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_lines_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def dimLine1HideToggled(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def dimLine2HideToggled(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def dimLineColorChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def dimLineLineTypeChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLineColorChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLineFixedLenChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLineIsFixedLenToggled(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLineOffsetDimLineChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLineOffsetOrigPointsChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLine1HideToggled(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLine1LineTypeChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLine2HideToggled(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def extLine2LineTypeChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+   
    def extLineIsFixedLenToggled(self, value):
       self.extLineFixedLen.setEnabled(value)
+      self.redrawDimOnLinesTabChanged()
+
 
    ####################################################################
    # Inizializzazione del TAB che riguarda le linee di quotatura - fine
@@ -273,11 +394,13 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    ####################################################################
    
    def init_symbols_tab(self):
+      self.onInit = True 
       self.block1Name.setText(self.dimStyle.block1Name)
       self.block2Name.setText(self.dimStyle.block2Name)
       self.blockLeaderName.setText(self.dimStyle.blockLeaderName)
       self.blockWidth.setValue(self.dimStyle.blockWidth)
       self.blockScale.setValue(self.dimStyle.blockScale)
+      self.onInit = False 
 
    def accept_symbols_tab(self):
       self.dimStyle.block1Name = self.block1Name.text()
@@ -286,6 +409,30 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.dimStyle.blockWidth = self.blockWidth.value()      
       self.dimStyle.blockScale = self.blockScale.value()      
 
+   def redrawDimOnSymbolsTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_symbols_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def block1NameChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def block2NameChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def blockLeaderNameChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def blockScaleNameChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def blockWidthChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def blockScaleChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
    
    ####################################################################
    # Inizializzazione del TAB che riguarda i simboli di quotatura - fine
@@ -293,8 +440,10 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    ####################################################################
 
    def init_text_tab(self):
+      self.onInit = True 
       index = self.textFont.findText(self.dimStyle.textFont)
       self.textFont.setCurrentIndex(index)
+      self.textColor.setColor(QColor(self.dimStyle.textColor))
       self.textHeight.setValue(self.dimStyle.textHeight)
       
       # textVerticalPos
@@ -319,13 +468,13 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Sopra linea di estensione 2"))      
       if self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE:
          self.textHorizontalPos.setCurrentIndex(0)
-      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtVerticalPosEnum.FIRST_EXT_LINE:
+      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.FIRST_EXT_LINE:
          self.textHorizontalPos.setCurrentIndex(1)
-      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtVerticalPosEnum.SECOND_EXT_LINE:
+      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.SECOND_EXT_LINE:
          self.textHorizontalPos.setCurrentIndex(2)         
-      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtVerticalPosEnum.FIRST_EXT_LINE_UP:
+      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.FIRST_EXT_LINE_UP:
          self.textHorizontalPos.setCurrentIndex(3)         
-      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtVerticalPosEnum.SECOND_EXT_LINE_UP:
+      elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.SECOND_EXT_LINE_UP:
          self.textHorizontalPos.setCurrentIndex(4)         
       
       # textDirection
@@ -350,9 +499,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       
       self.textForcedRot.setValue(self.dimStyle.textForcedRot)
       self.textRotModeFixedRotToggled(self.textRotModeFixedRot.isChecked())
+      self.onInit = False 
 
    def accept_text_tab(self):
       self.dimStyle.textFont = self.textFont.currentText()
+      self.dimStyle.textColor = self.textColor.color().name()
       self.dimStyle.textHeight = self.textHeight.value()
       
       # textVerticalPos
@@ -397,9 +548,50 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
      
       self.dimStyle.textForcedRot = self.textForcedRot.value()
 
+   def redrawDimOnTextTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_text_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+
+   def textColorChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textDirectionChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textFontChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textForcedRotChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textHeightChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textHorizontalPosChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textOffsetDistChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textRotModeHorizontalToggled(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textRotModeAlignedToggled(self, value):
+      self.redrawDimOnTextTabChanged()
+
+   def textRotModeISOToggled(self, value):
+      self.redrawDimOnTextTabChanged()
+
    def textRotModeFixedRotToggled(self, value):
       self.textForcedRot.setEnabled(value)
-      
+      self.redrawDimOnTextTabChanged()
+
+   def textVerticalPosChanged(self, value):
+      self.redrawDimOnTextTabChanged()
+
 
    ####################################################################
    # Inizializzazione del TAB che riguarda i testi di quotatura - fine
@@ -407,6 +599,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    ####################################################################
 
    def init_adjust_tab(self):
+      self.onInit = True 
       # self.textAdjustAlwaysInside in futuro
       
       if self.dimStyle.textBlockAdjust == QadDimStyleTextBlocksAdjustEnum.WHICHEVER_FITS_BEST:        
@@ -419,6 +612,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          self.textBlockAdjustBothtOutside.setChecked(True)
 
       self.blockSuppressionForNoSpace.setChecked(self.dimStyle.blockSuppressionForNoSpace)
+      self.onInit = False 
 
    def accept_adjust_tab(self):
       if self.textBlockAdjustWhicheverFitsBestOutside.isChecked():
@@ -427,10 +621,32 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          self.dimStyle.textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.FIRST_BLOCKS_THEN_TEXT
       elif self.textBlockAdjustFirstTextOutside.isChecked():
          self.dimStyle.textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.FIRST_TEXT_THEN_BLOCKS
-      elif self.textBlockAdjustBothtOutside.isChecked():
+      elif self.textBlockAdjustBothOutside.isChecked():
          self.dimStyle.textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.BOTH_OUTSIDE_EXT_LINES
 
       self.dimStyle.blockSuppressionForNoSpace = self.blockSuppressionForNoSpace.isChecked()
+
+   def redrawDimOnAdjustTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_adjust_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def blockSuppressionForNoSpaceToggled(self, value):
+      self.redrawDimOnAdjustTabChanged()
+      
+   def textBlockAdjustWhicheverFitsBestOutsideToggled(self, value):
+      self.redrawDimOnAdjustTabChanged()
+
+   def textBlockAdjustFirstSymbolOutsideToggled(self, value):
+      self.redrawDimOnAdjustTabChanged()
+
+   def textBlockAdjustFirstTextOutsideToggled(self, value):
+      self.redrawDimOnAdjustTabChanged()
+
+   def textBlockAdjustBothOutsideToggled(self, value):
+      self.redrawDimOnAdjustTabChanged()
+
 
    ####################################################################
    # Inizializzazione del TAB che riguarda l'adattamento dei componenti di quotatura - fine
@@ -438,6 +654,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    ####################################################################
 
    def init_primaryUnits_tab(self):
+      self.onInit = True 
       # textDecimals
       self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0"))
       self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.0"))
@@ -451,8 +668,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.textDecimals.setCurrentIndex(self.dimStyle.textDecimals)
       
       # textDecimalSep
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "',' Virgola"))
       self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "'.' Punto"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "',' Virgola"))
       self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "' ' Spazio"))
       if self.dimStyle.textDecimalSep == ".": # punto
          self.textDecimalSep.setCurrentIndex(0)
@@ -465,7 +682,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.textSuffix.setText(self.dimStyle.textSuffix)
       
       self.textSuppressLeadingZeros.setChecked(self.dimStyle.textSuppressLeadingZeros)
-      self.textDecimaZerosSuppression.setChecked(self.dimStyle.textDecimaZerosSuppression)
+      self.textDecimalZerosSuppression.setChecked(self.dimStyle.textDecimalZerosSuppression)
+      self.onInit = False 
 
    def accept_primaryUnits_tab(self):
       # textDecimals
@@ -483,7 +701,31 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.dimStyle.textSuffix = self.textSuffix.text() 
       
       self.dimStyle.textSuppressLeadingZeros = self.textSuppressLeadingZeros.isChecked()
-      self.dimStyle.textDecimaZerosSuppression = self.textDecimaZerosSuppression.isChecked()
+      self.dimStyle.textDecimalZerosSuppression = self.textDecimalZerosSuppression.isChecked()
+
+   def redrawDimOnPrimaryUnitsTabChanged(self):
+      if self.onInit == True: # esco se sono in fase di inizializzazione
+         return 
+      self.accept_primaryUnits_tab()
+      self.previewDim.drawDim(self.dimStyle)
+
+   def textDecimalsChanged(self, index):
+      self.redrawDimOnPrimaryUnitsTabChanged()
+
+   def textDecimalSepChanged(self, index):
+      self.redrawDimOnPrimaryUnitsTabChanged()
+
+   def textDecimalZerosSuppressionToggled(self, value):
+      self.redrawDimOnPrimaryUnitsTabChanged()
+
+   def textPrefixChanged(self, value):
+      self.redrawDimOnPrimaryUnitsTabChanged()
+
+   def textSuffixChanged(self, value):
+      self.redrawDimOnPrimaryUnitsTabChanged()
+
+   def textSuppressLeadingZerosToggled(self, value):
+      self.redrawDimOnPrimaryUnitsTabChanged()
 
 
    ####################################################################
@@ -511,3 +753,278 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          if res == QMessageBox.No:
             return
       QDialog.accept(self)
+      
+      
+#######################################################################################
+# Classe che gestisce il widget per visualizzare il preview della quota
+class QadPreviewDim(QgsMapCanvas):
+
+   def __init__(self, parent, plugIn):
+      QgsMapCanvas.__init__(self, parent)
+      self.plugIn = plugIn
+      self.setAttribute(Qt.WA_DeleteOnClose)
+
+      self.iface = self.plugIn.iface
+      self.layerId2canvasLayer = {}
+      self.canvasLayers = []
+
+      self.setupUi()
+      self.bookmark = False
+      self.dimStyle = None
+            
+
+   def __del__(self):
+      self.eraseDim()
+
+ 
+   def setupUi(self):
+      self.setObjectName("QadPreviewCanvas")
+
+      settings = QSettings()
+      red = settings.value("/qgis/default_canvas_color_red", 255)
+      green = settings.value("/qgis/default_canvas_color_green", 255)
+      blue = settings.value("/qgis/default_canvas_color_blue", 255)
+      self.setCanvasColor(QColor(red, green, blue))
+      self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ))
+      self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", False, type=bool ))
+      action = settings.value( "/qgis/wheel_action", 0, type=int)
+      zoomFactor = settings.value( "/qgis/zoom_factor", 2.0, type=float )
+      self.setWheelAction( QgsMapCanvas.WheelAction(action), zoomFactor )
+
+      self.onExtentsChanged()
+      self.onCrsChanged()
+      self.onCrsTransformEnabled( self.iface.mapCanvas().hasCrsTransformEnabled() )
+
+   def onExtentsChanged(self):
+      prevFlag = self.renderFlag()
+      self.setRenderFlag(False)
+
+      self.setExtent(self.iface.mapCanvas().extent())
+ 
+      self.setRenderFlag( prevFlag )
+
+   def onCrsChanged(self):
+      prevFlag = self.renderFlag()
+      self.setRenderFlag( False )
+
+      renderer = self.iface.mapCanvas().mapRenderer()
+      self._setRendererCrs( self.mapRenderer(), self._rendererCrs(renderer) )
+      self.mapRenderer().setMapUnits( renderer.mapUnits() )
+
+      self.setRenderFlag( prevFlag )
+
+   def onCrsTransformEnabled(self, enabled):
+      prevFlag = self.renderFlag()
+      self.setRenderFlag( False )
+
+      self.mapRenderer().setProjectionsEnabled( enabled )
+
+      self.setRenderFlag( prevFlag )
+
+
+   def getLayerSet(self):
+      return map(lambda x: self._layerId(x.layer()), self.canvasLayers)
+
+   def setLayerSet(self, layerIds=None):
+      prevFlag = self.renderFlag()
+      self.setRenderFlag( False )
+
+      if layerIds == None:
+         self.layerId2canvasLayer = {}
+         self.canvasLayers = []
+         QgsMapCanvas.setLayerSet(self, [])
+
+      else:
+         for lid in layerIds:
+            self.addLayer( lid )
+
+      self.onExtentsChanged()
+      self.setRenderFlag( prevFlag )
+
+
+   def addLayer(self, layerId=None):
+      if layerId == None:
+         layer = self.iface.activeLayer()
+      else:
+         layer = QgsMapLayerRegistry.instance().mapLayer( layerId )
+
+      if layer == None:
+         return
+
+      prevFlag = self.renderFlag()
+      self.setRenderFlag( False )
+      
+      # add the layer to the map canvas layer set
+      self.canvasLayers = []
+      id2cl_dict = {}
+      for l in self.iface.legendInterface().layers():
+         lid = self._layerId(l)
+         if self.layerId2canvasLayer.has_key( lid ):   # previously added
+            cl = self.layerId2canvasLayer[ lid ]
+         elif l == layer:   # selected layer
+            cl = QgsMapCanvasLayer( layer )
+         else:
+            continue
+
+         id2cl_dict[ lid ] = cl
+         self.canvasLayers.append( cl )
+
+      self.layerId2canvasLayer = id2cl_dict
+      QgsMapCanvas.setLayerSet(self, self.canvasLayers )
+
+      self.onExtentsChanged()
+      self.setRenderFlag( prevFlag )
+
+   def delLayer(self, layerId=None):
+      if layerId == None:
+         layer = self.iface.activeLayer()
+         if layer == None:
+            return
+         layerId = self._layerId(layer)
+
+      # remove the layer from the map canvas layer set
+      if not self.layerId2canvasLayer.has_key( layerId ):
+         return
+
+      prevFlag = self.renderFlag()
+      self.setRenderFlag( False )
+
+      cl = self.layerId2canvasLayer[ layerId ]
+      del self.layerId2canvasLayer[ layerId ]
+      self.canvasLayers.remove( cl )
+      QgsMapCanvas.setLayerSet(self, self.canvasLayers )
+      del cl
+
+      self.onExtentsChanged()
+      self.setRenderFlag( prevFlag )
+
+
+   def _layerId(self, layer):
+      if hasattr(layer, 'id'):
+         return layer.id()
+      return layer.getLayerID() 
+
+   def _rendererCrs(self, renderer):
+      if hasattr(renderer, 'destinationCrs'):
+         return renderer.destinationCrs()
+      return renderer.destinationSrs()
+
+   def _setRendererCrs(self, renderer, crs):
+      if hasattr(renderer, 'setDestinationCrs'):
+         return renderer.setDestinationCrs( crs )
+      return renderer.setDestinationSrs( crs )
+
+   def zoomOnRect(self, zoomRect):
+      mapSettings = self.mapSettings()
+      canvasSize = mapSettings.outputSize()
+      sfx = zoomRect.width() / canvasSize.width()
+      sfy = zoomRect.height() / canvasSize.height()
+      sf = max(sfx, sfy)
+
+      prevFlag = self.renderFlag()
+      self.setRenderFlag(False)
+
+      self.setExtent(zoomRect)
+      self.setCenter(zoomRect.center())
+
+      self.setRenderFlag( prevFlag )
+      
+   def drawDim(self, dimStyle):
+      if dimStyle is None:
+         return
+
+      self.dimStyle = dimStyle
+      self.eraseDim()
+         
+      if self.plugIn.insertBookmark() == True:
+         self.bookmark = True
+
+      for layerId in self.getLayerSet(): # tolgo tutti i layer
+         self.delLayer(layerId)
+      # inserisco i layer della quotatura
+      self.isEditableTextualLayer = None
+      layer = self.dimStyle.getTextualLayer()
+      if layer is not None:
+         self.isEditableTextualLayer = layer.isEditable()
+         if self.isEditableTextualLayer == False:
+            layer.startEditing()
+         self.addLayer(layer.id())
+         
+      self.isEditableSymbolLayer = None
+      layer = self.dimStyle.getSymbolLayer()
+      if layer is not None:
+         self.isEditableSymbolLayer = layer.isEditable()
+         if self.isEditableSymbolLayer == False:
+            layer.startEditing()
+         self.addLayer(layer.id())
+         
+      self.isEditableLinearLayer = None
+      layer = self.dimStyle.getLinearLayer()
+      if layer is not None:
+         self.isEditableLinearLayer = layer.isEditable()
+         if self.isEditableLinearLayer == False:
+            layer.startEditing()
+         self.addLayer(layer.id())
+
+      ###########################
+      # quota lineare orizzontale
+      dimPt1 = QgsPoint(0, 0)
+      dimPt2 = QgsPoint(13.45, 0)
+      linePosPt = QgsPoint(0, 10)
+      
+      # calcolo il rettangolo di occupazione della quota
+      dimEntity, textOffsetRectGeom = self.dimStyle.getLinearDimFeatures(self.plugIn.canvas, \
+                                                                         dimPt1, dimPt2, linePosPt)
+      rect = textOffsetRectGeom.boundingBox()
+      for g in dimEntity.getLinearGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      for g in dimEntity.getSymbolGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      
+      self.dimStyle.addLinearDimToLayers(self.plugIn, dimPt1, dimPt2, linePosPt)
+      
+      ###########################
+      # quota lineare verticale
+      dimPt1 = QgsPoint(0, 0)
+      dimPt2 = QgsPoint(0, -15.7)
+      linePosPt = QgsPoint(-9, 0)
+      
+      # calcolo il rettangolo di occupazione della quota
+      dimEntity, textOffsetRectGeom = self.dimStyle.getLinearDimFeatures(self.plugIn.canvas, \
+                                                                         dimPt1, dimPt2, linePosPt, None, \
+                                                                         QadDimStyleAlignmentEnum.VERTICAL)
+      rect.combineExtentWith(textOffsetRectGeom.boundingBox())
+      for g in dimEntity.getLinearGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      for g in dimEntity.getSymbolGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      
+      self.dimStyle.addLinearDimToLayers(self.plugIn, dimPt1, dimPt2, linePosPt, None, \
+                                         QadDimStyleAlignmentEnum.VERTICAL)
+
+      ###########################
+      # quota allineata obliqua
+      dimPt1 = QgsPoint(13.45, 0)
+      dimPt2 = QgsPoint(23, -20)
+      linePosPt = QgsPoint(23, 0)
+      
+      # calcolo il rettangolo di occupazione della quota
+      dimEntity, textOffsetRectGeom = self.dimStyle.getAlignedDimFeatures(self.plugIn.canvas, \
+                                                                          dimPt1, dimPt2, linePosPt)
+      rect.combineExtentWith(textOffsetRectGeom.boundingBox())
+      for g in dimEntity.getLinearGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      for g in dimEntity.getSymbolGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      
+      self.dimStyle.addAlignedDimToLayers(self.plugIn, dimPt1, dimPt2, linePosPt, None)
+
+      self.zoomOnRect(rect)
+
+   def eraseDim(self):
+      if self.bookmark == True:
+         self.plugIn.undoUntilBookmark()
+         self.bookmark = False
+      
+      for layerId in self.getLayerSet(): # tolgo tutti i layer
+         self.delLayer(layerId)

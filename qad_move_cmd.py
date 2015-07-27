@@ -91,16 +91,10 @@ class QadMOVECommandClass(QadCommandClass):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
-      
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+            
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
@@ -134,9 +128,6 @@ class QadMOVECommandClass(QadCommandClass):
       for layerEntitySet in entitySet.layerEntitySetList:                        
          layer = layerEntitySet.layer
          
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-
          movedObjects = []
          transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layerEntitySet.layer, newPt)
@@ -147,7 +138,7 @@ class QadMOVECommandClass(QadCommandClass):
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
             
-            if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle) == False:  
+            if self.move(f, offSetX, offSetY, layerEntitySet, entitySet) == False:  
                self.plugIn.destroyEditCommand()
                return
    

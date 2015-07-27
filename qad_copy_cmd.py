@@ -98,15 +98,9 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle):
-      if dimStyle is not None:
-         entity = QadEntity()
-         entity.set(layerEntitySet.layer, f.id())
-         dimEntity = QadDimEntity()
-         if dimEntity.initByEntity(dimStyle, entity) == False:
-            dimEntity = None
-      else:
-         dimEntity = None
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):    
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
       
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
@@ -138,9 +132,6 @@ class QadCOPYCommandClass(QadCommandClass):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
-         # verifico se il layer appartiene ad uno stile di quotatura
-         dimStyle = self.plugIn.dimStyles.getDimByLayer(layer)
-         
          transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
@@ -159,13 +150,13 @@ class QadCOPYCommandClass(QadCommandClass):
                deltaY = offSetY
                               
                for i in xrange(1, self.seriesLen, 1):
-                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimStyle) == False:  
+                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet) == False:  
                      self.plugIn.destroyEditCommand()
                      return
                   deltaX = deltaX + offSetX
-                  deltaY = deltaY + offSetY     
+                  deltaY = deltaY + offSetY
             else:
-               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimStyle) == False:  
+               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet) == False:  
                   self.plugIn.destroyEditCommand()
                   return
                

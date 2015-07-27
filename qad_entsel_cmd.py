@@ -41,6 +41,9 @@ import qad_utils
 # QadEntSelClass
 #===============================================================================
 class QadEntSelClass(QadCommandClass):
+   """
+      Questa classe seleziona un'entità. Non è in grado di selezionare una quotatura ma solo un componente di una quotatura.
+   """
 
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
@@ -55,7 +58,7 @@ class QadEntSelClass(QadCommandClass):
       self.checkPointLayer = True
       self.checkLineLayer = True
       self.checkPolygonLayer = True
-      self.checkDimLayers = True # include tutte le features che compongono le quotature selezionate      
+      self.checkDimLayers = True
       self.msg = QadMsg.translate("QAD", "Selezionare oggetto: ")
       
    def __del__(self):
@@ -78,7 +81,7 @@ class QadEntSelClass(QadCommandClass):
               (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
-               self.plugIn.dimStyles.getDimByLayer(layer) is None:
+               len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
          
       return layerList
@@ -148,7 +151,7 @@ class QadEntSelClass(QadCommandClass):
                         (self.checkLineLayer == True and entity.layer.geometryType() == QGis.Line) or \
                         (self.checkPolygonLayer == True and entity.layer.geometryType() == QGis.Polygon):
                         # controllo su layer delle quotature
-                        if self.checkDimLayers == True or self.plugIn.dimStyles.getDimByLayer(layer) is None:
+                        if self.checkDimLayers == True or len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
                            self.entity.set(lastEnt.layer, lastEnt.featureId)
                            self.entity.selectOnLayer()
          elif type(value) == QgsPoint:
