@@ -7,8 +7,9 @@
  
                               -------------------
         begin                : 2013-05-22
-        copyright            : (C) 2013 by bbbbb aaaaa
-        email                : bbbbb.aaaaa@gruppoiren.it
+        copyright            : iiiii
+        email                : hhhhh
+        developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
 /***************************************************************************

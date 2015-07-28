@@ -25,16 +25,16 @@ version=2.4
 # tags are comma separated with spaces allowed
 tags=cad,digitizing,vector
 
-homepage=http://geosim.iride-acquagas.it/index.htm
-tracker=https://github.com/geosim/QAD/issues
-repository=https://github.com/geosim/QAD/
-icon=icons/orthopoint.png
+homepage=iiiii
+tracker=xxxxx
+repository=yyyy
+icon=icons/qad.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
 
 # Author contact information
-author=Iren Acqua Gas SpA
-email=geosim.dev@gruppoiren.it
+author=iiiii
+email=hhhhh

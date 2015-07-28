@@ -7,8 +7,8 @@
  
                               -------------------
         begin                : 2013-08-22
-        copyright            : (C) 2013 IREN Acqua Gas SpA
-        email                : geosim.dev@gruppoiren.it
+        copyright            : iiiii
+        email                : hhhhh
         developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
