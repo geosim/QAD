@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dSettings_dialog</class>
- <widget class="QDialog" name="dSettings_dialog">
+ <class>DSettings_Dialog</class>
+ <widget class="QDialog" name="DSettings_Dialog">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -613,7 +613,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_DeSelectALL</sender>
    <signal>pressed()</signal>
-   <receiver>dSettings_dialog</receiver>
+   <receiver>DSettings_Dialog</receiver>
    <slot>ButtonDeselectALL_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -629,7 +629,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_SelectALL</sender>
    <signal>pressed()</signal>
-   <receiver>dSettings_dialog</receiver>
+   <receiver>DSettings_Dialog</receiver>
    <slot>ButtonSelectALL_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -645,7 +645,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton_HELP</sender>
    <signal>clicked()</signal>
-   <receiver>dSettings_dialog</receiver>
+   <receiver>DSettings_Dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -661,7 +661,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>dSettings_dialog</receiver>
+   <receiver>DSettings_Dialog</receiver>
    <slot>ButtonBOX_Accepted()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -677,7 +677,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
-   <receiver>dSettings_dialog</receiver>
+   <receiver>DSettings_Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

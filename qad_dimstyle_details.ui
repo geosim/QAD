@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dimStyle_details_dialog</class>
- <widget class="QDialog" name="dimStyle_details_dialog">
+ <class>DimStyle_Details_Dialog</class>
+ <widget class="QDialog" name="DimStyle_Details_Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dettagli stile di quota</string>
+   <string>QAD - Dettagli stile di quota</string>
   </property>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="DBTab">
     <attribute name="title">
@@ -429,7 +429,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>PushButton</string>
+      <string/>
      </property>
     </widget>
    </widget>
@@ -543,7 +543,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
     </widget>
@@ -800,7 +800,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
     </widget>
@@ -1058,7 +1058,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>PushButton</string>
+       <string/>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -1623,7 +1623,7 @@ di estensione</string>
   <connection>
    <sender>linearLayerName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>linearLayerNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1639,7 +1639,7 @@ di estensione</string>
   <connection>
    <sender>symbolLayerName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>symbolLayerNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1655,7 +1655,7 @@ di estensione</string>
   <connection>
    <sender>textualLayerName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textualLayerNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1671,7 +1671,7 @@ di estensione</string>
   <connection>
    <sender>textRotModeFixedRot</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textRotModeFixedRotToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1687,7 +1687,7 @@ di estensione</string>
   <connection>
    <sender>extLineIsFixedLen</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLineIsFixedLenToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1703,7 +1703,7 @@ di estensione</string>
   <connection>
    <sender>helpButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1719,7 +1719,7 @@ di estensione</string>
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1735,7 +1735,7 @@ di estensione</string>
   <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1751,7 +1751,7 @@ di estensione</string>
   <connection>
    <sender>tabWidget</sender>
    <signal>currentChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>currentTabChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1767,7 +1767,7 @@ di estensione</string>
   <connection>
    <sender>lineTypeFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>linetypeFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1783,7 +1783,7 @@ di estensione</string>
   <connection>
    <sender>symbolFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>symbolFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1799,7 +1799,7 @@ di estensione</string>
   <connection>
    <sender>scaleFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>scaleFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1815,7 +1815,7 @@ di estensione</string>
   <connection>
    <sender>idFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>idFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1831,7 +1831,7 @@ di estensione</string>
   <connection>
    <sender>dimStyleFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>dimStyleFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1847,7 +1847,7 @@ di estensione</string>
   <connection>
    <sender>dimTypeFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>dimTypeFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1863,7 +1863,7 @@ di estensione</string>
   <connection>
    <sender>colorFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>colorFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1879,7 +1879,7 @@ di estensione</string>
   <connection>
    <sender>rotFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>rotFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1895,7 +1895,7 @@ di estensione</string>
   <connection>
    <sender>componentFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>componentFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1911,7 +1911,7 @@ di estensione</string>
   <connection>
    <sender>idParentFieldName</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>idParentFieldNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1927,7 +1927,7 @@ di estensione</string>
   <connection>
    <sender>dimLineLineType</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>dimLineLineTypeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1943,7 +1943,7 @@ di estensione</string>
   <connection>
    <sender>dimLine1Hide</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>dimLine1HideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1959,7 +1959,7 @@ di estensione</string>
   <connection>
    <sender>dimLine2Hide</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>dimLine2HideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1975,7 +1975,7 @@ di estensione</string>
   <connection>
    <sender>extLine1LineType</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLine1LineTypeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1991,7 +1991,7 @@ di estensione</string>
   <connection>
    <sender>extLine2LineType</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLine2LineTypeChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2007,7 +2007,7 @@ di estensione</string>
   <connection>
    <sender>extLine1Hide</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLine1HideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2023,7 +2023,7 @@ di estensione</string>
   <connection>
    <sender>extLine2Hide</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLine2HideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2039,7 +2039,7 @@ di estensione</string>
   <connection>
    <sender>extLineOffsetDimLine</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLineOffsetDimLineChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2055,7 +2055,7 @@ di estensione</string>
   <connection>
    <sender>extLineOffsetOrigPoints</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLineOffsetOrigPointsChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2071,7 +2071,7 @@ di estensione</string>
   <connection>
    <sender>extLineFixedLen</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>extLineFixedLenChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2087,7 +2087,7 @@ di estensione</string>
   <connection>
    <sender>block1Name</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>block1NameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2103,7 +2103,7 @@ di estensione</string>
   <connection>
    <sender>block2Name</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>block2NameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2119,7 +2119,7 @@ di estensione</string>
   <connection>
    <sender>blockLeaderName</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>blockLeaderNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2135,7 +2135,7 @@ di estensione</string>
   <connection>
    <sender>blockWidth</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>blockWidthChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2151,7 +2151,7 @@ di estensione</string>
   <connection>
    <sender>blockScale</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>blockScaleChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2167,7 +2167,7 @@ di estensione</string>
   <connection>
    <sender>textFont</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textFontChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2183,7 +2183,7 @@ di estensione</string>
   <connection>
    <sender>textHeight</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textHeightChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2199,7 +2199,7 @@ di estensione</string>
   <connection>
    <sender>textVerticalPos</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textVerticalPosChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2215,7 +2215,7 @@ di estensione</string>
   <connection>
    <sender>textHorizontalPos</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textHorizontalPosChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2231,7 +2231,7 @@ di estensione</string>
   <connection>
    <sender>textDirection</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textDirectionChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2247,7 +2247,7 @@ di estensione</string>
   <connection>
    <sender>textOffsetDist</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textOffsetDistChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2263,7 +2263,7 @@ di estensione</string>
   <connection>
    <sender>textForcedRot</sender>
    <signal>valueChanged(double)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textForcedRotChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2279,7 +2279,7 @@ di estensione</string>
   <connection>
    <sender>blockSuppressionForNoSpace</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>blockSuppressionForNoSpaceToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2295,7 +2295,7 @@ di estensione</string>
   <connection>
    <sender>textDecimals</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textDecimalsChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2311,7 +2311,7 @@ di estensione</string>
   <connection>
    <sender>textDecimalSep</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textDecimalSepChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2327,7 +2327,7 @@ di estensione</string>
   <connection>
    <sender>textPrefix</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textPrefixChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2343,7 +2343,7 @@ di estensione</string>
   <connection>
    <sender>textSuffix</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textSuffixChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2359,7 +2359,7 @@ di estensione</string>
   <connection>
    <sender>textSuppressLeadingZeros</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textSuppressLeadingZerosToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2375,7 +2375,7 @@ di estensione</string>
   <connection>
    <sender>textDecimalZerosSuppression</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textDecimalZerosSuppressionToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2391,7 +2391,7 @@ di estensione</string>
   <connection>
    <sender>textRotModeHorizontal</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textRotModeHorizontalToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2407,7 +2407,7 @@ di estensione</string>
   <connection>
    <sender>textRotModeAligned</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textRotModeAlignedToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2423,7 +2423,7 @@ di estensione</string>
   <connection>
    <sender>textRotModeISO</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textRotModeISOToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2439,7 +2439,7 @@ di estensione</string>
   <connection>
    <sender>textBlockAdjustWhicheverFitsBestOutside</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textBlockAdjustWhicheverFitsBestOutsideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2455,7 +2455,7 @@ di estensione</string>
   <connection>
    <sender>textBlockAdjustFirstSymbolOutside</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textBlockAdjustFirstSymbolOutsideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2471,7 +2471,7 @@ di estensione</string>
   <connection>
    <sender>textBlockAdjustFirstTextOutside</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textBlockAdjustFirstTextOutsideToggled()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2487,7 +2487,7 @@ di estensione</string>
   <connection>
    <sender>textBlockAdjustBothOutside</sender>
    <signal>toggled(bool)</signal>
-   <receiver>dimStyle_details_dialog</receiver>
+   <receiver>DimStyle_Details_Dialog</receiver>
    <slot>textBlockAdjustBothOutsideToggled()</slot>
    <hints>
     <hint type="sourcelabel">

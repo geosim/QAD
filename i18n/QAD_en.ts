@@ -438,6 +438,13 @@ The value must be between 2 and 32767.</translation>
     </message>
 </context>
 <context>
+    <name>Command_DIMSTYLE</name>
+    <message>
+        <source>Crea e modifica gli stili di quota.</source>
+        <translation>Creates new styles, sets the current style, modifies styles, sets overrides on the current style, and compares styles.</translation>
+    </message>
+</context>
+<context>
     <name>Command_DSETTINGS</name>
     <message>
         <source>Impostazioni per il disegno(tipo di snap, ecc.).</source>
@@ -1849,25 +1856,13 @@ A mark can&apos;t be inserted into a group.</translation>
         <source>POLIGONO</source>
         <translation>POLYGON</translation>
     </message>
+    <message>
+        <source>DIMSTILE</source>
+        <translation>DIMSTYLE</translation>
+    </message>
 </context>
 <context>
     <name>DSettings_Dialog</name>
-    <message>
-        <source>Snap ad oggetto</source>
-        <translation>Object Snap</translation>
-    </message>
-    <message utf8="true">
-        <source>Modalità di snap ad oggetto</source>
-        <translation>Object Snap modes</translation>
-    </message>
-    <message>
-        <source>Seleziona tutto</source>
-        <translation>Select All</translation>
-    </message>
-    <message>
-        <source>Deseleziona tutto</source>
-        <translation>Deselect All</translation>
-    </message>
     <message>
         <source>Perpendicolare</source>
         <translation>Perpendicular</translation>
@@ -1925,40 +1920,54 @@ A mark can&apos;t be inserted into a group.</translation>
         <translation>Quadrant</translation>
     </message>
     <message>
-        <source>Snap ad oggetto (F3)</source>
-        <translation>Object Snap (F3)</translation>
-    </message>
-    <message>
-        <source>Puntamento polare</source>
-        <translation>Polar Tracking</translation>
-    </message>
-    <message>
-        <source>Puntamento polare (F10)</source>
-        <translation>Polar Tracking (F10)</translation>
-    </message>
-    <message>
-        <source>Impostazioni angoli polari</source>
-        <translation>Polar angle settings</translation>
-    </message>
-    <message>
-        <source>Angolo incremento:</source>
-        <translation>Increment angle:</translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation>?</translation>
-    </message>
-    <message>
-        <source>QAD - Impostazioni disegno</source>
-        <translation>QAD - Drawing settings</translation>
-    </message>
-    <message>
         <source>Snap ad oggetto per distanza progressiva non corretto: impostare valore numerico diverso da zero.</source>
         <translation>Invalid progressive distance object snap: enter a number not zero.</translation>
     </message>
     <message>
         <source>Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.</source>
         <translation>Invalid increment angle: enter a number greater than zero and less than 360 degree.</translation>
+    </message>
+    <message>
+        <source>Nessuno</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <source>Impostazioni snap ad oggetto...</source>
+        <translation>Object snap settings...</translation>
+    </message>
+    <message>
+        <source>QAD - Impostazioni disegno</source>
+        <translation>QAD - Drawing settings</translation>
+    </message>
+    <message>
+        <source>Snap ad oggetto</source>
+        <translation>Object Snap</translation>
+    </message>
+    <message utf8="true">
+        <source>Modalità di snap ad oggetto</source>
+        <translation>Object Snap modes</translation>
+    </message>
+    <message>
+        <source>Seleziona tutto</source>
+        <translation>Select All</translation>
+    </message>
+    <message>
+        <source>Deseleziona tutto</source>
+        <translation>Deselect All</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Perpendicular OSnap: orthogonal projection of a given point on a segment.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1985,8 +1994,50 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Extension OSnapi: point on the segment extension until the cursor position.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Extension OSnap: point on the segment extension until the cursor position.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Parallel OSnap: point on a line, passing through a given point, parallel to a segment.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Progressive OSnap: point at a given distance along a geometry line: from a vertex we can set a point at a distance measured along the geometry line.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Intersezione su estensione: punto determinato dall&apos;intersezione delle estensioni di due segmenti.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Intersection on extension OSnap: intersection point of the extensions of two segments.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -2103,76 +2154,817 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NEARP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Perpendicular OSnap: orthogonal projection of a given point on a segment.&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Snap ad oggetto (F3)</source>
+        <translation>Object Snap (F3)</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Parallel OSnap: point on a line, passing through a given point, parallel to a segment.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Puntamento polare</source>
+        <translation>Polar Tracking</translation>
+    </message>
+    <message>
+        <source>Puntamento polare (F10)</source>
+        <translation>Polar Tracking (F10)</translation>
+    </message>
+    <message>
+        <source>Impostazioni angoli polari</source>
+        <translation>Polar angle settings</translation>
+    </message>
+    <message>
+        <source>Angolo incremento:</source>
+        <translation>Increment angle:</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Details_Dialog</name>
+    <message>
+        <source>DB</source>
+        <translation>DB</translation>
+    </message>
+    <message>
+        <source>Linee</source>
+        <translation>Lines</translation>
+    </message>
+    <message>
+        <source>Layer:</source>
+        <translation>Layer:</translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza le linee di quota.</source>
+        <translation>Name of the layer for dimension lines.</translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome del tipolinea.</source>
+        <translation>Field storing the linetype name.</translation>
+    </message>
+    <message>
+        <source>Campo tipolinea:</source>
+        <translation>Linetype field:</translation>
+    </message>
+    <message>
+        <source>Simboli e frecce</source>
+        <translation>Symbols and arrows</translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza i simboli e le frecce delle quote.</source>
+        <translation>Name of the layer for dimension symbols and arrows.</translation>
+    </message>
+    <message>
+        <source>Campo simbolo:</source>
+        <translation>Symbol field:</translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome del simbolo.</source>
+        <translation>Field storing the symbol name.</translation>
+    </message>
+    <message>
+        <source>Campo che memorizza la dimensione del simbolo.</source>
+        <translation>Field storing the symbol size.</translation>
+    </message>
+    <message>
+        <source>Campo scala:</source>
+        <translation>Scale field:</translation>
+    </message>
+    <message>
+        <source>Campi generici</source>
+        <translation>Generics fields</translation>
+    </message>
+    <message>
+        <source>Rotazione:</source>
+        <translation>Rotation:</translation>
+    </message>
+    <message>
+        <source>Campo che memorizza la rotazione degli elementi puntuali della quota (simboli, frecce, testi).</source>
+        <translation>Field storing the rotation of the punctual elements od dimension (symbols, arrows, text).</translation>
+    </message>
+    <message>
+        <source>Colore:</source>
+        <translation>Color:</translation>
     </message>
     <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Progressive OSnap: point at a given distance along a geometry line: from a vertex we can set a point at a distance measured along the geometry line.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Campo che memorizza il colore in formato RGB per tutti gli elementi della quota (es. &quot;255,255,255,255&quot; = bianco con opacità totale).</source>
+        <translation>Field storing the RGB colorfor all elements of dimension (e.g. &quot;255,255,255,255&quot; = white with total opacity).</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Intersezione su estensione: punto determinato dall&apos;intersezione delle estensioni di due segmenti.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Intersection on extension OSnap: intersection point of the extensions of two segments.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>ID collegamento:</source>
+        <translation>Linking ID:</translation>
+    </message>
+    <message utf8="true">
+        <source>Campo che memorizza il codice della quota per raggruppare tutti gli elementi (eccetto il testo che ne è l&apos;elemento padre).</source>
+        <translation>Field storing the ID of the dimension to group all elements (except the text which is the root element).</translation>
     </message>
     <message>
-        <source>Nessuno</source>
-        <translation>None</translation>
+        <source>Tipo componente:</source>
+        <translation>Component type:</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di componente della quota:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = linea di quota (&amp;quot;Dimension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = linea di quota (&amp;quot;Dimension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = prima linea di estensione (&amp;quot;Extension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = seconda linea di estensione (&amp;quot;Extension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = linea porta quota usata quando il testo é fuori dalla quota (&amp;quot;Leader&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = primo blocco della freccia (&amp;quot;Block 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = secondo blocco della freccia (&amp;quot;Block 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = blocco della freccia nel caso leader (&amp;quot;Leader Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = simbolo dell&apos;arco (&amp;quot;Arc Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = primo punto da quotare (&amp;quot;Dimension point 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = secondo punto da quotare (&amp;quot;Dimension point 2&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the component type of dimension:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = Extension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = Extension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = Leader.&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = Block 1.&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = Block 2.&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = Leader Block.&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = Arc Block.&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension point 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension point 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Impostazioni snap ad oggetto...</source>
-        <translation>Object snap settings...</translation>
+        <source>Testo</source>
+        <translation>Text</translation>
     </message>
     <message>
-        <source>Quotatura</source>
-        <translation>Dimension</translation>
+        <source>Campo ID:</source>
+        <translation>ID Field:</translation>
     </message>
     <message>
-        <source>Stile di quotatura corrente:</source>
-        <translation>Current dimension style:</translation>
+        <source>Campo che memorizza il codice univoco di ciascuna quota.</source>
+        <translation>Field storing the unique code for each dimension.</translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome dello stile di quota.</source>
+        <translation>Field storing the name of the dimension style.</translation>
+    </message>
+    <message>
+        <source>Campo stile quota:</source>
+        <translation>Dim. style field:</translation>
+    </message>
+    <message>
+        <source>Campo tipo quota:</source>
+        <translation>Dim. type field:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di quota:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = quota lineare allineata ai punti di origine delle linee di estensione.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = quota angolare, misura l&apos;angolo tra i 3 punti o tra gli oggetti selezionati.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = quota lineare, angolare o coordinata a partire dalla linea di base della quota precedente o di una quota selezionata.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = crea il centro o le linee d&apos;asse di cerchi e archi.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = quota per il diametro di un cerchio o di un arco.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = crea una linea che consente di collegare un&apos;annotazione ad una lavorazione.&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = quota lineare con una linea di quota orizzontale o verticale.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = quota radiale, misura il raggio di un cerchio o di un arco selezionato e visualizza il testo di quota con un simbolo di raggio davanti.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = quota per la lunghezza di un cerchio o di un arco.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the dimension type:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = linear dimension that is aligned with the origin points of the extension lines.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = angular dimension, it measures the angle between selected objects or 3 points.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = linear, angular, or ordinate dimension from the baseline of the previous or selected dimension.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = creates the center mark or the centerlines of circles and arcs.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = creates a diameter dimension for a circle or an arc.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = creates a line that connects annotation to a feature..&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = linear dimension with a horizontal, vertical, or rotated dimension line.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = radial dimension, measures the radius of a selected circle or arc and displays the dimension text with a radius symbol in front of it.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = arc length dimensions measure the distance along an arc or polyline arc segment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza i testi delle quote.</source>
+        <translation>Name of the layer storing dimension texts.</translation>
+    </message>
+    <message>
+        <source>Linee di quota</source>
+        <translation>Dimension line</translation>
+    </message>
+    <message>
+        <source>Tipo di linea della linea di quota.</source>
+        <translation>Linetype of dimension line.</translation>
+    </message>
+    <message>
+        <source>Tipo di linea:</source>
+        <translation>Linetype:</translation>
+    </message>
+    <message>
+        <source>Sopprimi:</source>
+        <translation>Suppress:</translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della prima linea di quota.</source>
+        <translation>Suppresses display of dimension line 1.</translation>
+    </message>
+    <message>
+        <source>Linea quota 1</source>
+        <translation>Dim. line 1</translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della seconda linea di quota.</source>
+        <translation>Suppresses display of dimension line 2.</translation>
+    </message>
+    <message>
+        <source>Linea quota 2</source>
+        <translation>Dim. line 2</translation>
+    </message>
+    <message>
+        <source>Linee di estensione</source>
+        <translation>extension lines</translation>
+    </message>
+    <message>
+        <source>Tipo di linea della prima linea di estensione.</source>
+        <translation>Linetype for extension line 1.</translation>
+    </message>
+    <message>
+        <source>Tipolinea est. 1:</source>
+        <translation>Linetype ext. 1:</translation>
+    </message>
+    <message>
+        <source>Tipolinea est. 2:</source>
+        <translation>Linetype ext. 2:</translation>
+    </message>
+    <message>
+        <source>Tipo di linea della seconda linea di estensione.</source>
+        <translation>Linetype for extension line 2.</translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della prima linea di estensione.</source>
+        <translation>Suppresses display of extension line 1.</translation>
+    </message>
+    <message>
+        <source>Linea est. 1</source>
+        <translation>Ext. line 1</translation>
+    </message>
+    <message>
+        <source>Linea est. 2</source>
+        <translation>Ext. line 2</translation>
+    </message>
+    <message>
+        <source>Estendi oltre linee di quota:</source>
+        <translation>Extend beyond dim lines:</translation>
+    </message>
+    <message>
+        <source>Specifica una distanza in base alla quale estendere le linee di estensione oltre la linea di quota.</source>
+        <translation>Specifies a distance to extend the extension lines above the dimension line.</translation>
+    </message>
+    <message>
+        <source>Imposta la distanza di offset delle linee di estensione dai punti sul disegno che definiscono la quota.</source>
+        <translation>Sets the distance to offset the extension lines from the points on the drawing that define the dimension.</translation>
+    </message>
+    <message>
+        <source>Offset dall&apos;origine:</source>
+        <translation>Offset from origin:</translation>
+    </message>
+    <message>
+        <source>Attiva le linee di estensione a lunghezza fissa.</source>
+        <translation>Enables fixed length extension lines.</translation>
+    </message>
+    <message>
+        <source>Linee di estensione a lunghezza fissa</source>
+        <translation>Fixed length extension lines</translation>
+    </message>
+    <message>
+        <source>Lunghezza:</source>
+        <translation>Length:</translation>
+    </message>
+    <message>
+        <source>Lunghezza totale delle linee di estensione , dalla linea di quota fino all&apos;origine di quota.</source>
+        <translation>Total length of the extension lines starting from the dimension line toward the dimension origin.</translation>
+    </message>
+    <message>
+        <source>Punte delle frecce</source>
+        <translation>Arrowheads</translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della prima linea di quota. Quando si imposta questo valore, il simbolo per la freccia della seconda linea di quota viene modificato per corrispondere a questo valore.</source>
+        <translation>Arrowhead for the first dimension line. When you change the first arrowhead type, the second arrowhead automatically changes to match it.</translation>
+    </message>
+    <message>
+        <source>Prima freccia:</source>
+        <translation>Arrowhead 1:</translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della seconda linea di quota.</source>
+        <translation>Arrowhead for the second dimension line.</translation>
+    </message>
+    <message>
+        <source>Seconda freccia:</source>
+        <translation>Arrowhead 2:</translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della linea direttrice.</source>
+        <translation>Arrowhead for the leader line.</translation>
+    </message>
+    <message>
+        <source>Freccia direttrice:</source>
+        <translation>Leader:</translation>
+    </message>
+    <message utf8="true">
+        <source>Larghezza del simbolo freccia in orizzontale in unità di mappa quando la scala del simbolo = 1.</source>
+        <translation>Arrowhead horizontal size in map units using the symbol scale factor = 1.</translation>
+    </message>
+    <message>
+        <source>Larghezza freccia:</source>
+        <translation>Arrowhead size:</translation>
+    </message>
+    <message>
+        <source>Scala del simbolo freccia.</source>
+        <translation>Arrowhead scale.</translation>
+    </message>
+    <message>
+        <source>Scala freccia:</source>
+        <translation>Arrowhead scale:</translation>
+    </message>
+    <message>
+        <source>Aspetto del testo</source>
+        <translation>Text appearance</translation>
+    </message>
+    <message>
+        <source>Altezza del testo:</source>
+        <translation>Text height:</translation>
+    </message>
+    <message utf8="true">
+        <source>Altezza testo in unità di mappa.</source>
+        <translation>Text height in map units.</translation>
+    </message>
+    <message>
+        <source>Tipo di carattere:</source>
+        <translation>Character type:</translation>
+    </message>
+    <message>
+        <source>Tipo di carattere del testo di quota.</source>
+        <translation>Dimension text character type.</translation>
+    </message>
+    <message>
+        <source>Posizionamento del testo</source>
+        <translation>Text placement </translation>
+    </message>
+    <message>
+        <source>Giustificazione del testo di quota rispetto la linea di quota.</source>
+        <translation>Controls the vertical placement of dimension text in relation to the dimension line.</translation>
+    </message>
+    <message>
+        <source>Verticale:</source>
+        <translation>Vertical:</translation>
+    </message>
+    <message>
+        <source>Orizzontale:</source>
+        <translation>Horizontal:</translation>
+    </message>
+    <message>
+        <source>Posizionamento orizzontale del testo di quota lungo la linea di quota, in relazione alle linee di estensione.</source>
+        <translation>Controls the horizontal placement of dimension text along the dimension line, in relation to the extension lines.</translation>
+    </message>
+    <message>
+        <source>Direzione vista:</source>
+        <translation>View direction:</translation>
+    </message>
+    <message>
+        <source>Direzione di visualizzazione del testo di quota.</source>
+        <translation>Controls the dimension text viewing direction.</translation>
+    </message>
+    <message>
+        <source>Imposta la distanza corrente del testo, ovvero la distanza aggiunta attorno al testo di quota.</source>
+        <translation>Sets the current text gap, which is the distance around the dimension text when the dimension line is broken to accommodate the dimension text.</translation>
+    </message>
+    <message>
+        <source>Offset dalla linea di quota:</source>
+        <translation>Offset from dim line:</translation>
+    </message>
+    <message>
+        <source>Allineamento del testo</source>
+        <translation>Text alignment</translation>
+    </message>
+    <message>
+        <source>Posiziona il testo orizzontalmente.</source>
+        <translation>Places text in a horizontal position. </translation>
+    </message>
+    <message>
+        <source>Orizzontale</source>
+        <translation>Horizontal</translation>
+    </message>
+    <message>
+        <source>Allinea il testo con la linea di quota.</source>
+        <translation>text aligned withdDimension Line.</translation>
+    </message>
+    <message>
+        <source>Allineato con la linea di quota</source>
+        <translation>Aligned with dimension line</translation>
+    </message>
+    <message>
+        <source>Allinea il testo con la linea di quota quando si trova all&apos;interno delle linee di estensione e orizzontalmente quando si trova all&apos;esterno delle linee di estensione.</source>
+        <translation>Aligns text with the dimension line when text is inside the extension lines, but aligns it horizontally when text is outside the extension lines.</translation>
+    </message>
+    <message>
+        <source>Standard ISO</source>
+        <translation>ISO Standard </translation>
+    </message>
+    <message>
+        <source>Ruota il testo con angolo fisso.</source>
+        <translation>Place text with fixed angle.</translation>
+    </message>
+    <message>
+        <source>Rotazione fissa</source>
+        <translation>Fixed rotation</translation>
+    </message>
+    <message utf8="true">
+        <source>Angolo di rotazione del testo quando è stata impostata la modalità di rotazione fissa.</source>
+        <translation>Text angle  when fixed rotation mode is on.</translation>
+    </message>
+    <message>
+        <source>Adatta</source>
+        <translation>Fit</translation>
+    </message>
+    <message>
+        <source>Opzioni di adattamento</source>
+        <translation>Fit options</translation>
+    </message>
+    <message utf8="true">
+        <source>Se lo spazio non è sufficiente per inserire testo e frecce all&apos;interno delle linee di estensione, la prima cosa da spostare all&apos;esterno è:</source>
+        <translation>If there isn&apos;t enaugh room to place both text and arrows inside extension lines, the first thing to move outside the extension lines is:</translation>
+    </message>
+    <message>
+        <source>Sposta il testo o le frecce all&apos;esterno delle linee di estensione, adattandoli.</source>
+        <translation>Moves either the text or the arrowheads outside the extension lines based on the best fit.</translation>
+    </message>
+    <message>
+        <source>Il testo e le frecce (adattati)</source>
+        <translation>Either text or arrows (best fit)</translation>
+    </message>
+    <message>
+        <source>Sposta prima le punte delle frecce al di fuori delle linee di estensione, poi il testo.</source>
+        <translation>Moves arrowheads outside the extension lines first, then text.</translation>
+    </message>
+    <message>
+        <source>Frecce</source>
+        <translation>Arrows</translation>
+    </message>
+    <message>
+        <source>Sposta prima il testo al di fuori delle linee di estensione, poi le punte delle frecce.</source>
+        <translation>Moves text outside the extension lines first, then arrowheads.</translation>
+    </message>
+    <message utf8="true">
+        <source>Se lo spazio disponibile è insufficiente sia per il testo che per le frecce, sposta entrambi all&apos;esterno delle linee di estensione.</source>
+        <translation>When not enough space is available for text and arrowheads, moves both outside the extension lines.</translation>
+    </message>
+    <message>
+        <source>Sia il testo che le frecce</source>
+        <translation>Both text and arrows</translation>
+    </message>
+    <message utf8="true">
+        <source>Sopprime le punte delle frecce se non è disponibile spazio sufficiente tra le linee di estensione.</source>
+        <translation>Suppresses arrowheads if not enough space is available inside the extension lines.</translation>
+    </message>
+    <message>
+        <source>Sopprimi le frecce se non si adattano alle linee 
+di estensione</source>
+        <translation type="unfinished">Suppress arrows if they don&apos;t fit inside ext. lines</translation>
+    </message>
+    <message utf8="true">
+        <source>Unità primarie</source>
+        <translation>Primary units</translation>
+    </message>
+    <message>
+        <source>Quote lineari</source>
+        <translation>Linear dimensions</translation>
+    </message>
+    <message>
+        <source>Precisione:</source>
+        <translation>Precision:</translation>
+    </message>
+    <message>
+        <source>Numero di cifre decimali nel testo di quota.</source>
+        <translation>Displays and sets the number of decimal places in the dimension text.</translation>
+    </message>
+    <message>
+        <source>Separatore per i formati decimali.</source>
+        <translation>Sets the separator for decimal formats.</translation>
+    </message>
+    <message>
+        <source>Separatore decimale:</source>
+        <translation>Decimal separator:</translation>
+    </message>
+    <message>
+        <source>Prefisso nel testo di quota.</source>
+        <translation>Includes a prefix that you specify in the dimension text.</translation>
+    </message>
+    <message>
+        <source>Prefisso:</source>
+        <translation>Prefix:</translation>
+    </message>
+    <message>
+        <source>Suffisso:</source>
+        <translation>Suffix:</translation>
+    </message>
+    <message>
+        <source>Suffisso nel testo di quota.</source>
+        <translation>Includes a suffix that you specify in the dimension text.</translation>
+    </message>
+    <message>
+        <source>Soppressione dello zero</source>
+        <translation>Zero suppression</translation>
+    </message>
+    <message>
+        <source>Sopprime gli zeri iniziali in tutte le quote decimali (0.5 diventa .5).</source>
+        <translation>Suppresses leading zeros in all decimal dimensions (0.5 becomes .5).</translation>
+    </message>
+    <message>
+        <source>Iniziale</source>
+        <translation>Leading</translation>
+    </message>
+    <message>
+        <source>Sopprime gli zeri finali in tutte le quote decimali (5.50 diventa 5.5 e 5.0 diventa 5).</source>
+        <translation>Suppresses trailing zeros in all decimal dimensions (5.50 becomes 5.5 and 5.0 becomes 5).</translation>
+    </message>
+    <message>
+        <source>Finale</source>
+        <translation>Trailing</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+    <message>
+        <source>QAD - Dettagli stile di quota</source>
+        <translation>QAD - Dimension style details</translation>
+    </message>
+    <message>
+        <source>Centrato</source>
+        <translation>Centered</translation>
+    </message>
+    <message>
+        <source>Sopra</source>
+        <translation>Above</translation>
+    </message>
+    <message>
+        <source>Esterno</source>
+        <translation>Outside</translation>
+    </message>
+    <message>
+        <source>Sotto</source>
+        <translation>Below</translation>
+    </message>
+    <message>
+        <source>Alla linea di estensione 1</source>
+        <translation>At Ext Line 1</translation>
+    </message>
+    <message>
+        <source>Alla linea di estensione 2</source>
+        <translation>At Ext Line 2</translation>
+    </message>
+    <message>
+        <source>Sopra linea di estensione 1</source>
+        <translation>Over Ext Line 1</translation>
+    </message>
+    <message>
+        <source>Sopra linea di estensione 2</source>
+        <translation>Over Ext Line 2</translation>
+    </message>
+    <message>
+        <source>Da sinistra a destra</source>
+        <translation>Left-to-Right</translation>
+    </message>
+    <message>
+        <source>Da destra a sinistra</source>
+        <translation>Right-to-Left</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>0.0</source>
+        <translation>0.0</translation>
+    </message>
+    <message>
+        <source>0.00</source>
+        <translation>0.00</translation>
+    </message>
+    <message>
+        <source>0.000</source>
+        <translation>0.000</translation>
+    </message>
+    <message>
+        <source>0.0000</source>
+        <translation>0.0000</translation>
+    </message>
+    <message>
+        <source>0.00000</source>
+        <translation>0.0000</translation>
+    </message>
+    <message>
+        <source>0.000000</source>
+        <translation>0.000000</translation>
+    </message>
+    <message>
+        <source>0.0000000</source>
+        <translation>0.0000000</translation>
+    </message>
+    <message>
+        <source>0.00000000</source>
+        <translation>0.00000000</translation>
+    </message>
+    <message>
+        <source>&apos;.&apos; Punto</source>
+        <translation>&apos;.&apos; Period</translation>
+    </message>
+    <message>
+        <source>&apos;,&apos; Virgola</source>
+        <translation>&apos;,&apos; Comma</translation>
+    </message>
+    <message>
+        <source>&apos; &apos; Spazio</source>
+        <translation>&apos; &apos; Space</translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Dialog</name>
+    <message>
+        <source>Descrizione</source>
+        <translation>Description</translation>
+    </message>
+    <message>
+        <source>Lo stile di quotatura non è stato rinominato.</source>
+        <translation>Dimension style not renamed.</translation>
+    </message>
+    <message>
+        <source>QAD - Modifica descrizione per lo stile di quota: </source>
+        <translation>QAD - Editing dimension style description:</translation>
+    </message>
+    <message>
+        <source>Nuova descrizione:</source>
+        <translation>New description:</translation>
+    </message>
+    <message>
+        <source>Eliminare lo stile di quotatura </source>
+        <translation>Remove dimension style</translation>
+    </message>
+    <message>
+        <source>Lo stile di quotatura non è stato cancellato.</source>
+        <translation>Dimension style not removed.</translation>
+    </message>
+    <message>
+        <source>Modifica stile di quota: </source>
+        <translation>Modify dimension style: </translation>
+    </message>
+    <message>
+        <source>Modifica locale allo stile corrente: </source>
+        <translation>Set temporary overrides to dimension style:</translation>
+    </message>
+    <message>
+        <source>Imposta corrente</source>
+        <translation>Set current</translation>
+    </message>
+    <message>
+        <source>Rinomina</source>
+        <translation>Rename</translation>
+    </message>
+    <message>
+        <source>Modifica descrizione</source>
+        <translation>Modify description</translation>
+    </message>
+    <message>
+        <source>Elimina</source>
+        <translation>Remove</translation>
+    </message>
+    <message>
+        <source>Nome dello stile di quotatura già esistente. Specificare un altro nome.</source>
+        <translation>Dimension style name already existing. Specify a different name.</translation>
+    </message>
+    <message>
+        <source>Nuovo stile di quota: </source>
+        <translation>New dimension style:</translation>
+    </message>
+    <message>
+        <source>QAD - Gestione stili di quota</source>
+        <translation>QAD - Dimension style manager</translation>
+    </message>
+    <message>
+        <source>Stile di quota corrente:</source>
+        <translation>current dimension style:</translation>
+    </message>
+    <message>
+        <source>nessuno</source>
+        <translation>none</translation>
+    </message>
+    <message>
+        <source>Stili</source>
+        <translation>Styles</translation>
+    </message>
+    <message utf8="true">
+        <source>Rende corrente lo stile selezionato nella&apos;area Stili. Lo stile corrente è applicato alle quota create dall&apos;uente.</source>
+        <translation>Sets the style selected under Styles to current. The current style is applied to dimensions you create. </translation>
+    </message>
+    <message>
+        <source>Definisce un nuovo stile di quota.</source>
+        <translation>Define a new dimension style.</translation>
+    </message>
+    <message>
+        <source>Nuovo...</source>
+        <translation>New...</translation>
+    </message>
+    <message>
+        <source>Modifica lo stile di quota selezionato nella&apos;area Stili.</source>
+        <translation>Modify the selected dimension style.</translation>
+    </message>
+    <message>
+        <source>Modifica...</source>
+        <translation>Modify...</translation>
+    </message>
+    <message>
+        <source>Imposta modifiche locali per lo stile selezionato nella&apos;area Stili. Le modifiche locali sono modifiche che non verranno salvate.</source>
+        <translation>Set temporary modifications for the selected style. The temporary modifications will not saved.</translation>
+    </message>
+    <message>
+        <source>Sostituisci...</source>
+        <translation>Override...</translation>
+    </message>
+    <message utf8="true">
+        <source>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</source>
+        <translation>Compare two dimension styles or list all the properties of one dimension style.</translation>
+    </message>
+    <message>
+        <source>Confronta...</source>
+        <translation>Compare...</translation>
+    </message>
+    <message>
+        <source>nessuna</source>
+        <translation>none</translation>
+    </message>
+    <message>
+        <source>Anteprima di:</source>
+        <translation>Preview of:</translation>
+    </message>
+    <message>
+        <source>Chiudi</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Diff_Dialog</name>
+    <message>
+        <source>Confronta:</source>
+        <translation>Compare:</translation>
+    </message>
+    <message>
+        <source>Con:</source>
+        <translation>With:</translation>
+    </message>
+    <message>
+        <source>Specifica il primo stile di quota per il confronto.</source>
+        <translation>Specify the first dimension style.</translation>
+    </message>
+    <message utf8="true">
+        <source>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</source>
+        <translation>Specify the second dimension style. If you set the second style as the first, all dimension style properties will displayed.</translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation>TextLabel</translation>
+    </message>
+    <message>
+        <source>Chiudi</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the result of comparing dimension styles.If you compare two different styles, the settings that are different between the two dimension styles, their current settings, and brief descriptions are listed. If you set the second style as the first, all dimension style properties will displayed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Copia il risultato del confronto negli Appunti.</source>
+        <translation>Copy the result of comparing into the clipboard.</translation>
+    </message>
+    <message>
+        <source>QAD - Confronta stili di quota</source>
+        <translation>QAD - Compare dimension styles</translation>
+    </message>
+    <message>
+        <source>Descrizione</source>
+        <translation>Description</translation>
+    </message>
+    <message>
+        <source>Tutte le proprietà dello stile di quota: </source>
+        <translation>All properties of dimension style: </translation>
+    </message>
+    <message>
+        <source>Rilevate {0} differenze: </source>
+        <translation>Found {0} differences: </translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_New_Dialog</name>
+    <message>
+        <source>Nome del nuovo stile:</source>
+        <translation>New style name:</translation>
+    </message>
+    <message>
+        <source>Copia i parametri dallo stile:</source>
+        <translation>Start with:</translation>
+    </message>
+    <message>
+        <source>Continua...</source>
+        <translation>Continue...</translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation>Cancel</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation>?</translation>
+    </message>
+    <message>
+        <source>Descrizione:</source>
+        <translation>Description:</translation>
+    </message>
+    <message>
+        <source>QAD - Crea nuovo stile di quota</source>
+        <translation>QAD - Create new dimension style</translation>
     </message>
 </context>
 <context>
@@ -2180,7 +2972,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 Lo stile di quotatura &quot;{0}&quot; </source>
-        <translation>Th dimension style &quot;{0}&quot; </translation>
+        <translation>The dimension style &quot;{0}&quot; </translation>
     </message>
     <message>
         <source>non ha impostato il layer per i testi delle quote.
@@ -2228,12 +3020,13 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <source>ha il layer per le linee delle quote che non é di tipo linea.</source>
         <translation>has the linear layer for dimension which is not a linear layer.</translation>
     </message>
-</context>
-<context>
-    <name>Environment varia</name>
     <message>
-        <source>POLARANG</source>
-        <translation>POLARANG</translation>
+        <source>da sinistra a destra</source>
+        <translation>From left to right</translation>
+    </message>
+    <message>
+        <source>da destra a sinistra</source>
+        <translation>From right to left</translation>
     </message>
 </context>
 <context>
@@ -2538,6 +3331,16 @@ Boolean type.</translation>
 Tipo reale.</source>
         <translation>Maximum error approximating a curve to segments.
 Real type.</translation>
+    </message>
+    <message>
+        <source>CURSORCOLOR</source>
+        <translation>CURSORCOLOR</translation>
+    </message>
+    <message>
+        <source>Colore (RGB) del puntatore a croce (es. #FF0000 = rosso).
+Tipo carattere.</source>
+        <translation>Cross pointer color (RGB, #FF0000 = red).
+Character type.</translation>
     </message>
 </context>
 <context>
@@ -2912,6 +3715,10 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
         <translation>
 A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.</translation>
     </message>
+    <message>
+        <source>Copia di </source>
+        <translation>Copy of </translation>
+    </message>
 </context>
 <context>
     <name>Snap</name>
@@ -2980,6 +3787,10 @@ QUA</translation>
     <message>
         <source>FIN_PL</source>
         <translation>END_PL</translation>
+    </message>
+    <message>
+        <source>NES</source>
+        <translation>NONE</translation>
     </message>
 </context>
 <context>

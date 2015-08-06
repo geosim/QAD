@@ -316,12 +316,12 @@ def str2snapTypeEnum(s):
          snapType = snapType | QadSnapTypeEnum.PAR         
       # se inizia per "PR" distanza progressiva
       elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-           string.find(snapTypeStr, QadMsg.translate("Snap", "_PR")) == 0:
+           string.find(snapTypeStr, "_PR") == 0:
          # la parte successiva PR può essere vuota o numerica
          if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
             param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
          else:
-            param = snapTypeStr[len(QadMsg.translate("Snap", "_PR")):]
+            param = snapTypeStr[len("_PR"):]
          if len(param) == 0 or str2float(param) is not None:
             snapType = snapType | QadSnapTypeEnum.PR
       # "EST_INT" intersezione su estensione
@@ -344,12 +344,12 @@ def str2snapParams(s):
       snapTypeStr = snapTypeStr.strip().upper()
       # se inizia per "PR" distanza progressiva
       if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-         string.find(snapTypeStr, QadMsg.translate("Snap", "_PR")) == 0:
+         string.find(snapTypeStr, "_PR") == 0:
          # la parte successiva PR può essere vuota o numerica
          if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
             param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
          else:
-            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "_PR")):]) # fino alla fine della stringa
+            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
          if param is not None:
             params.append([QadSnapTypeEnum.PR, param])         
 

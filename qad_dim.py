@@ -1017,7 +1017,7 @@ class QadDimStyle():
    def textCommitChangesOnSave(self):
       """
       Salva i testi delle quote per ottenere i nuovi ID 
-      e richiamare updateReferencesOnSave tramite il segnale committedFeaturesAdded.
+      e richiamare updateTextReferencesOnSave tramite il segnale committedFeaturesAdded.
       """
       # salvo i testi per avere la codifica definitiva
       if self.getTextualLayer() is not None:
@@ -1201,7 +1201,7 @@ class QadDimStyle():
          if dimName != self.name:
             return None      
       except:
-         pass
+         return None
       
       try:
          # leggo il tipo dello stile di quotatura
@@ -1225,6 +1225,23 @@ class QadDimStyle():
          return True
       else:
          return False
+
+
+   #============================================================================
+   # getFilteredFeatureCollection
+   #============================================================================
+   def getFilteredFeatureCollection(self, layerEntitySet):
+      """
+      La funzione, dato un QadLayerEntitySet, filtra e restituisce solo quelle appartenenti allo stile di quotatura.
+      """
+      result = []
+      entity = QadEntity()
+      for f in layerEntitySet.getFeatureCollection():
+         entity.set(layerEntitySet.layer, f.id())
+         if self.getDimIdByEntity(entity) is not None:
+            result.append(f)
+      
+      return result
 
 
    #============================================================================
@@ -2997,6 +3014,7 @@ class QadDimStyles():
       La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
       in caso affermativo, aggiunge tutti i componenti della quotatura all'entitySet.
       """
+      elaboratedDimEntitySet = QadEntitySet() # lista delle entità di quota elaborate
       entity = QadEntity()
       for layerEntitySet in entitySet.layerEntitySetList:           
          # verifico se il layer appartiene ad uno o più stili di quotatura
@@ -3013,13 +3031,16 @@ class QadDimStyles():
                features = layerEntitySet.getFeatureCollection()
                for feature in features:
                   entity.set(layerEntitySet.layer, feature.id())
-                  dimId = dimStyle.getDimIdByEntity(entity)
-                  if dimId is not None:
-                     dimEntitySet = dimStyle.getEntitySet(dimId)
-                     if remove == False:
-                        entitySet.unite(dimEntitySet)
-                     else:
-                        entitySet.subtract(dimEntitySet)
+                  if not elaboratedDimEntitySet.containsEntity(entity):                  
+                     dimId = dimStyle.getDimIdByEntity(entity)
+                     if dimId is not None:
+                        dimEntitySet = dimStyle.getEntitySet(dimId)
+                        if remove == False:
+                           entitySet.unite(dimEntitySet)
+                        else:
+                           entitySet.subtract(dimEntitySet)
+                        
+                        elaboratedDimEntitySet.unite(entitySet)
 
 
    #============================================================================
@@ -3055,6 +3076,13 @@ class QadDimEntity():
          
    def whatIs(self):
       return "DIMENTITY"
+
+
+   def isInitialized(self):
+      if (self.dimStyle is None) or (self.textualFeature is None):
+         return False
+      else:
+         return True
 
 
    #============================================================================
@@ -3258,6 +3286,20 @@ class QadDimEntity():
       return result
    
 
+   #============================================================================
+   # selectOnLayer
+   #============================================================================
+   def selectOnLayer(self, incremental = True):
+      self.getEntitySet().selectOnLayer(incremental)
+   
+
+   #============================================================================
+   # deselectOnLayer
+   #============================================================================
+   def deselectOnLayer(self):
+      self.getEntitySet().deselectOnLayer()
+
+   
    #============================================================================
    # getDimPts
    #============================================================================

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dimStyle_diff_dialog</class>
- <widget class="QDialog" name="dimStyle_diff_dialog">
+ <class>DimStyle_Diff_Dialog</class>
+ <widget class="QDialog" name="DimStyle_Diff_Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Confronta stili di quota</string>
+   <string>QAD - Confronta stili di quota</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -156,7 +156,7 @@
   <connection>
    <sender>helpButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_diff_dialog</receiver>
+   <receiver>DimStyle_Diff_Dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -172,7 +172,7 @@
   <connection>
    <sender>dimStyle1</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_diff_dialog</receiver>
+   <receiver>DimStyle_Diff_Dialog</receiver>
    <slot>DimStyleName1Changed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -188,7 +188,7 @@
   <connection>
    <sender>dimStyle2</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>dimStyle_diff_dialog</receiver>
+   <receiver>DimStyle_Diff_Dialog</receiver>
    <slot>DimStyleName2Changed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -204,7 +204,7 @@
   <connection>
    <sender>copyButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_diff_dialog</receiver>
+   <receiver>DimStyle_Diff_Dialog</receiver>
    <slot>copyToClipboard()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -220,7 +220,7 @@
   <connection>
    <sender>closeButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_diff_dialog</receiver>
+   <receiver>DimStyle_Diff_Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -152,7 +152,19 @@ class QadGetPoint(QgsMapTool):
          self.__RubberBand = createRubberBand(self.canvas, QGis.Line)
          self.__RubberBand.setLineStyle(Qt.DotLine)
       elif self.__drawMode == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
-         self.__RubberBand = createRubberBand(self.canvas, QGis.Polygon)
+         self.__RubberBandElasticRectangleLeftColor = getQGISColorForRubberBand(QGis.Polygon, True)
+         # se nero
+         if self.__RubberBandElasticRectangleLeftColor.red() == 0 and \
+            self.__RubberBandElasticRectangleLeftColor.green() == 0 and \
+            self.__RubberBandElasticRectangleLeftColor.blue() == 0:
+            # colore più chiaro (non uso lighter perchè con il nero non va...)
+            alpha = self.__RubberBandElasticRectangleLeftColor.alphaF()
+            self.__RubberBandElasticRectangleRightColor = QColor(Qt.darkGray)
+            self.__RubberBandElasticRectangleRightColor.setAlphaF(alpha)
+         else:
+            # colore più scuro
+            self.__RubberBandElasticRectangleRightColor = self.__RubberBandElasticRectangleLeftColor.darker(factor=200)
+         self.__RubberBand = createRubberBand(self.canvas, QGis.Polygon, self.__RubberBandElasticRectangleLeftColor)
          self.__RubberBand.setLineStyle(Qt.DotLine)
          
 
@@ -366,6 +378,12 @@ class QadGetPoint(QgsMapTool):
             self.__RubberBand.movePoint(numberOfVertices - 1, adjustedPoint)
          else:
             p1 = self.__RubberBand.getPoint(0, 0)
+
+            if point.x() > p1.x(): # se il punto è a destra di p1 (punto iniziale)
+               self.__RubberBand.setColor(self.__RubberBandElasticRectangleRightColor)
+            else:
+               self.__RubberBand.setColor(self.__RubberBandElasticRectangleLeftColor)
+            
             adjustedPoint = qad_utils.getAdjustedRubberBandVertex(p1, point)                     
             self.__RubberBand.movePoint(numberOfVertices - 3, QgsPoint(p1.x(), adjustedPoint.y()))
             self.__RubberBand.movePoint(numberOfVertices - 2, adjustedPoint)
@@ -397,10 +415,11 @@ class QadGetPoint(QgsMapTool):
          self.__RubberBand.addPoint(point, True)
       elif self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
          # previsto uso del rettangolo elastico
+         point = self.toMapCoordinates(self.canvas.mouseLastXY())
+
          self.__RubberBand.reset(QGis.Polygon)
          self.__RubberBand.addPoint(startPoint, False)
          
-         point = self.toMapCoordinates(self.canvas.mouseLastXY())
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y

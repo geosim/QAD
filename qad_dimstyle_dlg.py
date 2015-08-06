@@ -43,7 +43,7 @@ import qad_utils
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando DIMSTYLE
-class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_dimStyle_dialog):
+class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def __init__(self, plugIn):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()

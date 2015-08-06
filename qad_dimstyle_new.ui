@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>DimStyle_New_Dialog</class>
+ <widget class="QDialog" name="DimStyle_New_Dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>QAD - Crea nuovo stile di quota</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -127,7 +127,7 @@
   <connection>
    <sender>DimStyleNameFrom</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>Dialog</receiver>
+   <receiver>DimStyle_New_Dialog</receiver>
    <slot>DimStyleNameFromChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -143,7 +143,7 @@
   <connection>
    <sender>newDimStyleName</sender>
    <signal>textEdited(QString)</signal>
-   <receiver>Dialog</receiver>
+   <receiver>DimStyle_New_Dialog</receiver>
    <slot>newStyleNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -159,7 +159,7 @@
   <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>DimStyle_New_Dialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -175,7 +175,7 @@
   <connection>
    <sender>helpButton</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>DimStyle_New_Dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -191,7 +191,7 @@
   <connection>
    <sender>continueButton</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>DimStyle_New_Dialog</receiver>
    <slot>ButtonBOX_continue()</slot>
    <hints>
     <hint type="sourcelabel">

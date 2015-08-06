@@ -39,7 +39,7 @@ import qad_utils
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di comparazione tra stili di quotatura
-class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_dimStyle_diff_dialog):
+class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle_Diff_Dialog):
    def __init__(self, plugIn, dimStyleName1 = None, dimStyleName2 = None):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
@@ -103,7 +103,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_dimStyle
          
       self.tableWidget.setColumnCount(2)
       headerLabels = []
-      headerLabels.append(QadMsg.translate("DimStyle_Dialog", "Descrizione"))
+      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Descrizione"))
       headerLabels.append(dimStyle.name)
       self.tableWidget.setHorizontalHeaderLabels(headerLabels)
       self.tableWidget.horizontalHeader().show()
@@ -121,7 +121,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_dimStyle
       self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
       self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Interactive)
            
-      self.msg.setText(QadMsg.translate("DimStyle_Dialog", "Tutte le proprietà dello stile di quota: ") + dimStyle.name)
+      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Tutte le proprietà dello stile di quota: ") + dimStyle.name)
 
 
    def showDiffProps(self, dimStyle1, dimStyle2):
@@ -132,7 +132,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_dimStyle
          
       self.tableWidget.setColumnCount(3)
       headerLabels = []
-      headerLabels.append(QadMsg.translate("DimStyle_Dialog", "Descrizione"))
+      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Descrizione"))
       headerLabels.append(dimStyle1.name)
       headerLabels.append(dimStyle2.name)
       self.tableWidget.setHorizontalHeaderLabels(headerLabels)
@@ -160,7 +160,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_dimStyle
       self.tableWidget.horizontalHeader().setResizeMode(2, QHeaderView.Interactive)
       self.tableWidget.horizontalHeader().setResizeMode(3, QHeaderView.Interactive)
            
-      self.msg.setText(QadMsg.translate("DimStyle_Dialog", "Rilevate {0} differenze: ").format(str(self.count)))
+      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Rilevate {0} differenze: ").format(str(self.count)))
 
 
    def insertProp(self, description, val1, val2 = None):

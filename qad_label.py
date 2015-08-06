@@ -200,10 +200,11 @@ def get_labelFontFamilyFieldNames(layer):
 #===============================================================================
 def get_labelText(palLayerSettings, feature):
    """
-   restituisce la dimensione del font dell'etichetta 
+   restituisce il testo dell'etichetta 
    """
-   val = None
    lblFieldName = palLayerSettings.fieldName
+   if lblFieldName == "":
+      return ""
    if palLayerSettings.isExpression: # Is this label made from a expression string eg FieldName || 'mm'.
       expr = QgsExpression(lblFieldName)
       val = expr.evaluate(feature)

@@ -59,12 +59,31 @@ class QadEntSelClass(QadCommandClass):
       self.checkLineLayer = True
       self.checkPolygonLayer = True
       self.checkDimLayers = True
+      self.selDimEntity = False # per restituire o meno un oggetto QadDimEntity
       self.msg = QadMsg.translate("QAD", "Selezionare oggetto: ")
       
    def __del__(self):
       QadCommandClass.__del__(self)
       if self.entity.isInitialized():
-         self.entity.deselectOnLayer()      
+         self.entity.deselectOnLayer()
+
+
+   #============================================================================
+   # setEntity
+   #============================================================================
+   def setEntity(self, layer, fid):
+      del self.entity
+      if self.selDimEntity: # se è possibile restituire un oggetto QadDimEntity
+         # verifico se l'entità appartiene ad uno stile di quotatura
+         self.entity = self.plugIn.dimStyles.getDimEntity(layer, fid)
+         if self.entity is None: # se non è una quota
+            self.entity = QadEntity()
+            self.entity.set(layer, fid)
+      else:
+         self.entity = QadEntity()
+         self.entity.set(layer, fid)
+      
+      self.entity.selectOnLayer()
 
 
    #============================================================================
@@ -152,8 +171,7 @@ class QadEntSelClass(QadCommandClass):
                         (self.checkPolygonLayer == True and entity.layer.geometryType() == QGis.Polygon):
                         # controllo su layer delle quotature
                         if self.checkDimLayers == True or len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
-                           self.entity.set(lastEnt.layer, lastEnt.featureId)
-                           self.entity.selectOnLayer()
+                           self.setEntity(lastEnt.layer, lastEnt.featureId)
          elif type(value) == QgsPoint:
             if entity is None:
                # cerco se ci sono entità nel punto indicato
@@ -163,11 +181,9 @@ class QadEntSelClass(QadCommandClass):
                if result is not None:
                   feature = result[0]
                   layer = result[1]
-                  self.entity.set(layer, feature.id())               
-                  self.entity.selectOnLayer()
+                  self.setEntity(layer, feature.id())               
             else:
-               self.entity.set(entity.layer, entity.featureId)
-               self.entity.selectOnLayer()
+               self.setEntity(entity.layer, entity.featureId)
 
             self.point = value
                                    

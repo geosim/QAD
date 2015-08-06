@@ -42,7 +42,7 @@ import qad_utils
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di creazione nuovo stile
-class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_dimStyle_details_dialog):
+class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_DimStyle_Details_Dialog):
    def __init__(self, plugIn, dimStyle):
       self.plugIn = plugIn
       self.dimStyle = QadDimStyle(dimStyle) # copio lo stile di quotatura
@@ -66,7 +66,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       return QDialog.closeEvent(self, event)
         
    def setupUi(self, Dialog):
-      qad_dimstyle_details_ui.Ui_dimStyle_details_dialog.setupUi(self, self)
+      qad_dimstyle_details_ui.Ui_DimStyle_Details_Dialog.setupUi(self, self)
       # aggiungo il bottone di qgis QgsColorButtonV2 chiamato dimLineColor 
       # che eredita la posizione di dimLineColorDummy (che viene nascosto)
       self.dimLineColorDummy.setHidden(True)
@@ -99,8 +99,6 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.previewDim.setObjectName("previewDim")
 
       self.tabWidget.setCurrentIndex(0)
-      # retranslateUi
-      #self.dimLineColor.setText(_translate("Dialog", "PushButton", None))
 
    def currentTabChanged(self, index):
       self.previewDim.setParent(self.tabWidget.widget(index))
@@ -447,10 +445,10 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
       self.textHeight.setValue(self.dimStyle.textHeight)
       
       # textVerticalPos
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Centrato"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Sopra"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Esterno"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Sotto"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centrato"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Esterno"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sotto"))
       if self.dimStyle.textVerticalPos == QadDimStyleTxtVerticalPosEnum.CENTERED_LINE:
          self.textVerticalPos.setCurrentIndex(0)
       elif self.dimStyle.textVerticalPos == QadDimStyleTxtVerticalPosEnum.ABOVE_LINE:
@@ -461,11 +459,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          self.textVerticalPos.setCurrentIndex(3)
    
       # textHorizontalPos
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Centrato"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Alla linea di estensione 1"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Alla linea di estensione 2"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Sopra linea di estensione 1"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Dialog", "Sopra linea di estensione 2"))      
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centrato"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Alla linea di estensione 1"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Alla linea di estensione 2"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra linea di estensione 1"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra linea di estensione 2"))      
       if self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE:
          self.textHorizontalPos.setCurrentIndex(0)
       elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.FIRST_EXT_LINE:
@@ -478,8 +476,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
          self.textHorizontalPos.setCurrentIndex(4)         
       
       # textDirection
-      self.textDirection.addItem(QadMsg.translate("DimStyle_Dialog", "Da sinistra a destra"))
-      self.textDirection.addItem(QadMsg.translate("DimStyle_Dialog", "Da destra a sinistra"))
+      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Da sinistra a destra"))
+      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Da destra a sinistra"))
       if self.dimStyle.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
          self.textDirection.setCurrentIndex(0)
       elif self.dimStyle.textDirection == QadDimStyleTxtDirectionEnum.DX_TO_SX:
@@ -656,21 +654,21 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_di
    def init_primaryUnits_tab(self):
       self.onInit = True 
       # textDecimals
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.0"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.00"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.000"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.0000"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.00000"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.000000"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.0000000"))
-      self.textDecimals.addItem(QadMsg.translate("DimStyle_Dialog", "0.00000000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.0"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.00"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.0000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.00000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.000000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.0000000"))
+      self.textDecimals.addItem(QadMsg.translate("DimStyle_Details_Dialog", "0.00000000"))
       self.textDecimals.setCurrentIndex(self.dimStyle.textDecimals)
       
       # textDecimalSep
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "'.' Punto"))
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "',' Virgola"))
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Dialog", "' ' Spazio"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "'.' Punto"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "',' Virgola"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "' ' Spazio"))
       if self.dimStyle.textDecimalSep == ".": # punto
          self.textDecimalSep.setCurrentIndex(0)
       elif self.dimStyle.textDecimalSep == ",": # virgola

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>dimStyle_dialog</class>
- <widget class="QDialog" name="dimStyle_dialog">
+ <class>DimStyle_Dialog</class>
+ <widget class="QDialog" name="DimStyle_Dialog">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -233,7 +233,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string/>
    </property>
   </widget>
  </widget>
@@ -242,7 +242,7 @@
   <connection>
    <sender>SetCurrent</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>setCurrentStyle()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -258,7 +258,7 @@
   <connection>
    <sender>new_2</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>createNewStyle()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -274,7 +274,7 @@
   <connection>
    <sender>Mod</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>modStyle()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -290,7 +290,7 @@
   <connection>
    <sender>dimStyleList</sender>
    <signal>customContextMenuRequested(QPoint)</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>displayPopupMenu()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -306,7 +306,7 @@
   <connection>
    <sender>TempMod</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>temporaryModStyle()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -322,7 +322,7 @@
   <connection>
    <sender>helpButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -338,7 +338,7 @@
   <connection>
    <sender>Diff</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>showDiffBetweenStyles()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -354,7 +354,7 @@
   <connection>
    <sender>closeButton</sender>
    <signal>clicked()</signal>
-   <receiver>dimStyle_dialog</receiver>
+   <receiver>DimStyle_Dialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

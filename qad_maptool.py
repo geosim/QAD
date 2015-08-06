@@ -46,7 +46,12 @@ class QadMapTool(QgsMapTool):
       self.cursor = QCursor(Qt.BlankCursor)
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
 
+      
+   def __del__(self):
+      if self.__csrRubberBand is not None:
+         del self.__csrRubberBand
 
+         
    def UpdatedVariablesEvent(self):
       # aggiorna in base alle nuove impostazioni delle variabili
       if self.__csrRubberBand is not None:

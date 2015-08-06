@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad.ui'
 #
-# Created: Mon Jul 20 07:49:09 2015
+# Created: Wed Aug 05 11:12:58 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

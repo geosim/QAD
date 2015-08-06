@@ -436,6 +436,13 @@ Il valore deve essere un intero compreso tra 2 e 32767.</source>
     </message>
 </context>
 <context>
+    <name>Command_DIMSTYLE</name>
+    <message>
+        <source>Crea e modifica gli stili di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_DSETTINGS</name>
     <message>
         <source>Impostazioni per il disegno(tipo di snap, ecc.).</source>
@@ -1830,25 +1837,13 @@ Non é possibile inserire un segno dentro un gruppo.</source>
         <source>POLIGONO</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>DIMSTILE</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DSettings_Dialog</name>
-    <message>
-        <source>Snap ad oggetto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Modalità di snap ad oggetto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Seleziona tutto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deseleziona tutto</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Perpendicolare</source>
         <translation type="unfinished"></translation>
@@ -1906,27 +1901,19 @@ Non é possibile inserire un segno dentro un gruppo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Snap ad oggetto (F3)</source>
+        <source>Snap ad oggetto per distanza progressiva non corretto: impostare valore numerico diverso da zero.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Puntamento polare</source>
+        <source>Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Puntamento polare (F10)</source>
+        <source>Nessuno</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Impostazioni angoli polari</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angolo incremento:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>?</source>
+        <source>Impostazioni snap ad oggetto...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1934,11 +1921,28 @@ Non é possibile inserire un segno dentro un gruppo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Snap ad oggetto per distanza progressiva non corretto: impostare valore numerico diverso da zero.</source>
+        <source>Snap ad oggetto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Modalità di snap ad oggetto</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.</source>
+        <source>Seleziona tutto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deseleziona tutto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1957,6 +1961,33 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Estensione di: punto sull’estensione di un segmento fino alla posizione del cursore.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Intersezione su estensione: punto determinato dall&apos;intersezione delle estensioni di due segmenti.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
@@ -2034,55 +2065,816 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Snap ad oggetto (F3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Puntamento polare</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Puntamento polare (F10)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Impostazioni angoli polari</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angolo incremento:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Details_Dialog</name>
+    <message>
+        <source>DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza le linee di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome del tipolinea.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo tipolinea:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simboli e frecce</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza i simboli e le frecce delle quote.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo simbolo:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome del simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo che memorizza la dimensione del simbolo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo scala:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campi generici</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotazione:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo che memorizza la rotazione degli elementi puntuali della quota (simboli, frecce, testi).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colore:</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Campo che memorizza il colore in formato RGB per tutti gli elementi della quota (es. &quot;255,255,255,255&quot; = bianco con opacità totale).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Intersezione su estensione: punto determinato dall&apos;intersezione delle estensioni di due segmenti.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>ID collegamento:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Campo che memorizza il codice della quota per raggruppare tutti gli elementi (eccetto il testo che ne è l&apos;elemento padre).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuno</source>
+        <source>Tipo componente:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di componente della quota:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = linea di quota (&amp;quot;Dimension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = linea di quota (&amp;quot;Dimension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = prima linea di estensione (&amp;quot;Extension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = seconda linea di estensione (&amp;quot;Extension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = linea porta quota usata quando il testo é fuori dalla quota (&amp;quot;Leader&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = primo blocco della freccia (&amp;quot;Block 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = secondo blocco della freccia (&amp;quot;Block 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = blocco della freccia nel caso leader (&amp;quot;Leader Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = simbolo dell&apos;arco (&amp;quot;Arc Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = primo punto da quotare (&amp;quot;Dimension point 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = secondo punto da quotare (&amp;quot;Dimension point 2&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Impostazioni snap ad oggetto...</source>
+        <source>Testo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Quotatura</source>
+        <source>Campo ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stile di quotatura corrente:</source>
+        <source>Campo che memorizza il codice univoco di ciascuna quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo che memorizza il nome dello stile di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo stile quota:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Campo tipo quota:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di quota:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = quota lineare allineata ai punti di origine delle linee di estensione.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = quota angolare, misura l&apos;angolo tra i 3 punti o tra gli oggetti selezionati.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = quota lineare, angolare o coordinata a partire dalla linea di base della quota precedente o di una quota selezionata.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = crea il centro o le linee d&apos;asse di cerchi e archi.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = quota per il diametro di un cerchio o di un arco.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = crea una linea che consente di collegare un&apos;annotazione ad una lavorazione.&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = quota lineare con una linea di quota orizzontale o verticale.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = quota radiale, misura il raggio di un cerchio o di un arco selezionato e visualizza il testo di quota con un simbolo di raggio davanti.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = quota per la lunghezza di un cerchio o di un arco.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nome del layer che memorizza i testi delle quote.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linee di quota</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di linea della linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di linea:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprimi:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della prima linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linea quota 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della seconda linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linea quota 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linee di estensione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di linea della prima linea di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipolinea est. 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipolinea est. 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di linea della seconda linea di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprime la visualizzazione della prima linea di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linea est. 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linea est. 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Estendi oltre linee di quota:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifica una distanza in base alla quale estendere le linee di estensione oltre la linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imposta la distanza di offset delle linee di estensione dai punti sul disegno che definiscono la quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset dall&apos;origine:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attiva le linee di estensione a lunghezza fissa.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linee di estensione a lunghezza fissa</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lunghezza:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lunghezza totale delle linee di estensione , dalla linea di quota fino all&apos;origine di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Punte delle frecce</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della prima linea di quota. Quando si imposta questo valore, il simbolo per la freccia della seconda linea di quota viene modificato per corrispondere a questo valore.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prima freccia:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della seconda linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Seconda freccia:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simbolo per la freccia della linea direttrice.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Freccia direttrice:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Larghezza del simbolo freccia in orizzontale in unità di mappa quando la scala del simbolo = 1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Larghezza freccia:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scala del simbolo freccia.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scala freccia:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspetto del testo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Altezza del testo:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Altezza testo in unità di mappa.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di carattere:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tipo di carattere del testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Posizionamento del testo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Giustificazione del testo di quota rispetto la linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verticale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Orizzontale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Posizionamento orizzontale del testo di quota lungo la linea di quota, in relazione alle linee di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direzione vista:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direzione di visualizzazione del testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imposta la distanza corrente del testo, ovvero la distanza aggiunta attorno al testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset dalla linea di quota:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allineamento del testo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Posiziona il testo orizzontalmente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Orizzontale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allinea il testo con la linea di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allineato con la linea di quota</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allinea il testo con la linea di quota quando si trova all&apos;interno delle linee di estensione e orizzontalmente quando si trova all&apos;esterno delle linee di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard ISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruota il testo con angolo fisso.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotazione fissa</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Angolo di rotazione del testo quando è stata impostata la modalità di rotazione fissa.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adatta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opzioni di adattamento</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Se lo spazio non è sufficiente per inserire testo e frecce all&apos;interno delle linee di estensione, la prima cosa da spostare all&apos;esterno è:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sposta il testo o le frecce all&apos;esterno delle linee di estensione, adattandoli.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Il testo e le frecce (adattati)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sposta prima le punte delle frecce al di fuori delle linee di estensione, poi il testo.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frecce</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sposta prima il testo al di fuori delle linee di estensione, poi le punte delle frecce.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Se lo spazio disponibile è insufficiente sia per il testo che per le frecce, sposta entrambi all&apos;esterno delle linee di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sia il testo che le frecce</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Sopprime le punte delle frecce se non è disponibile spazio sufficiente tra le linee di estensione.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprimi le frecce se non si adattano alle linee 
+di estensione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Unità primarie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quote lineari</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precisione:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numero di cifre decimali nel testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Separatore per i formati decimali.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Separatore decimale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefisso nel testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefisso:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suffisso:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suffisso nel testo di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Soppressione dello zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprime gli zeri iniziali in tutte le quote decimali (0.5 diventa .5).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Iniziale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopprime gli zeri finali in tutte le quote decimali (5.50 diventa 5.5 e 5.0 diventa 5).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Dettagli stile di quota</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Centrato</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esterno</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sotto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alla linea di estensione 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alla linea di estensione 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopra linea di estensione 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sopra linea di estensione 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Da sinistra a destra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Da destra a sinistra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.00</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.0000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.00000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.000000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.0000000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.00000000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;.&apos; Punto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;,&apos; Virgola</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos; &apos; Spazio</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Dialog</name>
+    <message>
+        <source>Descrizione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lo stile di quotatura non è stato rinominato.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Modifica descrizione per lo stile di quota: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nuova descrizione:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Eliminare lo stile di quotatura </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lo stile di quotatura non è stato cancellato.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifica stile di quota: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifica locale allo stile corrente: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imposta corrente</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rinomina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifica descrizione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Elimina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nome dello stile di quotatura già esistente. Specificare un altro nome.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nuovo stile di quota: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Gestione stili di quota</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stile di quota corrente:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>nessuno</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stili</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Rende corrente lo stile selezionato nella&apos;area Stili. Lo stile corrente è applicato alle quota create dall&apos;uente.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Definisce un nuovo stile di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nuovo...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifica lo stile di quota selezionato nella&apos;area Stili.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifica...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Imposta modifiche locali per lo stile selezionato nella&apos;area Stili. Le modifiche locali sono modifiche che non verranno salvate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sostituisci...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confronta...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>nessuna</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Anteprima di:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chiudi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_Diff_Dialog</name>
+    <message>
+        <source>Confronta:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Con:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifica il primo stile di quota per il confronto.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chiudi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copia il risultato del confronto negli Appunti.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Confronta stili di quota</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Descrizione</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tutte le proprietà dello stile di quota: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rilevate {0} differenze: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DimStyle_New_Dialog</name>
+    <message>
+        <source>Nome del nuovo stile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copia i parametri dallo stile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continua...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annulla</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Descrizione:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Crea nuovo stile di quota</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2139,11 +2931,12 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <source>ha il layer per le linee delle quote che non é di tipo linea.</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>Environment varia</name>
     <message>
-        <source>POLARANG</source>
+        <source>da sinistra a destra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>da destra a sinistra</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2385,6 +3178,15 @@ Tipo booleano.</source>
     <message>
         <source>Massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti.
 Tipo reale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CURSORCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colore (RGB) del puntatore a croce (es. #FF0000 = rosso).
+Tipo carattere.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2716,6 +3518,10 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copia di </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Snap</name>
@@ -2781,6 +3587,10 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
     </message>
     <message>
         <source>FIN_PL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NES</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

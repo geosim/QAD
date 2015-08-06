@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Mon Jul 20 07:49:10 2015
+# Created: Wed Aug 05 11:12:59 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,15 +23,15 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_dSettings_dialog(object):
-    def setupUi(self, dSettings_dialog):
-        dSettings_dialog.setObjectName(_fromUtf8("dSettings_dialog"))
-        dSettings_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        dSettings_dialog.resize(441, 455)
-        dSettings_dialog.setMouseTracking(True)
-        dSettings_dialog.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        dSettings_dialog.setModal(True)
-        self.tabWidget = QtGui.QTabWidget(dSettings_dialog)
+class Ui_DSettings_Dialog(object):
+    def setupUi(self, DSettings_Dialog):
+        DSettings_Dialog.setObjectName(_fromUtf8("DSettings_Dialog"))
+        DSettings_Dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        DSettings_Dialog.resize(441, 455)
+        DSettings_Dialog.setMouseTracking(True)
+        DSettings_Dialog.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        DSettings_Dialog.setModal(True)
+        self.tabWidget = QtGui.QTabWidget(DSettings_Dialog)
         self.tabWidget.setGeometry(QtCore.QRect(10, 10, 421, 401))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab_1 = QtGui.QWidget()
@@ -210,7 +210,7 @@ class Ui_dSettings_dialog(object):
         self.comboBox_increment_angle.setEditable(True)
         self.comboBox_increment_angle.setObjectName(_fromUtf8("comboBox_increment_angle"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
-        self.layoutWidget3 = QtGui.QWidget(dSettings_dialog)
+        self.layoutWidget3 = QtGui.QWidget(DSettings_Dialog)
         self.layoutWidget3.setGeometry(QtCore.QRect(200, 420, 239, 25))
         self.layoutWidget3.setObjectName(_fromUtf8("layoutWidget3"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget3)
@@ -226,126 +226,126 @@ class Ui_dSettings_dialog(object):
         self.pushButton_HELP.setObjectName(_fromUtf8("pushButton_HELP"))
         self.horizontalLayout.addWidget(self.pushButton_HELP)
 
-        self.retranslateUi(dSettings_dialog)
+        self.retranslateUi(DSettings_Dialog)
         self.tabWidget.setCurrentIndex(1)
-        QtCore.QObject.connect(self.pushButton_DeSelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), dSettings_dialog.ButtonDeselectALL_Pressed)
-        QtCore.QObject.connect(self.pushButton_SelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), dSettings_dialog.ButtonSelectALL_Pressed)
-        QtCore.QObject.connect(self.pushButton_HELP, QtCore.SIGNAL(_fromUtf8("clicked()")), dSettings_dialog.ButtonHELP_Pressed)
-        QtCore.QObject.connect(self.okButton, QtCore.SIGNAL(_fromUtf8("clicked()")), dSettings_dialog.ButtonBOX_Accepted)
-        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL(_fromUtf8("clicked()")), dSettings_dialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(dSettings_dialog)
+        QtCore.QObject.connect(self.pushButton_DeSelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonDeselectALL_Pressed)
+        QtCore.QObject.connect(self.pushButton_SelectALL, QtCore.SIGNAL(_fromUtf8("pressed()")), DSettings_Dialog.ButtonSelectALL_Pressed)
+        QtCore.QObject.connect(self.pushButton_HELP, QtCore.SIGNAL(_fromUtf8("clicked()")), DSettings_Dialog.ButtonHELP_Pressed)
+        QtCore.QObject.connect(self.okButton, QtCore.SIGNAL(_fromUtf8("clicked()")), DSettings_Dialog.ButtonBOX_Accepted)
+        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL(_fromUtf8("clicked()")), DSettings_Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(DSettings_Dialog)
 
-    def retranslateUi(self, dSettings_dialog):
-        dSettings_dialog.setWindowTitle(_translate("dSettings_dialog", "QAD - Impostazioni disegno", None))
-        self.groupBox.setTitle(_translate("dSettings_dialog", "Modalità di snap ad oggetto", None))
-        self.pushButton_SelectALL.setText(_translate("dSettings_dialog", "Seleziona tutto", None))
-        self.pushButton_DeSelectALL.setText(_translate("dSettings_dialog", "Deseleziona tutto", None))
-        self.checkBox_PERP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+    def retranslateUi(self, DSettings_Dialog):
+        DSettings_Dialog.setWindowTitle(_translate("DSettings_Dialog", "QAD - Impostazioni disegno", None))
+        self.groupBox.setTitle(_translate("DSettings_Dialog", "Modalità di snap ad oggetto", None))
+        self.pushButton_SelectALL.setText(_translate("DSettings_Dialog", "Seleziona tutto", None))
+        self.pushButton_DeSelectALL.setText(_translate("DSettings_Dialog", "Deseleziona tutto", None))
+        self.checkBox_PERP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png\" /></p></body></html>", None))
-        self.checkBox_PERP.setText(_translate("dSettings_dialog", "Perpendicolare", None))
-        self.checkBox_TANP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_PERP.setText(_translate("DSettings_Dialog", "Perpendicolare", None))
+        self.checkBox_TANP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Tangente: punto di tangenza su una curva della retta passante per un punto noto.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_TANP.png\" /></p></body></html>", None))
-        self.checkBox_TANP.setText(_translate("dSettings_dialog", "Tangente", None))
-        self.checkBox_EXTP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_TANP.setText(_translate("DSettings_Dialog", "Tangente", None))
+        self.checkBox_EXTP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Estensione di: punto sull’estensione di un segmento fino alla posizione del cursore.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTP.png\" /></p></body></html>", None))
-        self.checkBox_EXTP.setText(_translate("dSettings_dialog", "Estensione", None))
-        self.checkBox_PARALP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_EXTP.setText(_translate("DSettings_Dialog", "Estensione", None))
+        self.checkBox_PARALP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png\" /></p></body></html>", None))
-        self.checkBox_PARALP.setText(_translate("dSettings_dialog", "Parallelo", None))
-        self.checkBox_PROGRESP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_PARALP.setText(_translate("DSettings_Dialog", "Parallelo", None))
+        self.checkBox_PROGRESP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png\" /></p></body></html>", None))
-        self.checkBox_PROGRESP.setText(_translate("dSettings_dialog", "Progressivo", None))
-        self.checkBox_EXT_INT.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_PROGRESP.setText(_translate("DSettings_Dialog", "Progressivo", None))
+        self.checkBox_EXT_INT.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">OSnap Intersezione su estensione: punto determinato dall\'intersezione delle estensioni di due segmenti.</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png\" /></p></body></html>", None))
-        self.checkBox_EXT_INT.setText(_translate("dSettings_dialog", "Intersezione su estensione", None))
-        self.checkBox_QUADP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_EXT_INT.setText(_translate("DSettings_Dialog", "Intersezione su estensione", None))
+        self.checkBox_QUADP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Quadrante: intersezione degli assi cartesiani con la circonferenza o arco (aggancio al punto più prossimo al cursore tra le quattro possibili intersezioni).</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_QUADP.png\" /></p></body></html>", None))
-        self.checkBox_QUADP.setText(_translate("dSettings_dialog", "Quadrante", None))
-        self.checkBox_END_PLINE.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_QUADP.setText(_translate("DSettings_Dialog", "Quadrante", None))
+        self.checkBox_END_PLINE.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">OSnap Inizio / Fine entità: vertice iniziale e finale di una geometria lineare.</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_END_PLINE.png\" /></p></body></html>", None))
-        self.checkBox_END_PLINE.setText(_translate("dSettings_dialog", "Inizio / Fine", None))
-        self.checkBox_ENDP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_END_PLINE.setText(_translate("DSettings_Dialog", "Inizio / Fine", None))
+        self.checkBox_ENDP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Inizio / Fine segmento: vertice iniziale e finale di ciascun segmento di una geometria.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_ENDP.png\" /></p></body></html>", "aa"))
-        self.checkBox_ENDP.setText(_translate("dSettings_dialog", "Inizio / Fine segmento", None))
-        self.checkBox_MIDP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_ENDP.setText(_translate("DSettings_Dialog", "Inizio / Fine segmento", None))
+        self.checkBox_MIDP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Punto Medio: punto medio di ciascun segmento di una geometria.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_MIDP.png\" /></p></body></html>", None))
-        self.checkBox_MIDP.setText(_translate("dSettings_dialog", "Punto medio", None))
-        self.checkBox_INTP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_MIDP.setText(_translate("DSettings_Dialog", "Punto medio", None))
+        self.checkBox_INTP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Intersezione: intersezione tra due segmenti.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_INTP.png\" /></p></body></html>", None))
-        self.checkBox_INTP.setText(_translate("dSettings_dialog", "Intersezione", None))
-        self.checkBox_CENP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_INTP.setText(_translate("DSettings_Dialog", "Intersezione", None))
+        self.checkBox_CENP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Centro: centro di un cerchio o un arco (si attiva con il cursore posizionato in prossimità della curva) o centroide di una geometria areale.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_CENP.png\" /></p></body></html>", None))
-        self.checkBox_CENP.setText(_translate("dSettings_dialog", "Centro", None))
-        self.checkBox_NODP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_CENP.setText(_translate("DSettings_Dialog", "Centro", None))
+        self.checkBox_NODP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Nodo: coordinate di una geometria puntuale.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NODP.png\" /></p></body></html>", None))
-        self.checkBox_NODP.setText(_translate("dSettings_dialog", "Nodo", None))
-        self.checkBox_NEARP.setToolTip(_translate("dSettings_dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.checkBox_NODP.setText(_translate("DSettings_Dialog", "Nodo", None))
+        self.checkBox_NEARP.setToolTip(_translate("DSettings_Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">OSnap Vicino: punto di un segmento in prossimità della posizione del cursore.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NEARP.png\" /></p></body></html>", None))
-        self.checkBox_NEARP.setText(_translate("dSettings_dialog", "Vicino", None))
-        self.checkBox_IsOsnapON.setText(_translate("dSettings_dialog", "Snap ad oggetto (F3)", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), _translate("dSettings_dialog", "Snap ad oggetto", None))
-        self.checkBox_PolarPickPoint.setText(_translate("dSettings_dialog", "Puntamento polare (F10)", None))
-        self.groupBox_2.setTitle(_translate("dSettings_dialog", "Impostazioni angoli polari", None))
-        self.label_12.setText(_translate("dSettings_dialog", "Angolo incremento:", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("dSettings_dialog", "Puntamento polare", None))
-        self.okButton.setText(_translate("dSettings_dialog", "OK", None))
-        self.cancelButton.setText(_translate("dSettings_dialog", "Annulla", None))
-        self.pushButton_HELP.setText(_translate("dSettings_dialog", "?", None))
+        self.checkBox_NEARP.setText(_translate("DSettings_Dialog", "Vicino", None))
+        self.checkBox_IsOsnapON.setText(_translate("DSettings_Dialog", "Snap ad oggetto (F3)", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), _translate("DSettings_Dialog", "Snap ad oggetto", None))
+        self.checkBox_PolarPickPoint.setText(_translate("DSettings_Dialog", "Puntamento polare (F10)", None))
+        self.groupBox_2.setTitle(_translate("DSettings_Dialog", "Impostazioni angoli polari", None))
+        self.label_12.setText(_translate("DSettings_Dialog", "Angolo incremento:", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("DSettings_Dialog", "Puntamento polare", None))
+        self.okButton.setText(_translate("DSettings_Dialog", "OK", None))
+        self.cancelButton.setText(_translate("DSettings_Dialog", "Annulla", None))
+        self.pushButton_HELP.setText(_translate("DSettings_Dialog", "?", None))
 
 import qad_dsettings_rc

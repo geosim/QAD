@@ -375,15 +375,16 @@ class Qad(QObject):
       # Inizializzo la finestra di testo
       self.TextWindow = QadTextWindow(self)
       self.TextWindow.initGui()
-      self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
-            
-      self.setStandardMapTool()
 
       # aggiungo i segnali di aggiunta e rimozione di layer per collegare ogni layer
       # all'evento <layerModified> per sapere se la modifica fatta su quel layer
       # é stata fatta da QAD o dall'esterno
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+      QObject.connect(self.iface, SIGNAL("projectRead()"), self.onProjectLoaded)
+
+      self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
+      self.setStandardMapTool()
 
 
    def unload(self):
@@ -391,6 +392,7 @@ class Qad(QObject):
       QObject.disconnect(self.canvas, SIGNAL("mapToolSet(QgsMapTool*)"), self.deactivate)            
       QObject.disconnect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.disconnect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
+      QObject.disconnect(self.iface, SIGNAL("projectRead()"), self.onProjectLoaded)
       
       # Remove the plugin menu item and icon
       self.iface.removePluginVectorMenu("&QAD", self.mainAction)
@@ -406,7 +408,18 @@ class Qad(QObject):
       if self.TextWindow is not None:
          self.TextWindow.close()
       if self.tool:
+         if self.canvas.mapTool() == self.tool:
+            self.canvas.unsetMapTool(self.tool)
+         elif self.QadCommands.actualCommand is not None:
+            if self.canvas.mapTool() == self.QadCommands.actualCommand.getPointMapTool():
+               self.canvas.unsetMapTool(self.QadCommands.actualCommand.getPointMapTool())
+            
          del self.tool
+
+
+   def onProjectLoaded(self):
+      self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
+      self.setStandardMapTool()
 
 
    #============================================================================
@@ -840,7 +853,20 @@ class Qad(QObject):
    # INIZIO - Gestione Layer
    #============================================================================
 
+   # se viene salvato per prima un layer di quote testuale:
+   # 1) beforeCommitChanges su layer testuale
+   # 2) committedFeaturesAdded su layer testuale
+   # 3) editingStopped su layer testuale che scatena
+   #    1) committedFeaturesAdded su layer linee
+   #    2) committedFeaturesAdded su layer simboli
 
+   # se viene salvato per prima un layer di quote simbolo o linea:
+   # 1) beforeCommitChanges su layer simbolo o linea
+   # 2) committedFeaturesAdded su layer testuale
+   # 3) editingStopped su layer testuale che scatena
+   #    1) committedFeaturesAdded su layer linea
+   #    2) committedFeaturesAdded su layer simboli
+   
    def layerAdded(self, layer):
       QObject.connect(layer, SIGNAL("layerModified()"), self.layerModified)
       QObject.connect(layer, SIGNAL("beforeCommitChanges()"), self.beforeCommitChanges)
@@ -863,14 +889,21 @@ class Qad(QObject):
       # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
       # se bisogna fare la ricodifica delle quote
       if self.dimTextEntitySetRecodeOnSave.isEmpty() == False:
+         layer = self.dimTextEntitySetRecodeOnSave.layer
          # ricavo gli stili di quotatura
-         dimStyleList = self.dimStyles.getDimListByLayer(self.dimTextEntitySetRecodeOnSave.layer)
+         dimStyleList = self.dimStyles.getDimListByLayer(layer)
          for dimStyle in dimStyleList:
+            # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
+            # di quotatura dimStyle
+            textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)
             # salvo gli oggetti di quello stile di quotatura aggiornando i reference
             self.isSaveControlledByQAD = True
             # ricodifica          
-            dimStyle.updateTextReferencesOnSave(self, self.dimTextEntitySetRecodeOnSave.getFeatureCollection())
-            self.dimTextEntitySetRecodeOnSave.clear()
+            dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+            
+         self.dimTextEntitySetRecodeOnSave.clear()
+
+         for dimStyle in dimStyleList:
             # salvataggio
             dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
             self.beforeCommitChangesDimLayer = None
@@ -885,11 +918,17 @@ class Qad(QObject):
          # ricavo gli stili di quotatura
          dimStyleList = self.dimStyles.getDimListByLayer(self.dimTextEntitySetRecodeOnSave.layer)
          for dimStyle in dimStyleList:
+            # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
+            # di quotatura dimStyle
+            textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)            
             # salvo gli oggetti di quello stile di quotatura aggiornando i reference
             self.isSaveControlledByQAD = True
             # ricodifica          
-            dimStyle.updateTextReferencesOnSave(self, self.dimTextEntitySetRecodeOnSave.getFeatureCollection())
-            self.dimTextEntitySetRecodeOnSave.clear()
+            dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+            
+         self.dimTextEntitySetRecodeOnSave.clear()
+         
+         for dimStyle in dimStyleList:
             # salvataggio
             dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
             self.beforeCommitChangesDimLayer = None
@@ -920,6 +959,7 @@ class Qad(QObject):
          if dimStyle.getTextualLayer().id() == layerId:
             # mi memorizzo le features testuali da riallineare 
             self.dimTextEntitySetRecodeOnSave.set(dimStyle.getTextualLayer(), addedFeatures)
+            return
 
 
    def layerModified(self):

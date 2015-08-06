@@ -49,8 +49,8 @@ linetypefieldname =
 colorfieldname = color
 idfieldname = id
 idparentfieldname = id_parent
-dimstylefieldname = dim_style
-dimtypefieldname = dim_type
+dimstylefieldname = stile
+dimtypefieldname = tipo
 scalefieldname = scale
 rotfieldname = rot
 

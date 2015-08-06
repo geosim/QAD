@@ -42,7 +42,7 @@ import qad_utils
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
-class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_dSettings_dialog):
+class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
    def __init__(self, plugIn):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
@@ -200,7 +200,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_dSettings_dialog)
       # Memorizzo il valore di PolarANG
       SUserAngle = self.comboBox_increment_angle.currentText()
       UserAngle = qad_utils.str2float(SUserAngle)
-      QadVariables.set(QadMsg.translate("Environment varia", "POLARANG"), UserAngle)
+      QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
       
       SProgrDist = self.lineEdit_ProgrDistance.text()
       ProgrDist = qad_utils.str2float(SProgrDist)
