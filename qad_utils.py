@@ -4076,6 +4076,11 @@ def bridgeTheGapBetweenLines(line1, ptOnLine1, line2, ptOnLine2, radius, filletM
       if ptInt is None: # linee parallele
          return None
       
+      distBetweenLine1Pt1AndPtInt = getDistance(line1.getStartPt(), ptInt)
+      distBetweenLine1Pt2AndPtInt = getDistance(line1.getEndPt(), ptInt)
+      distBetweenLine2Pt1AndPtInt = getDistance(line2.getStartPt(), ptInt)
+      distBetweenLine2Pt2AndPtInt = getDistance(line2.getEndPt(), ptInt)
+      
       if distBetweenLine1Pt1AndPtInt > distBetweenLine1Pt2AndPtInt:
          # secondo punto di line1 più vicino al punto di intersezione
          resLine1 = QadLinearObject([line1.getStartPt(), ptInt])

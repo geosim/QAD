@@ -2587,7 +2587,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Sopprimi le frecce se non si adattano alle linee 
 di estensione</source>
-        <translation type="unfinished">Suppress arrows if they don&apos;t fit inside ext. lines</translation>
+        <translation>Suppress arrows if they don&apos;t fit inside ext. lines</translation>
     </message>
     <message utf8="true">
         <source>Unità primarie</source>

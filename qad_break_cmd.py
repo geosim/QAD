@@ -121,16 +121,17 @@ class QadBREAKCommandClass(QadCommandClass):
          line2 = result[1]
          atSubGeom = result[2]
          if layer.geometryType() == QGis.Line:
-            updGeom = qad_utils.setSubGeom(f.geometry(), line1, atSubGeom)
-            if updGeom is None:
-               self.plugIn.destroyEditCommand()
-               return
-            brokenFeature1 = QgsFeature(f)
-            brokenFeature1.setGeometry(updGeom)
-            # plugIn, layer, feature, refresh, check_validity
-            if qad_layer.updateFeatureToLayer(self.plugIn, layer, brokenFeature1, False, False) == False:
-               self.plugIn.destroyEditCommand()
-               return
+            if line1 is not None:
+               updGeom = qad_utils.setSubGeom(f.geometry(), line1, atSubGeom)
+               if updGeom is None:
+                  self.plugIn.destroyEditCommand()
+                  return
+               brokenFeature1 = QgsFeature(f)
+               brokenFeature1.setGeometry(updGeom)            
+               # plugIn, layer, feature, refresh, check_validity
+               if qad_layer.updateFeatureToLayer(self.plugIn, layer, brokenFeature1, False, False) == False:
+                  self.plugIn.destroyEditCommand()
+                  return
             if line2 is not None:
                brokenFeature2 = QgsFeature(f)      
                brokenFeature2.setGeometry(line2)
@@ -144,7 +145,9 @@ class QadBREAKCommandClass(QadCommandClass):
                LineTempLayer = qad_layer.createQADTempLayer(self.plugIn, QGis.Line)
                self.plugIn.addLayerToLastEditCommand("Feature broken", LineTempLayer)
             
-            lineGeoms = [line1]
+            lineGeoms = []
+            if line1 is not None:
+               lineGeoms.append(line1)
             if line2 is not None:
                lineGeoms.append(line2)
 
