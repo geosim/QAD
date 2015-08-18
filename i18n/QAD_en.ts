@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>Command_ARC</name>
     <message>
@@ -1943,7 +1944,7 @@ A mark can&apos;t be inserted into a group.</translation>
         <source>Snap ad oggetto</source>
         <translation>Object Snap</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Modalità di snap ad oggetto</source>
         <translation>Object Snap modes</translation>
     </message>
@@ -1983,7 +1984,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;tangent point on a curve of a line passing through a given point.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_TANP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2011,7 +2012,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Parallel OSnap: point on a line, passing through a given point, parallel to a segment.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2039,7 +2040,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Intersection on extension OSnap: intersection point of the extensions of two segments.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2053,7 +2054,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quadrant OSnap: intersections of the cartesian axis with a circumference of a circle or an arc.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_QUADP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2111,7 +2112,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Intersection OSnap: intersection between two segments.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_INTP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2139,7 +2140,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Node OSnap: coordinate of a punctual geometry.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NODP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2252,7 +2253,7 @@ p, li { white-space: pre-wrap; }
         <source>Colore:</source>
         <translation>Color:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Campo che memorizza il colore in formato RGB per tutti gli elementi della quota (es. &quot;255,255,255,255&quot; = bianco con opacità totale).</source>
         <translation>Field storing the RGB colorfor all elements of dimension (e.g. &quot;255,255,255,255&quot; = white with total opacity).</translation>
     </message>
@@ -2260,7 +2261,7 @@ p, li { white-space: pre-wrap; }
         <source>ID collegamento:</source>
         <translation>Linking ID:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Campo che memorizza il codice della quota per raggruppare tutti gli elementi (eccetto il testo che ne è l&apos;elemento padre).</source>
         <translation>Field storing the ID of the dimension to group all elements (except the text which is the root element).</translation>
     </message>
@@ -2268,7 +2269,7 @@ p, li { white-space: pre-wrap; }
         <source>Tipo componente:</source>
         <translation>Component type:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di componente della quota:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = linea di quota (&amp;quot;Dimension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = linea di quota (&amp;quot;Dimension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = prima linea di estensione (&amp;quot;Extension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = seconda linea di estensione (&amp;quot;Extension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = linea porta quota usata quando il testo é fuori dalla quota (&amp;quot;Leader&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = primo blocco della freccia (&amp;quot;Block 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = secondo blocco della freccia (&amp;quot;Block 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = blocco della freccia nel caso leader (&amp;quot;Leader Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = simbolo dell&apos;arco (&amp;quot;Arc Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = primo punto da quotare (&amp;quot;Dimension point 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = secondo punto da quotare (&amp;quot;Dimension point 2&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the component type of dimension:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = Extension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = Extension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = Leader.&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = Block 1.&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = Block 2.&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = Leader Block.&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = Arc Block.&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension point 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension point 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -2428,7 +2429,7 @@ p, li { white-space: pre-wrap; }
         <source>Freccia direttrice:</source>
         <translation>Leader:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Larghezza del simbolo freccia in orizzontale in unità di mappa quando la scala del simbolo = 1.</source>
         <translation>Arrowhead horizontal size in map units using the symbol scale factor = 1.</translation>
     </message>
@@ -2452,7 +2453,7 @@ p, li { white-space: pre-wrap; }
         <source>Altezza del testo:</source>
         <translation>Text height:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Altezza testo in unità di mappa.</source>
         <translation>Text height in map units.</translation>
     </message>
@@ -2536,7 +2537,7 @@ p, li { white-space: pre-wrap; }
         <source>Rotazione fissa</source>
         <translation>Fixed rotation</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Angolo di rotazione del testo quando è stata impostata la modalità di rotazione fissa.</source>
         <translation>Text angle  when fixed rotation mode is on.</translation>
     </message>
@@ -2548,7 +2549,7 @@ p, li { white-space: pre-wrap; }
         <source>Opzioni di adattamento</source>
         <translation>Fit options</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Se lo spazio non è sufficiente per inserire testo e frecce all&apos;interno delle linee di estensione, la prima cosa da spostare all&apos;esterno è:</source>
         <translation>If there isn&apos;t enaugh room to place both text and arrows inside extension lines, the first thing to move outside the extension lines is:</translation>
     </message>
@@ -2572,7 +2573,7 @@ p, li { white-space: pre-wrap; }
         <source>Sposta prima il testo al di fuori delle linee di estensione, poi le punte delle frecce.</source>
         <translation>Moves text outside the extension lines first, then arrowheads.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Se lo spazio disponibile è insufficiente sia per il testo che per le frecce, sposta entrambi all&apos;esterno delle linee di estensione.</source>
         <translation>When not enough space is available for text and arrowheads, moves both outside the extension lines.</translation>
     </message>
@@ -2580,7 +2581,7 @@ p, li { white-space: pre-wrap; }
         <source>Sia il testo che le frecce</source>
         <translation>Both text and arrows</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Sopprime le punte delle frecce se non è disponibile spazio sufficiente tra le linee di estensione.</source>
         <translation>Suppresses arrowheads if not enough space is available inside the extension lines.</translation>
     </message>
@@ -2589,7 +2590,7 @@ p, li { white-space: pre-wrap; }
 di estensione</source>
         <translation>Suppress arrows if they don&apos;t fit inside ext. lines</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Unità primarie</source>
         <translation>Primary units</translation>
     </message>
@@ -2828,7 +2829,7 @@ di estensione</source>
         <source>Stili</source>
         <translation>Styles</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Rende corrente lo stile selezionato nella&apos;area Stili. Lo stile corrente è applicato alle quota create dall&apos;uente.</source>
         <translation>Sets the style selected under Styles to current. The current style is applied to dimensions you create. </translation>
     </message>
@@ -2856,7 +2857,7 @@ di estensione</source>
         <source>Sostituisci...</source>
         <translation>Override...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</source>
         <translation>Compare two dimension styles or list all the properties of one dimension style.</translation>
     </message>
@@ -2895,7 +2896,7 @@ di estensione</source>
         <source>Specifica il primo stile di quota per il confronto.</source>
         <translation>Specify the first dimension style.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</source>
         <translation>Specify the second dimension style. If you set the second style as the first, all dimension style properties will displayed.</translation>
     </message>
@@ -2911,7 +2912,7 @@ di estensione</source>
         <source>?</source>
         <translation>?</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the result of comparing dimension styles.If you compare two different styles, the settings that are different between the two dimension styles, their current settings, and brief descriptions are listed. If you set the second style as the first, all dimension style properties will displayed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -3569,18 +3570,6 @@ I punti devono essere distinti.</source>
     </message>
     <message>
         <source>
-&lt;Snap attivato&gt;</source>
-        <translation>
-&lt;Snap on&gt;</translation>
-    </message>
-    <message>
-        <source>
-&lt;Snap disattivato&gt;</source>
-        <translation>
-&lt;Snap off&gt;</translation>
-    </message>
-    <message>
-        <source>
 Stile di quotatura corrente non valido.
 Verificare il valore della variabile DIMSTYLE.
 </source>
@@ -3621,30 +3610,6 @@ E&apos; richiesto un punto o un numero reale.
 </source>
         <translation>
 Enter a point or  a real number.</translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità ortogonale attivata&gt;</source>
-        <translation>
-&lt;Ortho on&gt;</translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità ortogonale disattivata&gt;</source>
-        <translation>
-&lt;Ortho off&gt;</translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità polare attivata&gt;</source>
-        <translation>
-&lt;Polar on&gt;</translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità polare disattivata&gt;</source>
-        <translation>
-&lt;Polar off&gt;</translation>
     </message>
     <message>
         <source>Il comando é stato completamente annullato.</source>
@@ -3718,6 +3683,30 @@ A textual layer is a vectorial punctual layer having a label and the symbol tran
     <message>
         <source>Copia di </source>
         <translation>Copy of </translation>
+    </message>
+    <message>
+        <source>&lt;Snap attivato&gt;</source>
+        <translation>&lt;Snap on&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Snap disattivato&gt;</source>
+        <translation>&lt;Snap off&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Modalità ortogonale attivata&gt;</source>
+        <translation>&lt;Ortho on&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Modalità ortogonale disattivata&gt;</source>
+        <translation>&lt;Ortho off&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Modalità polare attivata&gt;</source>
+        <translation>&lt;Polar on&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;Modalità polare disattivata&gt;</source>
+        <translation>&lt;Polar off&gt;</translation>
     </message>
 </context>
 <context>

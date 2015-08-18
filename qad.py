@@ -1125,10 +1125,10 @@ class Qad(QObject):
       value = QadVariables.get(QadMsg.translate("Environment variables", "OSMODE"))
       if value & QadSnapTypeEnum.DISABLE:
          value =  value - QadSnapTypeEnum.DISABLE
-         msg = QadMsg.translate("QAD", "\n<Snap attivato>")
+         msg = QadMsg.translate("QAD", "<Snap attivato>")
       else:
          value =  value + QadSnapTypeEnum.DISABLE
-         msg = QadMsg.translate("QAD", "\n<Snap disattivato>")
+         msg = QadMsg.translate("QAD", "<Snap disattivato>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), value)
       QadVariables.save()
@@ -1142,10 +1142,10 @@ class Qad(QObject):
          autosnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
          if (autosnap & 8) == True:
             QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), autosnap - 8) # disattivo la modalità polare 
-         msg = QadMsg.translate("QAD", "\n<Modalità ortogonale attivata>")
+         msg = QadMsg.translate("QAD", "<Modalità ortogonale attivata>")
       else:
          value = 0
-         msg = QadMsg.translate("QAD", "\n<Modalità ortogonale disattivata>")
+         msg = QadMsg.translate("QAD", "<Modalità ortogonale disattivata>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), value)
       QadVariables.save()
@@ -1157,10 +1157,10 @@ class Qad(QObject):
       if (value & 8) == False:
          value = value + 8
          QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), 0) # disattivo la modalità orto 
-         msg = QadMsg.translate("QAD", "\n<Modalità polare attivata>")
+         msg = QadMsg.translate("QAD", "<Modalità polare attivata>")
       else:
          value = value - 8
-         msg = QadMsg.translate("QAD", "\n<Modalità polare disattivata>")
+         msg = QadMsg.translate("QAD", "<Modalità polare disattivata>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()

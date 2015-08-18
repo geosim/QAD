@@ -3395,16 +3395,6 @@ I punti devono essere distinti.</source>
     </message>
     <message>
         <source>
-&lt;Snap attivato&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;Snap disattivato&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
 Stile di quotatura corrente non valido.
 Verificare il valore della variabile DIMSTYLE.
 </source>
@@ -3436,26 +3426,6 @@ E&apos; richiesto un punto o la parola chiave di un&apos;opzione.
         <source>
 E&apos; richiesto un punto o un numero reale.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità ortogonale attivata&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità ortogonale disattivata&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità polare attivata&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;Modalità polare disattivata&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3520,6 +3490,30 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
     </message>
     <message>
         <source>Copia di </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Snap attivato&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Snap disattivato&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Modalità ortogonale attivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Modalità ortogonale disattivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Modalità polare attivata&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Modalità polare disattivata&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

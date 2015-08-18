@@ -12,7 +12,10 @@ FORMS += ..\*.ui
 RESOURCES += ..\qad.qrc
 SOURCES += ..\*.py
 
-TRANSLATIONS += qad_en.ts \
-                qad_es.ts
+#TRANSLATIONS += qad_en.ts \
+#                qad_es.ts
+
+TRANSLATIONS += qad_en.ts
 
 CODECFORSRC = UTF-8
+CODECFORTR = UTF-8
