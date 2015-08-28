@@ -187,7 +187,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
          self.selectedDimStyle.set(Form.dimStyle)
          self.selectedDimStyle.save()
          self.init()
-         
+      del Form # forzo la chiamata al distruttore per rimuovere il preview della quota
+      
       self.previewDim.drawDim(self.selectedDimStyle)
 
 

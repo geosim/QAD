@@ -9078,11 +9078,15 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    except:
       return
 
+   # initialize locale
+   userLocaleList = QSettings().value("locale/userLocale").split("_")
+   language = userLocaleList[0]
+   region = userLocaleList[1] if len(userLocaleList) > 1 else ""
+
    path = os.path.dirname(source) + "/help/help"
-   locale = str(QLocale().name())
-   helpPath = path + "_" + locale # provo a caricare la lingua e la regione selezionate
+   helpPath = path + "_" + language + "_" + region # provo a caricare la lingua e la regione selezionate
    if not os.path.exists(helpPath):
-      helpPath = path + "_" + locale.split("_")[0] # provo a caricare la lingua
+      helpPath = path + "_" + language # provo a caricare la lingua
       if not os.path.exists(helpPath):
          helpPath = path + "_en" # provo a caricare la lingua inglese
          if not os.path.exists(helpPath):

@@ -2819,7 +2819,7 @@ di estensione</source>
     </message>
     <message>
         <source>Stile di quota corrente:</source>
-        <translation>current dimension style:</translation>
+        <translation>Current dimension style:</translation>
     </message>
     <message>
         <source>nessuno</source>
@@ -3028,6 +3028,214 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     <message>
         <source>da destra a sinistra</source>
         <translation>From right to left</translation>
+    </message>
+    <message>
+        <source>Nome</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Descrizione</source>
+        <translation>Description</translation>
+    </message>
+    <message>
+        <source>Percorso file</source>
+        <translation>File Path</translation>
+    </message>
+    <message>
+        <source>Prefisso e suffisso testo</source>
+        <translation>Text prefix and suffix</translation>
+    </message>
+    <message>
+        <source>Soppressione degli zero inizio testo</source>
+        <translation>Leading zero suppression</translation>
+    </message>
+    <message>
+        <source>Soppressione degli zero fine testo</source>
+        <translation>Trailing zero suppression</translation>
+    </message>
+    <message>
+        <source>Altezza del testo</source>
+        <translation>Text height</translation>
+    </message>
+    <message>
+        <source>Posizione verticale testo</source>
+        <translation>Vertical text position</translation>
+    </message>
+    <message>
+        <source>Posizione orizzontale testo</source>
+        <translation>Horizontal text position</translation>
+    </message>
+    <message>
+        <source>Offset testo</source>
+        <translation>Text offset</translation>
+    </message>
+    <message>
+        <source>Allineamento testo</source>
+        <translation>Text alignment</translation>
+    </message>
+    <message>
+        <source>Rotazione fissa testo</source>
+        <translation>Fixed text rotation</translation>
+    </message>
+    <message>
+        <source>Precisione</source>
+        <translation>Precision</translation>
+    </message>
+    <message>
+        <source>Separatore decimale</source>
+        <translation>Decimal separator</translation>
+    </message>
+    <message>
+        <source>Carattere testo</source>
+        <translation>Text character</translation>
+    </message>
+    <message>
+        <source>Colore testo</source>
+        <translation>Text color</translation>
+    </message>
+    <message>
+        <source>Direzione testo</source>
+        <translation>Text direction</translation>
+    </message>
+    <message>
+        <source>Simbolo lungh. arco</source>
+        <translation>Arc len. symbol</translation>
+    </message>
+    <message>
+        <source>Linea di quota 1 visibile</source>
+        <translation>Dim line 1 visible</translation>
+    </message>
+    <message>
+        <source>Linea di quota 2 visibile</source>
+        <translation>Dim line 2 visible</translation>
+    </message>
+    <message>
+        <source>Tipolinea linea di quota</source>
+        <translation>Dim line linetype</translation>
+    </message>
+    <message>
+        <source>Colore linea di quota</source>
+        <translation>Dim line color</translation>
+    </message>
+    <message>
+        <source>Spaziatura linea di quota</source>
+        <translation>Offset from origin</translation>
+    </message>
+    <message>
+        <source>Freccia 1</source>
+        <translation>Arrow 1</translation>
+    </message>
+    <message>
+        <source>Freccia 2</source>
+        <translation>Arrow 2</translation>
+    </message>
+    <message>
+        <source>Freccia direttrice</source>
+        <translation>Leader arrow</translation>
+    </message>
+    <message>
+        <source>Larghezza frecce</source>
+        <translation>Arrowhead width</translation>
+    </message>
+    <message>
+        <source>Scala frecce</source>
+        <translation>Arrowhead scale</translation>
+    </message>
+    <message>
+        <source>Dimensione centro</source>
+        <translation>Center mark size</translation>
+    </message>
+    <message>
+        <source>Adatta: freccia e testo</source>
+        <translation>Fit: arrows and text</translation>
+    </message>
+    <message>
+        <source>Sopprime frecce per mancanza di spazio</source>
+        <translation>Suppress arrows for lack of space</translation>
+    </message>
+    <message>
+        <source>Linea di est. 1 visibile</source>
+        <translation>Ext. line 1 visible</translation>
+    </message>
+    <message>
+        <source>Linea di est. 2 visibile</source>
+        <translation>Ext. line 2 visible</translation>
+    </message>
+    <message>
+        <source>Tipolinea linea di est. 1</source>
+        <translation>Ext. line 1 linetype</translation>
+    </message>
+    <message>
+        <source>Tipolinea linea di est. 2</source>
+        <translation>Ext. line 2 linetype</translation>
+    </message>
+    <message>
+        <source>Colore linea di est.</source>
+        <translation>Ext. line color</translation>
+    </message>
+    <message>
+        <source>Estensione linea di est.</source>
+        <translation>Ext. line extension</translation>
+    </message>
+    <message>
+        <source>Offset linea di est.</source>
+        <translation>Ext. line offset</translation>
+    </message>
+    <message>
+        <source>Linea di est. fissa attivata</source>
+        <translation>Fixed length ext. line activated</translation>
+    </message>
+    <message>
+        <source>Lunghezza linea di est. fissa</source>
+        <translation>Fixed length ext. line</translation>
+    </message>
+    <message>
+        <source>Layer per i testi</source>
+        <translation>Layer for dim texts</translation>
+    </message>
+    <message>
+        <source>Layer per le linee</source>
+        <translation>Layer for dim lines</translation>
+    </message>
+    <message>
+        <source>Layer per le frecce</source>
+        <translation>Layer for dim arrows</translation>
+    </message>
+    <message>
+        <source>Campo per tipo di componente</source>
+        <translation>Field for component type</translation>
+    </message>
+    <message>
+        <source>Campo per tipo di linea</source>
+        <translation>Field for linetype</translation>
+    </message>
+    <message>
+        <source>Campo per colore</source>
+        <translation>Field for color</translation>
+    </message>
+    <message>
+        <source>Campo per codice quota nei testi</source>
+        <translation>Field for dim ID in texts</translation>
+    </message>
+    <message>
+        <source>Campo per codice quota nelle linee e frecce</source>
+        <translation>Field for dim ID in lines and arrows</translation>
+    </message>
+    <message>
+        <source>Campo per nome stile di quota</source>
+        <translation>Field for dim style name</translation>
+    </message>
+    <message>
+        <source>Campo per tipo di quota</source>
+        <translation>Field for dim type</translation>
+    </message>
+    <message>
+        <source>Campo per scala frecce</source>
+        <translation>Field forarrows scale</translation>
+    </message>
+    <message>
+        <source>Campo per rotazione frecce</source>
+        <translation>Field forarrows rotation</translation>
     </message>
 </context>
 <context>

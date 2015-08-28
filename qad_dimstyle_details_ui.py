@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_details.ui'
 #
-# Created: Wed Aug 05 11:13:02 2015
+# Created: Thu Aug 27 11:02:31 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -402,7 +402,7 @@ class Ui_DimStyle_Details_Dialog(object):
         self.textDecimalZerosSuppression.setObjectName(_fromUtf8("textDecimalZerosSuppression"))
         self.tabWidget.addTab(self.PrimaryUnitTab, _fromUtf8(""))
         self.layoutWidget = QtGui.QWidget(DimStyle_Details_Dialog)
-        self.layoutWidget.setGeometry(QtCore.QRect(338, 410, 239, 25))
+        self.layoutWidget.setGeometry(QtCore.QRect(320, 410, 239, 25))
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setMargin(0)

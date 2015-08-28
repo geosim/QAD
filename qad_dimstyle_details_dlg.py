@@ -197,7 +197,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       legendIndex = self.linearLayerName.itemData(index)
       layer = iface.legendInterface().layers()[legendIndex]
       if layer is not None:
-         self.lineTypeFieldName.clear() # remove all items
+         self.lineTypeFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.lineTypeFieldName.addItem("")
 
          for field in layer.pendingFields():
             if field.type() == QVariant.String:
@@ -225,12 +226,16 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       legendIndex = self.symbolLayerName.itemData(index)
       layer = iface.legendInterface().layers()[legendIndex]
       if layer is not None:
-         self.symbolFieldName.clear() # remove all items
-         self.scaleFieldName.clear() # remove all items
+         self.symbolFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.symbolFieldName.addItem("")
+         self.scaleFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.scaleFieldName.addItem("")
 
          self.rotFieldName.clear() # remove all items
-         self.componentFieldName.clear() # remove all items
-         self.idParentFieldName.clear() # remove all items
+         self.componentFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.componentFieldName.addItem("")
+         self.idParentFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.idParentFieldName.addItem("")
          
          for field in layer.pendingFields():
             if field.type() == QVariant.String:
@@ -267,10 +272,14 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       legendIndex = self.textualLayerName.itemData(index)
       layer = iface.legendInterface().layers()[legendIndex]
       if layer is not None:
-         self.idFieldName.clear() # remove all items
-         self.dimStyleFieldName.clear() # remove all items
-         self.dimTypeFieldName.clear() # remove all items
-         self.colorFieldName.clear() # remove all items
+         self.idFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.idFieldName.addItem("")
+         self.dimStyleFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.dimStyleFieldName.addItem("")
+         self.dimTypeFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.dimTypeFieldName.addItem("")
+         self.colorFieldName.clear() # remove all items and add an empty row (optional parameter)
+         self.colorFieldName.addItem("")
          
          for field in layer.pendingFields():
             if field.type() == QVariant.String:

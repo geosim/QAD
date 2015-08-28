@@ -47,20 +47,29 @@ Il layer testo deve avere tutte le caratteristiche del layer testo di QAD ed in 
   (che vuol dire punto di inserimento in basso a sx)
 - la dimensione del testo in unità mappa (la dimensione varia a seconda dello zoom).
 - dimStyleFieldName = "dim_style"; nome del campo che contiene il nome dello stile di quota (opzionale)
-- dimStyleFieldName = "dim_type"; nome del campo che contiene il tipo dello stile di quota (opzionale)
+- dimTypeFieldName = "dim_type"; nome del campo che contiene il tipo dello stile di quota (opzionale)
 - l'opzione "Mostra etichette capovolte" deve essere su "sempre" nel tab "Etichette"->"Visualizzazione"
 - rotFieldName = "rot"; nome del campo che contiene la rotazione del testo
 - la rotazione deve essere letta dal campo indicato da rotFieldName
+- idFieldName = "id"; nome del campo che contiene il codice della quota (opzionale)
+- la rotazione deve essere derivata dal campo rotFieldName
+- il font del carattere può essere derivata da un campo
+- la dimensione del carattere può essere derivata da un campo
+- il colore del testo può essere derivato da un campo (opzionale)
+
 
 Il layer simbolo deve avere tutte le caratteristiche del layer simbolo di QAD ed in più:
 - il simbolo freccia con rotazione 0 deve essere orizzontale con la freccia rivolta verso destra
   ed il suo punto di inserimento deve essere sulla punta della freccia
-- la dimensione del simbolo in unità mappa (la dimensione varia a seconda dello zoom).
+- la dimensione del simbolo in unità mappa (la dimensione varia a seconda dello zoom),
+  impostare la dimensione del simbolo in modo che la larghezza della freccia sia 1 unità di mappa.
 - componentFieldName = "type"; nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum) (opzionale)
 - symbolFieldName = "block"; nome del campo che contiene il nome del simbolo (opzionale)
 - idParentFieldName = "id_parent"; nome del campo che contiene il codice del testo della quota (opzionale)
 - scaleFieldName = "scale"; nome del campo che contiene il fattore di scala del simbolo (opzionale)
-  la scala deve essere impostata su attraverso Stile->avanzato->campo di dimensione della scala->diametro scala
+  se usato usare lo stile "singolo simbolo" (unico che consente di impostare la scala come diametro scala)
+  la scala deve essere impostata su attraverso Stile->avanzato->campo di dimensione della scala-><nome del campo scala>
+  la modalità di scala deve essere impostata su attraverso Stile->avanzato->campo di dimensione della scala->diametro scala
 - rotFieldName = "rot"; nome del campo che contiene la rotazione del simbolo 
   la rotazione deve essere letta dal campo indicato da rotFieldName (360-rotFieldName)
 
@@ -179,96 +188,96 @@ class QadDimStyleTextBlocksAdjustEnum():
 #===============================================================================
 # QadDim dimension style class
 #===============================================================================
-class QadDimStyle():   
-   name = "standard" # nome dello stile
-   description = ""
-   path = "" # percorso e nome del file in cui è stato salvato/caricato
-   dimType = QadDimTypeEnum.ALIGNED # tipo di quotatura
-   
-   # testo di quota
-   textPrefix = "" # prefisso per il testo della quota
-   textSuffix = "" # suffisso per il testo della quota
-   textSuppressLeadingZeros = False # per sopprimere o meno gli zero all'inizio del testo
-   textDecimalZerosSuppression = True # per sopprimere gli zero finali nei decimali
-   textHeight = 1.0 # altezza testo (DIMTXT) in unità di mappa
-   textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE # posizione verticale del testo rispetto la linea di quota (DIMTAD)
-   textHorizontalPos = QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE # posizione orizzontale del testo rispetto la linea di quota (DIMTAD)
-   textOffsetDist = 0.5 # distanza aggiunta intorno al testo quando per inserirlo viene spezzata la linea di quota (DIMGAP)
-   textRotMode = QadDimStyleTxtRotModeEnum.ALIGNED_LINE # modalità di rotazione del testo (DIMTIH e DIMTOH)
-   textForcedRot = 0.0 # rotazione forzata del testo
-   textDecimals = 2 # numero di decimali (DIMDEC)
-   textDecimalSep = "." # Separatore dei decimali (DIMDSEP)
-   textFont = "Arial" # nome del font di testo (DIMTXSTY)
-   textColor = "255,255,255,255" # Colore per i testi della quota (DIMCLRT); bianco con opacità totale
-   textDirection = QadDimStyleTxtDirectionEnum.SX_TO_DX # specifica la direzione del testo di quota (DIMTXTDIRECTION) 0 = da sx a dx, 1 = da dx a sx
-   arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT # disegna o meno il simbolo dell'arco con DIMARC (DIMARCSYM). 
-   
-   # linee di quota
-   dimLine1Show = True # Mostra o nasconde la prima linea di quota (DIMSD1)
-   dimLine2Show = True # Mostra o nasconde la seconda linea di quota (DIMSD2)
-   dimLineLineType = "continuous" # Tipo di linea per le linee di quota (DIMLTYPE)
-   dimLineColor = "255,255,255,255" # Colore per le linee di quota (DIMCLRD); bianco con opacità totale
-   dimLineSpaceOffset = 3.75 # Controlla la spaziatura delle linee di quota nelle quote da linea di base (DIMDLI)
-
-   # simboli per linee di quota
-   # il blocco per la freccia é una freccia verso destra con il punto di inserimento sulla punta della freccia 
-   block1Name = "triangle2" # nome del simbolo da usare come punta della freccia sulla prima linea di quota (DIMBLK1)
-   block2Name = "triangle2"  # nome del simbolo da usare come punta della freccia sulla seconda linea di quota (DIMBLK2)
-   blockLeaderName = "triangle2" # nome del simbolo da usare come punta della freccia sulla linea della direttrice (DIMLDRBLK)
-   blockWidth = 0.5 # larghezza del simbolo (in orizzontale) quando la dimensione in unità di mappa = 1 (vedi "triangle2")
-   blockScale = 1.0 # scala della dimensione del simbolo (DIMASZ)
-   centerMarkSize = 0.0 # disegna o meno il marcatore di centro o le linee d'asse per le quote create con
-                        # DIMCENTER, DIMDIAMETER, e DIMRADIUS (DIMCEN).
-                        # 0 = niente, > 0 dimensione marcatore di centro, < 0 dimensione linee d'asse
-
-   # adattamento del testo e delle frecce
-   textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.WHICHEVER_FITS_BEST # (DIMATFIT)
-   blockSuppressionForNoSpace = False # Sopprime le punte della frecce se non c'é spazio sufficiente all'interno delle linee di estensione (DIMSOXD)
-   
-   # linee di estensione
-   extLine1Show = True # Mostra o nasconde la prima linea di estensione (DIMSE1)
-   extLine2Show = True # Mostra o nasconde la seconda linea di estensione (DIMSE2)
-   extLine1LineType = "continuous" # Tipo di linea per la prima linea di estensione (DIMLTEX1)
-   extLine2LineType = "continuous" # Tipo di linea per la seconda linea di estensione (DIMLTEX2)
-   extLineColor = "255,255,255,255" # Colore per le linee di estensione (DIMCLRE); bianco con opacità totale
-   extLineOffsetDimLine = 0.0 # distanza della linea di estensione oltre la linea di quota (DIMEXE)
-   extLineOffsetOrigPoints = 0.0 # distanza della linea di estensione dai punti da quotare (DIMEXO)
-   extLineIsFixedLen = False # Attiva lunghezza fissa delle line di estensione (DIMFXLON)
-   extLineFixedLen = 1.0 # lunghezza fissa delle line di estensione (DIMFXL) dalla linea di quota 
-                         # al punto da quotare spostato di extLineOffsetOrigPoints
-                         # (la linea di estensione non va oltre il punto da quotare)
-   
-   # layer e loro caratteristiche
-   # devo allocare i campi a livello di classe QadDimStyle perché QgsFeature.setFields usa solo il puntatore alla lista fields
-   # che, se allocata privatamente in qualsiasi funzione, all'uscita della funzione verrebbe distrutta 
-   textualLayerName = None    # nome layer per memorizzare il testo della quota
-   __textualLayer = None        # layer per memorizzare il testo della quota
-   __textFields = None
-   __textualFeaturePrototype = None
-
-   linearLayerName = None    # nome layer per memorizzare le linee della quota
-   __linearLayer = None        # layer per memorizzare le linee della quota
-   __lineFields = None
-   __linearFeaturePrototype = None
-
-   symbolLayerName = None  # nome layer per memorizzare i blocchi delle frecce della quota
-   __symbolLayer = None      # layer per memorizzare i blocchi delle frecce della quota
-   __symbolFields = None
-   __symbolFeaturePrototype = None
-   
-   componentFieldName = "type"      # nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum)
-   lineTypeFieldName = "line_type"  # nome del campo che contiene il tipolinea
-   colorFieldName = "color"         # nome del campo che contiene il colore 'r,g,b,alpha'; alpha é opzionale (0=trasparente, 255=opaco)
-   idFieldName = "id"               # nome del campo che contiene il codice del della quota nel layer di tipo testo
-   idParentFieldName = "id_parent"  # nome del campo che contiene il codice della quota nei layer simbolo e linea 
-   dimStyleFieldName = "dim_style"  # nome del campo che contiene il nome dello stile di quota
-   dimTypeFieldName = "dim_type"    # nome del campo che contiene il tipo dello stile di quota   
-   symbolFieldName = "block"        # nome del campo che contiene il nome del simbolo
-   scaleFieldName = "scale"         # nome del campo che contiene la dimensione
-   rotFieldName = "rot"             # nome del campo che contiene rotazione in gradi
-   
+class QadDimStyle():     
           
    def __init__(self, dimStyle = None):
+      self.name = "standard" # nome dello stile
+      self.description = ""
+      self.path = "" # percorso e nome del file in cui è stato salvato/caricato
+      self.dimType = QadDimTypeEnum.ALIGNED # tipo di quotatura
+      
+      # testo di quota
+      self.textPrefix = "" # prefisso per il testo della quota
+      self.textSuffix = "" # suffisso per il testo della quota
+      self.textSuppressLeadingZeros = False # per sopprimere o meno gli zero all'inizio del testo
+      self.textDecimalZerosSuppression = True # per sopprimere gli zero finali nei decimali
+      self.textHeight = 1.0 # altezza testo (DIMTXT) in unità di mappa
+      self.textVerticalPos = QadDimStyleTxtVerticalPosEnum.ABOVE_LINE # posizione verticale del testo rispetto la linea di quota (DIMTAD)
+      self.textHorizontalPos = QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE # posizione orizzontale del testo rispetto la linea di quota (DIMTAD)
+      self.textOffsetDist = 0.5 # distanza aggiunta intorno al testo quando per inserirlo viene spezzata la linea di quota (DIMGAP)
+      self.textRotMode = QadDimStyleTxtRotModeEnum.ALIGNED_LINE # modalità di rotazione del testo (DIMTIH e DIMTOH)
+      self.textForcedRot = 0.0 # rotazione forzata del testo
+      self.textDecimals = 2 # numero di decimali (DIMDEC)
+      self.textDecimalSep = "." # Separatore dei decimali (DIMDSEP)
+      self.textFont = "Arial" # nome del font di testo (DIMTXSTY)
+      self.textColor = "255,255,255,255" # Colore per i testi della quota (DIMCLRT); bianco con opacità totale
+      self.textDirection = QadDimStyleTxtDirectionEnum.SX_TO_DX # specifica la direzione del testo di quota (DIMTXTDIRECTION) 0 = da sx a dx, 1 = da dx a sx
+      self.arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT # disegna o meno il simbolo dell'arco con DIMARC (DIMARCSYM). 
+      
+      # linee di quota
+      self.dimLine1Show = True # Mostra o nasconde la prima linea di quota (DIMSD1)
+      self.dimLine2Show = True # Mostra o nasconde la seconda linea di quota (DIMSD2)
+      self.dimLineLineType = "continuous" # Tipo di linea per le linee di quota (DIMLTYPE)
+      self.dimLineColor = "255,255,255,255" # Colore per le linee di quota (DIMCLRD); bianco con opacità totale
+      self.dimLineSpaceOffset = 3.75 # Controlla la spaziatura delle linee di quota nelle quote da linea di base (DIMDLI)
+   
+      # simboli per linee di quota
+      # il blocco per la freccia é una freccia verso destra con il punto di inserimento sulla punta della freccia 
+      self.block1Name = "triangle2" # nome del simbolo da usare come punta della freccia sulla prima linea di quota (DIMBLK1)
+      self.block2Name = "triangle2"  # nome del simbolo da usare come punta della freccia sulla seconda linea di quota (DIMBLK2)
+      self.blockLeaderName = "triangle2" # nome del simbolo da usare come punta della freccia sulla linea della direttrice (DIMLDRBLK)
+      self.blockWidth = 0.5 # larghezza del simbolo (in orizzontale) quando la dimensione in unità di mappa = 1 (vedi "triangle2")
+      self.blockScale = 1.0 # scala della dimensione del simbolo (DIMASZ)
+      self.centerMarkSize = 0.0 # disegna o meno il marcatore di centro o le linee d'asse per le quote create con
+                                # DIMCENTER, DIMDIAMETER, e DIMRADIUS (DIMCEN).
+                                # 0 = niente, > 0 dimensione marcatore di centro, < 0 dimensione linee d'asse
+   
+      # adattamento del testo e delle frecce
+      self.textBlockAdjust = QadDimStyleTextBlocksAdjustEnum.WHICHEVER_FITS_BEST # (DIMATFIT)
+      self.blockSuppressionForNoSpace = False # Sopprime le punte della frecce se non c'é spazio sufficiente all'interno delle linee di estensione (DIMSOXD)
+      
+      # linee di estensione
+      self.extLine1Show = True # Mostra o nasconde la prima linea di estensione (DIMSE1)
+      self.extLine2Show = True # Mostra o nasconde la seconda linea di estensione (DIMSE2)
+      self.extLine1LineType = "continuous" # Tipo di linea per la prima linea di estensione (DIMLTEX1)
+      self.extLine2LineType = "continuous" # Tipo di linea per la seconda linea di estensione (DIMLTEX2)
+      self.extLineColor = "255,255,255,255" # Colore per le linee di estensione (DIMCLRE); bianco con opacità totale
+      self.extLineOffsetDimLine = 0.0 # distanza della linea di estensione oltre la linea di quota (DIMEXE)
+      self.extLineOffsetOrigPoints = 0.0 # distanza della linea di estensione dai punti da quotare (DIMEXO)
+      self.extLineIsFixedLen = False # Attiva lunghezza fissa delle line di estensione (DIMFXLON)
+      self.extLineFixedLen = 1.0 # lunghezza fissa delle line di estensione (DIMFXL) dalla linea di quota 
+                                 # al punto da quotare spostato di extLineOffsetOrigPoints
+                                 # (la linea di estensione non va oltre il punto da quotare)
+      
+      # layer e loro caratteristiche
+      # devo allocare i campi a livello di classe QadDimStyle perché QgsFeature.setFields usa solo il puntatore alla lista fields
+      # che, se allocata privatamente in qualsiasi funzione, all'uscita della funzione verrebbe distrutta 
+      self.textualLayerName = None    # nome layer per memorizzare il testo della quota
+      self.__textualLayer = None        # layer per memorizzare il testo della quota
+      self.__textFields = None
+      self.__textualFeaturePrototype = None
+   
+      self.linearLayerName = None    # nome layer per memorizzare le linee della quota
+      self.__linearLayer = None        # layer per memorizzare le linee della quota
+      self.__lineFields = None
+      self.__linearFeaturePrototype = None
+   
+      self.symbolLayerName = None  # nome layer per memorizzare i blocchi delle frecce della quota
+      self.__symbolLayer = None      # layer per memorizzare i blocchi delle frecce della quota
+      self.__symbolFields = None
+      self.__symbolFeaturePrototype = None
+      
+      self.componentFieldName = "type"      # nome del campo che contiene il tipo di componente della quota (vedi QadDimComponentEnum)
+      self.lineTypeFieldName = "line_type"  # nome del campo che contiene il tipolinea
+      self.colorFieldName = "color"         # nome del campo che contiene il colore 'r,g,b,alpha'; alpha é opzionale (0=trasparente, 255=opaco)
+      self.idFieldName = "id"               # nome del campo che contiene il codice del della quota nel layer di tipo testo
+      self.idParentFieldName = "id_parent"  # nome del campo che contiene il codice della quota nei layer simbolo e linea 
+      self.dimStyleFieldName = "dim_style"  # nome del campo che contiene il nome dello stile di quota
+      self.dimTypeFieldName = "dim_type"    # nome del campo che contiene il tipo dello stile di quota   
+      self.symbolFieldName = "block"        # nome del campo che contiene il nome del simbolo
+      self.scaleFieldName = "scale"         # nome del campo che contiene la dimensione
+      self.rotFieldName = "rot"             # nome del campo che contiene rotazione in gradi
+      
       if dimStyle is None:
          return
       self.set(dimStyle)
@@ -363,133 +372,133 @@ class QadDimStyle():
    #============================================================================
    def getPropList(self):
       proplist = dict() # dizionario di nome con lista [descrizione, valore]
-      proplist["name"] = [QadMsg.translate("Dimension", "Nome"), \
-                          self.name]
-      proplist["description"] = [QadMsg.translate("Dimension", "Descrizione"), \
-                                 self.description]
-      proplist["path"] = [QadMsg.translate("Dimension", "Percorso file"), \
-                          self.path]
+      propDescr = QadMsg.translate("Dimension", "Nome")
+      proplist["name"] = [propDescr, self.name]
+      propDescr = QadMsg.translate("Dimension", "Descrizione")
+      proplist["description"] = [propDescr, self.description]
+      propDescr = QadMsg.translate("Dimension", "Percorso file")
+      proplist["path"] = [propDescr, self.path]
       
       # testo di quota
       value = self.textPrefix
       if len(self.textPrefix) > 0:
          value += "<>"
       value += self.textSuffix
-      proplist["textPrefix"] = [QadMsg.translate("Dimension", "Prefisso e suffisso testo"), \
-                                value]
-      proplist["textSuppressLeadingZeros"] = [QadMsg.translate("Dimension", "Soppressione degli zero inizio testo"), \
-                                              self.textSuppressLeadingZeros]
-      proplist["textDecimalZerosSuppression"] = [QadMsg.translate("Dimension", "Soppressione degli zero fine testo"), \
-                                                 self.textDecimalZerosSuppression]
-      proplist["textHeight"] = [QadMsg.translate("Dimension", "Altezza del testo"), \
-                                self.textHeight]
-      proplist["textVerticalPos"] = [QadMsg.translate("Dimension", "Posizione verticale testo"), \
-                                     self.textVerticalPos]
-      proplist["textHorizontalPos"] = [QadMsg.translate("Dimension", "Posizione orizzontale testo"), \
-                                       self.textHorizontalPos]
-      proplist["textOffsetDist"] = [QadMsg.translate("Dimension", "Offset testo"), \
-                                    self.textOffsetDist]
-      proplist["textRotMode"] = [QadMsg.translate("Dimension", "Allineamento testo"), \
-                                 self.textRotMode]
-      proplist["textForcedRot"] = [QadMsg.translate("Dimension", "Rotazione fissa testo"), \
-                                   self.textForcedRot]
-      proplist["textDecimals"] = [QadMsg.translate("Dimension", "Precisione"), \
-                                   self.textDecimals]
-      proplist["textDecimalSep"] = [QadMsg.translate("Dimension", "Separatore decimale"), \
-                                    self.textDecimalSep]
-      proplist["textFont"] = [QadMsg.translate("Dimension", "Carattere testo"), \
-                              self.textFont]
-      proplist["textColor"] = [QadMsg.translate("Dimension", "Colore testo"), \
-                              self.textColor]
+      propDescr = QadMsg.translate("Dimension", "Prefisso e suffisso testo")
+      proplist["textPrefix"] = [propDescr, value]
+      propDescr = QadMsg.translate("Dimension", "Soppressione degli zero inizio testo")
+      proplist["textSuppressLeadingZeros"] = [propDescr, self.textSuppressLeadingZeros]
+      propDescr = QadMsg.translate("Dimension", "Soppressione degli zero fine testo")
+      proplist["textDecimalZerosSuppression"] = [propDescr, self.textDecimalZerosSuppression]
+      propDescr = QadMsg.translate("Dimension", "Altezza del testo")
+      proplist["textHeight"] = [propDescr, self.textHeight]
+      propDescr = QadMsg.translate("Dimension", "Posizione verticale testo")
+      proplist["textVerticalPos"] = [propDescr, self.textVerticalPos]
+      propDescr = QadMsg.translate("Dimension", "Posizione orizzontale testo")
+      proplist["textHorizontalPos"] = [propDescr, self.textHorizontalPos]
+      propDescr = QadMsg.translate("Dimension", "Offset testo")
+      proplist["textOffsetDist"] = [propDescr, self.textOffsetDist]
+      propDescr = QadMsg.translate("Dimension", "Allineamento testo")
+      proplist["textRotMode"] = [propDescr, self.textRotMode]
+      propDescr = QadMsg.translate("Dimension", "Rotazione fissa testo")
+      proplist["textForcedRot"] = [propDescr, self.textForcedRot]
+      propDescr = QadMsg.translate("Dimension", "Precisione")
+      proplist["textDecimals"] = [propDescr, self.textDecimals]
+      propDescr = QadMsg.translate("Dimension", "Separatore decimale")
+      proplist["textDecimalSep"] = [propDescr, self.textDecimalSep]
+      propDescr = QadMsg.translate("Dimension", "Carattere testo")
+      proplist["textFont"] = [propDescr, self.textFont]
+      propDescr = QadMsg.translate("Dimension", "Colore testo")
+      proplist["textColor"] = [propDescr, self.textColor]
       if self.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
          value = QadMsg.translate("Dimension", "da sinistra a destra")
       else:
          value = QadMsg.translate("Dimension", "da destra a sinistra")
-      proplist["textDirection"] = [QadMsg.translate("Dimension", "Direzione testo"), \
-                                   value]
-      proplist["arcSymbPos"] = [QadMsg.translate("Dimension", "Simbolo lungh. arco"), \
-                                self.arcSymbPos]
+      propDescr = QadMsg.translate("Dimension", "Direzione testo")
+      proplist["textDirection"] = [propDescr, value]
+      propDescr = QadMsg.translate("Dimension", "Simbolo lungh. arco")
+      proplist["arcSymbPos"] = [propDescr, self.arcSymbPos]
       
       # linee di quota
-      proplist["dimLine1Show"] = [QadMsg.translate("Dimension", "Linea di quota 1 visibile"), \
-                                  self.dimLine1Show]
-      proplist["dimLine2Show"] = [QadMsg.translate("Dimension", "Linea di quota 2 visibile"), \
-                                  self.dimLine2Show]
-      proplist["dimLineLineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di quota"), \
-                                     self.dimLineLineType]
-      proplist["dimLineColor"] = [QadMsg.translate("Dimension", "Colore linea di quota"), \
-                                  self.dimLineColor]
-      proplist["dimLineSpaceOffset"] = [QadMsg.translate("Dimension", "Spaziatura linea di quota"), \
-                                        self.dimLineSpaceOffset]
+      propDescr = QadMsg.translate("Dimension", "Linea di quota 1 visibile")
+      proplist["dimLine1Show"] = [propDescr, self.dimLine1Show]
+      propDescr = QadMsg.translate("Dimension", "Linea di quota 2 visibile")
+      proplist["dimLine2Show"] = [propDescr, self.dimLine2Show]
+      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di quota")
+      proplist["dimLineLineType"] = [propDescr, self.dimLineLineType]
+      propDescr = QadMsg.translate("Dimension", "Colore linea di quota")
+      proplist["dimLineColor"] = [propDescr, self.dimLineColor]
+      propDescr = QadMsg.translate("Dimension", "Spaziatura linea di quota")
+      proplist["dimLineSpaceOffset"] = [propDescr, self.dimLineSpaceOffset]
    
       # simboli per linee di quota
-      proplist["block1Name"] = [QadMsg.translate("Dimension", "Freccia 1"), \
-                                self.block1Name]
-      proplist["block2Name"] = [QadMsg.translate("Dimension", "Freccia 2"), \
-                                self.block2Name]
-      proplist["blockLeaderName"] = [QadMsg.translate("Dimension", "Freccia direttrice"), \
-                                     self.blockLeaderName]
-      proplist["blockWidth"] = [QadMsg.translate("Dimension", "Larghezza frecce"), \
-                                self.blockWidth]
-      proplist["blockScale"] = [QadMsg.translate("Dimension", "Scala frecce"), \
-                                self.blockScale]
-      proplist["centerMarkSize"] = [QadMsg.translate("Dimension", "Dimensione centro"), \
-                                    self.centerMarkSize]
+      propDescr = QadMsg.translate("Dimension", "Freccia 1")
+      proplist["block1Name"] = [propDescr, self.block1Name]
+      propDescr = QadMsg.translate("Dimension", "Freccia 2")
+      proplist["block2Name"] = [propDescr, self.block2Name]
+      propDescr = QadMsg.translate("Dimension", "Freccia direttrice")
+      proplist["blockLeaderName"] = [propDescr, self.blockLeaderName]
+      propDescr = QadMsg.translate("Dimension", "Larghezza frecce")
+      proplist["blockWidth"] = [propDescr, self.blockWidth]
+      propDescr = QadMsg.translate("Dimension", "Scala frecce")
+      proplist["blockScale"] = [propDescr, self.blockScale]
+      propDescr = QadMsg.translate("Dimension", "Dimensione centro")
+      proplist["centerMarkSize"] = [propDescr, self.centerMarkSize]
    
       # adattamento del testo e delle frecce
-      proplist["textBlockAdjust"] = [QadMsg.translate("Dimension", "Adatta: freccia e testo"), \
-                                    self.textBlockAdjust]
-      proplist["blockSuppressionForNoSpace"] = [QadMsg.translate("Dimension", "Sopprime frecce per mancanza di spazio"), \
-                                                self.blockSuppressionForNoSpace]
+      propDescr = QadMsg.translate("Dimension", "Adatta: freccia e testo")
+      proplist["textBlockAdjust"] = [propDescr, self.textBlockAdjust]
+      propDescr = QadMsg.translate("Dimension", "Sopprime frecce per mancanza di spazio")
+      proplist["blockSuppressionForNoSpace"] = [propDescr, self.blockSuppressionForNoSpace]
       
       # linee di estensione
-      proplist["extLine1Show"] = [QadMsg.translate("Dimension", "Linea di est. 1 visibile"), \
-                                  self.extLine1Show]
-      proplist["extLine2Show"] = [QadMsg.translate("Dimension", "Linea di est. 2 visibile"), \
-                                  self.extLine2Show]
-      proplist["extLine1LineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di est. 1"), \
-                                      self.extLine1LineType]
-      proplist["extLine2LineType"] = [QadMsg.translate("Dimension", "Tipolinea linea di est. 2"), \
-                                      self.extLine2LineType]
-      proplist["extLineColor"] = [QadMsg.translate("Dimension", "Colore linea di est."), \
-                                  self.extLineColor]
-      proplist["extLineOffsetDimLine"] = [QadMsg.translate("Dimension", "Estensione linea di est."), \
-                                          self.extLineOffsetDimLine]
-      proplist["extLineOffsetOrigPoints"] = [QadMsg.translate("Dimension", "Offset linea di est."), \
-                                             self.extLineOffsetOrigPoints]
-      proplist["extLineIsFixedLen"] = [QadMsg.translate("Dimension", "Linea di est. fissa attivata"), \
-                                       self.extLineIsFixedLen]
-      proplist["extLineFixedLen"] = [QadMsg.translate("Dimension", "Lunghezza linea di est. fissa"), \
-                                     self.extLineFixedLen]
+      propDescr = QadMsg.translate("Dimension", "Linea di est. 1 visibile")
+      proplist["extLine1Show"] = [propDescr, self.extLine1Show]
+      propDescr = QadMsg.translate("Dimension", "Linea di est. 2 visibile")
+      proplist["extLine2Show"] = [propDescr, self.extLine2Show]
+      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di est. 1")
+      proplist["extLine1LineType"] = [propDescr, self.extLine1LineType]
+      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di est. 2")
+      proplist["extLine2LineType"] = [propDescr, self.extLine2LineType]
+      propDescr = QadMsg.translate("Dimension", "Colore linea di est.")
+      proplist["extLineColor"] = [propDescr, self.extLineColor]
+      propDescr = QadMsg.translate("Dimension", "Estensione linea di est.")
+      proplist["extLineOffsetDimLine"] = [propDescr, self.extLineOffsetDimLine]
+      propDescr = QadMsg.translate("Dimension", "Offset linea di est.")
+      proplist["extLineOffsetOrigPoints"] = [propDescr, self.extLineOffsetOrigPoints]
+      propDescr = QadMsg.translate("Dimension", "Linea di est. fissa attivata")
+      proplist["extLineIsFixedLen"] = [propDescr, self.extLineIsFixedLen]
+      propDescr = QadMsg.translate("Dimension", "Lunghezza linea di est. fissa")
+      proplist["extLineFixedLen"] = [propDescr, self.extLineFixedLen]
       
       # layer e loro caratteristiche
-      proplist["textualLayerName"] = [QadMsg.translate("Dimension", "Layer per i testi"), \
-                                     self.textualLayerName]
-      proplist["linearLayerName"] = [QadMsg.translate("Dimension", "Layer per le linee"), \
-                                     self.linearLayerName]
-      proplist["symbolLayerName"] = [QadMsg.translate("Dimension", "Layer per le frecce"), \
-                                     self.symbolLayerName]
+      propDescr = QadMsg.translate("Dimension", "Layer per i testi")
+      proplist["textualLayerName"] = [propDescr, self.textualLayerName]
+      propDescr = QadMsg.translate("Dimension", "Layer per le linee")
+      proplist["linearLayerName"] = [propDescr, self.linearLayerName]
+      propDescr = QadMsg.translate("Dimension", "Layer per le frecce")
+      proplist["symbolLayerName"] = [propDescr, self.symbolLayerName]
      
-      proplist["componentFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di componente"), \
-                                        self.componentFieldName]
-      proplist["lineTypeFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di linea"), \
-                                       self.lineTypeFieldName]
-      proplist["colorFieldName"] = [QadMsg.translate("Dimension", "Campo per colore"), \
-                                    self.colorFieldName]
-      proplist["idFieldName"] = [QadMsg.translate("Dimension", "Campo per codice quota nei testi"), \
-                                 self.idFieldName]
-      proplist["idParentFieldName"] = [QadMsg.translate("Dimension", "Campo per codice quota nelle linee e frecce"), \
-                                       self.idParentFieldName]
-      proplist["dimStyleFieldName"] = [QadMsg.translate("Dimension", "Campo per nome stile di quota"), \
-                                       self.dimStyleFieldName]
-      proplist["dimTypeFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di quota"), \
-                                      self.dimTypeFieldName]
-      proplist["symbolFieldName"] = [QadMsg.translate("Dimension", "Campo per tipo di quota"), \
-                                     self.symbolFieldName]
-      proplist["scaleFieldName"] = [QadMsg.translate("Dimension", "Campo per scala frecce"), \
-                                    self.scaleFieldName]
-      proplist["rotFieldName"] = [QadMsg.translate("Dimension", "Campo per rotazione frecce"), \
-                                  self.rotFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per tipo di componente")
+      proplist["componentFieldName"] = [propDescr, self.componentFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per tipo di linea")
+      proplist["lineTypeFieldName"] = [propDescr, self.lineTypeFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per colore")
+      proplist["colorFieldName"] = [propDescr, self.colorFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per codice quota nei testi")
+      proplist["idFieldName"] = [propDescr, self.idFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per codice quota nelle linee e frecce")
+      proplist["idParentFieldName"] = [propDescr, self.idParentFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per nome stile di quota")
+      proplist["dimStyleFieldName"] = [propDescr, self.dimStyleFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per tipo di quota")
+      proplist["dimTypeFieldName"] = [propDescr, self.dimTypeFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per tipo di quota")
+      proplist["symbolFieldName"] = [propDescr, self.symbolFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per scala frecce")
+      proplist["scaleFieldName"] = [propDescr, self.scaleFieldName]
+      propDescr = QadMsg.translate("Dimension", "Campo per rotazione frecce")
+      proplist["rotFieldName"] = [propDescr, self.rotFieldName]
       
       return proplist
 

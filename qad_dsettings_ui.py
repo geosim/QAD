@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Wed Aug 05 11:12:59 2015
+# Created: Thu Aug 27 11:02:29 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -211,7 +211,7 @@ class Ui_DSettings_Dialog(object):
         self.comboBox_increment_angle.setObjectName(_fromUtf8("comboBox_increment_angle"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.layoutWidget3 = QtGui.QWidget(DSettings_Dialog)
-        self.layoutWidget3.setGeometry(QtCore.QRect(200, 420, 239, 25))
+        self.layoutWidget3.setGeometry(QtCore.QRect(190, 420, 239, 25))
         self.layoutWidget3.setObjectName(_fromUtf8("layoutWidget3"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget3)
         self.horizontalLayout.setMargin(0)

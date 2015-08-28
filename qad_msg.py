@@ -38,6 +38,14 @@ class QadMsgClass():
    # translate
    #============================================================================
    def translate(self, context, sourceText, disambiguation = None, encoding = QCoreApplication.UnicodeUTF8, n = -1):
+      # da usare in una riga senza accoppiarla ad altre chiamate ad esempio (per lupdate.exe che altrimenti non le trova):
+      # NON VA BENE
+      #     proplist["blockScale"] = [QadMsg.translate("Dimension", "Scala frecce"), \
+      #                               self.blockScale]
+      # VA BENE
+      #     msg = QadMsg.translate("Dimension", "Scala frecce")
+      #     proplist["blockScale"] = [msg, self.blockScale]
+ 
       # contesti:
       # "QAD" per traduzioni generali
       # "Popup_menu_graph_window" per il menu popup nella finestra grafica
@@ -45,7 +53,8 @@ class QadMsgClass():
       # "Command_list" per nomi di comandi
       # "Command_<nome comando in inglese>" per traduzioni di un comando specifico (es. "Command_PLINE")
       # "Snap" per i tipi di snap
-      # finestre varie (es. "dsettings")
+      # finestre varie (es. "DSettings_Dialog", DimStyle_Dialog, ...)
+      # "Dimension" per le quotature
       # "Environment variables" per i nomi delle variabili di ambiente
       return QCoreApplication.translate(context, sourceText, disambiguation, encoding, n)
    
