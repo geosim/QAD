@@ -42,7 +42,7 @@ class QadUNDOCommandClass(QadCommandClass):
       return QadUNDOCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "ANNULLA")
+      return QadMsg.translate("Command_list", "UNDO")
 
    def getEnglishName(self):
       return "UNDO"
@@ -55,7 +55,7 @@ class QadUNDOCommandClass(QadCommandClass):
    
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_UNDO", "Annulla le ultime operazioni eseguite.")
+      return QadMsg.translate("Command_UNDO", "Reverses the effect of commands.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -64,12 +64,12 @@ class QadUNDOCommandClass(QadCommandClass):
       self.isValidPreviousInput = True # per gestire il comando anche in macro
 
       if self.step == 0: # inizio del comando
-         keyWords = QadMsg.translate("Command_UNDO", "INIzio") + "/" + \
-                    QadMsg.translate("Command_UNDO", "Fine") + "/" + \
-                    QadMsg.translate("Command_UNDO", "Segno") + "/" + \
-                    QadMsg.translate("Command_UNDO", "INDietro")
+         keyWords = QadMsg.translate("Command_UNDO", "BEgin") + "/" + \
+                    QadMsg.translate("Command_UNDO", "End") + "/" + \
+                    QadMsg.translate("Command_UNDO", "Mark") + "/" + \
+                    QadMsg.translate("Command_UNDO", "Back")
          default = 1
-         prompt = QadMsg.translate("Command_UNDO", "Digitare il numero di operazioni da annullare o [{0}] <{1}>: ").format(keyWords, str(default))
+         prompt = QadMsg.translate("Command_UNDO", "Enter the number of operations to undo or [{0}] <{1}>: ").format(keyWords, str(default))
          
          englishKeyWords = "BEgin" + "/" + "End" + "/" + "Mark" + "/" + "Back"
          keyWords += "_" + englishKeyWords
@@ -103,20 +103,20 @@ class QadUNDOCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_UNDO", "INIzio") or value == "BEgin":
+            if value == QadMsg.translate("Command_UNDO", "BEgin") or value == "BEgin":
                self.plugIn.insertBeginGroup()
-            elif value == QadMsg.translate("Command_UNDO", "Fine") or value == "End":
+            elif value == QadMsg.translate("Command_UNDO", "End") or value == "End":
                if self.plugIn.insertEndGroup() == False:
-                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNessun gruppo é rimasto aperto."))                  
-            elif value == QadMsg.translate("Command_UNDO", "Segno") or value == "Mark":
+                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNo open group."))
+            elif value == QadMsg.translate("Command_UNDO", "Mark") or value == "Mark":
                if self.plugIn.insertBookmark() == False:
-                  self.showMsg(QadMsg.translate("Command_UNDO", "\nNon é possibile inserire un segno dentro un gruppo."))                  
-            elif value == QadMsg.translate("Command_UNDO", "INDietro") or value == "Back":
+                  self.showMsg(QadMsg.translate("Command_UNDO", "\nA mark can't be inserted into a group."))
+            elif value == QadMsg.translate("Command_UNDO", "Back") or value == "Back":
                if self.plugIn.getPrevBookmarkPos() == -1: # non ci sono bookmark precedenti
-                  keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
-                             QadMsg.translate("QAD", "No")                                                 
-                  default = QadMsg.translate("QAD", "Sì")
-                  prompt = QadMsg.translate("Command_UNDO", "Questa operazione annullerà tutto. OK ? <{0}>: ").format(default)
+                  keyWords = QadMsg.translate("QAD", "Yes") + "/" + \
+                             QadMsg.translate("QAD", "No")
+                  default = QadMsg.translate("QAD", "Yes")
+                  prompt = QadMsg.translate("Command_UNDO", "This will undo everything. OK ? <{0}>: ").format(default)
                   
                   englishKeyWords = "Yes" + "/" + "No"
                   keyWords += "_" + englishKeyWords
@@ -146,7 +146,7 @@ class QadUNDOCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   self.plugIn.undoUntilBookmark()
-                  self.showMsg(QadMsg.translate("Command_UNDO", "é stato annullato tutto."))
+                  self.showMsg(QadMsg.translate("Command_UNDO", "All has been undone."))
                   return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -157,8 +157,8 @@ class QadUNDOCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì") or value == "Yes":
-               self.showMsg(QadMsg.translate("Command_UNDO", "é stato annullato tutto."))
+            if value == QadMsg.translate("QAD", "Yes") or value == "Yes":
+               self.showMsg(QadMsg.translate("Command_UNDO", "All has been undone."))
                self.plugIn.undoUntilBookmark()
 
          return True # fine comando
@@ -172,7 +172,7 @@ class QadREDOCommandClass(QadCommandClass):
       return QadREDOCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "RIPRISTINA")
+      return QadMsg.translate("Command_list", "REDO")
 
    def getEnglishName(self):
       return "REDO"
@@ -185,7 +185,7 @@ class QadREDOCommandClass(QadCommandClass):
    
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_UNDO", "Ripristina le ultime operazioni eseguite.")
+      return QadMsg.translate("Command_UNDO", "Reverses the effects of previous UNDO.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

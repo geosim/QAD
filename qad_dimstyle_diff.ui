@@ -11,19 +11,19 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QAD - Confronta stili di quota</string>
+   <string>QAD - Compare dimension styles</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>101</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Confronta:</string>
+    <string>Compare:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -31,12 +31,12 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>101</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Con:</string>
+    <string>With:</string>
    </property>
   </widget>
   <widget class="QComboBox" name="dimStyle1">
@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Specifica il primo stile di quota per il confronto.</string>
+    <string>Specify the first dimension style.</string>
    </property>
   </widget>
   <widget class="QComboBox" name="dimStyle2">
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</string>
+    <string>Specify the second dimension style. If you set the second style as the first, all dimension style properties will displayed.</string>
    </property>
   </widget>
   <widget class="Line" name="line">
@@ -104,7 +104,7 @@
     <item>
      <widget class="QPushButton" name="closeButton">
       <property name="text">
-       <string>Chiudi</string>
+       <string>Close</string>
       </property>
      </widget>
     </item>
@@ -127,7 +127,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the result of comparing dimension styles.If you compare two different styles, the settings that are different between the two dimension styles, their current settings, and brief descriptions are listed. If you set the second style as the first, all dimension style properties will displayed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="copyButton">
@@ -140,7 +140,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Copia il risultato del confronto negli Appunti.</string>
+    <string>Copy the result of comparing into the clipboard.</string>
    </property>
    <property name="text">
     <string/>

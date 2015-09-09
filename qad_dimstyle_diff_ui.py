@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_diff.ui'
 #
-# Created: Thu Aug 27 11:02:33 2015
+# Created: Tue Sep 08 15:55:22 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,10 +28,10 @@ class Ui_DimStyle_Diff_Dialog(object):
         DimStyle_Diff_Dialog.setObjectName(_fromUtf8("DimStyle_Diff_Dialog"))
         DimStyle_Diff_Dialog.resize(443, 526)
         self.label = QtGui.QLabel(DimStyle_Diff_Dialog)
-        self.label.setGeometry(QtCore.QRect(10, 10, 101, 21))
+        self.label.setGeometry(QtCore.QRect(10, 10, 71, 21))
         self.label.setObjectName(_fromUtf8("label"))
         self.label_2 = QtGui.QLabel(DimStyle_Diff_Dialog)
-        self.label_2.setGeometry(QtCore.QRect(10, 40, 101, 21))
+        self.label_2.setGeometry(QtCore.QRect(10, 40, 71, 21))
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.dimStyle1 = QtGui.QComboBox(DimStyle_Diff_Dialog)
         self.dimStyle1.setGeometry(QtCore.QRect(80, 10, 211, 22))
@@ -81,14 +81,14 @@ class Ui_DimStyle_Diff_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(DimStyle_Diff_Dialog)
 
     def retranslateUi(self, DimStyle_Diff_Dialog):
-        DimStyle_Diff_Dialog.setWindowTitle(_translate("DimStyle_Diff_Dialog", "QAD - Confronta stili di quota", None))
-        self.label.setText(_translate("DimStyle_Diff_Dialog", "Confronta:", None))
-        self.label_2.setText(_translate("DimStyle_Diff_Dialog", "Con:", None))
-        self.dimStyle1.setToolTip(_translate("DimStyle_Diff_Dialog", "Specifica il primo stile di quota per il confronto.", None))
-        self.dimStyle2.setToolTip(_translate("DimStyle_Diff_Dialog", "Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.", None))
+        DimStyle_Diff_Dialog.setWindowTitle(_translate("DimStyle_Diff_Dialog", "QAD - Compare dimension styles", None))
+        self.label.setText(_translate("DimStyle_Diff_Dialog", "Compare:", None))
+        self.label_2.setText(_translate("DimStyle_Diff_Dialog", "With:", None))
+        self.dimStyle1.setToolTip(_translate("DimStyle_Diff_Dialog", "Specify the first dimension style.", None))
+        self.dimStyle2.setToolTip(_translate("DimStyle_Diff_Dialog", "Specify the second dimension style. If you set the second style as the first, all dimension style properties will displayed.", None))
         self.msg.setText(_translate("DimStyle_Diff_Dialog", "TextLabel", None))
-        self.closeButton.setText(_translate("DimStyle_Diff_Dialog", "Chiudi", None))
+        self.closeButton.setText(_translate("DimStyle_Diff_Dialog", "Close", None))
         self.helpButton.setText(_translate("DimStyle_Diff_Dialog", "?", None))
-        self.tableWidget.setToolTip(_translate("DimStyle_Diff_Dialog", "<html><head/><body><p>Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</p></body></html>", None))
-        self.copyButton.setToolTip(_translate("DimStyle_Diff_Dialog", "Copia il risultato del confronto negli Appunti.", None))
+        self.tableWidget.setToolTip(_translate("DimStyle_Diff_Dialog", "<html><head/><body><p>Display the result of comparing dimension styles.If you compare two different styles, the settings that are different between the two dimension styles, their current settings, and brief descriptions are listed. If you set the second style as the first, all dimension style properties will displayed.</p></body></html>", None))
+        self.copyButton.setToolTip(_translate("DimStyle_Diff_Dialog", "Copy the result of comparing into the clipboard.", None))
 

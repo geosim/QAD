@@ -33,7 +33,7 @@ from qgis.utils import *
 import qad_dimstyle_diff_ui
 
 from qad_dim import *
-from qad_msg import QadMsg
+from qad_msg import QadMsg, qadShowPluginHelp
 import qad_utils
 
 
@@ -103,7 +103,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
          
       self.tableWidget.setColumnCount(2)
       headerLabels = []
-      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Descrizione"))
+      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Description"))
       headerLabels.append(dimStyle.name)
       self.tableWidget.setHorizontalHeaderLabels(headerLabels)
       self.tableWidget.horizontalHeader().show()
@@ -121,7 +121,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
       self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Interactive)
            
-      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Tutte le proprietà dello stile di quota: ") + dimStyle.name)
+      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "All properties of dimension style: ") + dimStyle.name)
 
 
    def showDiffProps(self, dimStyle1, dimStyle2):
@@ -132,7 +132,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
          
       self.tableWidget.setColumnCount(3)
       headerLabels = []
-      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Descrizione"))
+      headerLabels.append(QadMsg.translate("DimStyle_Diff_Dialog", "Description"))
       headerLabels.append(dimStyle1.name)
       headerLabels.append(dimStyle2.name)
       self.tableWidget.setHorizontalHeaderLabels(headerLabels)
@@ -160,7 +160,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       self.tableWidget.horizontalHeader().setResizeMode(2, QHeaderView.Interactive)
       self.tableWidget.horizontalHeader().setResizeMode(3, QHeaderView.Interactive)
            
-      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Rilevate {0} differenze: ").format(str(self.count)))
+      self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Found {0} differences: ").format(str(self.count)))
 
 
    def insertProp(self, description, val1, val2 = None):
@@ -182,10 +182,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       
    
    def ButtonHELP_Pressed(self):
-      # per conoscere la sezione/pagina del file html usare internet explorer,
-      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")
+      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
 
    def resizeEvent(self, event):
       QDialog.resizeEvent(self, event)

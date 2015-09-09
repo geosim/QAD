@@ -45,7 +45,7 @@ class QadDSETTINGSCommandClass(QadCommandClass):
       return QadDSETTINGSCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "IMPOSTADIS")
+      return QadMsg.translate("Command_list", "DSETTINGS")
 
    def getEnglishName(self):
       return "DSETTINGS"
@@ -58,7 +58,7 @@ class QadDSETTINGSCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DSETTINGS", "Impostazioni per il disegno(tipo di snap, ecc.).")
+      return QadMsg.translate("Command_DSETTINGS", "Drafting Settings (snaps, etc.).")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

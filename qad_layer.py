@@ -50,11 +50,11 @@ def layerGeometryTypeToStr(geomType):
          msg = msg + layerGeometryTypeToStr(gType)
    else:
       if geomType == QGis.Point:
-         msg = QadMsg.translate("QAD", "punto") 
+         msg = QadMsg.translate("QAD", "point") 
       elif geomType == QGis.Line:      
-         msg = QadMsg.translate("QAD", "linea") 
+         msg = QadMsg.translate("QAD", "line") 
       elif geomType == QGis.Polygon:      
-         msg = QadMsg.translate("QAD", "poligono") 
+         msg = QadMsg.translate("QAD", "polygon") 
 
    return msg
 
@@ -71,31 +71,31 @@ def getCurrLayerEditable(canvas, geomType = None):
    """
    vLayer = canvas.currentLayer()
    if vLayer is None:
-      return None, QadMsg.translate("QAD", "\nNessun layer corrente.\n")
+      return None, QadMsg.translate("QAD", "\nNo current layer.\n")
    
    if (vLayer.type() != QgsMapLayer.VectorLayer):
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non é di tipo vettoriale.\n")
+      return None, QadMsg.translate("QAD", "\nThe current layer is not a vector layer.\n")
 
    if geomType is not None:
       if (type(geomType) == list or type(geomType) == tuple): # se lista di tipi
          if vLayer.geometryType() not in geomType:
-            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente é {0} e non é valido.\n")
-            errMsg = errMsg + QadMsg.translate("QAD", "Ammessi solo layer di tipo {1}.\n")
+            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layet is {0} and it is not valid.\n")
+            errMsg = errMsg + QadMsg.translate("QAD", "Admitted {1} layer type only.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
       else:
          if vLayer.geometryType() != geomType:
-            errMsg = QadMsg.translate("QAD", "\nIl tipo di geometria del layer corrente é {0} e non é valido.\n")
-            errMsg = errMsg + QadMsg.translate("QAD", "Ammessi solo layer di tipo {1}.\n")
+            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layet is {0} and it is not valid.\n")
+            errMsg = errMsg + QadMsg.translate("QAD", "Admitted {1} layer type only.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
 
    provider = vLayer.dataProvider()
    if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non é modificabile.\n")
+      return None, QadMsg.translate("QAD", "\nThe current layer is not editable.\n")
    
    if not vLayer.isEditable():
-      return None, QadMsg.translate("QAD", "\nIl layer corrente non é modificabile.\n")
+      return None, QadMsg.translate("QAD", "\nThe current layer is not editable.\n")
 
    return vLayer, None
   
@@ -617,7 +617,7 @@ def createQADTempLayer(plugIn, GeomType):
    epsg = plugIn.iface.mapCanvas().mapRenderer().destinationCrs().authid()
    
    if GeomType == QGis.Point:
-      layerName = QadMsg.translate("QAD", "QAD - Punti temporanei")
+      layerName = QadMsg.translate("QAD", "QAD - Temporary points")
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("Point?crs=%s&index=yes" % epsg, layerName, "memory")
@@ -625,7 +625,7 @@ def createQADTempLayer(plugIn, GeomType):
       else:
          layer = layerList[0]
    elif GeomType == QGis.Line:
-      layerName = QadMsg.translate("QAD", "QAD - Linee temporanee") 
+      layerName = QadMsg.translate("QAD", "QAD - Temporary lines") 
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, layerName, "memory")
@@ -633,7 +633,7 @@ def createQADTempLayer(plugIn, GeomType):
       else:
          layer = layerList[0]
    elif GeomType == QGis.Polygon:
-      layerName = QadMsg.translate("QAD", "QAD - Poligoni temporanei") 
+      layerName = QadMsg.translate("QAD", "QAD - Temporary polygons") 
       layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
       if len(layerList) == 0:
          layer = QgsVectorLayer("Polygon?crs=%s&index=yes" % epsg, layerName, "memory")

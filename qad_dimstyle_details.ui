@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QAD - Dettagli stile di quota</string>
+   <string>QAD - Dimension style details</string>
   </property>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="DBTab">
     <attribute name="title">
@@ -39,7 +39,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Linee</string>
+      <string>Lines</string>
      </property>
      <widget class="QLabel" name="label_2">
       <property name="geometry">
@@ -64,7 +64,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Nome del layer che memorizza le linee di quota.</string>
+       <string>Name of the layer for dimension lines.</string>
       </property>
      </widget>
      <widget class="QComboBox" name="lineTypeFieldName">
@@ -77,7 +77,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il nome del tipolinea.</string>
+       <string>Field storing the linetype name.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_21">
@@ -90,7 +90,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo tipolinea:</string>
+       <string>Linetype field:</string>
       </property>
      </widget>
     </widget>
@@ -104,7 +104,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Simboli e frecce</string>
+      <string>Symbols and arrows</string>
      </property>
      <widget class="QComboBox" name="symbolLayerName">
       <property name="geometry">
@@ -116,7 +116,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Nome del layer che memorizza i simboli e le frecce delle quote.</string>
+       <string>Name of the layer for dimension symbols and arrows.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_13">
@@ -142,7 +142,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo simbolo:</string>
+       <string>Symbol field:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="symbolFieldName">
@@ -155,7 +155,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il nome del simbolo.</string>
+       <string>Field storing the symbol name.</string>
       </property>
      </widget>
      <widget class="QComboBox" name="scaleFieldName">
@@ -168,7 +168,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza la dimensione del simbolo.</string>
+       <string>Field storing the symbol size.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_23">
@@ -181,7 +181,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo scala:</string>
+       <string>Scale field:</string>
       </property>
      </widget>
     </widget>
@@ -195,7 +195,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Campi generici</string>
+      <string>Generics fields</string>
      </property>
      <widget class="QLabel" name="label_24">
       <property name="geometry">
@@ -207,7 +207,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Rotazione:</string>
+       <string>Rotation:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="rotFieldName">
@@ -220,7 +220,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza la rotazione degli elementi puntuali della quota (simboli, frecce, testi).</string>
+       <string>Field storing the rotation of the punctual elements od dimension (symbols, arrows, text).</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_16">
@@ -233,7 +233,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Colore:</string>
+       <string>Color:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="colorFieldName">
@@ -246,7 +246,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il colore in formato RGB per tutti gli elementi della quota (es. &quot;255,255,255,255&quot; = bianco con opacità totale).</string>
+       <string>Field storing the RGB colorfor all elements of dimension (e.g. &quot;255,255,255,255&quot; = white with total opacity).</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_28">
@@ -259,7 +259,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>ID collegamento:</string>
+       <string>Linking ID:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="idParentFieldName">
@@ -272,7 +272,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il codice della quota per raggruppare tutti gli elementi (eccetto il testo che ne è l'elemento padre).</string>
+       <string>Field storing the ID of the dimension to group all elements (except the text which is the root element).</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_25">
@@ -285,7 +285,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Tipo componente:</string>
+       <string>Component type:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="componentFieldName">
@@ -298,7 +298,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di componente della quota:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = linea di quota (&amp;quot;Dimension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = linea di quota (&amp;quot;Dimension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = prima linea di estensione (&amp;quot;Extension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = seconda linea di estensione (&amp;quot;Extension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = linea porta quota usata quando il testo é fuori dalla quota (&amp;quot;Leader&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = primo blocco della freccia (&amp;quot;Block 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = secondo blocco della freccia (&amp;quot;Block 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = blocco della freccia nel caso leader (&amp;quot;Leader Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = simbolo dell'arco (&amp;quot;Arc Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = primo punto da quotare (&amp;quot;Dimension point 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = secondo punto da quotare (&amp;quot;Dimension point 2&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the component type of dimension:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = Extension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = Extension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = Leader.&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = Block 1.&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = Block 2.&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = Leader Block.&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = Arc Block.&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension point 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension point 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </widget>
@@ -312,7 +312,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Testo</string>
+      <string>Text</string>
      </property>
      <widget class="QLabel" name="label_27">
       <property name="geometry">
@@ -324,7 +324,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo ID:</string>
+       <string>ID Field:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="idFieldName">
@@ -337,7 +337,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il codice univoco di ciascuna quota.</string>
+       <string>Field storing the unique code for each dimension.</string>
       </property>
      </widget>
      <widget class="QComboBox" name="dimStyleFieldName">
@@ -350,7 +350,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Campo che memorizza il nome dello stile di quota.</string>
+       <string>Field storing the name of the dimension style.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_29">
@@ -363,7 +363,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo stile quota:</string>
+       <string>Dim. style field:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_30">
@@ -376,7 +376,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Campo tipo quota:</string>
+       <string>Dim. type field:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="dimTypeFieldName">
@@ -389,7 +389,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di quota:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = quota lineare allineata ai punti di origine delle linee di estensione.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = quota angolare, misura l'angolo tra i 3 punti o tra gli oggetti selezionati.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = quota lineare, angolare o coordinata a partire dalla linea di base della quota precedente o di una quota selezionata.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = crea il centro o le linee d'asse di cerchi e archi.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = quota per il diametro di un cerchio o di un arco.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = crea una linea che consente di collegare un'annotazione ad una lavorazione.&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = quota lineare con una linea di quota orizzontale o verticale.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = quota radiale, misura il raggio di un cerchio o di un arco selezionato e visualizza il testo di quota con un simbolo di raggio davanti.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = quota per la lunghezza di un cerchio o di un arco.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the dimension type:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = linear dimension that is aligned with the origin points of the extension lines.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = angular dimension, it measures the angle between selected objects or 3 points.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = linear, angular, or ordinate dimension from the baseline of the previous or selected dimension.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = creates the center mark or the centerlines of circles and arcs.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = creates a diameter dimension for a circle or an arc.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = creates a line that connects annotation to a feature..&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = linear dimension with a horizontal, vertical, or rotated dimension line.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = radial dimension, measures the radius of a selected circle or arc and displays the dimension text with a radius symbol in front of it.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = arc length dimensions measure the distance along an arc or polyline arc segment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_14">
@@ -415,7 +415,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Nome del layer che memorizza i testi delle quote.</string>
+       <string>Name of the layer storing dimension texts.</string>
       </property>
      </widget>
     </widget>
@@ -435,7 +435,7 @@
    </widget>
    <widget class="QWidget" name="LineTab">
     <attribute name="title">
-     <string>Linee</string>
+     <string>Lines</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
@@ -447,7 +447,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Linee di quota</string>
+      <string>Dimension lines</string>
      </property>
      <widget class="QLabel" name="label">
       <property name="geometry">
@@ -459,7 +459,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Colore:</string>
+       <string>Color:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="dimLineLineType">
@@ -472,7 +472,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Tipo di linea della linea di quota.</string>
+       <string>Linetype of dimension line.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -485,7 +485,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Tipo di linea:</string>
+       <string>Linetype:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_5">
@@ -498,7 +498,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Sopprimi:</string>
+       <string>Suppress:</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="dimLine1Hide">
@@ -511,10 +511,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime la visualizzazione della prima linea di quota.</string>
+       <string>Suppresses display of dimension line 1.</string>
       </property>
       <property name="text">
-       <string>Linea quota 1</string>
+       <string>Dim. line 1</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="dimLine2Hide">
@@ -527,10 +527,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime la visualizzazione della seconda linea di quota.</string>
+       <string>Suppresses display of dimension line 2.</string>
       </property>
       <property name="text">
-       <string>Linea quota 2</string>
+       <string>Dim. line 2</string>
       </property>
      </widget>
      <widget class="QPushButton" name="dimLineColorDummy">
@@ -557,7 +557,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Linee di estensione</string>
+      <string>Extension lines</string>
      </property>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
@@ -569,7 +569,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Colore:</string>
+       <string>Color:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="extLine1LineType">
@@ -582,7 +582,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Tipo di linea della prima linea di estensione.</string>
+       <string>Linetype for extension line 1.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
@@ -595,7 +595,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Tipolinea est. 1:</string>
+       <string>Linetype ext. 1:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -608,7 +608,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Tipolinea est. 2:</string>
+       <string>Linetype ext. 2:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="extLine2LineType">
@@ -621,7 +621,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Tipo di linea della seconda linea di estensione.</string>
+       <string>Linetype for extension line 2.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
@@ -634,7 +634,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Sopprimi:</string>
+       <string>Suppress:</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="extLine1Hide">
@@ -647,10 +647,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime la visualizzazione della prima linea di estensione.</string>
+       <string>Suppresses display of extension line 1.</string>
       </property>
       <property name="text">
-       <string>Linea est. 1</string>
+       <string>Ext. line 1</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="extLine2Hide">
@@ -663,10 +663,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime la visualizzazione della prima linea di estensione.</string>
+       <string>Suppresses display of extension line 2.</string>
       </property>
       <property name="text">
-       <string>Linea est. 2</string>
+       <string>Ext. line 2</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_10">
@@ -679,7 +679,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Estendi oltre linee di quota:</string>
+       <string>Extend beyond dim lines:</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="extLineOffsetDimLine">
@@ -692,7 +692,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Specifica una distanza in base alla quale estendere le linee di estensione oltre la linea di quota.</string>
+       <string>Specifies a distance to extend the extension lines above the dimension line.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -714,7 +714,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Imposta la distanza di offset delle linee di estensione dai punti sul disegno che definiscono la quota.</string>
+       <string>Sets the distance to offset the extension lines from the points on the drawing that define the dimension.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -736,7 +736,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Offset dall'origine:</string>
+       <string>Offset from origin:</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="extLineIsFixedLen">
@@ -749,10 +749,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Attiva le linee di estensione a lunghezza fissa.</string>
+       <string>Enables fixed length extension lines.</string>
       </property>
       <property name="text">
-       <string>Linee di estensione a lunghezza fissa</string>
+       <string>Fixed length extension lines</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_12">
@@ -765,7 +765,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Lunghezza:</string>
+       <string>Length:</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="extLineFixedLen">
@@ -778,7 +778,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Lunghezza totale delle linee di estensione , dalla linea di quota fino all'origine di quota.</string>
+       <string>Total length of the extension lines starting from the dimension line toward the dimension origin.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -807,7 +807,7 @@
    </widget>
    <widget class="QWidget" name="SymbolTab">
     <attribute name="title">
-     <string>Simboli e frecce</string>
+     <string>Symbols and arrows</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
@@ -819,7 +819,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Punte delle frecce</string>
+      <string>Arrowheads</string>
      </property>
      <widget class="QLineEdit" name="block1Name">
       <property name="geometry">
@@ -831,7 +831,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Simbolo per la freccia della prima linea di quota. Quando si imposta questo valore, il simbolo per la freccia della seconda linea di quota viene modificato per corrispondere a questo valore.</string>
+       <string>Arrowhead for the first dimension line. When you change the first arrowhead type, the second arrowhead automatically changes to match it.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_15">
@@ -844,7 +844,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Prima freccia:</string>
+       <string>Arrowhead 1:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="block2Name">
@@ -857,7 +857,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Simbolo per la freccia della seconda linea di quota.</string>
+       <string>Arrowhead for the second dimension line.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_18">
@@ -870,7 +870,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Seconda freccia:</string>
+       <string>Arrowhead 2:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="blockLeaderName">
@@ -883,7 +883,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Simbolo per la freccia della linea direttrice.</string>
+       <string>Arrowhead for the leader line.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_19">
@@ -896,7 +896,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Freccia direttrice:</string>
+       <string>Leader:</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="blockWidth">
@@ -909,7 +909,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Larghezza del simbolo freccia in orizzontale in unità di mappa quando la scala del simbolo = 1.</string>
+       <string>Arrowhead horizontal size in map units using the symbol scale factor = 1.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -931,7 +931,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Larghezza freccia:</string>
+       <string>Arrowhead size:</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="blockScale">
@@ -944,7 +944,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Scala del simbolo freccia.</string>
+       <string>Arrowhead scale.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -966,14 +966,14 @@
        </rect>
       </property>
       <property name="text">
-       <string>Scala freccia:</string>
+       <string>Arrowhead scale:</string>
       </property>
      </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="TextTab">
     <attribute name="title">
-     <string>Testo</string>
+     <string>Text</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_9">
      <property name="geometry">
@@ -985,7 +985,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Aspetto del testo</string>
+      <string>Text appearance</string>
      </property>
      <widget class="QLabel" name="label_26">
       <property name="geometry">
@@ -997,7 +997,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Altezza del testo:</string>
+       <string>Text height:</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="textHeight">
@@ -1010,7 +1010,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Altezza testo in unità di mappa.</string>
+       <string>Text height in map units.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -1032,7 +1032,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Tipo di carattere:</string>
+       <string>Character type:</string>
       </property>
      </widget>
      <widget class="QFontComboBox" name="textFont">
@@ -1045,7 +1045,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Tipo di carattere del testo di quota.</string>
+       <string>Dimension text character type.</string>
       </property>
      </widget>
      <widget class="QPushButton" name="textColorDummy">
@@ -1071,7 +1071,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Colore:</string>
+       <string>Color:</string>
       </property>
      </widget>
     </widget>
@@ -1085,7 +1085,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Posizionamento del testo</string>
+      <string>Text placement</string>
      </property>
      <widget class="QComboBox" name="textVerticalPos">
       <property name="geometry">
@@ -1097,7 +1097,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Giustificazione del testo di quota rispetto la linea di quota.</string>
+       <string>Controls the vertical placement of dimension text in relation to the dimension line.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_31">
@@ -1110,7 +1110,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Verticale:</string>
+       <string>Vertical:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_32">
@@ -1123,7 +1123,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Orizzontale:</string>
+       <string>Horizontal:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="textHorizontalPos">
@@ -1136,7 +1136,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Posizionamento orizzontale del testo di quota lungo la linea di quota, in relazione alle linee di estensione.</string>
+       <string>Controls the horizontal placement of dimension text along the dimension line, in relation to the extension lines.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_33">
@@ -1149,7 +1149,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Direzione vista:</string>
+       <string>View direction:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="textDirection">
@@ -1162,7 +1162,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Direzione di visualizzazione del testo di quota.</string>
+       <string>Controls the dimension text viewing direction.</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="textOffsetDist">
@@ -1175,7 +1175,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Imposta la distanza corrente del testo, ovvero la distanza aggiunta attorno al testo di quota.</string>
+       <string>Sets the current text gap, which is the distance around the dimension text when the dimension line is broken to accommodate the dimension text.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -1197,7 +1197,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Offset dalla linea di quota:</string>
+       <string>Offset from dim line:</string>
       </property>
      </widget>
     </widget>
@@ -1211,7 +1211,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Allineamento del testo</string>
+      <string>Text alignment</string>
      </property>
      <widget class="QRadioButton" name="textRotModeHorizontal">
       <property name="geometry">
@@ -1223,10 +1223,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Posiziona il testo orizzontalmente.</string>
+       <string>Places text in a horizontal position.</string>
       </property>
       <property name="text">
-       <string>Orizzontale</string>
+       <string>Horizontal</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textRotModeAligned">
@@ -1239,10 +1239,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Allinea il testo con la linea di quota.</string>
+       <string>Text aligned with Dimension Line.</string>
       </property>
       <property name="text">
-       <string>Allineato con la linea di quota</string>
+       <string>Aligned with dimension line</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textRotModeISO">
@@ -1255,10 +1255,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Allinea il testo con la linea di quota quando si trova all'interno delle linee di estensione e orizzontalmente quando si trova all'esterno delle linee di estensione.</string>
+       <string>Aligns text with the dimension line when text is inside the extension lines, but aligns it horizontally when text is outside the extension lines.</string>
       </property>
       <property name="text">
-       <string>Standard ISO</string>
+       <string>ISO Standard</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textRotModeFixedRot">
@@ -1271,10 +1271,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Ruota il testo con angolo fisso.</string>
+       <string>Place text with fixed angle.</string>
       </property>
       <property name="text">
-       <string>Rotazione fissa</string>
+       <string>Fixed rotation</string>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="textForcedRot">
@@ -1287,7 +1287,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Angolo di rotazione del testo quando è stata impostata la modalità di rotazione fissa.</string>
+       <string>Text angle  when fixed rotation mode is on.</string>
       </property>
       <property name="decimals">
        <number>6</number>
@@ -1303,7 +1303,7 @@
    </widget>
    <widget class="QWidget" name="AdjustTab">
     <attribute name="title">
-     <string>Adatta</string>
+     <string>Fit</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_12">
      <property name="geometry">
@@ -1315,7 +1315,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Opzioni di adattamento</string>
+      <string>Fit options</string>
      </property>
      <widget class="QLabel" name="label_35">
       <property name="geometry">
@@ -1327,7 +1327,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Se lo spazio non è sufficiente per inserire testo e frecce all'interno delle linee di estensione, la prima cosa da spostare all'esterno è:</string>
+       <string>If there isn't enaugh room to place both text and arrows inside extension lines, the first thing to move outside the extension lines is:</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -1343,10 +1343,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sposta il testo o le frecce all'esterno delle linee di estensione, adattandoli.</string>
+       <string>Moves either the text or the arrowheads outside the extension lines based on the best fit.</string>
       </property>
       <property name="text">
-       <string>Il testo e le frecce (adattati)</string>
+       <string>Either text or arrows (best fit)</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textBlockAdjustFirstSymbolOutside">
@@ -1359,10 +1359,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sposta prima le punte delle frecce al di fuori delle linee di estensione, poi il testo.</string>
+       <string>Moves arrowheads outside the extension lines first, then text.</string>
       </property>
       <property name="text">
-       <string>Frecce</string>
+       <string>Arrows</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textBlockAdjustFirstTextOutside">
@@ -1375,10 +1375,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sposta prima il testo al di fuori delle linee di estensione, poi le punte delle frecce.</string>
+       <string>Moves text outside the extension lines first, then arrowheads.</string>
       </property>
       <property name="text">
-       <string>Testo</string>
+       <string>Text</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="textBlockAdjustBothOutside">
@@ -1391,10 +1391,10 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Se lo spazio disponibile è insufficiente sia per il testo che per le frecce, sposta entrambi all'esterno delle linee di estensione.</string>
+       <string>When not enough space is available for text and arrowheads, moves both outside the extension lines.</string>
       </property>
       <property name="text">
-       <string>Sia il testo che le frecce</string>
+       <string>Both text and arrows</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="blockSuppressionForNoSpace">
@@ -1407,18 +1407,17 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime le punte delle frecce se non è disponibile spazio sufficiente tra le linee di estensione.</string>
+       <string>Suppresses arrowheads if not enough space is available inside the extension lines.</string>
       </property>
       <property name="text">
-       <string>Sopprimi le frecce se non si adattano alle linee 
-di estensione</string>
+       <string>Suppress arrows if they don't fit inside ext. lines</string>
       </property>
      </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="PrimaryUnitTab">
     <attribute name="title">
-     <string>Unità primarie</string>
+     <string>Primary units</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_13">
      <property name="geometry">
@@ -1430,7 +1429,7 @@ di estensione</string>
       </rect>
      </property>
      <property name="title">
-      <string>Quote lineari</string>
+      <string>Linear dimensions</string>
      </property>
      <widget class="QLabel" name="label_36">
       <property name="geometry">
@@ -1442,7 +1441,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="text">
-       <string>Precisione:</string>
+       <string>Precision:</string>
       </property>
      </widget>
      <widget class="QComboBox" name="textDecimals">
@@ -1455,7 +1454,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Numero di cifre decimali nel testo di quota.</string>
+       <string>Displays and sets the number of decimal places in the dimension text.</string>
       </property>
      </widget>
      <widget class="QComboBox" name="textDecimalSep">
@@ -1468,7 +1467,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Separatore per i formati decimali.</string>
+       <string>Sets the separator for decimal formats.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_37">
@@ -1481,7 +1480,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="text">
-       <string>Separatore decimale:</string>
+       <string>Decimal separator:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="textPrefix">
@@ -1494,7 +1493,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Prefisso nel testo di quota.</string>
+       <string>Includes a prefix that you specify in the dimension text.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_38">
@@ -1507,7 +1506,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="text">
-       <string>Prefisso:</string>
+       <string>Prefix:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_39">
@@ -1520,7 +1519,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="text">
-       <string>Suffisso:</string>
+       <string>Suffix:</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="textSuffix">
@@ -1533,7 +1532,7 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Suffisso nel testo di quota.</string>
+       <string>Includes a suffix that you specify in the dimension text.</string>
       </property>
      </widget>
     </widget>
@@ -1547,7 +1546,7 @@ di estensione</string>
       </rect>
      </property>
      <property name="title">
-      <string>Soppressione dello zero</string>
+      <string>Zero suppression</string>
      </property>
      <widget class="QCheckBox" name="textSuppressLeadingZeros">
       <property name="geometry">
@@ -1559,10 +1558,10 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime gli zeri iniziali in tutte le quote decimali (0.5 diventa .5).</string>
+       <string>Suppresses leading zeros in all decimal dimensions (0.5 becomes .5).</string>
       </property>
       <property name="text">
-       <string>Iniziale</string>
+       <string>Leading</string>
       </property>
      </widget>
      <widget class="QCheckBox" name="textDecimalZerosSuppression">
@@ -1575,10 +1574,10 @@ di estensione</string>
        </rect>
       </property>
       <property name="toolTip">
-       <string>Sopprime gli zeri finali in tutte le quote decimali (5.50 diventa 5.5 e 5.0 diventa 5).</string>
+       <string>Suppresses trailing zeros in all decimal dimensions (5.50 becomes 5.5 and 5.0 becomes 5).</string>
       </property>
       <property name="text">
-       <string>Finale</string>
+       <string>Trailing</string>
       </property>
      </widget>
     </widget>
@@ -1604,7 +1603,7 @@ di estensione</string>
     <item>
      <widget class="QPushButton" name="cancelButton">
       <property name="text">
-       <string>Annulla</string>
+       <string>Cancel</string>
       </property>
      </widget>
     </item>

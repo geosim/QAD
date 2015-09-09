@@ -65,5 +65,6 @@
         <file>icons/u.png</file>
         <file>icons/undo.png</file>
         <file>icons/dimStyle.png</file>
+        <file>icons/help.png</file>
     </qresource>    
 </RCC>

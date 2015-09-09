@@ -45,7 +45,7 @@ class QadDIMSTYLECommandClass(QadCommandClass):
       return QadDIMSTYLECommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "DIMSTILE")
+      return QadMsg.translate("Command_list", "DIMSTYLE")
 
    def getEnglishName(self):
       return "DIMSTYLE"
@@ -58,7 +58,7 @@ class QadDIMSTYLECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DIMSTYLE", "Crea e modifica gli stili di quota.")
+      return QadMsg.translate("Command_DIMSTYLE", "Creates new styles, sets the current style, modifies styles, sets overrides on the current style, and compares styles.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

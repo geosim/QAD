@@ -48,7 +48,7 @@ class QadTRIMCommandClass(QadCommandClass):
       return QadTRIMCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "TAGLIA")
+      return QadMsg.translate("Command_list", "TRIM")
 
    def getEnglishName(self):
       return "TRIM"
@@ -61,7 +61,7 @@ class QadTRIMCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_TRIM", "Taglia (o allunga) gli oggetti fino al punto di incontro con altri oggetti.")
+      return QadMsg.translate("Command_TRIM", "Trims (or extends) objects to meet the edges of other objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -213,11 +213,11 @@ class QadTRIMCommandClass(QadCommandClass):
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
       self.getPointMapTool().onlyEditableLayers = True
       
-      keyWords = QadMsg.translate("Command_TRIM", "iNTercetta") + "/" + \
-                 QadMsg.translate("Command_TRIM", "Interseca") + "/" + \
-                 QadMsg.translate("Command_TRIM", "Spigolo") + "/" + \
-                 QadMsg.translate("Command_TRIM", "Annulla")      
-      prompt = QadMsg.translate("Command_TRIM", "Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: ").format(keyWords)                        
+      keyWords = QadMsg.translate("Command_TRIM", "Fence") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Crossing") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Edge") + "/" + \
+                 QadMsg.translate("Command_TRIM", "Undo")      
+      prompt = QadMsg.translate("Command_TRIM", "Select the object to trim or shift-select to extend or [{0}]: ").format(keyWords)                        
       
       englishKeyWords = "Fence" + "/" + "Crossing" + "/" + "Edge" + "/" + "Undo"
       keyWords += "_" + englishKeyWords
@@ -234,20 +234,20 @@ class QadTRIMCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       #=========================================================================
       # RICHIESTA SELEZIONE OGGETTI LIMITI
       if self.step == 0: # inizio del comando
-         CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
+         CurrSettingsMsg = QadMsg.translate("QAD", "\nCurrent settings: ")
          if self.edgeMode == 0: # 0 = nessuna estensione
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Spigolo = Nessuna estensione")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Edge = No extend")
          else:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Spigolo = Estensione")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_TRIM", "Edge = Extend")
                   
          self.showMsg(CurrSettingsMsg)         
-         self.showMsg(QadMsg.translate("Command_TRIM", "\nSelezionare i limiti di taglio..."))         
+         self.showMsg(QadMsg.translate("Command_TRIM", "\nSelect trim limits..."))
          
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
@@ -286,7 +286,7 @@ class QadTRIMCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_TRIM", "iNTercetta") or value == "Fence":
+            if value == QadMsg.translate("Command_TRIM", "Fence") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -295,7 +295,7 @@ class QadTRIMCommandClass(QadCommandClass):
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 3
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Interseca") or value == "Crossing":
+            elif value == QadMsg.translate("Command_TRIM", "Crossing") or value == "Crossing":
                # Seleziona tutti gli oggetti che intersecano un rettangolo                                  
                self.RECTANGLECommand = QadRECTANGLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -304,16 +304,16 @@ class QadTRIMCommandClass(QadCommandClass):
                self.RECTANGLECommand.run(msgMapTool, msg)
                self.step = 4
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Spigolo") or value == "Edge":
+            elif value == QadMsg.translate("Command_TRIM", "Edge") or value == "Edge":
                # Per estendere un oggetto usando anche le estensioni degli oggetti di riferimento
                # vedi variabile EDGEMODE
-               keyWords = QadMsg.translate("Command_TRIM", "Estensione") + "/" + \
-                          QadMsg.translate("Command_TRIM", "Nessuna estensione")                                              
+               keyWords = QadMsg.translate("Command_TRIM", "Extend") + "/" + \
+                          QadMsg.translate("Command_TRIM", "No extend")
                if self.edgeMode == 0: # 0 = nessuna estensione
-                  self.defaultValue = QadMsg.translate("Command_TRIM", "Nessuna")
+                  self.defaultValue = QadMsg.translate("Command_TRIM", "No")
                else: 
-                  self.defaultValue = QadMsg.translate("Command_TRIM", "Estensione")
-               prompt = QadMsg.translate("Command_TRIM", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
+                  self.defaultValue = QadMsg.translate("Command_TRIM", "Extend")
+               prompt = QadMsg.translate("Command_TRIM", "Specify an extension mode [{0}] <{1}>: ").format(keyWords, self.defaultValue)                        
                    
                englishKeyWords = "Extend" + "/" + "No extend"
                keyWords += "_" + englishKeyWords
@@ -325,12 +325,12 @@ class QadTRIMCommandClass(QadCommandClass):
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5               
                return False               
-            elif value == QadMsg.translate("Command_TRIM", "Annulla") or value == "Undo":
+            elif value == QadMsg.translate("Command_TRIM", "Undo") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))
          elif type(value) == QgsPoint: # se é stato selezionato un punto
             self.entitySet.clear()
             if self.getPointMapTool().entity.isInitialized():
@@ -429,13 +429,13 @@ class QadTRIMCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_TRIM", "Nessuna") or value == "No extend":
+            if value == QadMsg.translate("Command_TRIM", "No") or value == "No":
                self.edgeMode = 0
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()
                # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
                self.waitForObjectSel()
-            elif value == QadMsg.translate("Command_TRIM", "Estensione") or value == "Extend":
+            elif value == QadMsg.translate("Command_TRIM", "Extend") or value == "Extend":
                self.edgeMode = 1
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()

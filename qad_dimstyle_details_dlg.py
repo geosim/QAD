@@ -35,7 +35,7 @@ import qad_dimstyle_details_ui
 
 from qad_variables import *
 from qad_dim import *
-from qad_msg import QadMsg
+from qad_msg import QadMsg, qadShowPluginHelp
 import qad_layer
 import qad_utils
 
@@ -454,10 +454,10 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.textHeight.setValue(self.dimStyle.textHeight)
       
       # textVerticalPos
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centrato"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Esterno"))
-      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sotto"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centered"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Above"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Outside"))
+      self.textVerticalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Below"))
       if self.dimStyle.textVerticalPos == QadDimStyleTxtVerticalPosEnum.CENTERED_LINE:
          self.textVerticalPos.setCurrentIndex(0)
       elif self.dimStyle.textVerticalPos == QadDimStyleTxtVerticalPosEnum.ABOVE_LINE:
@@ -468,11 +468,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.textVerticalPos.setCurrentIndex(3)
    
       # textHorizontalPos
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centrato"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Alla linea di estensione 1"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Alla linea di estensione 2"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra linea di estensione 1"))
-      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Sopra linea di estensione 2"))      
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Centered"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "At Ext Line 1"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "At Ext Line 2"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Over Ext Line 1"))
+      self.textHorizontalPos.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Over Ext Line 2"))
       if self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.CENTERED_LINE:
          self.textHorizontalPos.setCurrentIndex(0)
       elif self.dimStyle.textHorizontalPos == QadDimStyleTxtHorizontalPosEnum.FIRST_EXT_LINE:
@@ -485,8 +485,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.textHorizontalPos.setCurrentIndex(4)         
       
       # textDirection
-      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Da sinistra a destra"))
-      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Da destra a sinistra"))
+      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Left-to-Right"))
+      self.textDirection.addItem(QadMsg.translate("DimStyle_Details_Dialog", "Right-to-Left"))
       if self.dimStyle.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
          self.textDirection.setCurrentIndex(0)
       elif self.dimStyle.textDirection == QadDimStyleTxtDirectionEnum.DX_TO_SX:
@@ -675,9 +675,9 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.textDecimals.setCurrentIndex(self.dimStyle.textDecimals)
       
       # textDecimalSep
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "'.' Punto"))
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "',' Virgola"))
-      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "' ' Spazio"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "'.' Period"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "',' Comma"))
+      self.textDecimalSep.addItem(QadMsg.translate("DimStyle_Details_Dialog", "' ' Space"))
       if self.dimStyle.textDecimalSep == ".": # punto
          self.textDecimalSep.setCurrentIndex(0)
       elif self.dimStyle.textDecimalSep == ",": # virgola
@@ -740,10 +740,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
    ####################################################################
 
    def ButtonHELP_Pressed(self):
-      # per conoscere la sezione/pagina del file html usare internet explorer,
-      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")
+      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
 
    def accept(self):
       self.accept_db_tab()
@@ -754,7 +751,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.accept_primaryUnits_tab()
       errMsg = self.dimStyle.getInValidErrMsg()
       if errMsg is not None:
-         errMsg += "\nMantenere queste impostazioni ?"
+         errMsg += QadMsg.translate("DimStyle_Details_Dialog", "\nDo you want to accepts these settings ?")
          res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), errMsg, \
                                  QMessageBox.Yes | QMessageBox.No)
          if res == QMessageBox.No:

@@ -60,7 +60,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_MBUFFER", "Crea poligoni originati da buffer intorno agli oggetti selezionati.")
+      return QadMsg.translate("Command_MBUFFER", "Creates polygons by buffering selected objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -164,7 +164,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
 
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       currLayer = None
@@ -183,7 +183,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
                if i > 0:
                   dimStyleNames += ", "
                dimStyleNames += dimStyleList[i].name
-            errMsg = QadMsg.translate("QAD", "\nIl layer corrente appartiene allo stile di quotatura {0} e non é valido.\n")                        
+            errMsg = QadMsg.translate("QAD", "\nCurrent layer is a layer referenced to {0} dimension style and it is not valid.\n")                        
             self.showErr(errMsg.format(dimStyleNames))
             return True # fine comando
             
@@ -211,7 +211,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
         
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, valori positivi
-         msg = QadMsg.translate("Command_MBUFFER", "Specificare larghezza buffer <{0}>: ")         
+         msg = QadMsg.translate("Command_MBUFFER", "Specify the buffer length <{0}>: ")
          self.waitFor(msg.format(str(self.plugIn.lastRadius)), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                       self.plugIn.lastRadius, "", \
@@ -249,7 +249,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_mbuffer_maptool_ModeEnum.FIRST_PT_ASK_FOR_BUFFER_WIDTH)
          
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_MBUFFER", "Specificare secondo punto: "))
+            self.waitForPoint(QadMsg.translate("Command_MBUFFER", "Specify second point: "))
             self.step = 3
             return False            
          else:

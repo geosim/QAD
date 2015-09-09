@@ -49,7 +49,7 @@ class QadPEDITCommandClass(QadCommandClass):
       return QadPEDITCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "EDITPL")
+      return QadMsg.translate("Command_list", "PEDIT")
    
    def getEnglishName(self):
       return "PEDIT"
@@ -62,7 +62,7 @@ class QadPEDITCommandClass(QadCommandClass):
    
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_PEDIT", "Modifica polilinee o poligoni esistenti.")
+      return QadMsg.translate("Command_PEDIT", "Modifies existing polylines or polygon.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -699,9 +699,9 @@ class QadPEDITCommandClass(QadCommandClass):
       self.step = 1
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_ENTITY_SEL)
                         
-      keyWords = QadMsg.translate("Command_PEDIT", "Ultimo") + "/" + \
-                 QadMsg.translate("Command_PEDIT", "Multiplo")
-      prompt = QadMsg.translate("Command_PEDIT", "Selezionare polilinea o [{0}]: ").format(QadMsg.translate("Command_PEDIT", "Multiplo"))
+      keyWords = QadMsg.translate("Command_PEDIT", "Last") + "/" + \
+                 QadMsg.translate("Command_PEDIT", "Multiple")
+      prompt = QadMsg.translate("Command_PEDIT", "Select polyline or [{0}]: ").format(QadMsg.translate("Command_PEDIT", "Multiple"))
                
       englishKeyWords = "Last" + "/" + "Multiple"
       keyWords += "_" + englishKeyWords
@@ -732,17 +732,17 @@ class QadPEDITCommandClass(QadCommandClass):
       if line == True: # se ci sono dei layer linea
          if self.entity.isInitialized(): # selezionato solo un oggetto
             if self.linearObjectList.isClosed(): # se é chiusa
-               keyWords = QadMsg.translate("Command_PEDIT", "Apri") + "/"
+               keyWords = QadMsg.translate("Command_PEDIT", "Open") + "/"
                englishKeyWords = "Open"
             else:
-               keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/"
+               keyWords = QadMsg.translate("Command_PEDIT", "Close") + "/"
                englishKeyWords = "Close"
          else: # selezionati più oggetti
-            keyWords = QadMsg.translate("Command_PEDIT", "Chiudi") + "/" + \
-                       QadMsg.translate("Command_PEDIT", "Apri") + "/"
+            keyWords = QadMsg.translate("Command_PEDIT", "Close") + "/" + \
+                       QadMsg.translate("Command_PEDIT", "Open") + "/"
             englishKeyWords = "Close" + "/" + "Open"
                   
-         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Unisci") + "/"
+         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Join") + "/"
          englishKeyWords = englishKeyWords + "Join"
       else: # se non ci sono dei layer linea
          keyWords = ""
@@ -750,15 +750,15 @@ class QadPEDITCommandClass(QadCommandClass):
          englishKeyWords = ""
 
       if self.entity.isInitialized(): # selezionato solo un oggetto
-         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Edita vertici") + "/"
+         keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Edit vertex") + "/"
          englishKeyWords = englishKeyWords + "Edit vertex"
          
-      keyWords = keyWords + QadMsg.translate("Command_PEDIT", "ADatta") + "/" + \
-                            QadMsg.translate("Command_PEDIT", "Rettifica") + "/" + \
-                            QadMsg.translate("Command_PEDIT", "Inverti") + "/" + \
-                            QadMsg.translate("Command_PEDIT", "ANnulla")      
+      keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Fit") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Decurve") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Reverse") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Undo")      
       englishKeyWords = englishKeyWords + "Fit" + "/" + "Decurve" + "/" + "Reverse" + "/" + "Undo"
-      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione [{0}]: ").format(keyWords)
+      prompt = QadMsg.translate("Command_PEDIT", "Enter an option [{0}]: ").format(keyWords)
       
       self.step = 3
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.NONE)
@@ -777,14 +777,14 @@ class QadPEDITCommandClass(QadCommandClass):
    # WaitForJoin
    #============================================================================
    def WaitForJoin(self):
-      CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
-      CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "Tipo di unione = ")                        
+      CurrSettingsMsg = QadMsg.translate("QAD", "\nCurrent settings: ")
+      CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "Join type = ")
       if self.joinMode == 1:
-         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "estende i segmenti")         
+         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "extends the segments")
       elif self.joinMode == 2:
-         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "aggiunge segmenti")         
+         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "adds segments")
       elif self.joinMode == 3:
-         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "estende e aggiunge segmenti")         
+         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_PEDIT", "extends and adds segments")
       
       self.showMsg(CurrSettingsMsg)
       self.waitForDistance()       
@@ -797,8 +797,8 @@ class QadPEDITCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_FIRST_TOLERANCE_PT)
 
-      keyWords = QadMsg.translate("Command_PEDIT", "Tipo unione")                 
-      prompt = QadMsg.translate("Command_PEDIT", "Specificare distanza di approssimazione o [{0}] <{1}>: ").format(keyWords, str(self.joinToleranceDist))
+      keyWords = QadMsg.translate("Command_PEDIT", "Join type")                 
+      prompt = QadMsg.translate("Command_PEDIT", "Specify gap tolerance or [{0}] <{1}>: ").format(keyWords, str(self.joinToleranceDist))
 
       englishKeyWords = "Join type"
       keyWords += "_" + englishKeyWords
@@ -819,17 +819,17 @@ class QadPEDITCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.NONE)
 
-      keyWords = QadMsg.translate("Command_PEDIT", "Estendi") + "/" + \
-                 QadMsg.translate("Command_PEDIT", "Aggiungi") + "/" + \
-                 QadMsg.translate("Command_PEDIT", "ENtrambe")
+      keyWords = QadMsg.translate("Command_PEDIT", "Extend") + "/" + \
+                 QadMsg.translate("Command_PEDIT", "Add") + "/" + \
+                 QadMsg.translate("Command_PEDIT", "Both")
       englishKeyWords = "Extend" + "/" + "Add" + "/" + "Both"
       if self.joinMode == 1:
-         default = QadMsg.translate("Command_PEDIT", "Estendi")
+         default = QadMsg.translate("Command_PEDIT", "Extend")
       elif self.joinMode == 2:
-         default = QadMsg.translate("Command_PEDIT", "Aggiungi")
+         default = QadMsg.translate("Command_PEDIT", "Add")
       elif self.joinMode == 3:
-         default = QadMsg.translate("Command_PEDIT", "ENtrambe")
-      prompt = QadMsg.translate("Command_PEDIT", "Specificare tipo di unione [{0}] <{1}>: ").format(keyWords, default)
+         default = QadMsg.translate("Command_PEDIT", "Both")
+      prompt = QadMsg.translate("Command_PEDIT", "Specify join type [{0}] <{1}>: ").format(keyWords, default)
 
       keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave o un numero reale     
@@ -847,23 +847,23 @@ class QadPEDITCommandClass(QadCommandClass):
       
       self.displayVertexMarker(self.vertexAt)
       
-      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + "/" + \
-                 QadMsg.translate("Command_PEDIT", "Precedente")
+      keyWords = QadMsg.translate("Command_PEDIT", "Next") + "/" + \
+                 QadMsg.translate("Command_PEDIT", "Previous")
       englishKeyWords = "Next" + "/" + "Previous"
       
       if self.entity.layer.geometryType() == QGis.Line:
-         keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Dividi")
+         keyWords = keyWords + "/"  + QadMsg.translate("Command_PEDIT", "Break")
          englishKeyWords = englishKeyWords + "/" + "Break"
 
-      keyWords = keyWords + "/" + QadMsg.translate("Command_PEDIT", "Inserisci") + "/" + \
-                                  QadMsg.translate("Command_PEDIT", "INserisci prima") + "/" + \
-                                  QadMsg.translate("Command_PEDIT", "SPosta") + "/" + \
-                                  QadMsg.translate("Command_PEDIT", "Raddrizza") + "/" + \
-                                  QadMsg.translate("Command_PEDIT", "esCi")
+      keyWords = keyWords + "/" + QadMsg.translate("Command_PEDIT", "Insert") + "/" + \
+                                  QadMsg.translate("Command_PEDIT", "INsert before") + "/" + \
+                                  QadMsg.translate("Command_PEDIT", "Move") + "/" + \
+                                  QadMsg.translate("Command_PEDIT", "Straighten") + "/" + \
+                                  QadMsg.translate("Command_PEDIT", "eXit")
       englishKeyWords = englishKeyWords + "/" + "Insert" + "/" + "INsert before" + "/" + \
                                           "Move" + "/" + "Straighten" + "/" + "eXit"
 
-      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione di modifica vertici [{0}] <{1}>: ").format(keyWords, self.default)
+      prompt = QadMsg.translate("Command_PEDIT", "Enter a vertex editing option [{0}] <{1}>: ").format(keyWords, self.default)
                
       self.step = 8
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX)
@@ -887,7 +887,7 @@ class QadPEDITCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_NEW_VERTEX)
 
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specificare la posizione del nuovo vertice: "))
+      self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specify the position of the new vertex: "))
       self.step = 9   
 
 
@@ -900,7 +900,7 @@ class QadPEDITCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_MOVE_VERTEX)
 
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specificare la nuova posizione del vertice: "))
+      self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specify the new vertex position: "))
       self.step = 10   
 
 
@@ -910,12 +910,12 @@ class QadPEDITCommandClass(QadCommandClass):
    def WaitForSecondVertex(self):
       self.displayVertexMarker(self.secondVertexAt)
       
-      keyWords = QadMsg.translate("Command_PEDIT", "Seguente") + "/"  + \
-                 QadMsg.translate("Command_PEDIT", "Precedente") + "/"  + \
-                 QadMsg.translate("Command_PEDIT", "Esegui") + "/"  + \
-                 QadMsg.translate("Command_PEDIT", "esCi")
+      keyWords = QadMsg.translate("Command_PEDIT", "Next") + "/"  + \
+                 QadMsg.translate("Command_PEDIT", "Previous") + "/"  + \
+                 QadMsg.translate("Command_PEDIT", "Go") + "/"  + \
+                 QadMsg.translate("Command_PEDIT", "eXit")
       englishKeyWords = "Next" + "/" + "Previous" + "/" + "Go" + "/" + "eXit"
-      prompt = QadMsg.translate("Command_PEDIT", "Digitare un'opzione di selezione del secondo vertice [{0}] <{1}>: ").format(keyWords, self.default1)
+      prompt = QadMsg.translate("Command_PEDIT", "Enter a selection option for the second vertex [{0}] <{1}>: ").format(keyWords, self.default1)
                
       self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.ASK_FOR_VERTEX)
       
@@ -933,7 +933,7 @@ class QadPEDITCommandClass(QadCommandClass):
         
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
       if self.step == 0:     
@@ -960,7 +960,7 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_PEDIT", "Multiplo") or value == "Multiple":
+            if value == QadMsg.translate("Command_PEDIT", "Multiple") or value == "Multiple":
                self.SSGetClass.checkPolygonLayer = True               
                self.SSGetClass.run(msgMapTool, msg)
                self.step = 2
@@ -1033,16 +1033,16 @@ class QadPEDITCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if value == QadMsg.translate("Command_PEDIT", "Chiudi") or value == "Close":
+         if value == QadMsg.translate("Command_PEDIT", "Close") or value == "Close":
             self.setClose(True) 
-         elif value == QadMsg.translate("Command_PEDIT", "Apri") or value == "Open":
+         elif value == QadMsg.translate("Command_PEDIT", "Open") or value == "Open":
             self.setClose(False) 
-         elif value == QadMsg.translate("Command_PEDIT", "Edita vertici") or value == "Edit vertex":
+         elif value == QadMsg.translate("Command_PEDIT", "Edit vertex") or value == "Edit vertex":
             self.vertexAt = 0
-            self.default = QadMsg.translate("Command_PEDIT", "Seguente")
+            self.default = QadMsg.translate("Command_PEDIT", "Next")
             self.WaitForVertexEditingMenu()
             return False
-         elif value == QadMsg.translate("Command_PEDIT", "Unisci") or value == "Join":
+         elif value == QadMsg.translate("Command_PEDIT", "Join") or value == "Join":
             if self.entity.isInitialized(): # selezionato solo un oggetto
                self.SSGetClass.checkPolygonLayer = False # scarto i poligoni
                self.SSGetClass.run(msgMapTool, msg)
@@ -1051,18 +1051,18 @@ class QadPEDITCommandClass(QadCommandClass):
             else:
                self.WaitForJoin()
                return False
-         elif value == QadMsg.translate("Command_PEDIT", "ADatta") or value == "Fit":
+         elif value == QadMsg.translate("Command_PEDIT", "Fit") or value == "Fit":
             self.curve(True)
-         elif value == QadMsg.translate("Command_PEDIT", "Rettifica") or value == "Decurve":
+         elif value == QadMsg.translate("Command_PEDIT", "Decurve") or value == "Decurve":
             self.curve(False)
-         elif value == QadMsg.translate("Command_PEDIT", "Inverti") or value == "Reverse":
+         elif value == QadMsg.translate("Command_PEDIT", "Reverse") or value == "Reverse":
             self.reverse()
-         elif value == QadMsg.translate("Command_PEDIT", "ANnulla") or value == "Undo":
+         elif value == QadMsg.translate("Command_PEDIT", "Undo") or value == "Undo":
             if self.nOperationsToUndo > 0: 
                self.nOperationsToUndo = self.nOperationsToUndo - 1           
                self.plugIn.undoEditCommand()
             else:
-               self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
+               self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))                  
             
             if self.entity.isInitialized(): # selezionato solo un oggetto
                if self.atSubGeom is not None:
@@ -1099,7 +1099,7 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_PEDIT", "Tipo") or value == "Type":
+            if value == QadMsg.translate("Command_PEDIT", "Type") or value == "Type":
                # si appresta ad attendere il tipo di unione
                self.waitForJoinType()
          elif type(value) == QgsPoint: # se é stato inserito il primo punto per il calcolo della distanza
@@ -1109,7 +1109,7 @@ class QadPEDITCommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_pedit_maptool_ModeEnum.FIRST_TOLERANCE_PT_KNOWN_ASK_FOR_SECOND_PT)
 
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specificare secondo punto: "))           
+            self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specify second point: "))
             self.step = 5
          elif type(value) == float:
             self.joinToleranceDist = value
@@ -1141,9 +1141,9 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
 
          if value == self.firstPt:
-            self.showMsg(QadMsg.translate("QAD", "\nIl valore deve essere positivo e diverso da zero."))
+            self.showMsg(QadMsg.translate("QAD", "\nThe value must be positive and not zero."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specificare secondo punto: "))
+            self.waitForPoint(QadMsg.translate("Command_PEDIT", "Specify second point: "))
             return False
          
          self.joinToleranceDist = qad_utils.getDistance(self.firstPt, value)
@@ -1175,13 +1175,13 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_PEDIT", "Estendi") or value == "Extend":
+            if value == QadMsg.translate("Command_PEDIT", "Extend") or value == "Extend":
                self.joinMode = 1
                self.plugIn.setJoinMode(self.joinMode)
-            elif value == QadMsg.translate("Command_PEDIT", "Aggiungi") or value == "Add":
+            elif value == QadMsg.translate("Command_PEDIT", "Add") or value == "Add":
                self.joinMode = 2
                self.plugIn.setJoinMode(self.joinMode)
-            elif value == QadMsg.translate("Command_PEDIT", "ENtrambe") or value == "Both":
+            elif value == QadMsg.translate("Command_PEDIT", "Both") or value == "Both":
                self.joinMode = 3
                self.plugIn.setJoinMode(self.joinMode)
             
@@ -1223,53 +1223,39 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_PEDIT", "Seguente") or value == "Next":
+            if value == QadMsg.translate("Command_PEDIT", "Next") or value == "Next":
                self.default = value
                self.vertexAt = self.getNextVertex(self.vertexAt)                                 
                self.WaitForVertexEditingMenu()
-            elif value == QadMsg.translate("Command_PEDIT", "Precedente") or value == "Previous":
+            elif value == QadMsg.translate("Command_PEDIT", "Previous") or value == "Previous":
                self.default = value
                self.vertexAt = self.getPrevVertex(self.vertexAt)
                self.WaitForVertexEditingMenu()
-            elif value == QadMsg.translate("Command_PEDIT", "Dividi") or value == "Break":
-               self.editVertexMode = QadMsg.translate("Command_PEDIT", "Dividi")
+            elif value == QadMsg.translate("Command_PEDIT", "Break") or value == "Break":
+               self.editVertexMode = QadMsg.translate("Command_PEDIT", "Break")
                self.secondVertexAt = self.vertexAt
-               self.default1 = QadMsg.translate("Command_PEDIT", "Seguente")
+               self.default1 = QadMsg.translate("Command_PEDIT", "Next")
                self.WaitForSecondVertex()
                return False
-            elif value == QadMsg.translate("Command_PEDIT", "Inserisci") or value == "Insert":
+            elif value == QadMsg.translate("Command_PEDIT", "Insert") or value == "Insert":
                self.after = True
                self.waitForNewVertex()      
-            elif value == QadMsg.translate("Command_PEDIT", "INserisci prima") or value == "INsert before":
+            elif value == QadMsg.translate("Command_PEDIT", "INsert before") or value == "INsert before":
                self.after = False
                self.waitForNewVertex()
-            elif value == QadMsg.translate("Command_PEDIT", "SPosta") or value == "Move":
+            elif value == QadMsg.translate("Command_PEDIT", "Move") or value == "Move":
                self.waitForMoveVertex()
-            elif value == QadMsg.translate("Command_PEDIT", "Raddrizza") or value == "Straighten":
-               self.editVertexMode = QadMsg.translate("Command_PEDIT", "Raddrizza")
+            elif value == QadMsg.translate("Command_PEDIT", "Straighten") or value == "Straighten":
+               self.editVertexMode = QadMsg.translate("Command_PEDIT", "Straighten")
                self.secondVertexAt = self.vertexAt
-               self.default1 = QadMsg.translate("Command_PEDIT", "Seguente")
+               self.default1 = QadMsg.translate("Command_PEDIT", "Next")
                self.WaitForSecondVertex()
                return False
-            elif value == QadMsg.translate("Command_PEDIT", "esCi") or value == "eXit":
+            elif value == QadMsg.translate("Command_PEDIT", "eXit") or value == "eXit":
                self.WaitForMainMenu()
-         elif type(value) == QgsPoint: # se é stato inserito il primo punto
-            # la funzione ritorna una lista con (<minima distanza al quadrato>,
-            #                                    <punto più vicino>
-            #                                    <indice della parte più vicina>       
-            #                                    <"a sinistra di">)
-            dummy = self.linearObjectList.closestPartWithContext(value)
-            partAt = dummy[2]
-            linearObject = self.linearObjectList.getLinearObjectAt(partAt)            
-            # punto iniziale della parte
-            if qad_utils.getDistance(linearObject.getStartPt(), value) < \
-               qad_utils.getDistance(linearObject.getEndPt(), value):            
-               self.vertexAt = partAt
-            else: # punto finale della parte
-               if partAt == self.linearObjectList.qty() - 1: # se ultima parte                  
-                  self.vertexAt = 0 if self.linearObjectList.isClosed() else partAt + 1
-               else:
-                  self.vertexAt = partAt + 1
+         elif type(value) == QgsPoint: # se é stato inserito un punto
+            # cerco il vertice più vicino al punto
+            self.vertexAt = self.linearObjectList.closestVertexWithContext(value)
             self.WaitForVertexEditingMenu()
                                  
          return False 
@@ -1346,43 +1332,29 @@ class QadPEDITCommandClass(QadCommandClass):
             value = msg
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_PEDIT", "Seguente") or value == "Next":
+            if value == QadMsg.translate("Command_PEDIT", "Next") or value == "Next":
                self.default1 = value
                self.secondVertexAt = self.getNextVertex(self.secondVertexAt)                                 
                self.WaitForSecondVertex()
-            elif value == QadMsg.translate("Command_PEDIT", "Precedente") or value == "Previous":
+            elif value == QadMsg.translate("Command_PEDIT", "Previous") or value == "Previous":
                self.default1 = value
                self.secondVertexAt = self.getPrevVertex(self.secondVertexAt)
                self.WaitForSecondVertex()
-            elif value == QadMsg.translate("Command_PEDIT", "Esegui") or value == "Go":
+            elif value == QadMsg.translate("Command_PEDIT", "Go") or value == "Go":
                pt = self.linearObjectList.getPointAtVertex(self.vertexAt)
                
-               if self.editVertexMode == QadMsg.translate("Command_PEDIT", "Dividi"):
+               if self.editVertexMode == QadMsg.translate("Command_PEDIT", "Break"):
                   self.breakFromVertexAtToSecondVertexAt()
-               elif self.editVertexMode == QadMsg.translate("Command_PEDIT", "Raddrizza"):
+               elif self.editVertexMode == QadMsg.translate("Command_PEDIT", "Straighten"):
                   self.straightenFromVertexAtToSecondVertexAt()
                   
                self.vertexAt = self.linearObjectList.getVertexPosAtPt(pt)
                self.WaitForVertexEditingMenu()
-            elif value == QadMsg.translate("Command_PEDIT", "esCi") or value == "eXit":
+            elif value == QadMsg.translate("Command_PEDIT", "eXit") or value == "eXit":
                self.WaitForVertexEditingMenu()
          elif type(value) == QgsPoint: # se é stato inserito il primo punto
-            # la funzione ritorna una lista con (<minima distanza al quadrato>,
-            #                                    <punto più vicino>
-            #                                    <indice della parte più vicina>       
-            #                                    <"a sinistra di">)
-            dummy = self.linearObjectList.closestPartWithContext(value)
-            partAt = dummy[2]
-            linearObject = self.linearObjectList.getLinearObjectAt(partAt)            
-            # punto iniziale della parte
-            if qad_utils.getDistance(linearObject.getStartPt(), value) < \
-               qad_utils.getDistance(linearObject.getEndPt(), value):            
-               self.secondVertexAt = partAt
-            else: # punto finale della parte
-               if partAt == self.linearObjectList.qty() - 1: # se ultima parte                  
-                  self.secondVertexAt = 0 if self.linearObjectList.isClosed() else partAt + 1
-               else:
-                  self.secondVertexAt = partAt + 1
+            # cerco il vertice più vicino al punto            
+            self.secondVertexAt = self.linearObjectList.closestVertexWithContext(value)
             self.WaitForSecondVertex()
                                  
          return False 

@@ -48,7 +48,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
       return QadSTRETCHCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "STIRA")
+      return QadMsg.translate("Command_list", "STRETCH")
 
    def getEnglishName(self):
       return "STRETCH"
@@ -61,7 +61,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_STRETCH", "Stira gli oggetti.")
+      return QadMsg.translate("Command_STRETCH", "Stretches objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -224,15 +224,15 @@ class QadSTRETCHCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.ASK_FOR_FIRST_PT_RECTANGLE)                                
       
-      keyWords = QadMsg.translate("Command_STRETCH", "Poligono") + "/" + \
-                 QadMsg.translate("Command_STRETCH", "AGgiungi") + "/" + \
-                 QadMsg.translate("Command_STRETCH", "Elimina")
+      keyWords = QadMsg.translate("Command_STRETCH", "Polygon") + "/" + \
+                 QadMsg.translate("Command_STRETCH", "Add") + "/" + \
+                 QadMsg.translate("Command_STRETCH", "Remove")
 
       if self.AddOnSelection == True:
-         prompt = QadMsg.translate("Command_STRETCH", "Selezionare i vertici")
+         prompt = QadMsg.translate("Command_STRETCH", "Select vertices")
       else:
-         prompt = QadMsg.translate("Command_STRETCH", "Rimuovere i vertici")
-      prompt = prompt + QadMsg.translate("Command_STRETCH", " da stirare tramite una finestra o [{0}]: ").format(keyWords)                        
+         prompt = QadMsg.translate("Command_STRETCH", "Remove vertices")
+      prompt = prompt + QadMsg.translate("Command_STRETCH", " to stretch crossed by a selection window or [{0}]: ").format(keyWords)                        
 
       englishKeyWords = "Polygon" + "/" + "Add" + "/" + "Remove"
       keyWords += "_" + englishKeyWords
@@ -251,8 +251,8 @@ class QadSTRETCHCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
       
-      keyWords = QadMsg.translate("Command_STRETCH", "Spostamento")
-      prompt = QadMsg.translate("Command_STRETCH", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)                        
+      keyWords = QadMsg.translate("Command_STRETCH", "Displacement")
+      prompt = QadMsg.translate("Command_STRETCH", "Specify base point or [{0}] <{0}>: ").format(keyWords)
          
       englishKeyWords = "Displacement"
       keyWords += "_" + englishKeyWords
@@ -269,7 +269,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
      
       #=========================================================================
@@ -299,7 +299,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_STRETCH", "Poligono") or value == "Polygon":
+            if value == QadMsg.translate("Command_STRETCH", "Polygon") or value == "Polygon":
                # Seleziona tutti gli oggetti che sono interni al poligono
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -308,10 +308,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 2
                return False               
-            elif value == QadMsg.translate("Command_SSGET", "AGgiungi") or value == "Add":
+            elif value == QadMsg.translate("Command_SSGET", "Add") or value == "Add":
                # Passa al metodo Aggiungi: gli oggetti selezionati possono essere aggiunti al gruppo di selezione 
                self.AddOnSelection = True
-            elif value == QadMsg.translate("Command_SSGET", "Elimina") or value == "Remove":
+            elif value == QadMsg.translate("Command_SSGET", "Remove") or value == "Remove":
                # Passa al metodo Rimuovi: gli oggetti possono essere rimossi dal gruppo di selezione
                self.AddOnSelection = False                        
          elif type(value) == QgsPoint: # se é stato selezionato un punto
@@ -322,7 +322,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             self.getPointMapTool().setStartPoint(value)
             
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_STRETCH", "Specificare angolo opposto: "))
+            self.waitForPoint(QadMsg.translate("Command_STRETCH", "Specify opposite corner: "))
             self.step = 3
             return False                  
          else:
@@ -371,9 +371,9 @@ class QadSTRETCHCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  self.showMsg(QadMsg.translate("Command_STRETCH", "La finestra non é stata specificata correttamente."))
+                  self.showMsg(QadMsg.translate("Command_STRETCH", "Window not correct."))
                   # si appresta ad attendere un punto
-                  self.waitForPoint(QadMsg.translate("Command_STRETCH", "Specificare angolo opposto: "))
+                  self.waitForPoint(QadMsg.translate("Command_STRETCH", "Specify opposite corner: "))
                   return False
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -432,7 +432,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             self.getPointMapTool().basePt = self.basePt
             self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)                                
             # si appresta ad attendere un punto
-            msg = QadMsg.translate("Command_STRETCH", "Specificare lo spostamento dal punto di origine 0,0 <{0}, {1}>: ")
+            msg = QadMsg.translate("Command_STRETCH", "Specify the displacement from the origin point 0,0 <{0}, {1}>: ")
             # msg, inputType, default, keyWords, nessun controllo
             self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                          QadInputTypeEnum.POINT2D, \
@@ -448,7 +448,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             
             # si appresta ad attendere un punto o enter o una parola chiave         
             # msg, inputType, default, keyWords, nessun controllo
-            self.waitFor(QadMsg.translate("Command_STRETCH", "Specificare secondo punto oppure <Utilizza primo punto come spostamento dal punto di origine 0,0>: "), \
+            self.waitFor(QadMsg.translate("Command_STRETCH", "Specify second point or [Array] <use first point as displacement from origin point 0,0>: "), \
                          QadInputTypeEnum.POINT2D, \
                          None, \
                          "", QadInputModeEnum.NONE)      

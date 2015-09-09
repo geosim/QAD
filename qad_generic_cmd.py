@@ -67,7 +67,7 @@ class QadCommandClass():
          self.plugIn.canvas.setMapTool(mapTool)
          self.plugIn.mainAction.setChecked(True)     
 
-   def waitForPoint(self, msg = QadMsg.translate("QAD", "Specificare punto: "), \
+   def waitForPoint(self, msg = QadMsg.translate("QAD", "Specify point: "), \
                     default = None, inputMode = QadInputModeEnum.NONE):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
@@ -98,7 +98,7 @@ class QadCommandClass():
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.BOOL, default, "", inputMode)
 
-   def waitForSelSet(self, msg = QadMsg.translate("QAD", "Selezionare oggetti: ")):
+   def waitForSelSet(self, msg = QadMsg.translate("QAD", "Select objects: ")):
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo

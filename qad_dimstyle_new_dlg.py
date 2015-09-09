@@ -35,7 +35,7 @@ from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog
 
 from qad_variables import *
 from qad_dim import *
-from qad_msg import QadMsg
+from qad_msg import QadMsg, qadShowPluginHelp
 import qad_utils
 
 
@@ -72,7 +72,7 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
       if dimStyle is not None:
          self.newDimStyle.set(dimStyle)
          if self.newDimStyleNameChanged == False:
-            newName = qad_utils.checkUniqueNewName(dimStyle.name, self.dimNameList, QadMsg.translate("QAD", "Copia di "))
+            newName = qad_utils.checkUniqueNewName(dimStyle.name, self.dimNameList, QadMsg.translate("QAD", "Copy of "))
             if newName is not None:
                self.newDimStyleName.setText(newName)
 
@@ -82,12 +82,12 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
    def ButtonBOX_continue(self):
       if self.newDimStyleName.text() in self.dimNameList:
          QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
-                              QadMsg.translate("DimStyle_Dialog", "Nome dello stile di quotatura già esistente. Specificare un altro nome."))
+                              QadMsg.translate("DimStyle_Dialog", "Dimension style name already existing. Specify a different name."))
          return False
       self.newDimStyle.name = self.newDimStyleName.text()
       self.newDimStyle.description = self.newDimStyleDescr.text()
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.newDimStyle)
-      title = QadMsg.translate("DimStyle_Dialog", "Nuovo stile di quota: ") + self.newDimStyle.name
+      title = QadMsg.translate("DimStyle_Dialog", "New dimension style: ") + self.newDimStyle.name
       Form.setWindowTitle(title)
       
       if Form.exec_() == QDialog.Accepted:
@@ -98,7 +98,4 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
          QDialog.reject(self)      
 
    def ButtonHELP_Pressed(self):
-      # per conoscere la sezione/pagina del file html usare internet explorer,
-      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")
+      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))

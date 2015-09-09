@@ -48,7 +48,7 @@ class QadTEXTCommandClass(QadCommandClass):
       return QadTEXTCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "TESTO")
+      return QadMsg.translate("Command_list", "TEXT")
 
    def getEnglishName(self):
       return "TEXT"
@@ -61,7 +61,7 @@ class QadTEXTCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_TEXT", "Inserisce un testo.")
+      return QadMsg.translate("Command_TEXT", "Inserts a text.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -144,7 +144,7 @@ class QadTEXTCommandClass(QadCommandClass):
       if self.labelFieldNamesNdx >= len(self.labelFields):
          return False
       field = self.labelFields[self.labelFieldNamesNdx]
-      prompt = QadMsg.translate("Command_TEXT", "Digitare il valore dell'attributo \"{0}\": ").format(field.name())
+      prompt = QadMsg.translate("Command_TEXT", "Enter the value of attribute \"{0}\": ").format(field.name())
       if field.type() == QVariant.Double: # si appresta ad attendere un double o valore nullo      
          self.waitForFloat(prompt, None, QadInputModeEnum.NONE)
       elif field.type() == QVariant.LongLong: # si appresta ad attendere un long a 64 bit o valore nullo       
@@ -161,7 +161,7 @@ class QadTEXTCommandClass(QadCommandClass):
       
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
       currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Point)
@@ -170,8 +170,8 @@ class QadTEXTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isTextLayer(currLayer) == False:
-         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non é di tipo testo.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
+         errMsg = QadMsg.translate("QAD", "\nCurrent layer is not a textual layer.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
@@ -210,7 +210,7 @@ class QadTEXTCommandClass(QadCommandClass):
          if len(sizeFldNames) == 1 and len(sizeFldNames[0]) > 0:
             # si appresta ad attendere la scala                      
             self.GetDistClass = QadGetDistClass(self.plugIn)
-            prompt = QadMsg.translate("Command_TEXT", "Specificare l'altezza testo <{0}>: ")
+            prompt = QadMsg.translate("Command_TEXT", "Specify the text height <{0}>: ")
             self.GetDistClass.msg = prompt.format(str(self.hText))
             self.GetDistClass.dist = self.hText
             self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE | QadInputModeEnum.NOT_ZERO
@@ -226,7 +226,7 @@ class QadTEXTCommandClass(QadCommandClass):
                   del self.GetAngleClass                  
                # si appresta ad attendere l'angolo di rotazione                      
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_TEXT", "Specificare la rotazione del testo <{0}>: ")
+               prompt = QadMsg.translate("Command_TEXT", "Specify the text rotation <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.rot)))
                self.GetAngleClass.angle = self.rot
                self.GetAngleClass.startPt = self.insPt               
@@ -258,7 +258,7 @@ class QadTEXTCommandClass(QadCommandClass):
                      del self.GetAngleClass                  
                   # si appresta ad attendere l'angolo di rotazione                      
                   self.GetAngleClass = QadGetAngleClass(self.plugIn)
-                  prompt = QadMsg.translate("Command_TEXT", "Specificare la rotazione del testo <{0}>: ")
+                  prompt = QadMsg.translate("Command_TEXT", "Specify the text rotation <{0}>: ")
                   self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.rot)))
                   self.GetAngleClass.angle = self.rot
                   self.GetAngleClass.startPt = self.insPt               

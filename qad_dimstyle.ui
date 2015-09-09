@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QAD - Gestione stili di quota</string>
+   <string>QAD - Dimension style manager</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -26,7 +26,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Stile di quota corrente:</string>
+    <string>Current dimension style:</string>
    </property>
   </widget>
   <widget class="QLabel" name="currentDimStyle">
@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>nessuno</string>
+    <string>none</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -52,7 +52,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Stili</string>
+    <string>Styles</string>
    </property>
   </widget>
   <widget class="QListView" name="dimStyleList">
@@ -75,10 +75,10 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Rende corrente lo stile selezionato nella'area Stili. Lo stile corrente è applicato alle quota create dall'uente.</string>
+    <string>Sets the style selected under Styles to current. The current style is applied to dimensions you create.</string>
    </property>
    <property name="text">
-    <string>Imposta corrente</string>
+    <string>Set current</string>
    </property>
   </widget>
   <widget class="QPushButton" name="new_2">
@@ -91,10 +91,10 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Definisce un nuovo stile di quota.</string>
+    <string>Define a new dimension style.</string>
    </property>
    <property name="text">
-    <string>Nuovo...</string>
+    <string>New...</string>
    </property>
   </widget>
   <widget class="QPushButton" name="Mod">
@@ -107,10 +107,10 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Modifica lo stile di quota selezionato nella'area Stili.</string>
+    <string>Modify the selected dimension style.</string>
    </property>
    <property name="text">
-    <string>Modifica...</string>
+    <string>Modify...</string>
    </property>
   </widget>
   <widget class="QPushButton" name="TempMod">
@@ -123,10 +123,10 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Imposta modifiche locali per lo stile selezionato nella'area Stili. Le modifiche locali sono modifiche che non verranno salvate.</string>
+    <string>Set temporary modifications for the selected style. The temporary modifications will not saved.</string>
    </property>
    <property name="text">
-    <string>Sostituisci...</string>
+    <string>Override...</string>
    </property>
   </widget>
   <widget class="QPushButton" name="Diff">
@@ -139,10 +139,10 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</string>
+    <string>Compare two dimension styles or list all the properties of one dimension style.</string>
    </property>
    <property name="text">
-    <string>Confronta...</string>
+    <string>Compare...</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -155,7 +155,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Descrizione</string>
+    <string>Description</string>
    </property>
    <widget class="QLabel" name="descriptionSelectedStyle">
     <property name="geometry">
@@ -167,7 +167,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>nessuna</string>
+     <string>none</string>
     </property>
    </widget>
   </widget>
@@ -181,7 +181,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Anteprima di:</string>
+    <string>Preview of:</string>
    </property>
   </widget>
   <widget class="QLabel" name="selectedStyle">
@@ -194,7 +194,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>nessuna</string>
+    <string>none</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
@@ -210,7 +210,7 @@
     <item>
      <widget class="QPushButton" name="closeButton">
       <property name="text">
-       <string>Chiudi</string>
+       <string>Close</string>
       </property>
      </widget>
     </item>

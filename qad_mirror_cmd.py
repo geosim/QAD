@@ -49,7 +49,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       return QadMIRRORCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "SPECCHIO")
+      return QadMsg.translate("Command_list", "MIRROR")
 
    def getEnglishName(self):
       return "MIRROR"
@@ -62,7 +62,7 @@ class QadMIRRORCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_MIRROR", "Crea una copia speculare degli oggetti selezionati.")
+      return QadMsg.translate("Command_MIRROR", "Creates a mirrored copy of selected objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -180,7 +180,7 @@ class QadMIRRORCommandClass(QadCommandClass):
 
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
       #=========================================================================
@@ -205,7 +205,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_mirror_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
    
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare primo punto della linea speculare: "))
+         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "))
          self.step = 2      
          return False
          
@@ -220,7 +220,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
-                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare primo punto della linea speculare: "))
+                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "))
                   return False
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -237,7 +237,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_mirror_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
          
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare secondo punto della linea speculare: "))
+         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
          self.step = 3
          
          return False 
@@ -253,7 +253,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
-                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare secondo punto della linea speculare: "))
+                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
@@ -263,20 +263,20 @@ class QadMIRRORCommandClass(QadCommandClass):
             value = msg
 
          if qad_utils.ptNear(self.firstMirrorPt, value):
-            self.showMsg(QadMsg.translate("Command_MIRROR", "\nI punti devono essere distinti."))
+            self.showMsg(QadMsg.translate("Command_MIRROR", "\nThe points must be different."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specificare secondo punto della linea speculare: "))
+            self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
             return False
          
          self.secondMirrorPt.set(value.x(), value.y())
          
-         keyWords = QadMsg.translate("QAD", "Sì") + "/" + \
+         keyWords = QadMsg.translate("QAD", "Yes") + "/" + \
                     QadMsg.translate("QAD", "No")                                       
          if self.copyFeatures == False:
-            default = QadMsg.translate("QAD", "Sì")
+            default = QadMsg.translate("QAD", "Yes")
          else: 
             default = QadMsg.translate("QAD", "No")
-         prompt = QadMsg.translate("Command_MIRROR", "Cancellare gli oggetti sorgente ? [{0}] <{1}>: ").format(keyWords, default)
+         prompt = QadMsg.translate("Command_MIRROR", "Erase source objects ? [{0}] <{1}>: ").format(keyWords, default)
              
          englishKeyWords = "Yes" + "/" + "No"
          keyWords += "_" + englishKeyWords
@@ -309,7 +309,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("QAD", "Sì") or value == "Yes":
+            if value == QadMsg.translate("QAD", "Yes") or value == "Yes":
                self.copyFeatures = False
             elif value == QadMsg.translate("QAD", "No") or value == "No":
                self.copyFeatures = True

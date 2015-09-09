@@ -44,7 +44,7 @@ class QadERASECommandClass(QadCommandClass):
       return QadERASECommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "CANCELLA")
+      return QadMsg.translate("Command_list", "ERASE")
 
    def getEnglishName(self):
       return "ERASE"
@@ -57,7 +57,7 @@ class QadERASECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_ERASE", "Cancella oggetti dalla mappa.")
+      return QadMsg.translate("Command_ERASE", "Removes objects of the map.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

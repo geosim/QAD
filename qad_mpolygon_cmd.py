@@ -46,7 +46,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       return QadMPOLYGONCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "MPOLIGONO")
+      return QadMsg.translate("Command_list", "MPOLYGON")
 
    def getEnglishName(self):
       return "MPOLYGON"
@@ -59,7 +59,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_MPOLYGON", "Disegna un poligono mediante diversi metodi.\n\nUn poligono é una sequenza chiusa di segmenti retti,\narchi o una combinazione dei due.")
+      return QadMsg.translate("Command_MPOLYGON", "Draws a polygon by many methods.\nA Polygon is a closed sequence of straight line segments,\narcs or a combination of two.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -81,7 +81,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
            
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
@@ -116,10 +116,10 @@ class QadMPOLYGONCommandClass(QadCommandClass):
                   self.vertices.append(firstVertex)
                if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
                   if qad_layer.addPolygonToLayer(self.plugIn, currLayer, self.vertices) == False:                     
-                     self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPoligono non valido.\n"))
+                     self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPolygon not valid.\n"))
                      del self.vertices[:] # svuoto la lista
             else:
-               self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPoligono non valido.\n"))
+               self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPolygon not valid.\n"))
                                
             del self.PLINECommand
             self.PLINECommand = None

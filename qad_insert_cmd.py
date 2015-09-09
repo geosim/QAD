@@ -47,7 +47,7 @@ class QadINSERTCommandClass(QadCommandClass):
       return QadINSERTCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "INSER")
+      return QadMsg.translate("Command_list", "INSERT")
 
    def getEnglishName(self):
       return "INSERT"
@@ -60,7 +60,7 @@ class QadINSERTCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_INSERT", "Inserisce un simbolo.")
+      return QadMsg.translate("Command_INSERT", "Insert a symbol.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -117,7 +117,7 @@ class QadINSERTCommandClass(QadCommandClass):
       
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
       currLayer, errMsg = qad_layer.getCurrLayerEditable(self.plugIn.canvas, QGis.Point)
@@ -126,8 +126,8 @@ class QadINSERTCommandClass(QadCommandClass):
          return True # fine comando
 
       if qad_layer.isSymbolLayer(currLayer) == False:
-         errMsg = QadMsg.translate("QAD", "\nIl layer corrente non é di tipo simbolo.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo é un layer vettoriale di tipo punto senza etichetta.\n")
+         errMsg = QadMsg.translate("QAD", "\nCurrent layer is not a symbol layer.")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
@@ -166,7 +166,7 @@ class QadINSERTCommandClass(QadCommandClass):
          if len(scaleFldName) > 0:
             # si appresta ad attendere la scala                      
             self.GetDistClass = QadGetDistClass(self.plugIn)
-            prompt = QadMsg.translate("Command_INSERT", "Specificare la scala del simbolo <{0}>: ")
+            prompt = QadMsg.translate("Command_INSERT", "Specify the symbol scale <{0}>: ")
             self.GetDistClass.msg = prompt.format(str(self.scale))
             self.GetDistClass.dist = self.scale
             self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE | QadInputModeEnum.NOT_ZERO
@@ -182,7 +182,7 @@ class QadINSERTCommandClass(QadCommandClass):
                   del self.GetAngleClass                  
                # si appresta ad attendere l'angolo di rotazione                      
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_INSERT", "Specificare la rotazione del simbolo <{0}>: ")
+               prompt = QadMsg.translate("Command_INSERT", "Specify the symbol rotation <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.rot)))
                self.GetAngleClass.angle = self.rot
                self.GetAngleClass.startPt = self.insPt               
@@ -211,7 +211,7 @@ class QadINSERTCommandClass(QadCommandClass):
                      del self.GetAngleClass                  
                   # si appresta ad attendere l'angolo di rotazione                      
                   self.GetAngleClass = QadGetAngleClass(self.plugIn)
-                  prompt = QadMsg.translate("Command_INSERT", "Specificare la rotazione del simbolo <{0}>: ")
+                  prompt = QadMsg.translate("Command_INSERT", "Specify the symbol rotation <{0}>: ")
                   self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.rot)))
                   self.GetAngleClass.angle = self.rot
                   self.GetAngleClass.startPt = self.insPt               

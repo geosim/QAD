@@ -60,7 +60,7 @@ class QadEntSelClass(QadCommandClass):
       self.checkPolygonLayer = True
       self.checkDimLayers = True
       self.selDimEntity = False # per restituire o meno un oggetto QadDimEntity
-      self.msg = QadMsg.translate("QAD", "Selezionare oggetto: ")
+      self.msg = QadMsg.translate("QAD", "Select object: ")
       
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -108,7 +108,7 @@ class QadEntSelClass(QadCommandClass):
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       #=========================================================================
@@ -119,7 +119,7 @@ class QadEntSelClass(QadCommandClass):
          # imposto i layer da controllare sul maptool
          self.getPointMapTool().layersToCheck = self.getLayersToCheck()
                   
-         keyWords = QadMsg.translate("Command_ENTSEL", "Ultimo")
+         keyWords = QadMsg.translate("Command_ENTSEL", "Last")
                   
          englishKeyWords = "Last"
          keyWords += "_" + englishKeyWords
@@ -159,7 +159,7 @@ class QadEntSelClass(QadCommandClass):
             return True # fine comando
          
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_ENTSEL", "Ultimo") or value == "Last":
+            if value == QadMsg.translate("Command_ENTSEL", "Last") or value == "Last":
                # Seleziona l'ultima entità inserita
                lastEnt = self.plugIn.getLastEntity()
                if lastEnt is not None:

@@ -48,7 +48,7 @@ class QadEXTENDCommandClass(QadCommandClass):
       return QadEXTENDCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "ESTENDI")
+      return QadMsg.translate("Command_list", "EXTEND")
 
    def getEnglishName(self):
       return "EXTEND"
@@ -61,7 +61,7 @@ class QadEXTENDCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_EXTEND", "Allunga (o taglia) gli oggetti fino al punto di incontro con altri oggetti.")
+      return QadMsg.translate("Command_EXTEND", "Extends (or trims) objects to meet the edges of other objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -215,11 +215,11 @@ class QadEXTENDCommandClass(QadCommandClass):
       self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
       self.getPointMapTool().onlyEditableLayers = True
       
-      keyWords = QadMsg.translate("Command_EXTEND", "iNTercetta") + "/" + \
-                 QadMsg.translate("Command_EXTEND", "Interseca") + "/" + \
-                 QadMsg.translate("Command_EXTEND", "Spigolo") + "/" + \
-                 QadMsg.translate("Command_EXTEND", "Annulla")
-      prompt = QadMsg.translate("Command_EXTEND", "Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: ").format(keyWords)
+      keyWords = QadMsg.translate("Command_EXTEND", "Fence") + "/" + \
+                 QadMsg.translate("Command_EXTEND", "Crossing") + "/" + \
+                 QadMsg.translate("Command_EXTEND", "Edge") + "/" + \
+                 QadMsg.translate("Command_EXTEND", "Undo")
+      prompt = QadMsg.translate("Command_EXTEND", "Select the object to extend or shift-select to trim or [{0}]: ").format(keyWords)
       
       englishKeyWords = "Fence" + "/" + "Crossing" + "/" + "Edge" + "/" + "Undo"
       keyWords += "_" + englishKeyWords
@@ -236,20 +236,20 @@ class QadEXTENDCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       #=========================================================================
       # RICHIESTA SELEZIONE OGGETTI LIMITI
       if self.step == 0: # inizio del comando
-         CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
+         CurrSettingsMsg = QadMsg.translate("QAD", "\nCurrent settings: ")
          if self.edgeMode == 0: # 0 = nessuna estensione
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_EXTEND", "Spigolo = Nessuna estensione")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_EXTEND", "Edge = No extend")
          else:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_EXTEND", "Spigolo = Estensione")         
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_EXTEND", "Edge = Extend")
                   
          self.showMsg(CurrSettingsMsg)         
-         self.showMsg(QadMsg.translate("Command_EXTEND", "\nSelezionare i limiti di estensione..."))         
+         self.showMsg(QadMsg.translate("Command_EXTEND", "\nSelect extension limits..."))
          
          if self.SSGetClass.run(msgMapTool, msg) == True:
             # selezione terminata
@@ -288,7 +288,7 @@ class QadEXTENDCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_EXTEND", "iNTercetta") or value == "Fence":
+            if value == QadMsg.translate("Command_EXTEND", "Fence") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
                self.PLINECommand = QadPLINECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -297,7 +297,7 @@ class QadEXTENDCommandClass(QadCommandClass):
                self.PLINECommand.run(msgMapTool, msg)
                self.step = 3
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Interseca") or value == "Crossing":
+            elif value == QadMsg.translate("Command_EXTEND", "Crossing") or value == "Crossing":
                # Seleziona tutti gli oggetti che intersecano un rettangolo                                  
                self.RECTANGLECommand = QadRECTANGLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
@@ -306,17 +306,17 @@ class QadEXTENDCommandClass(QadCommandClass):
                self.RECTANGLECommand.run(msgMapTool, msg)
                self.step = 4
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Spigolo") or value == "Edge":
+            elif value == QadMsg.translate("Command_EXTEND", "Edge") or value == "Edge":
                # Per estendere un oggetto usando anche le estensioni degli oggetti di riferimento
                # vedi variabile EDGEMODE
-               keyWords = QadMsg.translate("Command_EXTEND", "Estensione") + "/" + \
-                          QadMsg.translate("Command_EXTEND", "Nessuna estensione")                                              
+               keyWords = QadMsg.translate("Command_EXTEND", "Extend") + "/" + \
+                          QadMsg.translate("Command_EXTEND", "No extend")                                              
 
                if self.edgeMode == 0: # 0 = nessuna estensione
-                  self.defaultValue = QadMsg.translate("Command_EXTEND", "Nessuna estensione")
+                  self.defaultValue = QadMsg.translate("Command_EXTEND", "No extend")
                else: 
-                  self.defaultValue = QadMsg.translate("Command_EXTEND", "Estensione")                   
-               prompt = QadMsg.translate("Command_EXTEND", "Specificare una modalità di estensione spigoli [{0}] <{1}>: ").format(keyWords, self.defaultValue)
+                  self.defaultValue = QadMsg.translate("Command_EXTEND", "Extend")                   
+               prompt = QadMsg.translate("Command_EXTEND", "Specify an extension mode [{0}] <{1}>: ").format(keyWords, self.defaultValue)
                    
                englishKeyWords = "Extend" + "/" + "No extend"
                keyWords += "_" + englishKeyWords
@@ -328,12 +328,12 @@ class QadEXTENDCommandClass(QadCommandClass):
                             keyWords, QadInputModeEnum.NONE)
                self.step = 5               
                return False               
-            elif value == QadMsg.translate("Command_EXTEND", "Annulla") or value == "Undo":
+            elif value == QadMsg.translate("Command_EXTEND", "Undo") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))
          elif type(value) == QgsPoint: # se é stato selezionato un punto
             self.entitySet.clear()
             if self.getPointMapTool().entity.isInitialized():
@@ -441,13 +441,13 @@ class QadEXTENDCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_EXTEND", "Nessuna estensione ") or value == "No extend":
+            if value == QadMsg.translate("Command_EXTEND", "No extend") or value == "No extend":
                self.edgeMode = 0
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()
                # si appresta ad attendere la selezione degli oggetti da estendere/tagliare
                self.waitForObjectSel()
-            elif value == QadMsg.translate("Command_EXTEND", "Estensione") or value == "Extend":
+            elif value == QadMsg.translate("Command_EXTEND", "Extend") or value == "Extend":
                self.edgeMode = 1
                QadVariables.set(QadMsg.translate("Environment variables", "EDGEMODE"), self.edgeMode)
                QadVariables.save()

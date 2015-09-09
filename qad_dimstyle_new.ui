@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QAD - Crea nuovo stile di quota</string>
+   <string>QAD - Create new dimension style</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Nome del nuovo stile:</string>
+    <string>New style name:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="newDimStyleName">
@@ -46,7 +46,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Copia i parametri dallo stile:</string>
+    <string>Start with:</string>
    </property>
   </widget>
   <widget class="QComboBox" name="DimStyleNameFrom">
@@ -69,7 +69,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Continua...</string>
+    <string>Continue...</string>
    </property>
   </widget>
   <widget class="QPushButton" name="cancelButton">
@@ -82,7 +82,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Annulla</string>
+    <string>Cancel</string>
    </property>
   </widget>
   <widget class="QPushButton" name="helpButton">
@@ -108,7 +108,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Descrizione:</string>
+    <string>Description:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="newDimStyleDescr">

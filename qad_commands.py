@@ -67,6 +67,7 @@ from qad_fillet_cmd import QadFILLETCommandClass
 from qad_polygon_cmd import QadPOLYGONCommandClass
 from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
 from qad_dimstyle_cmd import QadDIMSTYLECommandClass
+from qad_help_cmd import QadHELPCommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -115,6 +116,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIMLINEARCommandClass(self.plugIn)) # DIMLINEAR
       self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
+      self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
      
       self.actualCommand = None  # Comando in corso di esecuzione
    
@@ -200,7 +202,7 @@ class QadCommandsClass():
       
       self.actualCommand = self.getCommandObj(command)
       if self.actualCommand is None:
-         msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
+         msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return
          
@@ -218,7 +220,7 @@ class QadCommandsClass():
       
       self.actualCommand = self.getCommandObj("MACRO_RUNNER")
       if self.actualCommand is None:
-         msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
+         msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return
       self.actualCommand.setCmdAndOptionsToRun(args)
@@ -269,7 +271,7 @@ class QadCommandsClass():
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
          self.plugIn.setStandardMapTool()               
       else:
-         self.showErr(QadMsg.translate("QAD", "*Annullato*"))
+         self.showErr(QadMsg.translate("QAD", "*Canceled*"))
          self.clearCommand()
 
 
@@ -404,7 +406,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
       self.command = self.plugIn.getCommandObj(cmdName)
 
       if self.command is None:
-         msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
+         msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return False
       self.plugIn.updateHistoryfromTxtWindow(cmdName)

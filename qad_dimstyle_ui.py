@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle.ui'
 #
-# Created: Thu Aug 27 11:02:30 2015
+# Created: Tue Sep 08 15:55:19 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -96,24 +96,24 @@ class Ui_DimStyle_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(DimStyle_Dialog)
 
     def retranslateUi(self, DimStyle_Dialog):
-        DimStyle_Dialog.setWindowTitle(_translate("DimStyle_Dialog", "QAD - Gestione stili di quota", None))
-        self.label.setText(_translate("DimStyle_Dialog", "Stile di quota corrente:", None))
-        self.currentDimStyle.setText(_translate("DimStyle_Dialog", "nessuno", None))
-        self.label_2.setText(_translate("DimStyle_Dialog", "Stili", None))
-        self.SetCurrent.setToolTip(_translate("DimStyle_Dialog", "Rende corrente lo stile selezionato nella\'area Stili. Lo stile corrente è applicato alle quota create dall\'uente.", None))
-        self.SetCurrent.setText(_translate("DimStyle_Dialog", "Imposta corrente", None))
-        self.new_2.setToolTip(_translate("DimStyle_Dialog", "Definisce un nuovo stile di quota.", None))
-        self.new_2.setText(_translate("DimStyle_Dialog", "Nuovo...", None))
-        self.Mod.setToolTip(_translate("DimStyle_Dialog", "Modifica lo stile di quota selezionato nella\'area Stili.", None))
-        self.Mod.setText(_translate("DimStyle_Dialog", "Modifica...", None))
-        self.TempMod.setToolTip(_translate("DimStyle_Dialog", "Imposta modifiche locali per lo stile selezionato nella\'area Stili. Le modifiche locali sono modifiche che non verranno salvate.", None))
-        self.TempMod.setText(_translate("DimStyle_Dialog", "Sostituisci...", None))
-        self.Diff.setToolTip(_translate("DimStyle_Dialog", "Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.", None))
-        self.Diff.setText(_translate("DimStyle_Dialog", "Confronta...", None))
-        self.groupBox.setTitle(_translate("DimStyle_Dialog", "Descrizione", None))
-        self.descriptionSelectedStyle.setText(_translate("DimStyle_Dialog", "nessuna", None))
-        self.label_3.setText(_translate("DimStyle_Dialog", "Anteprima di:", None))
-        self.selectedStyle.setText(_translate("DimStyle_Dialog", "nessuna", None))
-        self.closeButton.setText(_translate("DimStyle_Dialog", "Chiudi", None))
+        DimStyle_Dialog.setWindowTitle(_translate("DimStyle_Dialog", "QAD - Dimension style manager", None))
+        self.label.setText(_translate("DimStyle_Dialog", "Current dimension style:", None))
+        self.currentDimStyle.setText(_translate("DimStyle_Dialog", "none", None))
+        self.label_2.setText(_translate("DimStyle_Dialog", "Styles", None))
+        self.SetCurrent.setToolTip(_translate("DimStyle_Dialog", "Sets the style selected under Styles to current. The current style is applied to dimensions you create.", None))
+        self.SetCurrent.setText(_translate("DimStyle_Dialog", "Set current", None))
+        self.new_2.setToolTip(_translate("DimStyle_Dialog", "Define a new dimension style.", None))
+        self.new_2.setText(_translate("DimStyle_Dialog", "New...", None))
+        self.Mod.setToolTip(_translate("DimStyle_Dialog", "Modify the selected dimension style.", None))
+        self.Mod.setText(_translate("DimStyle_Dialog", "Modify...", None))
+        self.TempMod.setToolTip(_translate("DimStyle_Dialog", "Set temporary modifications for the selected style. The temporary modifications will not saved.", None))
+        self.TempMod.setText(_translate("DimStyle_Dialog", "Override...", None))
+        self.Diff.setToolTip(_translate("DimStyle_Dialog", "Compare two dimension styles or list all the properties of one dimension style.", None))
+        self.Diff.setText(_translate("DimStyle_Dialog", "Compare...", None))
+        self.groupBox.setTitle(_translate("DimStyle_Dialog", "Description", None))
+        self.descriptionSelectedStyle.setText(_translate("DimStyle_Dialog", "none", None))
+        self.label_3.setText(_translate("DimStyle_Dialog", "Preview of:", None))
+        self.selectedStyle.setText(_translate("DimStyle_Dialog", "none", None))
+        self.closeButton.setText(_translate("DimStyle_Dialog", "Close", None))
         self.helpButton.setText(_translate("DimStyle_Dialog", "?", None))
 

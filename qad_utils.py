@@ -29,7 +29,6 @@ from qgis.core import *
 from qgis.gui import *
 from qgis.utils import *
 
-import platform
 import math
 import sys
 import string
@@ -179,7 +178,7 @@ def str2bool(s):
          upperS == QadMsg.translate("QAD", "N") or \
          upperS == QadMsg.translate("QAD", "NO") or \
          upperS == QadMsg.translate("QAD", "F") or \
-         upperS == QadMsg.translate("QAD", "FALSO"): 
+         upperS == QadMsg.translate("QAD", "FALSE"):
          return False
       else:
          return True
@@ -270,22 +269,22 @@ def str2snapTypeEnum(s):
       snapTypeStr = snapTypeStr.strip().upper()
       
       # "NES" nessuno snap
-      if snapTypeStr == QadMsg.translate("Snap", "NES") or snapTypeStr == "_NON":         
+      if snapTypeStr == QadMsg.translate("Snap", "NONE") or snapTypeStr == "_NONE":
          return QadSnapTypeEnum.NONE
       # "FIN" punti finali di ogni segmento
-      elif snapTypeStr == QadMsg.translate("Snap", "FIN") or snapTypeStr == "_END":
+      elif snapTypeStr == QadMsg.translate("Snap", "END") or snapTypeStr == "_END":
          snapType = snapType | QadSnapTypeEnum.END
       # "FIN_PL" punti finali dell'intera polilinea
-      elif snapTypeStr == QadMsg.translate("Snap", "FIN_PL") or snapTypeStr == "_END_PL":  
+      elif snapTypeStr == QadMsg.translate("Snap", "END_PL") or snapTypeStr == "_END_PL":
          snapType = snapType | QadSnapTypeEnum.END_PLINE
       # "MED" punto medio
-      elif snapTypeStr == QadMsg.translate("Snap", "MED") or snapTypeStr == "_MID":  
+      elif snapTypeStr == QadMsg.translate("Snap", "MID") or snapTypeStr == "_MID":
          snapType = snapType | QadSnapTypeEnum.MID
       # "CEN" centro (centroide)
-      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":  
+      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":
          snapType = snapType | QadSnapTypeEnum.CEN
       # "NOD" oggetto punto
-      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD": 
+      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD":
          snapType = snapType | QadSnapTypeEnum.NOD
       # "QUA" punto quadrante
       elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
@@ -294,7 +293,7 @@ def str2snapTypeEnum(s):
       elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
          snapType = snapType | QadSnapTypeEnum.INT
       # "INS" punto di inserimento
-      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS": 
+      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS":
          snapType = snapType | QadSnapTypeEnum.INS
       # "PER" punto perpendicolare
       elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
@@ -303,13 +302,13 @@ def str2snapTypeEnum(s):
       elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
          snapType = snapType | QadSnapTypeEnum.TAN
       # "VIC" punto più vicino
-      elif snapTypeStr == QadMsg.translate("Snap", "VIC") or snapTypeStr == "_NEA":
+      elif snapTypeStr == QadMsg.translate("Snap", "NEA") or snapTypeStr == "_NEA":
          snapType = snapType | QadSnapTypeEnum.NEA
       # "APP" intersezione apparente
       elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
          snapType = snapType | QadSnapTypeEnum.APP
       # "EST" Estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EST") or snapTypeStr == "_EXT":
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT") or snapTypeStr == "_EXT":
          snapType = snapType | QadSnapTypeEnum.EXT
       # "PAR" Parallelo
       elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
@@ -325,7 +324,7 @@ def str2snapTypeEnum(s):
          if len(param) == 0 or str2float(param) is not None:
             snapType = snapType | QadSnapTypeEnum.PR
       # "EST_INT" intersezione su estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EST_INT") or snapTypeStr == "_EXT_INT":
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
          snapType = snapType | QadSnapTypeEnum.EXT_INT
    
    return snapType if snapType != QadSnapTypeEnum.NONE else -1
@@ -953,8 +952,9 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                                                                       QgsTolerance.Pixels)
       
                pt = g.asPoint()
-               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.x() - ToleranceInMapUnits, \
-                                         pt.y() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
+               # QgsRectangle (double xmin=0, double ymin=0, double xmax=0, double ymax=0)
+               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.y() - ToleranceInMapUnits, \
+                                         pt.x() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
                # fetchAttributes, fetchGeometry, rectangle, useIntersect             
                request = getFeatureRequest([], True, selectRect, True)
             else:
@@ -964,7 +964,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             # fetchAttributes, fetchGeometry, rectangle, useIntersect             
             for feature in layer.getFeatures(request):                           
                # solo le feature intersecanti l'oggetto
-               if g.intersects(feature.geometry()):                     
+               if g.intersects(feature.geometry()):
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
          elif mode.upper() == "WO": # windows object
@@ -984,8 +984,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                                                                       QgsTolerance.Pixels)
       
                pt = g.asPoint()
-               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.x() - ToleranceInMapUnits, \
-                                         pt.y() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
+               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.y() - ToleranceInMapUnits, \
+                                         pt.x() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
                # fetchAttributes, fetchGeometry, rectangle, useIntersect             
                request = getFeatureRequest([], True, selectRect, True)
             else:
@@ -1805,7 +1805,7 @@ def getNearestPoints(point, points, tolerance = 0):
    result = []   
    minDist = sys.float_info.max
    
-   if tolerance == 0: # solo il punti più vicino
+   if tolerance == 0: # solo il punto più vicino
       for pt in points:
          dist = getDistance(point, pt)
          if dist < minDist:
@@ -1815,7 +1815,7 @@ def getNearestPoints(point, points, tolerance = 0):
       if minDist != sys.float_info.max: # trovato
          result.append(nearestPoint)
    else:
-      nearest = __getNearestPoints(point, points) # punto più vicino
+      nearest = getNearestPoints(point, points) # punto più vicino
       nearestPoint = nearest[0]
       
       for pt in points:
@@ -2172,6 +2172,33 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
 
    return (-1, None, None, None)
 
+
+
+#===============================================================================
+# closestVertexPtWithContext
+#===============================================================================
+def closestVertexPtWithContext(point, geom, epsilon = 1.e-15):
+   """
+   la funzione ritorna il punto del vertice più vicino a point
+   """
+   wkbType = geom.wkbType()
+   if wkbType == QGis.WKBPoint:
+      return geom.asPoint()
+   if wkbType == QGis.WKBMultiPoint:
+      return getNearestPoints(point, geom.asMultiPoint())[0] # vettore di punti
+   
+   # ritorna una tupla (<The squared cartesian distance>,
+   #                    <minDistPoint>
+   #                    <afterVertex>
+   #                    <leftOf>)
+   dummy = closestSegmentWithContext(point, geom, epsilon)   
+   if dummy[2] is not None:
+      # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
+      subGeom, atSubGeom1 = qad_utils.getSubGeomAtVertex(geom, dummy[2])
+      l = QadLinearObjectList()
+      l.fromPolyline(subGeom.asPolyline())
+      vertexAt = l.closestVertexWithContext(point)
+      return l.getPointAtVertex(vertexAt)
 
 
 #===============================================================================
@@ -8468,6 +8495,31 @@ class QadLinearObjectList():
 
 
    #===============================================================================
+   # closestVertexWithContext
+   #===============================================================================
+   def closestVertexWithContext(self, pt, epsilon = 1.e-15):
+      """
+      la funzione ritorna il vertice più vicino a pt
+      """
+      # la funzione ritorna una lista con (<minima distanza al quadrato>,
+      #                                    <punto più vicino>
+      #                                    <indice della parte più vicina>       
+      #                                    <"a sinistra di">)
+      dummy = self.closestPartWithContext(pt, epsilon)
+      partAt = dummy[2]
+      linearObject = self.getLinearObjectAt(partAt)            
+      # punto iniziale della parte
+      if qad_utils.getDistance(linearObject.getStartPt(), pt) < \
+         qad_utils.getDistance(linearObject.getEndPt(), pt):            
+         return partAt
+      else: # punto finale della parte
+         if partAt == self.qty() - 1: # se ultima parte                  
+            return 0 if self.isClosed() else partAt + 1
+         else:
+            return partAt + 1
+      
+
+   #===============================================================================
    # breakOnPt
    #===============================================================================
    def breakOnPt(self, point):
@@ -9056,64 +9108,3 @@ class Timer(object):
       self.msecs = self.secs * 1000  # millisecs
       if self.verbose:
          print 'elapsed time: %f ms' % self.msecs
-
-
-#===============================================================================
-# qadShowPluginHelp
-#===============================================================================
-def qadShowPluginHelp(section = "", filename = "index", packageName = None):
-   """
-   show a help in the user's html browser.
-   per conoscere la sezione/pagina del file html usare internet explorer,
-   selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-   Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-   """   
-   try:
-      source = ""
-      if packageName is None:
-         import inspect
-         source = inspect.currentframe().f_back.f_code.co_filename
-      else:
-         source = sys.modules[packageName].__file__
-   except:
-      return
-
-   # initialize locale
-   userLocaleList = QSettings().value("locale/userLocale").split("_")
-   language = userLocaleList[0]
-   region = userLocaleList[1] if len(userLocaleList) > 1 else ""
-
-   path = os.path.dirname(source) + "/help/help"
-   helpPath = path + "_" + language + "_" + region # provo a caricare la lingua e la regione selezionate
-   if not os.path.exists(helpPath):
-      helpPath = path + "_" + language # provo a caricare la lingua
-      if not os.path.exists(helpPath):
-         helpPath = path + "_en" # provo a caricare la lingua inglese
-         if not os.path.exists(helpPath):
-            return
-      
-   helpfile = os.path.join(helpPath, filename + ".html")
-   if os.path.exists(helpfile):
-      url = "file:///"+helpfile
-
-      if section != "":
-         url = url + "#" + section
-
-      # la funzione QDesktopServices.openUrl in windows non apre la sezione
-      if platform.system() == "Windows":
-         import subprocess
-         from _winreg import HKEY_CURRENT_USER, OpenKey, QueryValue
-         # In Py3, this module is called winreg without the underscore
-         
-         with OpenKey(HKEY_CURRENT_USER, r"Software\Classes\http\shell\open\command") as key:
-            cmd = QueryValue(key, None)
-   
-         if cmd.find("\"%1\"") >= 0:
-            subprocess.Popen(cmd.replace("%1", url))
-         else:    
-            if cmd.find("%1") >= 0:
-               subprocess.Popen(cmd.replace("%1", "\"" + url + "\""))       
-            else:
-               subprocess.Popen(cmd + " \"" + url + "\"")
-      else:
-         QDesktopServices.openUrl(QUrl(url))           

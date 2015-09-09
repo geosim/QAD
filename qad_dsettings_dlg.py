@@ -36,7 +36,7 @@ import qad_dsettings_ui
 
 from qad_variables import *
 from qad_snapper import *
-from qad_msg import QadMsg
+from qad_msg import QadMsg, qadShowPluginHelp
 import qad_utils
 
 
@@ -216,7 +216,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
    def lineEdit_ProgrDistance_Validation(self):
       string = self.lineEdit_ProgrDistance.text()
       if qad_utils.str2float(string) is None or qad_utils.str2float(string) == 0:
-         msg = QadMsg.translate("DSettings_Dialog", "Snap ad oggetto per distanza progressiva non corretto: impostare valore numerico diverso da zero.")
+         msg = QadMsg.translate("DSettings_Dialog", "Invalid progressive distance object snap: enter a number not zero.")
          QMessageBox.critical(self, "QAD", msg)
          self.lineEdit_ProgrDistance.setFocus()
          self.lineEdit_ProgrDistance.selectAll()
@@ -227,7 +227,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
    def comboBox_increment_angle_Validation(self):
       string = self.comboBox_increment_angle.lineEdit().text()
       if qad_utils.str2float(string) is None or qad_utils.str2float(string) <= 0 or qad_utils.str2float(string) >= 360:
-         msg = QadMsg.translate("DSettings_Dialog", "Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.")
+         msg = QadMsg.translate("DSettings_Dialog", "Invalid increment angle: enter a number greater than zero and less than 360 degree.")
          QMessageBox.critical(self, "QAD", msg) 
          self.comboBox_increment_angle.lineEdit().setFocus()
          self.comboBox_increment_angle.lineEdit().selectAll()
@@ -236,7 +236,4 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
 
 
    def ButtonHELP_Pressed(self):
-      # per conoscere la sezione/pagina del file html usare internet explorer,
-      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")
+      qadShowPluginHelp(QadMsg.translate("Help", "DSETTINGS"))

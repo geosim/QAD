@@ -656,7 +656,7 @@ class QadGetPoint(QgsMapTool):
    def displayPopupMenu(self, pos):
       popupMenu = QMenu(self.canvas)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Inizio / Fine")
+      msg = QadMsg.translate("DSettings_Dialog", "Start / End")
       icon = QIcon(":/plugins/qad/icons/osnap_endLine.png")
       if icon is None:
          addEndLineSnapTypeAction = QAction(msg, popupMenu)
@@ -665,7 +665,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addEndLineSnapTypeAction, SIGNAL("triggered()"), self.addEndLineSnapTypeByPopupMenu)      
       popupMenu.addAction(addEndLineSnapTypeAction)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Inizio / Fine segmento")
+      msg = QadMsg.translate("DSettings_Dialog", "Segment Start / End")
       icon = QIcon(":/plugins/qad/icons/osnap_end.png")
       if icon is None:
          addEndSnapTypeAction = QAction(msg, popupMenu)
@@ -674,7 +674,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addEndSnapTypeAction, SIGNAL("triggered()"), self.addEndSnapTypeByPopupMenu)      
       popupMenu.addAction(addEndSnapTypeAction)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Punto medio")
+      msg = QadMsg.translate("DSettings_Dialog", "Middle point")
       icon = QIcon(":/plugins/qad/icons/osnap_mid.png")
       if icon is None:
          addMidSnapTypeAction = QAction(msg, popupMenu)
@@ -683,7 +683,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addMidSnapTypeAction, SIGNAL("triggered()"), self.addMidSnapTypeByPopupMenu)      
       popupMenu.addAction(addMidSnapTypeAction)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Intersezione")
+      msg = QadMsg.translate("DSettings_Dialog", "Intersection")
       icon = QIcon(":/plugins/qad/icons/osnap_int.png")
       if icon is None:
          addIntSnapTypeAction = QAction(msg, popupMenu)
@@ -692,7 +692,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addIntSnapTypeAction, SIGNAL("triggered()"), self.addIntSnapTypeByPopupMenu)      
       popupMenu.addAction(addIntSnapTypeAction)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Intersezione su estensione")
+      msg = QadMsg.translate("DSettings_Dialog", "Intersection on extension")
       icon = QIcon(":/plugins/qad/icons/osnap_extInt.png")
       if icon is None:
          addExtIntSnapTypeAction = QAction(msg, popupMenu)
@@ -701,7 +701,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addExtIntSnapTypeAction, SIGNAL("triggered()"), self.addExtIntSnapTypeByPopupMenu)      
       popupMenu.addAction(addExtIntSnapTypeAction)
       
-      msg = QadMsg.translate("DSettings_Dialog", "Estensione")
+      msg = QadMsg.translate("DSettings_Dialog", "Extend")
       icon = QIcon(":/plugins/qad/icons/osnap_ext.png")
       if icon is None:
          addExtSnapTypeAction = QAction(msg, popupMenu)
@@ -712,7 +712,7 @@ class QadGetPoint(QgsMapTool):
 
       popupMenu.addSeparator()
      
-      msg = QadMsg.translate("DSettings_Dialog", "Centro")
+      msg = QadMsg.translate("DSettings_Dialog", "Center")
       icon = QIcon(":/plugins/qad/icons/osnap_cen.png")
       if icon is None:
          addCenSnapTypeAction = QAction(msg, popupMenu)
@@ -721,7 +721,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addCenSnapTypeAction, SIGNAL("triggered()"), self.addCenSnapTypeByPopupMenu)      
       popupMenu.addAction(addCenSnapTypeAction)
      
-      msg = QadMsg.translate("DSettings_Dialog", "Quadrante")
+      msg = QadMsg.translate("DSettings_Dialog", "Quadrant")
       icon = QIcon(":/plugins/qad/icons/osnap_qua.png")
       if icon is None:
          addQuaSnapTypeAction = QAction(msg, popupMenu)
@@ -730,7 +730,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addQuaSnapTypeAction, SIGNAL("triggered()"), self.addQuaSnapTypeByPopupMenu)      
       popupMenu.addAction(addQuaSnapTypeAction)
      
-      msg = QadMsg.translate("DSettings_Dialog", "Tangente")
+      msg = QadMsg.translate("DSettings_Dialog", "Tangent")
       icon = QIcon(":/plugins/qad/icons/osnap_tan.png")
       if icon is None:
          addTanSnapTypeAction = QAction(msg, popupMenu)
@@ -741,7 +741,7 @@ class QadGetPoint(QgsMapTool):
 
       popupMenu.addSeparator()
 
-      msg = QadMsg.translate("DSettings_Dialog", "Perpendicolare")
+      msg = QadMsg.translate("DSettings_Dialog", "Perpendicular")
       icon = QIcon(":/plugins/qad/icons/osnap_per.png")
       if icon is None:
          addPerSnapTypeAction = QAction(msg, popupMenu)
@@ -750,7 +750,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addPerSnapTypeAction, SIGNAL("triggered()"), self.addPerSnapTypeByPopupMenu)      
       popupMenu.addAction(addPerSnapTypeAction)     
 
-      msg = QadMsg.translate("DSettings_Dialog", "Parallelo")
+      msg = QadMsg.translate("DSettings_Dialog", "Parallel")
       icon = QIcon(":/plugins/qad/icons/osnap_par.png")
       if icon is None:
          addParSnapTypeAction = QAction(msg, popupMenu)
@@ -759,7 +759,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addParSnapTypeAction, SIGNAL("triggered()"), self.addParSnapTypeByPopupMenu)      
       popupMenu.addAction(addParSnapTypeAction)     
 
-      msg = QadMsg.translate("DSettings_Dialog", "Nodo")
+      msg = QadMsg.translate("DSettings_Dialog", "Node")
       icon = QIcon(":/plugins/qad/icons/osnap_nod.png")
       if icon is None:
          addNodSnapTypeAction = QAction(msg, popupMenu)
@@ -768,7 +768,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addNodSnapTypeAction, SIGNAL("triggered()"), self.addNodSnapTypeByPopupMenu)      
       popupMenu.addAction(addNodSnapTypeAction)     
 
-      msg = QadMsg.translate("DSettings_Dialog", "Vicino")
+      msg = QadMsg.translate("DSettings_Dialog", "Near")
       icon = QIcon(":/plugins/qad/icons/osnap_nea.png")
       if icon is None:
          addNeaSnapTypeAction = QAction(msg, popupMenu)
@@ -777,7 +777,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addNeaSnapTypeAction, SIGNAL("triggered()"), self.addNeaSnapTypeByPopupMenu)      
       popupMenu.addAction(addNeaSnapTypeAction)     
 
-      msg = QadMsg.translate("DSettings_Dialog", "Progressivo")
+      msg = QadMsg.translate("DSettings_Dialog", "Progressive")
       icon = QIcon(":/plugins/qad/icons/osnap_pr.png")
       if icon is None:
          addPrSnapTypeAction = QAction(msg, popupMenu)
@@ -786,7 +786,7 @@ class QadGetPoint(QgsMapTool):
       QObject.connect(addPrSnapTypeAction, SIGNAL("triggered()"), self.addPrSnapTypeByPopupMenu)      
       popupMenu.addAction(addPrSnapTypeAction)     
 
-      msg = QadMsg.translate("DSettings_Dialog", "Nessuno")
+      msg = QadMsg.translate("DSettings_Dialog", "None")
       icon = QIcon(":/plugins/qad/icons/osnap_disable.png")
       if icon is None:
          setSnapTypeToDisableAction = QAction(msg, popupMenu)
@@ -797,7 +797,7 @@ class QadGetPoint(QgsMapTool):
 
       popupMenu.addSeparator()
 
-      msg = QadMsg.translate("DSettings_Dialog", "Impostazioni snap ad oggetto...")
+      msg = QadMsg.translate("DSettings_Dialog", "Object snap settings...")
       icon = QIcon(":/plugins/qad/icons/dsettings.png")
       if icon is None:
          DSettingsAction = QAction(msg, popupMenu)

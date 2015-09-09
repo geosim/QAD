@@ -50,7 +50,7 @@ class QadGetAngleClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
       self.entity = QadEntity()
       self.startPt = None            
-      self.msg = QadMsg.translate("QAD", "Specificare angolo: ")
+      self.msg = QadMsg.translate("QAD", "Specify angle: ")
       self.angle = None # in radianti
       # memorizzo last point perchè il/i punto/i indicato/i da questa questa funzione non devono
       # alterare lastpoint 
@@ -58,7 +58,7 @@ class QadGetAngleClass(QadCommandClass):
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       #=========================================================================
@@ -117,7 +117,7 @@ class QadGetAngleClass(QadCommandClass):
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                self.getPointMapTool().setStartPoint(self.startPt)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.translate("QAD", "Specificare secondo punto: "))
+               self.waitForPoint(QadMsg.translate("QAD", "Specify second point: "))
                self.step = 2
 
          return False
@@ -145,9 +145,9 @@ class QadGetAngleClass(QadCommandClass):
          self.plugIn.setLastPoint(self.__prevLastPoint)
          
          if qad_utils.ptNear(self.startPt, value):
-            self.showMsg(QadMsg.translate("QAD", "\nI punti devono essere distinti."))
+            self.showMsg(QadMsg.translate("QAD", "\nThe points must be different."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("QAD", "Specificare secondo punto: "))
+            self.waitForPoint(QadMsg.translate("QAD", "Specify second point: "))
             return False
          else:
             self.angle = qad_utils.getAngleBy2Pts(self.startPt, value)

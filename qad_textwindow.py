@@ -101,7 +101,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.edit = QadEdit(self, self.chronologyEdit)
       self.edit.setObjectName("QadTextEdit")
  
-      self.edit.displayPrompt(QadMsg.translate("QAD", "Comando: "))
+      self.edit.displayPrompt(QadMsg.translate("QAD", "Command: "))
       
       # Creo la finestra per il suggerimento dei comandi
       # lista composta da elementi con:
@@ -474,7 +474,7 @@ class QadEdit(QTextEdit):
       # il valore di default del parametro di una funzione non può essere una traduzione
       # perché lupdate.exe non lo riesce ad interpretare
       if inputMsg is None: 
-         inputMsg = QadMsg.translate("QAD", "Comando: ")
+         inputMsg = QadMsg.translate("QAD", "Command: ")
 
       cursor = self.textCursor()
       actualPos = cursor.position()
@@ -699,25 +699,25 @@ class QadEdit(QTextEdit):
          self.inputType & QadInputTypeEnum.POINT3D:
          if self.inputType & QadInputTypeEnum.KEYWORDS and \
             (self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE):
-            return QadMsg.translate("QAD", "\nE' richiesto un punto, un numero reale o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nEnter a point, a real number or a keyword.\n")
          elif self.inputType & QadInputTypeEnum.KEYWORDS:
-            return QadMsg.translate("QAD", "\nE' richiesto un punto o la parola chiave di un'opzione.\n")
+            return QadMsg.translate("QAD", "\nEnter a point or a keyword.\n")
          elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-            return QadMsg.translate("QAD", "\nE' richiesto un punto o un numero reale.\n")
+            return QadMsg.translate("QAD", "\nEnter a point or a real number.\n")
          else:
-            return QadMsg.translate("QAD", "\nPunto non valido.\n")         
+            return QadMsg.translate("QAD", "\nPoint not valid.\n")         
       elif self.inputType & QadInputTypeEnum.KEYWORDS:
-         return QadMsg.translate("QAD", "\nParola chiave dell'opzione non valida.\n")
+         return QadMsg.translate("QAD", "\nKeyword not valid.\n")
       elif self.inputType & QadInputTypeEnum.STRING:
-         return QadMsg.translate("QAD", "\nStringa non valida.\n")
+         return QadMsg.translate("QAD", "\nString not valid.\n")
       elif self.inputType & QadInputTypeEnum.INT:
-         return QadMsg.translate("QAD", "\nNumero intero non valido.\n")
+         return QadMsg.translate("QAD", "\nInteger number not valid.\n")
       elif self.inputType & QadInputTypeEnum.LONG:
-         return QadMsg.translate("QAD", "\nNumero intero lungo non valido.\n")
+         return QadMsg.translate("QAD", "\nLong integer number not valid.\n")
       elif self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
-         return QadMsg.translate("QAD", "\nNumero reale non valido.\n")
+         return QadMsg.translate("QAD", "\nReal number not valid.\n")
       elif self.inputType & QadInputTypeEnum.BOOL:
-         return QadMsg.translate("QAD", "\nValore booleano non valido.\n")
+         return QadMsg.translate("QAD", "\nBoolean not valid.\n")
       else:
          return ""
       
@@ -756,13 +756,13 @@ class QadEdit(QTextEdit):
       elif selectedKeyWordsLen == 1:
          return selectedKeyWords[0]
       else:
-         self.showMsg(QadMsg.translate("QAD", "\nRisposta ambigua: specificare con maggior chiarezza...\n"))            
+         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with greater clarity...\n"))
          Msg = ""         
          for keyWord in selectedKeyWords:
             if Msg == "":
                Msg = keyWord
             else:
-               Msg = Msg + QadMsg.translate("QAD", " o ") + keyWord
+               Msg = Msg + QadMsg.translate("QAD", " or ") + keyWord
 
          Msg = Msg + QadMsg.translate("QAD", " ?\n")
          self.showMsg(Msg)            
@@ -803,7 +803,7 @@ class QadEdit(QTextEdit):
             self.updateHistory(cmd)
             self.parentWidget().runCommand(cmd)
          else:
-            msg = QadMsg.translate("QAD", "\nComando sconosciuto \"{0}\".")
+            msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
             self.showMsg(msg.format(cmd.encode('ascii','ignore')), True) # ripete il prompt
          return
 
@@ -828,7 +828,7 @@ class QadEdit(QTextEdit):
             # se é stato forzato uno snap
             snapParams = qad_utils.str2snapParams(cmd)
             self.parentWidget().forceCommandMapToolSnapTypeOnce(snapType, snapParams)
-            self.showMsg(QadMsg.translate("QAD", "\n(impostato snap temporaneo)\n"), True) # ripeti il prompt
+            self.showMsg(QadMsg.translate("QAD", "\n(temporary snap)\n"), True) # ripeti il prompt
             return
          if (self.inputType & QadInputTypeEnum.INT) or \
             (self.inputType & QadInputTypeEnum.LONG) or \
@@ -945,7 +945,7 @@ class QadEdit(QTextEdit):
       
    def getOptimalHeight(self):
       fm = QFontMetrics(self.currentFont())
-      pixelsWidth = fm.width(QadMsg.translate("QAD", "Comando: "))
+      pixelsWidth = fm.width(QadMsg.translate("QAD", "Command: "))
       pixelsHeight = fm.height()
       # + 8 perché la QTextEdit ha un offset verticale sopra e sotto il testo
       return max(self.document().size().height(), pixelsHeight + 8)

@@ -75,7 +75,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       return QadDIMLINEARCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "DIMLINEARE")
+      return QadMsg.translate("Command_list", "DIMLINEAR")
 
    def getEnglishName(self):
       return "DIMLINEAR"
@@ -88,7 +88,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DIM", "Crea una quota lineare orizzontale o verticale.")
+      return QadMsg.translate("Command_DIM", "Creates an horizontal or vertical linear dimension.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -154,7 +154,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
 
-      msg = QadMsg.translate("Command_DIM", "Specificare l'origine della prima linea di estensione o <seleziona oggetto>: ")
+      msg = QadMsg.translate("Command_DIM", "Specify first extension line origin or <select object>: ")
       
       # si appresta ad attendere un punto o enter      
       # msg, inputType, default, keyWords, nessun controllo
@@ -173,7 +173,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       self.getPointMapTool().dimPt1 = self.dimPt1
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_DIM", "Specificare l'origine della seconda linea di estensione: "))
+      self.waitForPoint(QadMsg.translate("Command_DIM", "Specify second extension line origin: "))
 
    
    #============================================================================
@@ -184,7 +184,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          del self.EntSelClass
       self.step = 2         
       self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Selezionare l'oggetto da quotare: ")
+      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Select the object to dimension: ")
       # scarto la selezione di punti
       self.EntSelClass.checkPointLayer = False
       self.EntSelClass.checkLineLayer = True
@@ -210,12 +210,12 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS)                                
       
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
-                 QadMsg.translate("Command_DIM", "Angolo") + "/" + \
-                 QadMsg.translate("Command_DIM", "Orizzontale") + "/" + \
-                 QadMsg.translate("Command_DIM", "Verticale") + "/" + \
-                 QadMsg.translate("Command_DIM", "Ruotato")      
-      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [{0}]: ").format(keyWords)
+      keyWords = QadMsg.translate("Command_DIM", "Text") + "/" + \
+                 QadMsg.translate("Command_DIM", "Angle") + "/" + \
+                 QadMsg.translate("Command_DIM", "Horizontal") + "/" + \
+                 QadMsg.translate("Command_DIM", "Vertical") + "/" + \
+                 QadMsg.translate("Command_DIM", "Rotated")      
+      prompt = QadMsg.translate("Command_DIM", "Specify dimension line location or [{0}]: ").format(keyWords)
       
       englishKeyWords = "Text" + "/" + "Angle" + "/" + "Horizontal" + "/" + "Vertical" + "/" + "Rotated"
       keyWords += "_" + englishKeyWords
@@ -232,11 +232,11 @@ class QadDIMLINEARCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       if self.dimStyle is None:
-         self.showMsg(QadMsg.translate("QAD", "\nStile di quotatura corrente non valido.\nVerificare il valore della variabile DIMSTYLE.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nDimension style not valid.\nVerify the value of DIMSTYLE variable.\n"))
          return True # fine comando
          
       errMsg = self.dimStyle.getInValidErrMsg()
@@ -306,7 +306,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                self.waitForDimensionLinePos()
                return False
             else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "Non ci sono geometrie in questa posizione."))
+               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 
@@ -360,38 +360,38 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_DIM", "Testo") or value == "Text":
-               prompt = QadMsg.translate("Command_DIM", "Digitare il testo di quota <{0}>: ")
+            if value == QadMsg.translate("Command_DIM", "Text") or value == "Text":
+               prompt = QadMsg.translate("Command_DIM", "Enter dimension text <{0}>: ")
                dist = qad_utils.getDistance(self.dimPt1, self.dimPt2)
                self.waitForString(prompt.format(str(dist)), dist)
                self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT)
                self.step = 5         
-            elif value == QadMsg.translate("Command_DIM", "Angolo") or value == "Angle":
+            elif value == QadMsg.translate("Command_DIM", "Angle") or value == "Angle":
                # si appresta ad attendere l'angolo di rotazione del testo
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_DIM", "Specificare l'angolo del testo di quota <{0}>: ")
+               prompt = QadMsg.translate("Command_DIM", "Specify angle of dimension text <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.dimStyle.textForcedRot)))
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6
                self.GetAngleClass.run(msgMapTool, msg)               
-            elif value == QadMsg.translate("Command_DIM", "Orizzontale") or value == "Horizontal":
+            elif value == QadMsg.translate("Command_DIM", "Horizontal") or value == "Horizontal":
                # allineamento della linea di quota orizzontale
                self.forcedDimLineAlignment = QadDimStyleAlignmentEnum.HORIZONTAL # allineamento della linea di quota forzato               
                self.forcedDimLineRot = 0.0             
                self.waitForDimensionLinePos()
-            elif value == QadMsg.translate("Command_DIM", "Verticale") or value == "Vertical":
+            elif value == QadMsg.translate("Command_DIM", "Vertical") or value == "Vertical":
                # allineamento della linea di quota verticale               
                self.forcedDimLineAlignment = QadDimStyleAlignmentEnum.VERTICAL # allineamento della linea di quota forzato
                self.forcedDimLineRot = 0.0             
                self.waitForDimensionLinePos()
-            elif value == QadMsg.translate("Command_DIM", "Ruotato") or value == "Rotated":
+            elif value == QadMsg.translate("Command_DIM", "Rotated") or value == "Rotated":
                # si appresta ad attendere l'angolo di rotazionedella linea di quotatura
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_DIM", "Specificare l'angolo della linea di quota <{0}>: ")
+               prompt = QadMsg.translate("Command_DIM", "Specify angle of dimension line <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.forcedDimLineRot)))
                self.GetAngleClass.angle = self.forcedDimLineRot
                self.step = 7
@@ -451,7 +451,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       return QadDIMALIGNEDCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "DIMALLINEATA")
+      return QadMsg.translate("Command_list", "DIMALIGNED")
 
    def getEnglishName(self):
       return "DIMALIGNED"
@@ -464,7 +464,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DIM", "Crea una quota allineata.")
+      return QadMsg.translate("Command_DIM", "Creates an aligned linear dimension.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -525,7 +525,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
 
-      msg = QadMsg.translate("Command_DIM", "Specificare l'origine della prima linea di estensione o <seleziona oggetto>: ")
+      msg = QadMsg.translate("Command_DIM", "Specify first extension line origin or <select object>: ")
       
       # si appresta ad attendere un punto o enter      
       # msg, inputType, default, keyWords, nessun controllo
@@ -544,7 +544,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       self.getPointMapTool().dimPt1 = self.dimPt1
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_DIM", "Specificare l'origine della seconda linea di estensione: "))
+      self.waitForPoint(QadMsg.translate("Command_DIM", "Specify second extension line origin: "))
 
    
    #============================================================================
@@ -555,7 +555,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
          del self.EntSelClass
       self.step = 2         
       self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Selezionare l'oggetto da quotare: ")
+      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Select the object to dimension: ")
       # scarto la selezione di punti
       self.EntSelClass.checkPointLayer = False
       self.EntSelClass.checkLineLayer = True
@@ -578,9 +578,11 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS)                                
       
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
-                 QadMsg.translate("Command_DIM", "Angolo")      
-      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della linea di quota o [{0}]: ").format(keyWords)
+      keyWords = QadMsg.translate("Command_DIM", "Text") + "/" + \
+                 QadMsg.translate("Command_DIM", "Angle")      
+      prompt = QadMsg.translate("Command_DIM", "Specify dimension line location or [{0}]: ").format(keyWords)
+      englishKeyWords = "Text" + "/" + "Angle"
+      keyWords += "_" + englishKeyWords
       
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -595,11 +597,11 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       if self.dimStyle is None:
-         self.showMsg(QadMsg.translate("QAD", "\nStile di quotatura corrente non valido.\nVerificare il valore della variabile DIMSTYLE.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nDimension style not valid.\nVerify the value of DIMSTYLE variable.\n"))
          return True # fine comando
          
       errMsg = self.dimStyle.getInValidErrMsg()
@@ -673,7 +675,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
                self.waitForDimensionLinePos()
                return False
             else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "Non ci sono geometrie in questa posizione."))
+               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 
@@ -727,18 +729,18 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_DIM", "Testo"):
-               prompt = QadMsg.translate("Command_DIM", "Digitare il testo di quota <{0}>: ")
+            if value == QadMsg.translate("Command_DIM", "Text") or value == "Text":
+               prompt = QadMsg.translate("Command_DIM", "Enter dimension text <{0}>: ")
                dist = qad_utils.getDistance(self.dimPt1, self.dimPt2)
                self.waitForString(prompt.format(str(dist)), dist)
                self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT)
                self.step = 5         
-            elif value == QadMsg.translate("Command_DIM", "Angolo"):
+            elif value == QadMsg.translate("Command_DIM", "Angle") or value == "Angle":
                # si appresta ad attendere l'angolo di rotazione del testo
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_DIM", "Specificare l'angolo del testo di quota <{0}>: ")
+               prompt = QadMsg.translate("Command_DIM", "Specify angle of dimension text <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.dimStyle.textForcedRot)))
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6
@@ -773,7 +775,7 @@ class QadDIMARCCommandClass(QadCommandClass):
       return QadDIMARCCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "ARCOQUOTA")
+      return QadMsg.translate("Command_list", "DIMARC")
 
    def getEnglishName(self):
       return "DIMARC"
@@ -786,7 +788,7 @@ class QadDIMARCCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_DIM", "Crea una quota per la lunghezza di un arco.")
+      return QadMsg.translate("Command_DIM", "Creates an arc length dimension.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -845,7 +847,7 @@ class QadDIMARCCommandClass(QadCommandClass):
          del self.EntSelClass
       self.step = 1     
       self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Selezionare l'arco da quotare: ")
+      self.EntSelClass.msg = QadMsg.translate("Command_DIM", "Select arc or polyline arc segment: ")
       # scarto la selezione di punti
       self.EntSelClass.checkPointLayer = False
       self.EntSelClass.checkLineLayer = True
@@ -869,14 +871,19 @@ class QadDIMARCCommandClass(QadCommandClass):
       
       # si appresta ad attendere un punto o una parola chiave
       # si appresta ad attendere un punto o una parola chiave
-      keyWords = QadMsg.translate("Command_DIM", "Testo") + "/" + \
-                 QadMsg.translate("Command_DIM", "Angolo") + "/" + \
-                 QadMsg.translate("Command_DIM", "Parziale") + "/"
+      keyWords = QadMsg.translate("Command_DIM", "Text") + "/" + \
+                 QadMsg.translate("Command_DIM", "Angle") + "/" + \
+                 QadMsg.translate("Command_DIM", "Partial") + "/"
+      englishKeyWords = "Text" + "/" + "2POints" + "/" + "Partial" + "/"
       if self.leader:
-         keyWords = keyWords + QadMsg.translate("Command_DIM", "Direttrice")
+         keyWords = keyWords + QadMsg.translate("Command_DIM", "Leader")
+         englishKeyWords = englishKeyWords + "Leader"
       else:
-         keyWords = keyWords + QadMsg.translate("Command_DIM", "Nessuna direttrice")
-      prompt = QadMsg.translate("Command_DIM", "Specificare la posizione della quota o [{0}]: ").format(keyWords)
+         keyWords = keyWords + QadMsg.translate("Command_DIM", "No leader")
+         englishKeyWords = englishKeyWords + "No leader"
+      keyWords += "_" + englishKeyWordsAngle
+         
+      prompt = QadMsg.translate("Command_DIM", "Specify dimension location or [{0}]: ").format(keyWords)
 
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -891,11 +898,11 @@ class QadDIMARCCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       if self.dimStyle is None:
-         self.showMsg(QadMsg.translate("QAD", "\nStile di quotatura corrente non valido.\nVerificare il valore della variabile DIMSTYLE.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nDimension style not valid.\nVerify the value of DIMSTYLE variable.\n"))
          return True # fine comando
          
       errMsg = self.dimStyle.getInValidErrMsg()
@@ -931,10 +938,10 @@ class QadDIMARCCommandClass(QadCommandClass):
                         self.dimArc = result
                         return False
                      
-               self.showMsg(QadMsg.translate("Command_DIM", "Selezionare un arco."))
+               self.showMsg(QadMsg.translate("Command_DIM", "Select an arc."))
                self.waitForEntsel(msgMapTool, msg)        
             else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "Non ci sono geometrie in questa posizione."))
+               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 
@@ -988,18 +995,18 @@ class QadDIMARCCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_DIM", "Testo"):
-               prompt = QadMsg.translate("Command_DIM", "Digitare il testo di quota <{0}>: ")
+            if value == QadMsg.translate("Command_DIM", "Text") or value == "Text":
+               prompt = QadMsg.translate("Command_DIM", "Enter dimension text <{0}>: ")
                dist = qad_utils.getDistance(self.dimPt1, self.dimPt2)
                self.waitForString(prompt.format(str(dist)), dist)
                self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT)
                self.step = 5         
-            elif value == QadMsg.translate("Command_DIM", "Angolo"):
+            elif value == QadMsg.translate("Command_DIM", "Angle") or value == "Angle":
                # si appresta ad attendere l'angolo di rotazione del testo
                if self.GetAngleClass is not None:
                   del self.GetAngleClass                                   
                self.GetAngleClass = QadGetAngleClass(self.plugIn)
-               prompt = QadMsg.translate("Command_DIM", "Specificare l'angolo del testo di quota <{0}>: ")
+               prompt = QadMsg.translate("Command_DIM", "Specify angle of dimension text <{0}>: ")
                self.GetAngleClass.msg = prompt.format(str(qad_utils.toDegrees(self.dimStyle.textForcedRot)))
                self.GetAngleClass.angle = self.dimStyle.textForcedRot
                self.step = 6

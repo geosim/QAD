@@ -46,7 +46,7 @@ class QadBREAKCommandClass(QadCommandClass):
       return QadBREAKCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "SPEZZA")
+      return QadMsg.translate("Command_list", "BREAK")
 
    def getEnglishName(self):
       return "BREAK"
@@ -59,7 +59,7 @@ class QadBREAKCommandClass(QadCommandClass):
    
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_BREAK", "Divide un oggetto grafico.")
+      return QadMsg.translate("Command_BREAK", "Breaks an object.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -84,7 +84,7 @@ class QadBREAKCommandClass(QadCommandClass):
          del self.EntSelClass
       self.step = 1         
       self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_BREAK", "Selezionare l'oggetto da spezzare: ")
+      self.EntSelClass.msg = QadMsg.translate("Command_BREAK", "Select the object to break: ")
       # scarto la selezione di punti e poligoni
       self.EntSelClass.checkPointLayer = False
       self.EntSelClass.checkLineLayer = True
@@ -177,7 +177,7 @@ class QadBREAKCommandClass(QadCommandClass):
        
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
       if self.step == 0:     
@@ -193,8 +193,8 @@ class QadBREAKCommandClass(QadCommandClass):
                self.firstPt = self.EntSelClass.point
                self.plugIn.setLastPoint(self.firstPt)
                
-               keyWords = QadMsg.translate("Command_BREAK", "Primo punto")
-               prompt = QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione o [{0}]: ").format(keyWords)
+               keyWords = QadMsg.translate("Command_BREAK", "First point")
+               prompt = QadMsg.translate("Command_BREAK", "Specify second break point or [{0}]: ").format(keyWords)
                
                self.step = 2
                self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità
@@ -234,7 +234,7 @@ class QadBREAKCommandClass(QadCommandClass):
 
          if value is None or type(value) == unicode:
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_BREAK", "Specificare primo punto di interruzione: "))            
+            self.waitForPoint(QadMsg.translate("Command_BREAK", "Specify first break point: "))            
             self.step = 3
          elif type(value) == QgsPoint: # se é stato inserito il secondo punto
             self.secondPt = value
@@ -267,7 +267,7 @@ class QadBREAKCommandClass(QadCommandClass):
          self.plugIn.setLastPoint(self.firstPt)
 
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_BREAK", "Specificare secondo punto di interruzione: "))            
+         self.waitForPoint(QadMsg.translate("Command_BREAK", "Specify second break point: "))            
          self.step = 4
          
          return False

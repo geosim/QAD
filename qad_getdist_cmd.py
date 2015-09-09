@@ -9,7 +9,7 @@
         begin                : 2013-12-03
         copyright            : iiiii
         email                : hhhhh
-        developers           : bbbbb aaaaa ggggg
+        developers           : bbbbb aaaaa gggg
  ***************************************************************************/
 
 /***************************************************************************
@@ -49,7 +49,7 @@ class QadGetDistClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
       self.entity = QadEntity()
       self.startPt = None            
-      self.msg = QadMsg.translate("QAD", "Specificare distanza: ")
+      self.msg = QadMsg.translate("QAD", "Specify the distance: ")
       self.dist = None
       self.inputMode = QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE
       # memorizzo last point perchè il/i punto/i indicato/i da questa questa funzione non devono
@@ -58,7 +58,7 @@ class QadGetDistClass(QadCommandClass):
             
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       #=========================================================================
@@ -117,7 +117,7 @@ class QadGetDistClass(QadCommandClass):
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                self.getPointMapTool().setStartPoint(self.startPt)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.translate("QAD", "Specificare secondo punto: "))
+               self.waitForPoint(QadMsg.translate("QAD", "Specify second point: "))
                self.step = 2
 
          return False

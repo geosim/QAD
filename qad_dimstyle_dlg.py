@@ -34,7 +34,7 @@ import qad_dimstyle_ui
 
 from qad_variables import *
 from qad_dim import *
-from qad_msg import QadMsg
+from qad_msg import QadMsg, qadShowPluginHelp
 from qad_dimstyle_new_dlg import QadDIMSTYLE_NEW_Dialog
 from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog, QadPreviewDim
 from qad_dimstyle_diff_dlg import QadDIMSTYLE_DIFF_Dialog
@@ -52,6 +52,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       self.selectedDimStyle = None
       
       self.setupUi(self)
+      self.retranslateUi(self) # aggiungo alcune traduzioni personalizzate
       self.dimStyleList.setContextMenuPolicy(Qt.CustomContextMenu)
       
       # aggiungo il canvans di preview della quota chiamato QadPreviewDim 
@@ -102,6 +103,17 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
             index = self.dimStyleList.model().indexFromItem(item)
          
       self.dimStyleList.selectionModel().setCurrentIndex(index, QItemSelectionModel.SelectCurrent)
+
+   
+   def retranslateUi(self, DimStyle_Dialog):
+      qad_dimstyle_ui.Ui_DimStyle_Dialog.retranslateUi(self, self)
+      # "none" viene tradotto in italiano in "nessuno" nel contesto "currentDimStyle"
+      # "none" viene tradotto in italiano in "nessuna" nel contesto "descriptionSelectedStyle"
+      # "none" viene tradotto in italiano in "nessuno" nel contesto "selectedStyle"
+      self.currentDimStyle.setText(QadMsg.translate("DimStyle_Dialog", "none", "currentDimStyle"))
+      self.descriptionSelectedStyle.setText(QadMsg.translate("DimStyle_Dialog", "none", "descriptionSelectedStyle"))
+      self.selectedStyle.setText(QadMsg.translate("DimStyle_Dialog", "none", "selectedStyle"))
+      
       
    def dimStyleListCurrentChanged(self, current, previous):
       # leggo l'elemento selezionato
@@ -128,18 +140,18 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
          return
       if self.plugIn.dimStyles.renameDimStyle(self.selectedDimStyle.name, newName) == False:
          QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
-                              QadMsg.translate("DimStyle_Dialog", "Lo stile di quotatura non è stato rinominato."))
+                              QadMsg.translate("DimStyle_Dialog", "Dimension style not renamed."))
       else:
          self.init()
 
    def updDescrSelectedDimStyle(self):
       if self.selectedDimStyle is None:
          return
-      Title = QadMsg.translate("DimStyle_Dialog", "QAD - Modifica descrizione per lo stile di quota: ") + self.selectedDimStyle.name
+      Title = QadMsg.translate("DimStyle_Dialog", "QAD - Editing dimension style description: ") + self.selectedDimStyle.name
       inputDlg = QInputDialog(self)
       inputDlg.setWindowTitle(Title)                 
       inputDlg.setInputMode(QInputDialog.TextInput) 
-      inputDlg.setLabelText(QadMsg.translate("DimStyle_Dialog", "Nuova descrizione:"))
+      inputDlg.setLabelText(QadMsg.translate("DimStyle_Dialog", "New description:"))
       inputDlg.setTextValue(self.selectedDimStyle.description)
       inputDlg.resize(600,100)                             
       if inputDlg.exec_():                         
@@ -150,13 +162,13 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def delSelectedDimStyle(self):
       if self.selectedDimStyle is None:
          return
-      res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), \
-                                 QadMsg.translate("DimStyle_Dialog", "Eliminare lo stile di quotatura ") + self.selectedDimStyle.name + " ?", \
+      msg = QadMsg.translate("DimStyle_Dialog", "Remove dimension style {0} ?").format(self.selectedDimStyle.name)
+      res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), msg, \
                                  QMessageBox.Yes | QMessageBox.No)
       if res == QMessageBox.Yes:
          if self.plugIn.dimStyles.removeDimStyle(self.selectedDimStyle.name, True) == False:
             QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
-                                 QadMsg.translate("DimStyle_Dialog", "Lo stile di quotatura non è stato cancellato."))
+                                 QadMsg.translate("DimStyle_Dialog", "Dimension style not removed."))
          else:
             self.selectedDimStyle = None
             self.init()
@@ -181,7 +193,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       self.previewDim.eraseDim()
       
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
-      title = QadMsg.translate("DimStyle_Dialog", "Modifica stile di quota: ") + self.selectedDimStyle.name
+      title = QadMsg.translate("DimStyle_Dialog", "Modify dimension style: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
@@ -198,7 +210,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       self.previewDim.eraseDim()
 
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
-      title = QadMsg.translate("DimStyle_Dialog", "Modifica locale allo stile corrente: ") + self.selectedDimStyle.name
+      title = QadMsg.translate("DimStyle_Dialog", "Set temporary overrides to dimension style: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
@@ -224,10 +236,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
 
 
    def ButtonHELP_Pressed(self):
-      # per conoscere la sezione/pagina del file html usare internet explorer,
-      # selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
-      # Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
-      qad_utils.qadShowPluginHelp("7%C2%A0%C2%A0%C2%A0%C2%A0%C2%A0%20%C2%A0GESTIONE%20DEI%20PROGETTI")
+      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
 
    #============================================================================
    # displayPopupMenu
@@ -237,19 +246,19 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
          return
       
       popupMenu = QMenu(self)
-      action = QAction(QadMsg.translate("DimStyle_Dialog", "Imposta corrente"), popupMenu)
+      action = QAction(QadMsg.translate("DimStyle_Dialog", "Set current"), popupMenu)
       popupMenu.addAction(action)
       QObject.connect(action, SIGNAL("triggered()"), self.setCurrentStyle)
 
-      action = QAction(QadMsg.translate("DimStyle_Dialog", "Rinomina"), popupMenu)
+      action = QAction(QadMsg.translate("DimStyle_Dialog", "Rename"), popupMenu)
       popupMenu.addAction(action)
       QObject.connect(action, SIGNAL("triggered()"), self.startEditingItem)
 
-      action = QAction(QadMsg.translate("DimStyle_Dialog", "Modifica descrizione"), popupMenu)
+      action = QAction(QadMsg.translate("DimStyle_Dialog", "Modify description"), popupMenu)
       popupMenu.addAction(action)
       QObject.connect(action, SIGNAL("triggered()"), self.updDescrSelectedDimStyle)
 
-      action = QAction(QadMsg.translate("DimStyle_Dialog", "Elimina"), popupMenu)
+      action = QAction(QadMsg.translate("DimStyle_Dialog", "Remove"), popupMenu)
       currDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
       if self.selectedDimStyle.name == currDimStyleName:
          action.setDisabled(True)

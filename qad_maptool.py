@@ -145,7 +145,7 @@ class QadMapTool(QgsMapTool):
          if cmd is not None:
             if isLastCmdToInsert:
                isLastCmdToInsert = False
-               msg = QadMsg.translate("Popup_menu_graph_window", "Ripeti ") + cmd.getName() # "Ripeti "
+               msg = QadMsg.translate("Popup_menu_graph_window", "Repeat ") + cmd.getName()
                icon = cmd.getIcon()
                if icon is None:
                   lastCmdAction = QAction(msg, popupMenu)
@@ -156,7 +156,7 @@ class QadMapTool(QgsMapTool):
             else:
                if isRecentMenuToInsert:
                   isRecentMenuToInsert = False
-                  recentCmdsMenu = popupMenu.addMenu(QadMsg.translate("Popup_menu_graph_window", "Comandi recenti "))
+                  recentCmdsMenu = popupMenu.addMenu(QadMsg.translate("Popup_menu_graph_window", "Recent commands"))
 
                icon = cmd.getIcon()
                if icon is None:

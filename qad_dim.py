@@ -89,7 +89,6 @@ class QadDimTypeEnum():
    ALIGNED    = "AL" # quota lineare allineata ai punti di origine delle linee di estensione
    ANGULAR    = "AN" # quota angolare, misura l'angolo tra i 3 punti o tra gli oggetti selezionati
    BASE_LINE  = "BL" # quota lineare, angolare o coordinata a partire dalla linea di base della quota precedente o di una quota selezionata
-   CENTER     = "CE" # crea il centro o le linee d'asse di cerchi e archi
    DIAMETER   = "DI" # quota per il diametro di un cerchio o di un arco
    LEADER     = "LD" # crea una linea che consente di collegare un'annotazione ad una lavorazione
    LINEAR     = "LI" # quota lineare con una linea di quota orizzontale o verticale
@@ -372,11 +371,11 @@ class QadDimStyle():
    #============================================================================
    def getPropList(self):
       proplist = dict() # dizionario di nome con lista [descrizione, valore]
-      propDescr = QadMsg.translate("Dimension", "Nome")
+      propDescr = QadMsg.translate("Dimension", "Name")
       proplist["name"] = [propDescr, self.name]
-      propDescr = QadMsg.translate("Dimension", "Descrizione")
+      propDescr = QadMsg.translate("Dimension", "Description")
       proplist["description"] = [propDescr, self.description]
-      propDescr = QadMsg.translate("Dimension", "Percorso file")
+      propDescr = QadMsg.translate("Dimension", "File path")
       proplist["path"] = [propDescr, self.path]
       
       # testo di quota
@@ -384,120 +383,120 @@ class QadDimStyle():
       if len(self.textPrefix) > 0:
          value += "<>"
       value += self.textSuffix
-      propDescr = QadMsg.translate("Dimension", "Prefisso e suffisso testo")
+      propDescr = QadMsg.translate("Dimension", "Text prefix and suffix")
       proplist["textPrefix"] = [propDescr, value]
-      propDescr = QadMsg.translate("Dimension", "Soppressione degli zero inizio testo")
+      propDescr = QadMsg.translate("Dimension", "Leading zero suppression")
       proplist["textSuppressLeadingZeros"] = [propDescr, self.textSuppressLeadingZeros]
-      propDescr = QadMsg.translate("Dimension", "Soppressione degli zero fine testo")
+      propDescr = QadMsg.translate("Dimension", "Trailing zero suppression")
       proplist["textDecimalZerosSuppression"] = [propDescr, self.textDecimalZerosSuppression]
-      propDescr = QadMsg.translate("Dimension", "Altezza del testo")
+      propDescr = QadMsg.translate("Dimension", "Text height")
       proplist["textHeight"] = [propDescr, self.textHeight]
-      propDescr = QadMsg.translate("Dimension", "Posizione verticale testo")
+      propDescr = QadMsg.translate("Dimension", "Vertical text position")
       proplist["textVerticalPos"] = [propDescr, self.textVerticalPos]
-      propDescr = QadMsg.translate("Dimension", "Posizione orizzontale testo")
+      propDescr = QadMsg.translate("Dimension", "Horizontal text position")
       proplist["textHorizontalPos"] = [propDescr, self.textHorizontalPos]
-      propDescr = QadMsg.translate("Dimension", "Offset testo")
+      propDescr = QadMsg.translate("Dimension", "Text offset")
       proplist["textOffsetDist"] = [propDescr, self.textOffsetDist]
-      propDescr = QadMsg.translate("Dimension", "Allineamento testo")
+      propDescr = QadMsg.translate("Dimension", "Text alignment")
       proplist["textRotMode"] = [propDescr, self.textRotMode]
-      propDescr = QadMsg.translate("Dimension", "Rotazione fissa testo")
+      propDescr = QadMsg.translate("Dimension", "Fixed text rotation")
       proplist["textForcedRot"] = [propDescr, self.textForcedRot]
-      propDescr = QadMsg.translate("Dimension", "Precisione")
+      propDescr = QadMsg.translate("Dimension", "Precision")
       proplist["textDecimals"] = [propDescr, self.textDecimals]
-      propDescr = QadMsg.translate("Dimension", "Separatore decimale")
+      propDescr = QadMsg.translate("Dimension", "Decimal separator")
       proplist["textDecimalSep"] = [propDescr, self.textDecimalSep]
-      propDescr = QadMsg.translate("Dimension", "Carattere testo")
+      propDescr = QadMsg.translate("Dimension", "Text font")
       proplist["textFont"] = [propDescr, self.textFont]
-      propDescr = QadMsg.translate("Dimension", "Colore testo")
+      propDescr = QadMsg.translate("Dimension", "Text color")
       proplist["textColor"] = [propDescr, self.textColor]
       if self.textDirection == QadDimStyleTxtDirectionEnum.SX_TO_DX:
-         value = QadMsg.translate("Dimension", "da sinistra a destra")
+         value = QadMsg.translate("Dimension", "From left to right")
       else:
-         value = QadMsg.translate("Dimension", "da destra a sinistra")
-      propDescr = QadMsg.translate("Dimension", "Direzione testo")
+         value = QadMsg.translate("Dimension", "From right to left")
+      propDescr = QadMsg.translate("Dimension", "Text direction")
       proplist["textDirection"] = [propDescr, value]
-      propDescr = QadMsg.translate("Dimension", "Simbolo lungh. arco")
+      propDescr = QadMsg.translate("Dimension", "Arc len. symbol")
       proplist["arcSymbPos"] = [propDescr, self.arcSymbPos]
       
       # linee di quota
-      propDescr = QadMsg.translate("Dimension", "Linea di quota 1 visibile")
+      propDescr = QadMsg.translate("Dimension", "Dim line 1 visible")
       proplist["dimLine1Show"] = [propDescr, self.dimLine1Show]
-      propDescr = QadMsg.translate("Dimension", "Linea di quota 2 visibile")
+      propDescr = QadMsg.translate("Dimension", "Dim line 2 visible")
       proplist["dimLine2Show"] = [propDescr, self.dimLine2Show]
-      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di quota")
+      propDescr = QadMsg.translate("Dimension", "Dim line linetype")
       proplist["dimLineLineType"] = [propDescr, self.dimLineLineType]
-      propDescr = QadMsg.translate("Dimension", "Colore linea di quota")
+      propDescr = QadMsg.translate("Dimension", "Dim line color")
       proplist["dimLineColor"] = [propDescr, self.dimLineColor]
-      propDescr = QadMsg.translate("Dimension", "Spaziatura linea di quota")
+      propDescr = QadMsg.translate("Dimension", "Offset from origin")
       proplist["dimLineSpaceOffset"] = [propDescr, self.dimLineSpaceOffset]
    
       # simboli per linee di quota
-      propDescr = QadMsg.translate("Dimension", "Freccia 1")
+      propDescr = QadMsg.translate("Dimension", "Arrow 1")
       proplist["block1Name"] = [propDescr, self.block1Name]
-      propDescr = QadMsg.translate("Dimension", "Freccia 2")
+      propDescr = QadMsg.translate("Dimension", "Arrow 2")
       proplist["block2Name"] = [propDescr, self.block2Name]
-      propDescr = QadMsg.translate("Dimension", "Freccia direttrice")
+      propDescr = QadMsg.translate("Dimension", "Leader arrow")
       proplist["blockLeaderName"] = [propDescr, self.blockLeaderName]
-      propDescr = QadMsg.translate("Dimension", "Larghezza frecce")
+      propDescr = QadMsg.translate("Dimension", "Arrowhead width")
       proplist["blockWidth"] = [propDescr, self.blockWidth]
-      propDescr = QadMsg.translate("Dimension", "Scala frecce")
+      propDescr = QadMsg.translate("Dimension", "Arrowhead scale")
       proplist["blockScale"] = [propDescr, self.blockScale]
-      propDescr = QadMsg.translate("Dimension", "Dimensione centro")
+      propDescr = QadMsg.translate("Dimension", "Center mark size")
       proplist["centerMarkSize"] = [propDescr, self.centerMarkSize]
    
       # adattamento del testo e delle frecce
-      propDescr = QadMsg.translate("Dimension", "Adatta: freccia e testo")
+      propDescr = QadMsg.translate("Dimension", "Fit: arrows and text")
       proplist["textBlockAdjust"] = [propDescr, self.textBlockAdjust]
-      propDescr = QadMsg.translate("Dimension", "Sopprime frecce per mancanza di spazio")
+      propDescr = QadMsg.translate("Dimension", "Suppress arrows for lack of space")
       proplist["blockSuppressionForNoSpace"] = [propDescr, self.blockSuppressionForNoSpace]
       
       # linee di estensione
-      propDescr = QadMsg.translate("Dimension", "Linea di est. 1 visibile")
+      propDescr = QadMsg.translate("Dimension", "Ext. line 1 visible")
       proplist["extLine1Show"] = [propDescr, self.extLine1Show]
-      propDescr = QadMsg.translate("Dimension", "Linea di est. 2 visibile")
+      propDescr = QadMsg.translate("Dimension", "Ext. line 2 visible")
       proplist["extLine2Show"] = [propDescr, self.extLine2Show]
-      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di est. 1")
+      propDescr = QadMsg.translate("Dimension", "Ext. line 1 linetype")
       proplist["extLine1LineType"] = [propDescr, self.extLine1LineType]
-      propDescr = QadMsg.translate("Dimension", "Tipolinea linea di est. 2")
+      propDescr = QadMsg.translate("Dimension", "Ext. line 2 linetype")
       proplist["extLine2LineType"] = [propDescr, self.extLine2LineType]
-      propDescr = QadMsg.translate("Dimension", "Colore linea di est.")
+      propDescr = QadMsg.translate("Dimension", "Ext. line color")
       proplist["extLineColor"] = [propDescr, self.extLineColor]
-      propDescr = QadMsg.translate("Dimension", "Estensione linea di est.")
+      propDescr = QadMsg.translate("Dimension", "Ext. line extension")
       proplist["extLineOffsetDimLine"] = [propDescr, self.extLineOffsetDimLine]
-      propDescr = QadMsg.translate("Dimension", "Offset linea di est.")
+      propDescr = QadMsg.translate("Dimension", "Ext. line offset")
       proplist["extLineOffsetOrigPoints"] = [propDescr, self.extLineOffsetOrigPoints]
-      propDescr = QadMsg.translate("Dimension", "Linea di est. fissa attivata")
+      propDescr = QadMsg.translate("Dimension", "Fixed length ext. line activated")
       proplist["extLineIsFixedLen"] = [propDescr, self.extLineIsFixedLen]
-      propDescr = QadMsg.translate("Dimension", "Lunghezza linea di est. fissa")
+      propDescr = QadMsg.translate("Dimension", "Fixed length ext. line")
       proplist["extLineFixedLen"] = [propDescr, self.extLineFixedLen]
       
       # layer e loro caratteristiche
-      propDescr = QadMsg.translate("Dimension", "Layer per i testi")
+      propDescr = QadMsg.translate("Dimension", "Layer for dim texts")
       proplist["textualLayerName"] = [propDescr, self.textualLayerName]
-      propDescr = QadMsg.translate("Dimension", "Layer per le linee")
+      propDescr = QadMsg.translate("Dimension", "Layer for dim lines")
       proplist["linearLayerName"] = [propDescr, self.linearLayerName]
-      propDescr = QadMsg.translate("Dimension", "Layer per le frecce")
+      propDescr = QadMsg.translate("Dimension", "Layer for dim arrows")
       proplist["symbolLayerName"] = [propDescr, self.symbolLayerName]
      
-      propDescr = QadMsg.translate("Dimension", "Campo per tipo di componente")
+      propDescr = QadMsg.translate("Dimension", "Field for component type")
       proplist["componentFieldName"] = [propDescr, self.componentFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per tipo di linea")
+      propDescr = QadMsg.translate("Dimension", "Field for linetype")
       proplist["lineTypeFieldName"] = [propDescr, self.lineTypeFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per colore")
+      propDescr = QadMsg.translate("Dimension", "Field for color")
       proplist["colorFieldName"] = [propDescr, self.colorFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per codice quota nei testi")
+      propDescr = QadMsg.translate("Dimension", "Field for dim ID in texts")
       proplist["idFieldName"] = [propDescr, self.idFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per codice quota nelle linee e frecce")
+      propDescr = QadMsg.translate("Dimension", "Field for dim ID in lines and arrows")
       proplist["idParentFieldName"] = [propDescr, self.idParentFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per nome stile di quota")
+      propDescr = QadMsg.translate("Dimension", "Field for dim style name")
       proplist["dimStyleFieldName"] = [propDescr, self.dimStyleFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per tipo di quota")
+      propDescr = QadMsg.translate("Dimension", "Field for dim type")
       proplist["dimTypeFieldName"] = [propDescr, self.dimTypeFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per tipo di quota")
+      propDescr = QadMsg.translate("Dimension", "Field for symbol name")
       proplist["symbolFieldName"] = [propDescr, self.symbolFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per scala frecce")
+      propDescr = QadMsg.translate("Dimension", "Field for arrows scale")
       proplist["scaleFieldName"] = [propDescr, self.scaleFieldName]
-      propDescr = QadMsg.translate("Dimension", "Campo per rotazione frecce")
+      propDescr = QadMsg.translate("Dimension", "Field for arrows rotation")
       proplist["rotFieldName"] = [propDescr, self.rotFieldName]
       
       return proplist
@@ -855,31 +854,31 @@ class QadDimStyle():
       Verifica se lo stile di quotatura é invalido e in caso affermativo ritorna il messaggio di errore.
       Se la quotatura é valida ritorna None.
       """
-      prefix = QadMsg.translate("Dimension", "\nLo stile di quotatura \"{0}\" ").format(self.name)
+      prefix = QadMsg.translate("Dimension", "\nThe dimension style \"{0}\" ").format(self.name)
       
       if self.getTextualLayer() is None:
-         return prefix + QadMsg.translate("Dimension", "non ha impostato il layer per i testi delle quote.\n")
+         return prefix + QadMsg.translate("Dimension", "has not the textual layer for dimension.\n")
       if qad_layer.isTextLayer(self.getTextualLayer()) == False:
-         errMsg = prefix + QadMsg.translate("Dimension", "ha il layer per i testi delle quote che non é di tipo testo.")         
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer testo é  un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.\n")
+         errMsg = prefix + QadMsg.translate("Dimension", "has the textual layer for dimension which is not a textual layer.")         
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.\n")
          return errMsg
 
       if self.getSymbolLayer() is None:
-         return prefix + QadMsg.translate("Dimension", "non ha impostato il layer per i simboli delle quote.\n")
+         return prefix + QadMsg.translate("Dimension", "has not the symbol layer for dimension.\n")
       if qad_layer.isSymbolLayer(self.getSymbolLayer()) == False:
-         errMsg = prefix + QadMsg.translate("Dimension", "ha il layer per i simboli delle quote che non é di tipo simbolo.")         
-         errMsg = errMsg + QadMsg.translate("QAD", "\nUn layer simbolo é un layer vettoriale di tipo punto senza etichetta.\n")
+         errMsg = prefix + QadMsg.translate("Dimension", "has the symbol layer for dimension which is not a symbol layer.")         
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
          return errMsg
 
       if self.getLinearLayer() is None:
-         return prefix + QadMsg.translate("Dimension", "non ha impostato il layer per le linee delle quote.\n")
+         return prefix + QadMsg.translate("Dimension", "has not the linear layer for dimension.\n")
       # deve essere un VectorLayer di tipo linea
       if (self.getLinearLayer().type() != QgsMapLayer.VectorLayer) or (self.getLinearLayer().geometryType() != QGis.Line):
-         errMsg = prefix + QadMsg.translate("Dimension", "ha il layer per le linee delle quote che non é di tipo linea.")         
+         errMsg = prefix + QadMsg.translate("Dimension", "has the linear layer for dimension which is not a linear layer.")         
          return errMsg
       # i layer devono avere lo stesso sistema di coordinate
       if not (self.getTextualLayer().crs() == self.getLinearLayer().crs() and self.getLinearLayer().crs() == self.getSymbolLayer().crs()):
-         errMsg = prefix + QadMsg.translate("Dimension", "non ha impostato i layer con lo stesso sistema di coordinate.")         
+         errMsg = prefix + QadMsg.translate("Dimension", "has not the layers with the same coordinate reference system.")         
          return errMsg
          
       return None
@@ -893,25 +892,25 @@ class QadDimStyle():
       Verifica se i layer dello stile di quotatura sono in sola lettura e in caso affermativo ritorna il messaggio di errore.
       Se i layer dello stile di quotatura sono modificabili ritorna None.
       """
-      prefix = QadMsg.translate("Dimension", "\nLo stile di quotatura \"{0}\" ").format(self.name)
+      prefix = QadMsg.translate("Dimension", "\nThe dimension style \"{0}\" ").format(self.name)
       
       provider = self.getTextualLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "ha il layer per i testi delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the textual layer not editable.\n")
       if not self.getTextualLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "ha il layer per i testi delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the textual layer not editable.\n")
 
       provider = self.getSymbolLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "ha il layer per i simboli delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the symbol layer not editable.\n")
       if not self.getSymbolLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "ha il layer per i simboli delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the symbol layer not editable.\n")
       
       provider = self.getLinearLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "ha il layer per le linee delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the linear layer not editable.\n")
       if not self.getLinearLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "ha il layer per le linee delle quote non modificabile.\n")
+         return prefix + QadMsg.translate("Dimension", "has the linear layer not editable.\n")
       
       return None
    

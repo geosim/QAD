@@ -95,7 +95,7 @@ class Qad_polygon_maptool(QadGetPoint):
          if self.mode == Qad_polygon_maptool_ModeEnum.CENTER_PT_KNOWN_ASK_FOR_RADIUS:
             radius = qad_utils.getDistance(self.centerPt, self.tmpPoint)
       
-            InscribedOption = True if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio") else False            
+            InscribedOption = True if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscribed in circle") else False            
             self.vertices.extend(qad_utils.getPolygonByNsidesCenterRadius(self.sideNumber, self.centerPt, radius, \
                                                                           InscribedOption, self.tmpPoint))
             result = True

@@ -49,7 +49,7 @@ class QadMOVECommandClass(QadCommandClass):
       return QadMOVECommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "SPOSTA")
+      return QadMsg.translate("Command_list", "MOVE")
 
    def getEnglishName(self):
       return "MOVE"
@@ -62,7 +62,7 @@ class QadMOVECommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_MOVE", "Sposta gli oggetti selezionati.")
+      return QadMsg.translate("Command_MOVE", "Moves the selected objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -146,7 +146,7 @@ class QadMOVECommandClass(QadCommandClass):
 
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
       #=========================================================================
@@ -170,8 +170,8 @@ class QadMOVECommandClass(QadCommandClass):
          self.getPointMapTool().entitySet.set(self.entitySet)
          self.getPointMapTool().setMode(Qad_move_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
    
-         keyWords = QadMsg.translate("Command_MOVE", "Spostamento")
-         prompt = QadMsg.translate("Command_MOVE", "Specificare punto base o [{0}] <{0}>: ").format(keyWords)
+         keyWords = QadMsg.translate("Command_MOVE", "Displacement")
+         prompt = QadMsg.translate("Command_MOVE", "Specify base point or [{0}] <{0}>: ").format(keyWords)
          
          englishKeyWords = "Displacement"
          keyWords += "_" + englishKeyWords
@@ -208,7 +208,7 @@ class QadMOVECommandClass(QadCommandClass):
             self.getPointMapTool().basePt = self.basePt
             self.getPointMapTool().setMode(Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)                                
             # si appresta ad attendere un punto
-            msg = QadMsg.translate("Command_MOVE", "Specificare lo spostamento dal punto di origine 0,0 <{0}, {1}>: ")
+            msg = QadMsg.translate("Command_MOVE", "Specify the displacement fom the origin point 0,0 <{0}, {1}>: ")
             # msg, inputType, default, keyWords, nessun controllo
             self.waitFor(msg.format(str(self.plugIn.lastOffsetPt.x()), str(self.plugIn.lastOffsetPt.y())), \
                          QadInputTypeEnum.POINT2D, \
@@ -224,7 +224,7 @@ class QadMOVECommandClass(QadCommandClass):
             
             # si appresta ad attendere un punto o enter o una parola chiave         
             # msg, inputType, default, keyWords, nessun controllo
-            self.waitFor(QadMsg.translate("Command_MOVE", "Specificare secondo punto oppure <Utilizza primo punto come spostamento dal punto di origine 0,0>: "), \
+            self.waitFor(QadMsg.translate("Command_MOVE", "Specify the second point or <use first point as displacement from the origin point 0,0>: "), \
                          QadInputTypeEnum.POINT2D, \
                          None, \
                          "", QadInputModeEnum.NONE)      

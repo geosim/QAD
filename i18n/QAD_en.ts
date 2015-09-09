@@ -181,7 +181,8 @@
     <message>
         <source>
 Selezionare un cerchio, un arco o una linea.</source>
-        <translation>Select a circle, an arc or a line.</translation>
+        <translation>
+Select a circle, an arc or a line.</translation>
     </message>
     <message>
         <source>Specificare oggetto per la seconda tangente del cerchio: </source>
@@ -603,6 +604,13 @@ Il raccordo con raggio {0} non esiste.</source>
     </message>
 </context>
 <context>
+    <name>Command_HELP</name>
+    <message>
+        <source>Visualizza la guida di QAD.</source>
+        <translation>The QAD manual will be showed.</translation>
+    </message>
+</context>
+<context>
     <name>Command_ID</name>
     <message>
         <source>Visualizza le coordinate di una posizione.</source>
@@ -702,7 +710,7 @@ I punti devono essere distinti.</source>
     <name>Command_MOVE</name>
     <message>
         <source>Sposta gli oggetti selezionati.</source>
-        <translation>Move the selected objects.</translation>
+        <translation>Moves the selected objects.</translation>
     </message>
     <message>
         <source>Spostamento</source>
@@ -1861,6 +1869,10 @@ A mark can&apos;t be inserted into a group.</translation>
         <source>DIMSTILE</source>
         <translation>DIMSTYLE</translation>
     </message>
+    <message>
+        <source>GUIDA</source>
+        <translation>HELP</translation>
+    </message>
 </context>
 <context>
     <name>DSettings_Dialog</name>
@@ -2515,7 +2527,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Allinea il testo con la linea di quota.</source>
-        <translation>text aligned withdDimension Line.</translation>
+        <translation>text aligned with Dimension Line.</translation>
     </message>
     <message>
         <source>Allineato con la linea di quota</source>
@@ -2754,6 +2766,11 @@ di estensione</source>
         <source>&apos; &apos; Spazio</source>
         <translation>&apos; &apos; Space</translation>
     </message>
+    <message>
+        <source>
+Mantenere queste impostazioni ?</source>
+        <translation>Do you want to accepts these settings ?</translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Dialog</name>
@@ -2775,7 +2792,7 @@ di estensione</source>
     </message>
     <message>
         <source>Eliminare lo stile di quotatura </source>
-        <translation>Remove dimension style</translation>
+        <translation>Remove dimension style </translation>
     </message>
     <message>
         <source>Lo stile di quotatura non è stato cancellato.</source>
@@ -3235,7 +3252,7 @@ Lo stile di quotatura &quot;{0}&quot; </source>
     </message>
     <message>
         <source>Campo per rotazione frecce</source>
-        <translation>Field forarrows rotation</translation>
+        <translation>Field for arrows rotation</translation>
     </message>
 </context>
 <context>
@@ -3553,6 +3570,17 @@ Character type.</translation>
     </message>
 </context>
 <context>
+    <name>Help</name>
+    <message>
+        <source>Quotatura</source>
+        <translation>Dimensioning</translation>
+    </message>
+    <message>
+        <source>IMPOSTADIS</source>
+        <translation>DSETTINGS</translation>
+    </message>
+</context>
+<context>
     <name>Popup_menu_graph_window</name>
     <message>
         <source>Ripeti </source>
@@ -3715,7 +3743,8 @@ The coordinate reference system of the project must be a projected coordinate sy
     <message>
         <source>
 Impostazioni correnti: </source>
-        <translation>Current settings: </translation>
+        <translation>
+Current settings: </translation>
     </message>
     <message>
         <source>Specificare angolo: </source>
@@ -3770,7 +3799,7 @@ I punti devono essere distinti.</source>
     </message>
     <message>
         <source>Quotatura</source>
-        <translation>Dimension</translation>
+        <translation>Dimensioning</translation>
     </message>
     <message>
         <source>QAD - Quotatura</source>

@@ -45,7 +45,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
       return QadPOLYGONCommandClass(self.plugIn)
    
    def getName(self):
-      return QadMsg.translate("Command_list", "POLIGONO")
+      return QadMsg.translate("Command_list", "POLYGON")
 
    def getEnglishName(self):
       return "POLYGON"
@@ -58,7 +58,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_POLYGON", "Crea un poligono regolare.")
+      return QadMsg.translate("Command_POLYGON", "Draws a regular polygon.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -96,7 +96,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
    #============================================================================
    def WaitForSideNumber(self):
       self.step = 1
-      prompt = QadMsg.translate("Command_POLYGON", "Digitare il numero dei lati <{0}>: ")
+      prompt = QadMsg.translate("Command_POLYGON", "Enter number of sides <{0}>: ")
       self.waitForInt(prompt.format(str(self.sideNumber)), self.sideNumber, \
                       QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
          
@@ -107,8 +107,8 @@ class QadPOLYGONCommandClass(QadCommandClass):
       self.step = 2
       self.getPointMapTool().setMode(Qad_polygon_maptool_ModeEnum.ASK_FOR_CENTER_PT)
       
-      keyWords = QadMsg.translate("Command_POLYGON", "Spigolo")
-      prompt = QadMsg.translate("Command_POLYGON", "Specificare centro del poligono [{0}]: ").format(keyWords)
+      keyWords = QadMsg.translate("Command_POLYGON", "Edge")
+      prompt = QadMsg.translate("Command_POLYGON", "Specify center of polygon or [{0}]: ").format(keyWords)
      
       englishKeyWords = "Edge"
       keyWords += "_" + englishKeyWords
@@ -123,11 +123,11 @@ class QadPOLYGONCommandClass(QadCommandClass):
    #============================================================================
    def WaitForInscribedCircumscribedOption(self):
       self.step = 3      
-      keyWords = QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio") + "/" + \
-                 QadMsg.translate("Command_POLYGON", "Circoscritto intorno al cerchio") + "/" + \
+      keyWords = QadMsg.translate("Command_POLYGON", "Inscribed in circle") + "/" + \
+                 QadMsg.translate("Command_POLYGON", "Circumscribed about circle") + "/" + \
                  QadMsg.translate("Command_POLYGON", "Area")
-      prompt = QadMsg.translate("Command_POLYGON", "Digitare un'opzione [{0}] <{1}>: ").format(keyWords, \
-                                                                                               self.constructionModeByCenter)
+      prompt = QadMsg.translate("Command_POLYGON", "Enter an option [{0}] <{1}>: ").format(keyWords, \
+                                                                                           self.constructionModeByCenter)
 
       englishKeyWords = "Inscribed in circle" + "/" + "Circumscribed about circle" + "/" + "Area"
       keyWords += "_" + englishKeyWords
@@ -148,7 +148,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
       
       # si appresta ad attendere un punto o un numero reale         
       # msg, inputType, default, keyWords, valori positivi
-      prompt = QadMsg.translate("Command_CIRCLE", "Specificare raggio del cerchio <{0}>: ")
+      prompt = QadMsg.translate("Command_CIRCLE", "Specify the circle radius <{0}>: ")
       self.waitFor(prompt.format(str(self.plugIn.lastRadius)), \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                    self.plugIn.lastRadius, "", \
@@ -162,7 +162,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_polygon_maptool_ModeEnum.ASK_FOR_FIRST_EDGE_PT)
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_POLYGON", "Specificare primo punto dello spigolo: "))
+      self.waitForPoint(QadMsg.translate("Command_POLYGON", "Specify the first point of the edge: "))
 
    #============================================================================
    # WaitForSecondEdgePt
@@ -177,7 +177,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_polygon_maptool_ModeEnum.FIRST_EDGE_PT_KNOWN_ASK_FOR_SECOND_EDGE_PT)
       # si appresta ad attendere un punto
-      self.waitForPoint(QadMsg.translate("Command_POLYGON", "Specificare secondo punto dello spigolo: "))       
+      self.waitForPoint(QadMsg.translate("Command_POLYGON", "Specify the second point of the edge: "))
 
    #============================================================================
    # WaitForArea
@@ -185,7 +185,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
    def WaitForArea(self):
       self.step = 7
          
-      msg = QadMsg.translate("Command_POLYGON", "Digitare l'area del poligono in unità correnti <{0}>: ")
+      msg = QadMsg.translate("Command_POLYGON", "Enter the polygon area in current units <{0}>: ")
       # si appresta ad attendere un numero reale         
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(msg.format(str(self.area)), QadInputTypeEnum.FLOAT, \
@@ -198,7 +198,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
       currLayer = None
@@ -228,7 +228,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
 
          if type(value) == int:
             if value < 3:
-               self.showErr(QadMsg.translate("Command_POLYGON", "\né richiesto un valore intero maggiore di 2."))
+               self.showErr(QadMsg.translate("Command_POLYGON", "\nEnter an integer greater than 2."))
             else:
                self.sideNumber = value
                self.getPointMapTool().sideNumber = self.sideNumber
@@ -261,7 +261,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_POLYGON", "Spigolo") or value == "Edge":
+            if value == QadMsg.translate("Command_POLYGON", "Edge") or value == "Edge":
                self.WaitForFirstEdgePt()
          elif type(value) == QgsPoint:
             self.centerPt = value
@@ -329,7 +329,7 @@ class QadPOLYGONCommandClass(QadCommandClass):
                
             self.plugIn.setLastRadius(self.radius)     
 
-            if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscritto nel cerchio") or \
+            if self.constructionModeByCenter == QadMsg.translate("Command_POLYGON", "Inscribed in circle") or \
                self.constructionModeByCenter == "Inscribed in circle":
                mode = True
             else:

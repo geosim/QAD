@@ -77,8 +77,8 @@ class QadVariablesClass():
 
       # ARCMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un arco
       VariableName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Numero minimo di segmenti per approssimare un arco." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Minumun numer of segment to approximate an arc.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(12), \
                                                             QadVariableTypeEnum.INT, \
                                                             4, 999, \
@@ -87,17 +87,17 @@ class QadVariablesClass():
       # AUTOSNAP (int): attiva il puntamento polare (somma di bit):
       # 8 = Attiva il puntamento polare
       VariableName = QadMsg.translate("Environment variables", "AUTOSNAP")
-      VariableDescr = QadMsg.translate("Environment variables", "Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap." + \
-                                       "\nInoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, " + \
-                                       "nonché quella della modalità orto.\nL'impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:" + \
-                                       "\n0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto." + \
-                                       "\n1 = Attiva il contrassegno di AutoSnap." + \
-                                       "\n2 = Attiva le descrizioni dei comandi di AutoSnap." + \
-                                       "\n4 = Attiva la calamita di AutoSnap." + \
-                                       "\n8 = Attiva il puntamento polare." + \
-                                       "\n16 = Attiva il puntamento con snap ad oggetto." + \
-                                       "\n32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the display of the AutoSnap marker, tooltip, and magnet." + \
+                                       "\nAlso turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips, " + \
+                                       "\nThe setting is stored as a bitcode using the sum of the following values:" + \
+                                       "\n0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode." + \
+                                       "\n1 = Turns on the AutoSnap marke." + \
+                                       "\n2 = Turns on the AutoSnap tooltips." + \
+                                       "\n4 = Turns on the AutoSnap magnet." + \
+                                       "\n8 = Turns on polar tracking." + \
+                                       "\n16 = Turns on object snap tracking." + \
+                                       "\n32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(63), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, None, \
@@ -105,8 +105,8 @@ class QadVariablesClass():
       
       # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un cerchio
       VariableName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Numero minimo di segmenti per approssimare un cerchio." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Minumun numer of segment to approximate a circle.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(12), \
                                                             QadVariableTypeEnum.INT, \
                                                             6, 999, \
@@ -114,8 +114,8 @@ class QadVariablesClass():
       
       # CMDINPUTHISTORYMAX (int): Imposta il numero massimo di comandi nella lista di storicizzazione
       VariableName = QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Imposta il numero massimo di comandi precedenti." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Sets the maximum number of previous input values that are stored for a prompt in a command.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(20), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
@@ -125,10 +125,10 @@ class QadVariablesClass():
       # 0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente
       # 1 = Imposta il comando COPIA in modo da creare una singola copia
       VariableName = QadMsg.translate("Environment variables", "COPYMODE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Verifica se il comando COPIA viene ripetuto automaticamente:" + \
-                                       "\n0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente." + \
-                                       "\n1 = Imposta il comando COPIA in modo da creare una singola copia." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls whether the COPY command repeats automatically:" + \
+                                       "\n0 = Sets the COPY command to repeat automatically." + \
+                                       "\n1 = Sets the COPY command to create a single copy.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, 1, \
@@ -136,8 +136,8 @@ class QadVariablesClass():
       
       # CURSORCOLOR (str): Imposta il colore (RGB) del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORCOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Colore (RGB) del puntatore a croce (es. #FF0000 = rosso)." + \
-                                       "\nTipo carattere.") # x lupdate                                       
+      VariableDescr = QadMsg.translate("Environment variables", "Cross pointer color (RGB, #FF0000 = red).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
@@ -145,8 +145,8 @@ class QadVariablesClass():
       
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORSIZE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Determina le dimensioni del puntatore a croce come percentuale della dimensione dello schermo."
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Determines the size of the crosshairs as a percentage of the screen size.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 100, \
@@ -154,8 +154,8 @@ class QadVariablesClass():
       
       # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente
       VariableName = QadMsg.translate("Environment variables", "DIMSTYLE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Nome dello stile di quotatura corrente." + \
-                                       "\nTipo carattere.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Stores the name of the current dimension style.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode(""), \
                                                             QadVariableTypeEnum.STRING, \
                                                             None, None, \
@@ -165,10 +165,10 @@ class QadVariablesClass():
       # O = Vengono usate le dimensioni reali degli oggetti di riferimento
       # 1 = Vengono usate le estensioni  degli oggetti di riferimento (es. un arco viene considerato cerchio)
       VariableName = QadMsg.translate("Environment variables", "EDGEMODE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Controlla la modalità in cui i comandi TAGLIA ed ESTENDI determinano i limiti di taglio e di estensione:" + \
-                                       "\n0 = Utilizza lo spigolo selezionato senza estensioni." + \
-                                       "\n1 = Estende o taglia l'oggetto selezionato fino ad un'estensione immaginaria del limite di taglio o di estensione." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls how the TRIM and EXTEND commands determine cutting and boundary edges:" + \
+                                       "\n0 = Uses the selected edge without an extensions." + \
+                                       "\n1 = Extends or trims the selected object to an imaginary extension of the cutting or boundary edge.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, 1, \
@@ -176,9 +176,8 @@ class QadVariablesClass():
       
       # FILLETRAD (float): raggio applicato per raccordare (gradi)
       VariableName = QadMsg.translate("Environment variables", "FILLETRAD") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Memorizza il raggio di raccordo corrente." + \
-                                       "Se si utilizza il comando RACCORDO per modificare il raggio di un raccordo, il valore di questa variabile di sistema cambia di conseguenza." + \
-                                       "\nTipo reale.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Stores the current fillet radius.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.0), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             0.000001, None, \
@@ -188,10 +187,10 @@ class QadVariablesClass():
       # < 0  offset di un oggetto attraverso un punto
       # >= 0 offset di un oggetto attraverso la distanza
       VariableName = QadMsg.translate("Environment variables", "OFFSETDIST") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Distanza di offset di default:" + \
-                                       "\n<0 = Esegue l'offset di un oggetto attraverso un punto specificato." + \
-                                       "\n>=0 = Imposta la distanza di offset di default." + \
-                                       "\nTipo reale.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Sets the default offset distance:" + \
+                                       "\n<0 = Offsets an object through a specified point." + \
+                                       "\n>=0 =  Sets the default offset distance.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(-1.0), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             None, None, \
@@ -205,11 +204,11 @@ class QadVariablesClass():
       #     La distanza perpendicolare da ciascuna cima al rispettivo vertice
       #     sull'oggetto originale é uguale alla distanza di offset.
       VariableName = QadMsg.translate("Environment variables", "OFFSETGAPTYPE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Controlla la gestione dei potenziali spazi tra segmenti quando viene eseguito l'offset delle polilinee:" + \
-                                       "\n0 = Estende i segmenti di linea alle relative intersezioni proiettate." + \
-                                       "\n1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate. Il raggio di ciascun segmento di arco è uguale alla distanza di offset." + \
-                                       "\n2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate. La distanza perpendicolare da ciascuna cima al rispettivo vertice sull'oggetto originale è uguale alla distanza di offset." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls how potential gaps between segments are treated when polylines are offset:" + \
+                                       "\n0 = Extends line segments to their projected intersections." + \
+                                       "\n1 = Fillets line segments at their projected intersections. The radius of each arc segment is equal to the offset distance." + \
+                                       "\n2 = Chamfers line segments at their projected intersections. The perpendicular distance from each chamfer to its corresponding vertex on the original object is equal to the offset distance.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, 2, \
@@ -219,11 +218,11 @@ class QadVariablesClass():
       # 0 = modalità di movimento ortogonale cursore disabilitata
       # 1 = modalità di movimento ortogonale cursore abilitata
       VariableName = QadMsg.translate("Environment variables", "ORTHOMODE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Limita il movimento del cursore alla direzione perpendicolare." + \
-                                       "\nQuando ORTHOMODE è attivata, il cursore può essere spostato solo verticalmente oppure orizzontalmente:" + \
-                                       "\n0 = Disattiva la modalità orto." + \
-                                       "\n1 = Attiva la modalità orto." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Constrains cursor movement to the perpendicular." + \
+                                       "\nWhen ORTHOMODE is turned on, the cursor can move only horizontally or vertically:" + \
+                                       "\n0 = Turns off Ortho mode." + \
+                                       "\n1 = Turns on Ortho mode.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, 1, \
@@ -231,8 +230,8 @@ class QadVariablesClass():
       
       # OSCOLOR (str): Imposta il colore (RGB) dei simboli di osnap
       VariableName = QadMsg.translate("Environment variables", "OSCOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Colore (RGB) dei simboli di osnap (es. #FF0000 = rosso)." + \
-                                       "\nTipo carattere.") # x lupdate                                       
+      VariableDescr = QadMsg.translate("Environment variables", "Osnap symbols color (RGB, #FF0000 = red).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
@@ -264,27 +263,27 @@ class QadVariablesClass():
       # 1048576 = puntamento polare
       # 2097152 = punti finali dell'intera polilinea
       VariableName = QadMsg.translate("Environment variables", "OSMODE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Modalità degli snap ad oggetto." + \
-                                       "\nL'impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:" + \
-                                       "\n0 = Nessuno." + \
-                                       "\n1 = Punti finali (FIN)." + \
-                                       "\n2 = Punto medio (MED)." + \
-                                       "\n4 = Centro-centroide (CEN)." + \
-                                       "\n8 = Inserimento di un oggetto puntuale (NOD)." + \
-                                       "\n16 = Punto quadrante (QUA)." + \
-                                       "\n32 = Intersezione (INT)." + \
-                                       "\n64 = Inserimento di un oggetto puntuale (INS)." + \
-                                       "\n128 = Perpendicolare (PER)." + \
-                                       "\n256 = Tangente (TAN)." + \
-                                       "\n512 = Vicino (NEA)." + \
-                                       "\n1024 = Cancella tutti gli snap ad oggetto (C)." + \
-                                       "\n2048 = Intersezione apparente (APP)." + \
-                                       "\n4096 = Estensione (EST)." + \
-                                       "\n8192 = Parallelo (PAR)." + \
-                                       "\n65536 = Distanza progressiva (PR[dist])." + \
-                                       "\n131072 = Intersezione sull'estensione (EXT_INT)." + \
-                                       "\n2097152 = Punti finali dell'intera polilinea (FIN_PL)." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Sets running object snaps." + \
+                                       "\nThe setting is stored as a bitcode using the sum of the following values:" + \
+                                       "\n0 = NONe." + \
+                                       "\n1 = ENDpoint." + \
+                                       "\n2 = MIDpoint." + \
+                                       "\n4 = CENter." + \
+                                       "\n8 = NODe." + \
+                                       "\n16 = QUAdrant." + \
+                                       "\n32 = INTersection." + \
+                                       "\n64 = INSertion." + \
+                                       "\n128 = PERpendicular." + \
+                                       "\n256 = TANgent." + \
+                                       "\n512 = NEArest." + \
+                                       "\n1024 = QUIck." + \
+                                       "\n2048 = APParent Intersection." + \
+                                       "\n4096 = EXTension." + \
+                                       "\n8192 = PARallel." + \
+                                       "\n65536 = PRogressive distance (PR[dist])." + \
+                                       "\n131072 = Intersection on extension (EXT_INT)." + \
+                                       "\n2097152 = Final points on polyline (FIN_PL).") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, None, \
@@ -292,8 +291,8 @@ class QadVariablesClass():
       
       # OSPROGRDISTANCE (float): Distanza progressiva per snap PR
       VariableName = QadMsg.translate("Environment variables", "OSPROGRDISTANCE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Distanza progressiva per snap <Distanza progressiva>." + \
-                                       "\nTipo reale.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Progressive distance for <Progressive distance> snap mode.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.0), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             None, None, \
@@ -301,8 +300,8 @@ class QadVariablesClass():
       
       # OSSIZE (int): Imposta la dimensione in pixel dei simboli di osnap
       VariableName = QadMsg.translate("Environment variables", "OSSIZE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Dimensione in pixel dei simboli di osnap" + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Osnap symbol size in pixel.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(13), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
@@ -311,8 +310,8 @@ class QadVariablesClass():
       # PICKBOX (int): Imposta la dimensione in pixel della distanza di selezione degli oggetti
       # dalla posizione corrente del puntatore
       VariableName = QadMsg.translate("Environment variables", "PICKBOX") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Altezza in pixel del quadratino di selezione degli oggetti." + \
-                                       "\nTipo intero.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Sets the object selection target height, in pixels.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
@@ -320,8 +319,8 @@ class QadVariablesClass():
       
       # PICKBOXCOLOR (str): Imposta il colore (RGB) del quadratino di selezione degli oggetti
       VariableName = QadMsg.translate("Environment variables", "PICKBOXCOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Colore (RGB) del quadratino di selezione degli oggetti (es. #FF0000 = rosso)." + \
-                                       "\nTipo carattere.") # x lupdate                                       
+      VariableDescr = QadMsg.translate("Environment variables", "Sets the object selection target color (RGB, #FF0000 = red).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
@@ -329,8 +328,8 @@ class QadVariablesClass():
 
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi)
       VariableName = QadMsg.translate("Environment variables", "POLARANG") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Incremento dell'angolo polare per il puntamento polare (gradi)." + \
-                                       "\nTipo reale.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Sets the polar angle increment (degree).") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(90.0), \
                                                             QadVariableTypeEnum.INT, \
                                                             0.000001, 359.999999, \
@@ -338,8 +337,8 @@ class QadVariablesClass():
 
       # SUPPORTPATH (str): Path di ricerca per i files di supporto
       VariableName = QadMsg.translate("Environment variables", "SUPPORTPATH") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Path di ricerca per i files di supporto." + \
-                                       "\nTipo carattere.") # x lupdate                                       
+      VariableDescr = QadMsg.translate("Environment variables", "Searching path for support files.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode(""), \
                                                             QadVariableTypeEnum.STRING, \
                                                             None, None, \
@@ -347,8 +346,8 @@ class QadVariablesClass():
       
       # SHOWTEXTWINDOW (bool): Visualizza la finestra di testo all'avvio
       VariableName = QadMsg.translate("Environment variables", "SHOWTEXTWINDOW") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Visualizza la finestra di testo all'avvio." + \
-                                       "\nTipo booleano.") # x lupdate                                       
+      VariableDescr = QadMsg.translate("Environment variables", "Show the text window at startup.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Boolean type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, True, \
                                                             QadVariableTypeEnum.BOOL, \
                                                             None, None, \
@@ -358,8 +357,8 @@ class QadVariablesClass():
       # massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti
       # (nel sistema map-coordinate)
       VariableName = QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti." + \
-                                       "\nTipo reale.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Maximum error approximating a curve to segments.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.1), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             0.000001, None, \

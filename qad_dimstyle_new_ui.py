@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_new.ui'
 #
-# Created: Thu Aug 27 11:02:32 2015
+# Created: Tue Sep 08 15:55:21 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,11 +64,11 @@ class Ui_DimStyle_New_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(DimStyle_New_Dialog)
 
     def retranslateUi(self, DimStyle_New_Dialog):
-        DimStyle_New_Dialog.setWindowTitle(_translate("DimStyle_New_Dialog", "QAD - Crea nuovo stile di quota", None))
-        self.label.setText(_translate("DimStyle_New_Dialog", "Nome del nuovo stile:", None))
-        self.label_2.setText(_translate("DimStyle_New_Dialog", "Copia i parametri dallo stile:", None))
-        self.continueButton.setText(_translate("DimStyle_New_Dialog", "Continua...", None))
-        self.cancelButton.setText(_translate("DimStyle_New_Dialog", "Annulla", None))
+        DimStyle_New_Dialog.setWindowTitle(_translate("DimStyle_New_Dialog", "QAD - Create new dimension style", None))
+        self.label.setText(_translate("DimStyle_New_Dialog", "New style name:", None))
+        self.label_2.setText(_translate("DimStyle_New_Dialog", "Start with:", None))
+        self.continueButton.setText(_translate("DimStyle_New_Dialog", "Continue...", None))
+        self.cancelButton.setText(_translate("DimStyle_New_Dialog", "Cancel", None))
         self.helpButton.setText(_translate("DimStyle_New_Dialog", "?", None))
-        self.label_3.setText(_translate("DimStyle_New_Dialog", "Descrizione:", None))
+        self.label_3.setText(_translate("DimStyle_New_Dialog", "Description:", None))
 

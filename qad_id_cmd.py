@@ -51,7 +51,7 @@ class QadIDCommandClass(QadCommandClass):
 
    def getNote(self):
       # impostare le note esplicative del comando
-      return QadMsg.translate("Command_ID", "Visualizza le coordinate di una posizione.")
+      return QadMsg.translate("Command_ID", "Displays the coordinate values of a specified location.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)

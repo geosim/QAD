@@ -48,7 +48,7 @@ class QadFILLETCommandClass(QadCommandClass):
       return QadFILLETCommandClass(self.plugIn)
 
    def getName(self):
-      return QadMsg.translate("Command_list", "RACCORDO")
+      return QadMsg.translate("Command_list", "FILLET")
 
    def getEnglishName(self):
       return "FILLET"
@@ -61,7 +61,7 @@ class QadFILLETCommandClass(QadCommandClass):
    
    def getNote(self):
       # impostare le note esplicative del comando      
-      return QadMsg.translate("Command_FILLET", "Arrotonda e raccorda gli spigoli.")
+      return QadMsg.translate("Command_FILLET", "Rounds and fillets the edges of objects.")
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)      
@@ -165,7 +165,7 @@ class QadFILLETCommandClass(QadCommandClass):
 
       transformedRadius = qad_utils.distMapToLayerCoordinates(self.radius, self.plugIn.canvas, layer)
       tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugIn.canvas,\
+                                                                  self.plugin.canvas, \
                                                                   layer)                              
       f = self.entity1.getFeature()
       geom = f.geometry() 
@@ -220,7 +220,7 @@ class QadFILLETCommandClass(QadCommandClass):
                                                 transformedLinearObjectList2, self.partAt2, transformedPointAt2,\
                                                 self.filletMode, transformedRadius, epsg)      
       if res is None: # raccordo non possibile
-         msg = QadMsg.translate("Command_FILLET", "\nIl raccordo con raggio {0} non esiste.")
+         msg = QadMsg.translate("Command_FILLET", "\nFillet with radius <{0}> impossible.")
          #showMsg
          self.showMsg(msg.format(str(self.radius)))
          return False
@@ -306,12 +306,13 @@ class QadFILLETCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_FIRST_LINESTRING)
 
-      keyWords = QadMsg.translate("Command_FILLET", "aNnulla") + "/" + \
-                 QadMsg.translate("Command_FILLET", "Polilinea") + "/" + \
-                 QadMsg.translate("Command_FILLET", "RAggio") + "/" + \
-                 QadMsg.translate("Command_FILLET", "Taglia") + "/" + \
-                 QadMsg.translate("Command_FILLET", "Multiplo")
-      prompt = QadMsg.translate("Command_FILLET", "Selezionare il primo oggetto o [{0}]: ").format(keyWords)
+      # l'opzione Radius viene tradotta in italiano in "RAggio" nel contesto "waitForFirstEntSel"
+      keyWords = QadMsg.translate("Command_FILLET", "Undo") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Polyline") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Radius", "waitForFirstEntSel") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Trim") + "/" + \
+                 QadMsg.translate("Command_FILLET", "Multiple")
+      prompt = QadMsg.translate("Command_FILLET", "Select first object or [{0}]: ").format(keyWords)
                
       englishKeyWords = "Undo" + "/" + "Polyline" + "/" + "Radius" + "/" + "Trim" + "/" + "Multiple"
       keyWords += "_" + englishKeyWords
@@ -332,8 +333,9 @@ class QadFILLETCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_POLYLINE)
       self.getPointMapTool().radius = self.radius      
 
-      keyWords = QadMsg.translate("Command_FILLET", "Raggio")
-      prompt = QadMsg.translate("Command_FILLET", "Selezionare la polilinea o [{0}]: ").format(keyWords)
+      # l'opzione Radius viene tradotta in italiano in "Raggio" nel contesto "WaitForPolyline"
+      keyWords = QadMsg.translate("Command_FILLET", "Radius", "WaitForPolyline")
+      prompt = QadMsg.translate("Command_FILLET", "Select polyline or [{0}]: ").format(keyWords)
 
       englishKeyWords = "Radius"
       keyWords += "_" + englishKeyWords
@@ -353,15 +355,15 @@ class QadFILLETCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.NONE)
 
-      keyWords = QadMsg.translate("Command_FILLET", "Taglia-estendi") + "/" + \
-                 QadMsg.translate("Command_FILLET", "Non taglia-estendi")
+      keyWords = QadMsg.translate("Command_FILLET", "Trim-extend") + "/" + \
+                 QadMsg.translate("Command_FILLET", "No trim-extend")
 
       if self.filletMode == 1:
-         default = QadMsg.translate("Command_FILLET", "Taglia-estendi")
+         default = QadMsg.translate("Command_FILLET", "Trim-extend")
       elif self.filletMode == 2:
-         default = QadMsg.translate("Command_FILLET", "Non taglia-estendi") 
+         default = QadMsg.translate("Command_FILLET", "No trim-extend") 
                          
-      prompt = QadMsg.translate("Command_FILLET", "Specificare modalità di taglio [{0}] <{1}>: ").format(keyWords, default)
+      prompt = QadMsg.translate("Command_FILLET", "Specify trim mode [{0}] <{1}>: ").format(keyWords, default)
 
       englishKeyWords = "Trim-extend" + "/" + "No trim-extend"
       keyWords += "_" + englishKeyWords
@@ -383,8 +385,9 @@ class QadFILLETCommandClass(QadCommandClass):
                                            self.partAt1, self.pointAt1)      
       self.getPointMapTool().setMode(Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING)
 
-      keyWords = QadMsg.translate("Command_FILLET", "RAggio")                   
-      prompt = QadMsg.translate("Command_FILLET", "Selezionare il secondo oggetto o selezionare l'oggetto tenendo premuto il tasto Maiusc per applicare l'angolo o [{0}]: ").format(keyWords)
+      # l'opzione Radius viene tradotta in italiano in "RAggio" nel contesto "waitForSecondEntSel"
+      keyWords = QadMsg.translate("Command_FILLET", "Radius", "waitForSecondEntSel")           
+      prompt = QadMsg.translate("Command_FILLET", "Select second object or shift-select to apply corner or [{0}]: ").format(keyWords)
 
       englishKeyWords = "Radius"
       keyWords += "_" + englishKeyWords
@@ -398,17 +401,17 @@ class QadFILLETCommandClass(QadCommandClass):
         
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
-         self.showMsg(QadMsg.translate("QAD", "\nIl sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
       if self.step == 0:
-         CurrSettingsMsg = QadMsg.translate("QAD", "\nImpostazioni correnti: ")
+         CurrSettingsMsg = QadMsg.translate("QAD", "\nCurrent settings: ")
          if self.filletMode == 1:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalità= Taglia-estendi")
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Mode = Trim-extend")
          else:
-            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Modalità= Non taglia-estendi")
+            CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", "Mode = No trim-extend")
                
-         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", ", Raggio = ") + str(self.radius)   
+         CurrSettingsMsg = CurrSettingsMsg + QadMsg.translate("Command_FILLET", ", Radius = ") + str(self.radius)
          self.showMsg(CurrSettingsMsg)         
             
          self.waitForFirstEntSel()
@@ -434,29 +437,30 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "aNnulla") or value == "Undo":
+            if value == QadMsg.translate("Command_FILLET", "Undo") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "Il comando é stato completamente annullato."))                  
+                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))
                   
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
-            elif value == QadMsg.translate("Command_FILLET", "Polilinea") or value == "Polyline":
+            elif value == QadMsg.translate("Command_FILLET", "Polyline") or value == "Polyline":
                self.WaitForPolyline()
-            elif value == QadMsg.translate("Command_FILLET", "RAggio") or value == "Radius":
+            # l'opzione Radius viene tradotta in italiano in "RAggio" nel contesto "waitForFirstEntSel"
+            elif value == QadMsg.translate("Command_FILLET", "Radius", "waitForFirstEntSel") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
-               prompt = QadMsg.translate("Command_FILLET", "Specificare raggio di raccordo <{0}>: ")
+               prompt = QadMsg.translate("Command_FILLET", "Specify fillet radius <{0}>: ")
                self.GetDistClass.msg = prompt.format(str(self.radius))
                self.GetDistClass.dist = self.radius
                self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
                self.step = 3
                self.GetDistClass.run(msgMapTool, msg)
-            elif value == QadMsg.translate("Command_FILLET", "Taglia") or value == "Trim":
+            elif value == QadMsg.translate("Command_FILLET", "Trim") or value == "Trim":
                self.waitForFilletMode()
-            elif value == QadMsg.translate("Command_FILLET", "Multiplo") or value == "Multiple":
+            elif value == QadMsg.translate("Command_FILLET", "Multiple") or value == "Multiple":
                self.multi = True
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
                            
@@ -513,11 +517,12 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "Raggio") or value == "Radius":
+            # l'opzione Radius viene tradotta in italiano in "Raggio" nel contesto "WaitForPolyline"
+            if value == QadMsg.translate("Command_FILLET", "Radius", "WaitForPolyline") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
-               prompt = QadMsg.translate("Command_FILLET", "Specificare raggio di raccordo <{0}>: ")
+               prompt = QadMsg.translate("Command_FILLET", "Specify fillet radius <{0}>: ")
                self.GetDistClass.msg = prompt.format(str(self.radius))
                self.GetDistClass.dist = self.radius
                self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
@@ -595,9 +600,9 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "Taglia") or value == "Trim":
+            if value == QadMsg.translate("Command_FILLET", "Trim-extend") or value == "Trim-extend":
                self.filletMode = 1
-            elif value == QadMsg.translate("Command_FILLET", "NonTaglia") or value == "No":
+            elif value == QadMsg.translate("Command_FILLET", "No trim-extend") or value == "No trim-extend":
                self.filletMode = 2
             self.plugIn.setFilletMode(self.filletMode)
             
@@ -636,11 +641,12 @@ class QadFILLETCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_FILLET", "RAggio") or value == "Radius":
+            # l'opzione Radius viene tradotta in italiano in "RAggio" nel contesto "waitForSecondEntSel"
+            if value == QadMsg.translate("Command_FILLET", "Radius", "waitForSecondEntSel") or value == "Radius":
                if self.GetDistClass is not None:
                   del self.GetDistClass
                self.GetDistClass = QadGetDistClass(self.plugIn)
-               prompt = QadMsg.translate("Command_FILLET", "Specificare raggio di raccordo <{0}>: ")
+               prompt = QadMsg.translate("Command_FILLET", "Specify fillet radius <{0}>: ")
                self.GetDistClass.msg = prompt.format(str(self.radius))
                self.GetDistClass.dist = self.radius
                self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
