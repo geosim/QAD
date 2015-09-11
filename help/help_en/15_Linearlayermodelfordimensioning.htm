@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 25 March 2009), see www.w3.org">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="Generator" content="Microsoft Word 14 (filtered)">
+<link rel="stylesheet" type="text/css" href="embeddedstyles.css">
+<title>Linear layer model for dimensioning:</title>
+<meta name="generator" content="chmProcessor">
+</head>
+<body lang="IT">
+<div class="WordSection1">
+<h3><a name="node14" id="node14"></a><span lang="EN">Linear layer
+model for dimensioning:</span></h3>
+<p class="MsoNormal"><span lang="EN-US">Linear elements of a
+dimension (dimension line, extension lines ...) must be stored in a
+linear layer with the following fields:</span></p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN">No mandatory
+fields</span></li>
+</ul>
+<p class="MsoNormal"><span lang="EN">Optional fields:</span></p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN">a character field to store
+the color of the</span> <span lang="EN-US">dimension
+lines</span></li>
+<li class="MsoNormal"><span lang="EN">a character field to store
+the linetype of the dimension lines</span></li>
+<li class="MsoNormal"><span lang="EN-US">a character field (2
+characters) field to store the linear object type according to the
+following scheme:<br>
+"D1" = Dimension line 1<br>
+"D2" = Dimension line 2<br>
+"E1" = Extension line 1"<br>
+"E2" = Extension line 2<br>
+"L" = leader line when the text is outside the dimension<br>
+<br>
+(required if you want to use the editing features of an existing
+dimension)</span></li>
+<li class="MsoNormal"><span lang="EN-US">an integer number field to
+store the unique ID of the dimension (necessary if you want to
+group the objects of a dimension, and implement the erasing and
+editing features of an existing dimension)</span></li>
+</ul>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">The linear layer must be
+defined with the style set as follows:</span></p>
+<p class="MsoNormal"><span lang="EN">Optional settings</span>:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN-US">The color can be read from
+a character field that stores the dimension line color</span></li>
+<li class="MsoNormal"><span lang="EN-US">The linetype can be read
+from a character field that stores the linetype of dimension
+lines</span></li>
+</ul>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN">Dimension commands (DIMLINEAR,
+DIMALIGNED) refer to the current dimension style. To set the
+current dimension style run DIMSTYLE command</span><span lang=
+"EN-US">.</span></p>
+<b><span lang="EN-US" style=
+'font-size:13.0pt;line-height:115%;font-family:"Cambria","serif"; color:#4F81BD'><br clear="all"
+style='page-break-before:always'></span></b></div>
+</body>
+</html>

@@ -27,7 +27,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
-from qgis.utils import *
+#from qgis.utils import *
+import qgis.utils
+
 
 import math
 import sys
@@ -234,6 +236,26 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
          coords = getPolarPointByPtAngle(lastPoint, math.radians(angle), dist)     
          return QgsPoint(coords[0], coords[1])
    else:
+      # verifico se è specificato un CRS
+      CRS, newExpr = strFindCRS(expression)
+      if CRS is not None:
+         if CRS.geographicFlag():
+            pt = strLatLon2QgsPoint(newExpr)
+         else:               
+            coords = newExpr.split(",")
+            if len(coords) != 2:
+               return None
+            x = str2float(coords[0].strip())
+            y = str2float(coords[1].strip())
+            if (x is None) or (y is None):
+               return None
+            pt = QgsPoint(x, y)
+            
+         if pt is not None:
+            destCRS = qgis.utils.iface.mapCanvas().mapRenderer().destinationCrs() # CRS corrente
+            return QgsCoordinateTransform(CRS, destCRS).transform(pt) # trasformo le coord
+
+
       coords = expression.split(",")
       if len(coords) == 2:  # coordinate assolute
          x = str2float(coords[0].strip())
@@ -253,6 +275,116 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
          angle = getAngleBy2Pts(lastPoint, currenPoint)
          coords = getPolarPointByPtAngle(lastPoint, angle, dist)     
          return QgsPoint(coords[0], coords[1])
+
+#===============================================================================
+# strLatLon2QgsPoint
+#===============================================================================
+def strFindCRS(s):
+   """
+   Cerca il sistema di coordinate in una stringa indicante un punto (usa authid).
+   Il sistema di coordinate va espresso in qualsiasi punto della stringa e deve essere
+   racchiuso tra parentesi tonde (es "111,222 (EPSG:3003)")
+   Ritorna il SR e la stringa depurata del SR (es "111,222")
+   """
+   initial = string.find(s, "(")
+   if initial == -1:
+      return None, s
+   final = string.find(s, ")")
+   if initial > final:
+      return None, s
+   authId = s[initial+1:final]
+   authId = authId.strip() # senza spazi iniziali e finali
+   return QgsCoordinateReferenceSystem(authId), s.replace(s[initial:final+1], "")
+
+
+#===============================================================================
+# strLatLon2QgsPoint
+#===============================================================================
+def strLatLon2QgsPoint(s):
+   """
+   Ritorna la conversione di una stringa contenente una coordinata in latitudine longitudine
+   in punto QgsPoint.
+   
+   Sono supportati i seguenti formati:
+   DDD gradi decimali (49.11675S o S49.11675 o 49.11675 S o S 49.11675 o -49.1167)
+   DMS gradi minuti secondi (49 7 20.06)
+   DMM gradi minuti con secondi decimali (49 7.0055)
+   
+   Sintassi latitudine longitudine:
+   Il separatore può essere uno spazio, puoi anche usare ' per i minuti e " per i secondi (47 7'20.06")
+   La notazione di direzione è N, S, E, W maiuscolo o minuscolo prima o dopo la coordinata
+   ("N 37 24 23.3" o "N37 24 23.3" o "37 24 23.3 N" o "37 24 23.3N")
+   Puoi usare anche le coordinate negative per l'ovest e il sud.
+   
+   La prima coordinata viene interpretata come latitudine a meno che specifichi una lettera di direzione (E o W)
+   ("122 05 08.40 W 37 25 19.07 N")
+   Puoi usare uno spazio, una virgola o una barra per delimitare le coppie di valori
+   ("37.7 N 122.2 W" o "37.7 N,122.2 W" o "37.7 N/122.2 W") 
+   """
+   expression = s.strip() # senza spazi iniziali e finali
+   if len(expression) == 0:
+      return None
+   
+   numbers = []
+   directions = []
+   word = ""
+   for ch in s:
+      if ch.isnumeric() or ch == "." or ch == "-":
+         word += ch
+      else:
+         if len(word) > 0:
+            n = str2float(word)
+            if n is None:
+               return None
+            numbers.append(n)
+            word = ""
+         if ch == "N" or ch == "n" or ch == "S" or ch == "s" or ch == "E" or ch == "e" or ch == "W" or ch == "w":
+            directions.append(ch.upper())
+            word = ""
+
+   directions_len = len(directions)
+   if directions_len != 0 and directions_len != 2:
+      return None
+
+   numbers_len = len(numbers)
+   if numbers_len == 2: # DDD
+      lat = numbers[0]
+      lon = numbers[1]
+   elif numbers_len == 4: # DMM 
+      degrees = numbers[0]
+      minutes = numbers[1]
+      lat = degrees + minutes / 60
+      degrees = numbers[2]
+      minutes = numbers[3]
+      lon = degrees + minutes / 60
+   elif numbers_len == 6: # DMS
+      degrees = numbers[0]
+      minutes = numbers[1]
+      seconds = numbers[2]
+      lat = degrees + minutes / 60 + seconds / 3600
+      degrees = numbers[3]
+      minutes = numbers[4]
+      seconds = numbers[5]
+      lon = degrees + minutes / 60 + seconds / 3600
+   else:
+      return None
+   
+   if directions_len == 2:
+      if lat < 0 or lon < 0:
+         return None
+      if directions[0] == "N" or directions[0] == "S": # latitude first
+         if directions[0] == "S":
+            lat = -lat
+      elif directions[0] == "E" or directions[0] == "W": # longitude first
+         dummy = lat
+         lat = lon if directions[0] == "E" else -lon
+         lon = dummy if directions[1] == "S" else -value2
+      else:
+         return None
+         
+      return QgsPoint(lon, lat)
+   else: # latitude first
+      return QgsPoint(lon, lat)
 
 
 #===============================================================================
