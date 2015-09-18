@@ -98,24 +98,18 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):    
-      # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
-      
+   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity):
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
          # plugIn, layer, feature, coordTransform, refresh, check_validity
          if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:  
             return False
-         del layerEntitySet.featureIds[0]
       else:
-         # sposto la quota e la rimuovo da entitySet
-         dimEntitySet = dimEntity.getEntitySet()
+         # sposto la quota
          dimEntity.move(offSetX, offSetY)                               
          if dimEntity.addToLayers(self.plugIn) == False:
             return False             
-         entitySet.subtract(dimEntitySet)
             
       return True
 
@@ -140,6 +134,9 @@ class QadCOPYCommandClass(QadCommandClass):
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
+
+            # verifico se l'entità appartiene ad uno stile di quotatura
+            dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
             
             if self.series and self.seriesLen > 0: # devo fare una serie
                if self.adjust == True:
@@ -150,15 +147,22 @@ class QadCOPYCommandClass(QadCommandClass):
                deltaY = offSetY
                               
                for i in xrange(1, self.seriesLen, 1):
-                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet) == False:  
+                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimEntity) == False:  
                      self.plugIn.destroyEditCommand()
                      return
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY
             else:
-               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet) == False:  
+               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity) == False:  
                   self.plugIn.destroyEditCommand()
                   return
+               
+            # la rimuovo da entitySet
+            if dimEntity is None:
+               del layerEntitySet.featureIds[0]
+            else:
+               dimEntitySet = dimEntity.getEntitySet()
+               entitySet.subtract(dimEntitySet)
                
       self.plugIn.endEditCommand()
       self.nOperationsToUndo = self.nOperationsToUndo + 1
