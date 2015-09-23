@@ -435,22 +435,14 @@ def calculateLabelSize(layer, feature, canvas):
    return size for label in map units
    """
    if layer.type() != QgsMapLayer.VectorLayer:
-      return ""
+      return None, None
    palyr = QgsPalLayerSettings()
    palyr.readFromLayer(layer)
 
    text = get_labelText(palyr, feature)
          
    font = QFont(palyr.textFont)
-   
-   fontSize = get_labelFontSize(palyr, feature)
-   if fontSize is not None:
-      if get_labelFontSizeInMapUnits(palyr, feature):
-         fontPixelSize = palyr.sizeToPixel(fontSize, canvas.mapRenderer().rendererContext(), palyr.MapUnits, True)   
-         font.setPixelSize(fontPixelSize)
-      else:
-         font.setPointSize(fontSize)
-      
+         
    fontName = get_labelFontFamily(palyr, feature)
    if fontName is not None:
       font.setFamily(fontName)
@@ -475,14 +467,30 @@ def calculateLabelSize(layer, feature, canvas):
    if fontCase is not None:
       font.setCapitalization(fontCase)
    
-   rect = QFontMetricsF(font).boundingRect(text)
-   dimX = rect.width()
-   dimY = rect.height()
+   fontSize = get_labelFontSize(palyr, feature)
+   if fontSize is not None:
 
-   mapToPixel = canvas.getCoordinateTransform()
-   ptZero = mapToPixel.toMapCoordinatesF(0, 0)
-   ptSize = mapToPixel.toMapCoordinatesF(dimX, dimY)
-   dimX = qAbs(ptSize.x() - ptZero.x())
-   dimY = qAbs(ptSize.y() - ptZero.y())
-         
-   return dimX, dimY
+      isFontSizeInMapUnits = get_labelFontSizeInMapUnits(palyr, feature)
+      
+      if isFontSizeInMapUnits:
+         if fontSize < 100:
+            font.setPixelSize(fontSize * 100)
+         else:
+            font.setPixelSize(fontSize)
+      
+      fontMetricsF = QFontMetricsF(font)
+      rect = fontMetricsF.boundingRect(text)
+      dimX = rect.width()
+      dimY = rect.height()
+      if isFontSizeInMapUnits:
+         if fontSize < 100: # se dimX e dimY sono già in map units * 10
+            return dimX / 100, dimY / 100
+         else:
+            return dimX, dimY
+      else:
+         mapToPixel = canvas.getCoordinateTransform() # trasformo pixel in map units
+         dimX = dimX * mapToPixel.mapUnitsPerPixel()
+         dimY = dimY * mapToPixel.mapUnitsPerPixel()
+         return dimX, dimY 
+           
+   return None, None

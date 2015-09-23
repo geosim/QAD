@@ -93,6 +93,9 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.plugin = plugin
       self.cmdSuggestWindow = None
       self.connect(self, SIGNAL("topLevelChanged(bool)"), self.topLevelChanged)
+      
+      title = self.windowTitle()
+      self.setWindowTitle(title + " - " + plugin.version())
                 
    def initGui(self):
       self.chronologyEdit = QadChronologyEdit(self)

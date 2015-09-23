@@ -24,6 +24,7 @@
 
 
 from PyQt4.QtCore import *
+from PyQt4.QtGui import * # for QDesktopServices
 import os.path
 
 import urllib

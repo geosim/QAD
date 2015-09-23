@@ -117,6 +117,9 @@ class Qad(QObject):
    dimTextEntitySetRecodeOnSave = QadLayerEntitySet() # entity set dei testi delle quote da riallineare in salvataggio
    beforeCommitChangesDimLayer = None         # layer da cui é scaturito il salvataggio delle quotature
    isSaveControlledByQAD = False
+
+   def version(self):
+      return "2.8.002"
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
       # memorizzo il coeff angolare ultimo segmento e l'ultimo punto selezionato
@@ -273,14 +276,19 @@ class Qad(QObject):
                         
       # carico le variabili d'ambiente
       QadVariables.load()
-      # carico gli stili di quotatura
-      self.loadDimStyles()
 
       self.canvas = self.iface.mapCanvas()
       self.tool = QadMapTool(self)
       
       # Lista dei comandi
       self.QadCommands = QadCommandsClass(self)
+      
+      # inizializzzione sul caricamento del progetto
+      self.initOnProjectLoaded()
+      
+   def initOnProjectLoaded(self):
+      # carico gli stili di quotatura
+      self.loadDimStyles()
       # Gestore di Undo/Redo
       self.undoStack = qad_undoredo.QadUndoStack()
 
@@ -416,6 +424,7 @@ class Qad(QObject):
 
 
    def onProjectLoaded(self):
+      self.initOnProjectLoaded()
       self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
       self.setStandardMapTool()
 
@@ -897,22 +906,24 @@ class Qad(QObject):
          # ricavo gli stili di quotatura
          dimStyleList = self.dimStyles.getDimListByLayer(layer)
          for dimStyle in dimStyleList:
-            # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
-            # di quotatura dimStyle
-            textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)
-            # salvo gli oggetti di quello stile di quotatura aggiornando i reference
-            self.isSaveControlledByQAD = True
-            # ricodifica          
-            dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+            if dimStyle.getInValidErrMsg() is None: # stile valido
+               # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
+               # di quotatura dimStyle
+               textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)
+               # salvo gli oggetti di quello stile di quotatura aggiornando i reference
+               self.isSaveControlledByQAD = True
+               # ricodifica          
+               dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
             
          self.dimTextEntitySetRecodeOnSave.clear()
 
          for dimStyle in dimStyleList:
-            # salvataggio
-            dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
-            self.beforeCommitChangesDimLayer = None
-            self.isSaveControlledByQAD = False
-            dimStyle.startEditing()
+            if dimStyle.getInValidErrMsg() is None: # stile valido
+               # salvataggio
+               dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+               self.beforeCommitChangesDimLayer = None
+               self.isSaveControlledByQAD = False
+               dimStyle.startEditing()
 
 
    def repaintRequested(self):
@@ -922,22 +933,24 @@ class Qad(QObject):
          # ricavo gli stili di quotatura
          dimStyleList = self.dimStyles.getDimListByLayer(self.dimTextEntitySetRecodeOnSave.layer)
          for dimStyle in dimStyleList:
-            # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
-            # di quotatura dimStyle
-            textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)            
-            # salvo gli oggetti di quello stile di quotatura aggiornando i reference
-            self.isSaveControlledByQAD = True
-            # ricodifica          
-            dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+            if dimStyle.getInValidErrMsg() is None: # stile valido
+               # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
+               # di quotatura dimStyle
+               textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)            
+               # salvo gli oggetti di quello stile di quotatura aggiornando i reference
+               self.isSaveControlledByQAD = True
+               # ricodifica          
+               dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
             
          self.dimTextEntitySetRecodeOnSave.clear()
          
          for dimStyle in dimStyleList:
-            # salvataggio
-            dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
-            self.beforeCommitChangesDimLayer = None
-            self.isSaveControlledByQAD = False
-            dimStyle.startEditing()
+            if dimStyle.getInValidErrMsg() is None: # stile valido
+               # salvataggio
+               dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+               self.beforeCommitChangesDimLayer = None
+               self.isSaveControlledByQAD = False
+               dimStyle.startEditing()
 
       
    def beforeCommitChanges(self):
@@ -946,12 +959,13 @@ class Qad(QObject):
          # verifico se il layer che si sta per salvare appartiene ad uno o più stili di quotatura
          dimStyleList = self.dimStyles.getDimListByLayer(layer)
          for dimStyle in dimStyleList:
-            if dimStyle.getTextualLayer().id() != layer.id(): # se non si tratta del layer dei testi di quota
-               self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui é scaturito il salvataggio delle quotature
-               self.isSaveControlledByQAD = True
-               dimStyle.textCommitChangesOnSave() # salvo i testi delle quote per ricodifica ID
-               dimStyle.startEditing()
-               self.isSaveControlledByQAD = False
+            if dimStyle.getInValidErrMsg() is None: # stile valido
+               if dimStyle.getTextualLayer().id() != layer.id(): # se non si tratta del layer dei testi di quota
+                  self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui é scaturito il salvataggio delle quotature
+                  self.isSaveControlledByQAD = True
+                  dimStyle.textCommitChangesOnSave() # salvo i testi delle quote per ricodifica ID
+                  dimStyle.startEditing()
+                  self.isSaveControlledByQAD = False
 
       
    def committedFeaturesAdded(self, layerId, addedFeatures):
@@ -959,11 +973,12 @@ class Qad(QObject):
       # verifico se il layer che é stato salvato appartiene ad uno o più stili di quotatura
       dimStyleList = self.dimStyles.getDimListByLayer(layer)
       for dimStyle in dimStyleList:
-         # se si tratta del layer testuale delle quote
-         if dimStyle.getTextualLayer().id() == layerId:
-            # mi memorizzo le features testuali da riallineare 
-            self.dimTextEntitySetRecodeOnSave.set(dimStyle.getTextualLayer(), addedFeatures)
-            return
+         if dimStyle.getInValidErrMsg() is None: # stile valido
+            # se si tratta del layer testuale delle quote
+            if dimStyle.getTextualLayer().id() == layerId:
+               # mi memorizzo le features testuali da riallineare 
+               self.dimTextEntitySetRecodeOnSave.set(dimStyle.getTextualLayer(), addedFeatures)
+               return
 
 
    def layerModified(self):

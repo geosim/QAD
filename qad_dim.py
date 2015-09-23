@@ -1391,7 +1391,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPoint(insPt)
        
       if (sourceCrs is not None) and sourceCrs != self.getSymbolLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getSymbolLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getSymbolLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
 
       f.setGeometry(g)
@@ -1463,7 +1463,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPoint(insPt)
            
       if (sourceCrs is not None) and sourceCrs != self.getSymbolLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getSymbolLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getSymbolLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
            
       f.setGeometry(g)
@@ -2092,7 +2092,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPoint(_pt)
       
       if (sourceCrs is not None) and sourceCrs != self.getTextualLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getTextualLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getTextualLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
        
       f.setGeometry(g)
@@ -2215,7 +2215,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPolyline(pts)
          
       if (sourceCrs is not None) and sourceCrs != self.getLinearLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getLinearLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getLinearLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
                 
       f.setGeometry(g)
@@ -2299,7 +2299,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPolyline(extLine)
        
       if (sourceCrs is not None) and sourceCrs != self.getLinearLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getLinearLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getLinearLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
        
       f.setGeometry(g)
@@ -2409,7 +2409,7 @@ class QadDimStyle():
       g = QgsGeometry.fromPolyline(dimLine)
        
       if (sourceCrs is not None) and sourceCrs != self.getLinearLayer().crs():
-         coordTransform = QgsCoordinateTransform(sourceCRS, self.getLinearLayer().crs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(sourceCrs, self.getLinearLayer().crs()) # trasformo la geometria
          g.transform(coordTransform)                        
        
       f.setGeometry(g)

@@ -785,9 +785,9 @@ class QadPreviewDim(QgsMapCanvas):
       self.setObjectName("QadPreviewCanvas")
 
       settings = QSettings()
-      red = settings.value("/qgis/default_canvas_color_red", 255)
-      green = settings.value("/qgis/default_canvas_color_green", 255)
-      blue = settings.value("/qgis/default_canvas_color_blue", 255)
+      red = settings.value("/qgis/default_canvas_color_red", 255, type=int)
+      green = settings.value("/qgis/default_canvas_color_green", 255, type=int)
+      blue = settings.value("/qgis/default_canvas_color_blue", 255, type=int)
       self.setCanvasColor(QColor(red, green, blue))
       self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ))
       self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", False, type=bool ))
@@ -969,6 +969,10 @@ class QadPreviewDim(QgsMapCanvas):
          if self.isEditableLinearLayer == False:
             layer.startEditing()
          self.addLayer(layer.id())
+
+      if self.dimStyle.getInValidErrMsg() is not None:
+         return
+
 
       ###########################
       # quota lineare orizzontale
