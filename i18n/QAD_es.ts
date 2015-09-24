@@ -1,1386 +1,1386 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="es_ES" sourcelanguage="it_IT">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>Command_ARC</name>
     <message>
-        <source>Angolo</source>
-        <translation>Ángulo</translation>
-    </message>
-    <message>
-        <source>Disegna un arco mediante diversi metodi.</source>
+        <source>Arc passing through 3 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Centro</source>
+        <source>Arc defined by start, central and final points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fine</source>
+        <source>Arc defined by start, central points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare centro dell&apos;arco: </source>
+        <source>Arc defined by start, central points and cord length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco: </source>
+        <source>Arc defined by start, final points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo inscritto: </source>
+        <source>Arc defined by start, final points and tangent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lunghezza della corda: </source>
+        <source>Arc defined by start, final points and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Direzione</source>
+        <source>Arc defined by central, start and final points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Raggio</source>
+        <source>Arc defined by central, start points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare direzione tangente per il punto iniziale dell&apos;arco: </source>
+        <source>Arc defined by central, start points and cord length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare raggio dell&apos;arco: </source>
+        <source>Draws an arc by many methods.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto iniziale dell&apos;arco: </source>
+        <source>Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco passante per 3 punti</source>
+        <source>Specify the start point of the arc or [{0}]:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, centrale e finale</source>
+        <source>End</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, centrale e angolo</source>
+        <source>Specify second point of the arc or [{0}]:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, centrale e lunghezza corda</source>
+        <source>Specify the center of the arc: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, finale e angolo</source>
+        <source>Specify the final point of the arc: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, finale e direzione tangente</source>
+        <source>Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto iniziale, finale e raggio</source>
+        <source>chord Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto centrale, iniziale e finale</source>
+        <source>Specify the final point of the arc or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto centrale, iniziale e angolo</source>
+        <source>Specify the included angle: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Arco definito da un punto centrale, iniziale e lunghezza corda</source>
+        <source>Specify the chord length: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto iniziale dell&apos;arco o [{0}]: </source>
+        <source>Direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto dell&apos;arco o [{0}]: </source>
+        <source>Radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lunghezza corda</source>
+        <source>Specify the center point of the arc or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
+        <source>Specify the tangent direction for the start point of the arc: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare centro dell&apos;arco o [{0}]: </source>
+        <source>Specify the radius of the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the start point of the arc: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_BREAK</name>
     <message>
-        <source>Divide un oggetto grafico.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare l&apos;oggetto da spezzare: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Non ci sono geometrie in questa posizione.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto di interruzione: </source>
+        <source>Breaks an object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto di interruzione: </source>
+        <source>Select the object to break: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Primo punto</source>
+        <source>First point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto di interruzione o [{0}]: </source>
+        <source>Specify second break point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify first break point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second break point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_CIRCLE</name>
     <message>
-        <source>Disegna un cerchio mediante diversi metodi.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare primo punto sul cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare oggetto per la prima tangente del cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diametro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare diametro del cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto sul cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare terzo punto sul cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Selezionare un cerchio, un arco o una linea.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare oggetto per la seconda tangente del cerchio: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare raggio del cerchio &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Il cerchio non esiste.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da un punto centrale e un raggio</source>
+        <source>Circle defined by central point and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da un punto centrale e un diametro</source>
+        <source>Circle defined by central point and diameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da 2 punti</source>
+        <source>Circle defined by 2 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da 3 punti</source>
+        <source>Circle defined by 3 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da 2 punti di tangenza e un raggio</source>
+        <source>Circle defined by 2 tangent points and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cerchio definito da 3 punti di tangenza</source>
+        <source>Circle defined by 3 tangent points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ttr (tangente tangente raggio)</source>
+        <source>Draws a circlerc by many methods.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto centrale del cerchio o [{0}]: </source>
+        <source>3Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare raggio del cerchio o [{0}]: </source>
+        <source>2POints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>3Punti</source>
+        <source>Ttr (tangent tangent radius)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>2PUnti</source>
+        <source>Specify the center point of the circle or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare prima estremità del diametro del cerchio: </source>
+        <source>Specify first point on the circle: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare l&apos;area del cerchio in unità correnti &lt;{0}&gt;: </source>
+        <source>Specify first end of the circle diameter: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare seconda estremità del diametro del cerchio: </source>
+        <source>Specify first tangent element of the circle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the circle radius or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the circle diameter: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter circle area in current unit &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point on the circle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the third point on the circle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second end of the circle diameter: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Select a circle, an arc or a line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second tangent element of the circle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the circle radius &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The circle doesn&apos;t exist.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_COPY</name>
     <message>
-        <source>Copia gli oggetti selezionati ad una distanza e in una direzione specificate.</source>
+        <source>Copies selected objects a specified distance in a specified direction.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spostamento</source>
+        <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>MUltiplo</source>
+        <source>mOde</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare il numero di elementi da disporre in serie &lt;{0}&gt;: </source>
+        <source>Multiple</source>
+        <comment>waitForBasePt</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Serie</source>
+        <source>Specify base point or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Esci</source>
+        <source>Number of Items to Array &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
+        <source>Array</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Adatta</source>
+        <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare il secondo punto o [{0}]: </source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Singola</source>
+        <source>Specify second point or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Multipla</source>
+        <source>Specify second point or [{0}] &lt;use first point as displacement from origin point 0,0&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy mode = Multiple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy mode = Single</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiple</source>
+        <comment>waitForMode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a copy mode option [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il valore deve essere un intero compreso tra 2 e 32767.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare il punto base o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare il secondo punto o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare il secondo punto o [{0}] &lt;utilizzare il primo punto come spostamento dal punto di origine 0,0&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mOdalità</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copia modalità = Multipla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copia modalità = Singola</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare un&apos;opzione di modalità di copia [{0}] &lt;{1}&gt;: </source>
+The value must be between 2 and 32767.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_DIM</name>
     <message>
-        <source>Crea una quota lineare orizzontale o verticale.</source>
+        <source>Creates an horizontal or vertical linear dimension.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;origine della prima linea di estensione o &lt;seleziona oggetto&gt;: </source>
+        <source>Specify first extension line origin or &lt;select object&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;origine della seconda linea di estensione: </source>
+        <source>Specify second extension line origin: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare l&apos;oggetto da quotare: </source>
+        <source>Select the object to dimension: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Testo</source>
+        <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Angolo</source>
-        <translation type="unfinished">Ángulo</translation>
-    </message>
-    <message>
-        <source>Orizzontale</source>
+        <source>Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Verticale</source>
+        <source>Horizontal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ruotato</source>
+        <source>Vertical</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Non ci sono geometrie in questa posizione.</source>
+        <source>Rotated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Crea una quota allineata.</source>
+        <source>Specify dimension line location or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare il testo di quota &lt;{0}&gt;: </source>
+        <source>No geometries in this position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;angolo del testo di quota &lt;{0}&gt;: </source>
+        <source>Enter dimension text &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;angolo della linea di quota &lt;{0}&gt;: </source>
+        <source>Specify angle of dimension text &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Crea una quota per la lunghezza di un arco.</source>
+        <source>Specify angle of dimension line &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare l&apos;arco da quotare: </source>
+        <source>Creates an aligned linear dimension.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Parziale</source>
+        <source>Creates an arc length dimension.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Direttrice</source>
+        <source>Select arc or polyline arc segment: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuna direttrice</source>
+        <source>Partial</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare un arco.</source>
+        <source>Leader</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della linea di quota o [{0}]: </source>
+        <source>No leader</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione della quota o [{0}]: </source>
+        <source>Specify dimension location or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an arc.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_DIMSTYLE</name>
     <message>
-        <source>Crea e modifica gli stili di quota.</source>
+        <source>Creates new styles, sets the current style, modifies styles, sets overrides on the current style, and compares styles.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_DSETTINGS</name>
     <message>
-        <source>Impostazioni per il disegno(tipo di snap, ecc.).</source>
+        <source>Drafting Settings (snaps, etc.).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_ENTSEL</name>
     <message>
-        <source>Ultimo</source>
+        <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_ERASE</name>
     <message>
-        <source>Cancella oggetti dalla mappa.</source>
+        <source>Removes objects of the map.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_EXTEND</name>
     <message>
-        <source>Allunga (o taglia) gli oggetti fino al punto di incontro con altri oggetti.</source>
+        <source>Extends (or trims) objects to meet the edges of other objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>iNTercetta</source>
+        <source>Fence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Interseca</source>
+        <source>Crossing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo</source>
+        <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo = Estensione</source>
+        <source>Select the object to extend or shift-select to trim or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo = Nessuna estensione</source>
+        <source>Edge = No extend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edge = Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Selezionare i limiti di estensione...</source>
+Select extension limits...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Estensione</source>
+        <source>Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetto da estendere o selezionare oggetto tenendo premuto il tasto Maiusc per tagliarlo o [{0}]: </source>
+        <source>No extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuna estensione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nessuna estensione </source>
+        <source>Specify an extension mode [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_FILLET</name>
     <message>
-        <source>Arrotonda e raccorda gli spigoli.</source>
+        <source>Rounds and fillets the edges of objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il raccordo con raggio {0} non esiste.</source>
+Fillet with radius &lt;{0}&gt; impossible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>aNnulla</source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Polilinea</source>
+        <source>Polyline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RAggio</source>
+        <source>Radius</source>
+        <comment>waitForFirstEntSel</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Taglia</source>
+        <source>Trim</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Multiplo</source>
+        <source>Multiple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Raggio</source>
+        <source>Select first object or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>NonTaglia</source>
+        <source>Radius</source>
+        <comment>WaitForPolyline</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>, Raggio = </source>
+        <source>Select polyline or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare raggio di raccordo &lt;{0}&gt;: </source>
+        <source>Trim-extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare il primo oggetto o [{0}]: </source>
+        <source>No trim-extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Taglia-estendi</source>
+        <source>Specify trim mode [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Non taglia-estendi</source>
+        <source>Radius</source>
+        <comment>waitForSecondEntSel</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare modalità di taglio [{0}] &lt;{1}&gt;: </source>
+        <source>Select second object or shift-select to apply corner or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Modalità= Taglia-estendi</source>
+        <source>Mode = Trim-extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Modalità= Non taglia-estendi</source>
+        <source>Mode = No trim-extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare la polilinea o [{0}]: </source>
+        <source>, Radius = </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare il secondo oggetto o selezionare l&apos;oggetto tenendo premuto il tasto Maiusc per applicare l&apos;angolo o [{0}]: </source>
+        <source>Specify fillet radius &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_HELP</name>
+    <message>
+        <source>The QAD manual will be showed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_ID</name>
     <message>
-        <source>Visualizza le coordinate di una posizione.</source>
+        <source>Displays the coordinate values of a specified location.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_INSERT</name>
     <message>
-        <source>Inserisce un simbolo.</source>
+        <source>Insert a symbol.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la scala del simbolo &lt;{0}&gt;: </source>
+        <source>Specify the symbol scale &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la rotazione del simbolo &lt;{0}&gt;: </source>
+        <source>Specify the symbol rotation &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_LINE</name>
     <message>
-        <source>Crea segmenti di linee rette.</source>
+        <source>Creates straight line segments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto: </source>
+        <source>Specify first point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Chiudi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Nessuna tangente possibile</source>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Nessuna perpendicolare possibile</source>
+No tangent possible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto successivo o [{0}]: </source>
+        <source>
+No perpendicular possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify next point or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_MBUFFER</name>
     <message>
-        <source>Crea poligoni originati da buffer intorno agli oggetti selezionati.</source>
+        <source>Creates polygons by buffering selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare larghezza buffer &lt;{0}&gt;: </source>
+        <source>Specify the buffer length &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto: </source>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_MIRROR</name>
     <message>
-        <source>Crea una copia speculare degli oggetti selezionati.</source>
+        <source>Creates a mirrored copy of selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto della linea speculare: </source>
+        <source>Specify first point of mirror line: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto della linea speculare: </source>
+        <source>Specify second point of mirror line: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-I punti devono essere distinti.</source>
+The points must be different.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cancellare gli oggetti sorgente ? [{0}] &lt;{1}&gt;: </source>
+        <source>Erase source objects ? [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_MOVE</name>
     <message>
-        <source>Sposta gli oggetti selezionati.</source>
+        <source>Moves the selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spostamento</source>
+        <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <source>Specify base point or [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <source>Specify the displacement fom the origin point 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
+        <source>Specify the second point or &lt;use first point as displacement from the origin point 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_MPOLYGON</name>
     <message>
-        <source>
-Poligono non valido.
-</source>
+        <source>Draws a polygon by many methods.
+A Polygon is a closed sequence of straight line segments,
+arcs or a combination of two.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disegna un poligono mediante diversi metodi.
-
-Un poligono é una sequenza chiusa di segmenti retti,
-archi o una combinazione dei due.</source>
+        <source>
+Polygon not valid.
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_OFFSET</name>
     <message>
-        <source>Crea cerchi concentrici, linee e curve parallele.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Punto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancella</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Esci</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ANnulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MUltiplo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>oggetto successivo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Segmento</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto sul lato di cui eseguire l&apos;offset o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto di passaggio o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OFFSETGAPTYPE = </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> (estende i segmenti)</source>
+        <source>Creates concentric circles, parallel lines, and parallel curves.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> (raccorda i segmenti)</source>
+        <source>Through</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> (cima i segmenti)</source>
+        <source>Erase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare distanza di offset o [{0}] &lt;{1}&gt;: </source>
+        <source>Specify the offset distance or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetto di cui eseguire l&apos;offset o [{0}] &lt;{1}&gt;: </source>
+        <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cancellare l&apos;oggetto sorgente dopo l&apos;offset ? [{0}] &lt;{1}&gt;: </source>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object to offset or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify point on side to offset or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify through point or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (extends the segments)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (fillets the segments)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (chamfers the segments)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Erase source object after offsetting ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_PEDIT</name>
     <message>
-        <source>Modifica polilinee o poligoni esistenti.</source>
+        <source>Modifies existing polylines or polygon.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ultimo</source>
+        <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Multiplo</source>
+        <source>Multiple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Apri</source>
+        <source>Select polyline or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Chiudi</source>
+        <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unisci</source>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edita vertici</source>
+        <source>Join</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ADatta</source>
+        <source>Edit vertex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Rettifica</source>
+        <source>Fit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Inverti</source>
+        <source>Decurve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ANnulla</source>
+        <source>Reverse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione [{0}]: </source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tipo di unione = </source>
+        <source>Enter an option [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>estende i segmenti</source>
+        <source>Join type = </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>aggiunge segmenti</source>
+        <source>extends the segments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>estende e aggiunge segmenti</source>
+        <source>adds segments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tipo</source>
+        <source>extends and adds segments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Estendi</source>
+        <source>Join type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Aggiungi</source>
+        <source>Specify gap tolerance or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ENtrambe</source>
+        <source>Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Seguente</source>
+        <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Precedente</source>
+        <source>Both</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Dividi</source>
+        <source>Specify join type [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Inserisci</source>
+        <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SPosta</source>
+        <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Raddrizza</source>
+        <source>Break</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>esCi</source>
+        <source>Insert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>INserisci prima</source>
+        <source>INsert before</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di modifica vertici [{0}] &lt;{1}&gt;: </source>
+        <source>Move</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la posizione del nuovo vertice: </source>
+        <source>Straighten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la nuova posizione del vertice: </source>
+        <source>eXit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Esegui</source>
+        <source>Enter a vertex editing option [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione di selezione del secondo vertice [{0}] &lt;{1}&gt;: </source>
+        <source>Specify the position of the new vertex: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto: </source>
+        <source>Specify the new vertex position: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare polilinea o [{0}]: </source>
+        <source>Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tipo unione</source>
+        <source>Enter a selection option for the second vertex [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare distanza di approssimazione o [{0}] &lt;{1}&gt;: </source>
+        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare tipo di unione [{0}] &lt;{1}&gt;: </source>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_PLINE</name>
     <message>
-        <source>Selezionare l&apos;oggetto nel punto finale di ricalco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angolo</source>
-        <translation type="unfinished">Ángulo</translation>
-    </message>
-    <message>
-        <source>Centro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CHiudi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Direzione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raggio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ANNulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arco</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LUnghezza</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ANnulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ricalca</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto iniziale: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare lunghezza della linea: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare angolo inscritto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare centro dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare direzione tangente per il punto iniziale dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare raggio dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto sull&apos;arco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare direzione della corda per l&apos;arco &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunghezza</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare lunghezza della corda: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto finale dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CEntro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LInea</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Secondo punto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto finale dell&apos;arco o [{0}]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto successivo o [{0}]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunghezza corda</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Disegna una polilinea mediante diversi metodi.
+        <source>Creates a polyline by many methods.
 
-Una polilinea é una sequenza di segmenti retti,
-archi o una combinazione dei due.</source>
+A polyline is a single object that is composed of line,
+and arc segments.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the object in the trace end point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CEnter</source>
+        <comment>WaitForArcMenu</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <comment>WaitForArcMenu</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the final point of the arc or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <comment>WaitForLineMenu</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify next point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify start point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify line length: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the included angle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the center of the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the tangent direction for the start point of the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the radius of the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point of the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CEnter</source>
+        <comment>START_PT_ANGLE_KNOWN_ASK_FOR_END_PT</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the direction for the chord of the arc &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>chord Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the chord length: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the final point of the arc: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_POLYGON</name>
     <message>
-        <source>Inscritto nel cerchio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Crea un poligono regolare.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare il numero dei lati &lt;{0}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spigolo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare centro del poligono [{0}]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Circoscritto intorno al cerchio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare un&apos;opzione [{0}] &lt;{1}&gt;: </source>
+        <source>Inscribed in circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto dello spigolo: </source>
+        <source>Draws a regular polygon.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto dello spigolo: </source>
+        <source>Enter number of sides &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare l&apos;area del poligono in unità correnti &lt;{0}&gt;: </source>
+        <source>Edge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify center of polygon or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Circumscribed about circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter an option [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the first point of the edge: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the second point of the edge: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the polygon area in current units &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-é richiesto un valore intero maggiore di 2.</source>
+Enter an integer greater than 2.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_RECTANGLE</name>
     <message>
-        <source>Crea una polilinea rettangolare.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cima</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raccordo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Quote</source>
+        <source>Creates a rectangle.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Rotazione</source>
+        <source>Chamfer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare prima distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
+        <source>Fillet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare raggio di raccordo del rettangolo &lt;{0}&gt;: </source>
+        <source>Specify first corner or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lunghezza del rettangolo &lt;{0}&gt;: </source>
+        <source>Dimensions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare seconda distanza di cimatura del rettangolo &lt;{0}&gt;: </source>
+        <source>Rotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lunghezza</source>
+        <source>Specify other corner or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>lArghezza</source>
+        <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare la lunghezza rettangolo &lt;{0}&gt;: </source>
+        <source>Specify first chamfer distance for rectangle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare la larghezza rettangolo &lt;{0}&gt;: </source>
+        <source>Specify rectangle fillet radius &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto: </source>
+        <source>Enter rectangle area in current units &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo angolo o [{0}]: </source>
+        <source>Specify length for rectangle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo opposto o [{0}]: </source>
+        <source>Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SCegli punti</source>
+        <source>Specify rotation angle or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
+        <source>Specify second chamfer distance for rectangle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Calcolare le quote rettangolo in base alla [{0}] &lt;{1}&gt;: </source>
+        <source>Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non é stata specificata correttamente.</source>
+        <source>Width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare l&apos;area del rettangolo in unità correnti &lt;{0}&gt;: </source>
+        <source>Calcolate the rectangle dimensions based on [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter length for rectangle &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter width for rectangle &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify first point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_ROTATE</name>
     <message>
-        <source>Ruota gli oggetti selezionati rispetto ad un punto base.</source>
+        <source>Rotates objects around a base point.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copia</source>
+        <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Riferimento</source>
+        <source>Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo di riferimento &lt;{0}&gt;: </source>
+        <source>Specify rotation angle or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Punti</source>
+        <source>Specify reference angle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto base: </source>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify new angle or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Rotazione di una copia degli oggetti selezionati.</source>
+Rotation of a copy of the selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto: </source>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare angolo di rotazione o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare nuovo angolo o [{0}] &lt;{1}&gt;: </source>
+        <source>Specify first point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_SCALE</name>
     <message>
-        <source>Ingrandisce o riduce gli oggetti selezionati.</source>
+        <source>Enlarges or reduces selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copia</source>
+        <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Riferimento</source>
+        <source>Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lunghezza di riferimento &lt;{0}&gt;: </source>
+        <source>Specify scale factor or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Punti</source>
+        <source>Specify reference length &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto base: </source>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify new length or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Scala di una copia degli oggetti selezionati.</source>
+Scale of a copy of the selected objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto: </source>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare fattore di scala o [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare nuova lunghezza o [{0}] &lt;{1}&gt;: </source>
+        <source>Specify first point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_SETCURRLAYERBYGRAPH</name>
     <message>
-        <source>Seleziona un layer di un oggetto grafico.</source>
+        <source>Sets a layer of a graphical object as current.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Non ci sono geometrie in questa posizione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare l&apos;oggetto il cui layer diventerà quello corrente: </source>
+        <source>Select object whose layer will be the current layer: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente é {0}.</source>
+The current layer is {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No geometries in this position.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_SETCURRUPDATEABLELAYERBYGRAPH</name>
     <message>
-        <source>Seleziona un layer di un oggetto grafico e lo rende modificabile.</source>
+        <source>Sets the layers of a graphical objects as editable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Selezionare gli oggetti i cui layer diventeranno editabili: </source>
+Select objects whose layers will be the editable: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer {0} é editabile.</source>
+The layer {0} is editable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente é {0}.</source>
+The current layer is {0}.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_SETVAR</name>
     <message>
-        <source>Digitare nome della variabile o [?]: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare variabile/i da elencare &lt;*&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1388,103 +1388,31 @@ Il layer corrente é {0}.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Sets the QAD environment variables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the variable name or [?]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter variable(s) to list &lt;*&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
-Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.</source>
+Unknown variable. Enter {0} ? to list variable names.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare nuovo valore per {0} &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta le variabili di ambiente di QAD.</source>
+        <source>Enter new value for variable {0} &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_SSGET</name>
     <message>
-        <source> trovato(i) {0}, totale {1}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Finestra</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ultimo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Interseca</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Riquadro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tutto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>iNTercetta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FPoligono</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IPoligono</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FCerchio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ICerchio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FOggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IOggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FBuffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IBuffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>AGgiungi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Elimina</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Precedente</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Annulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>AUto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SIngolo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1492,257 +1420,301 @@ Nome della variabile sconosciuto. Digitare {0} ? per un elenco delle variabili.<
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rimuovere oggetti</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare primo angolo: </source>
+        <source> found {0}, total {1}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo opposto: </source>
+        <source>Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> o [{0}]</source>
+        <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non é stata specificata correttamente.</source>
+        <source>Crossing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WPolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CPolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WCircle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCircle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WObjects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CObjects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WBuffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CBuffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SIngle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> or [{0}]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify opposite corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_STRETCH</name>
     <message>
-        <source>Stira gli oggetti.</source>
+        <source>Stretches objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Poligono</source>
+        <source>Polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>AGgiungi</source>
+        <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Elimina</source>
+        <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spostamento</source>
+        <source>Select vertices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare angolo opposto: </source>
+        <source>Remove vertices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare i vertici</source>
+        <source> to stretch crossed by a selection window or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Rimuovere i vertici</source>
+        <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare lo spostamento dal punto di origine 0,0 &lt;{0}, {1}&gt;: </source>
+        <source>Specify base point or [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare secondo punto oppure &lt;Utilizza primo punto come spostamento dal punto di origine 0,0&gt;: </source>
+        <source>Specify opposite corner: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> da stirare tramite una finestra o [{0}]: </source>
+        <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare punto base o [{0}] &lt;{0}&gt;: </source>
+        <source>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>La finestra non é stata specificata correttamente.</source>
+        <source>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_TEXT</name>
     <message>
-        <source>Inserisce un testo.</source>
+        <source>Inserts a text.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitare il valore dell&apos;attributo &quot;{0}&quot;: </source>
+        <source>Enter the value of attribute &quot;{0}&quot;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare l&apos;altezza testo &lt;{0}&gt;: </source>
+        <source>Specify the text height &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Specificare la rotazione del testo &lt;{0}&gt;: </source>
+        <source>Specify the text rotation &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_TRIM</name>
     <message>
-        <source>Taglia (o allunga) gli oggetti fino al punto di incontro con altri oggetti.</source>
+        <source>Trims (or extends) objects to meet the edges of other objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>iNTercetta</source>
+        <source>Fence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Interseca</source>
+        <source>Crossing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo</source>
+        <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
+        <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo = Estensione</source>
+        <source>Select the object to trim or shift-select to extend or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spigolo = Nessuna estensione</source>
+        <source>Edge = No extend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edge = Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Selezionare i limiti di taglio...</source>
+Select trim limits...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Estensione</source>
+        <source>Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuna</source>
+        <source>No extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selezionare oggetto da tagliare o selezionare oggetto tenendo premuto il tasto Maiusc per estenderlo o [{0}]: </source>
+        <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nessuna estensione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare una modalità di estensione spigoli [{0}] &lt;{1}&gt;: </source>
+        <source>Specify an extension mode [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_UNDO</name>
     <message>
-        <source>Annulla le ultime operazioni eseguite.</source>
+        <source>Undo last operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>INIzio</source>
+        <source>Reverses the effect of commands.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fine</source>
+        <source>BEgin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Segno</source>
+        <source>End</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>INDietro</source>
+        <source>Mark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ripristina le ultime operazioni eseguite.</source>
+        <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla l&apos;ultima operazione eseguita</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Digitare il numero di operazioni da annullare o [{0}] &lt;{1}&gt;: </source>
+        <source>Enter the number of operations to undo or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Nessun gruppo é rimasto aperto.</source>
+No open group.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Non é possibile inserire un segno dentro un gruppo.</source>
+A mark can&apos;t be inserted into a group.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Questa operazione annullerà tutto. OK ? &lt;{0}&gt;: </source>
+        <source>This will undo everything. OK ? &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>é stato annullato tutto.</source>
+        <source>All has been undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reverses the effects of previous UNDO.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Command_list</name>
     <message>
-        <source>ARCO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CERCHIO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MODIVAR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PLINEA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SETCURRLAYERDAGRAFICA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SETCURRMODIFLAYERDAGRAFICA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IMPOSTADIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LINEA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CANCELLA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1750,190 +1722,166 @@ Non é possibile inserire un segno dentro un gruppo.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RUOTA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SPOSTA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SCALA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>COPIA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OFFSET</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SPEZZA</source>
+        <source>PLINE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>MPOLIGONO</source>
+        <source>SETCURRLAYERBYGRAPH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ESTENDI</source>
+        <source>SETCURRUPDATEABLELAYERBYGRAPH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>TAGLIA</source>
+        <source>ARC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RETTANGOLO</source>
+        <source>CIRCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SPECCHIO</source>
+        <source>DSETTINGS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ANNULLA</source>
+        <source>LINE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RIPRISTINA</source>
+        <source>ERASE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>INSER</source>
+        <source>MPOLYGON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>TESTO</source>
+        <source>ROTATE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>STIRA</source>
+        <source>MOVE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>EDITPL</source>
+        <source>SCALE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>RACCORDO</source>
+        <source>COPY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>DIMLINEARE</source>
+        <source>EXTEND</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>DIMALLINEATA</source>
+        <source>TRIM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ARCOQUOTA</source>
+        <source>RECTANGLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>POLIGONO</source>
+        <source>POLYGON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>DIMSTILE</source>
+        <source>MIRROR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UNDO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>REDO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INSERT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TEXT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>STRETCH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BREAK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PEDIT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FILLET</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIMLINEAR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIMALIGNED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIMSTYLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HELP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SETVAR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIMARC</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DSettings_Dialog</name>
     <message>
-        <source>Perpendicolare</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tangente</source>
+        <source>?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Estensione</source>
+        <source>QAD - Drawing settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Parallelo</source>
+        <source>Object Snap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Progressivo</source>
+        <source>Object Snap modes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Intersezione su estensione</source>
+        <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Inizio / Fine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inizio / Fine segmento</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Punto medio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Intersezione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Centro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nodo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vicino</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quadrante</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Snap ad oggetto per distanza progressiva non corretto: impostare valore numerico diverso da zero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nessuno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Impostazioni snap ad oggetto...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Impostazioni disegno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Snap ad oggetto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Modalità di snap ad oggetto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Seleziona tutto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deseleziona tutto</source>
+        <source>Deselect All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1941,71 +1889,64 @@ Non é possibile inserire un segno dentro un gruppo.</source>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Perpendicolare: proiezione ortogonale di un punto noto su un segmento.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Perpendicular OSnap: orthogonal projection of a given point on a segment.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PERP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Perpendicular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Tangente: punto di tangenza su una curva della retta passante per un punto noto.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;tangent point on a curve of a line passing through a given point.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_TANP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
+        <source>Tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Estensione di: punto sull’estensione di un segmento fino alla posizione del cursore.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Extension OSnap: point on the segment extension until the cursor position.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Extend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Parallelo a: punto sulla retta, passante per un punto noto, parallela ad un segmento.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Parallel OSnap: point on a line, passing through a given point, parallel to a segment.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PARLP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
+        <source>Parallel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Progressivo a: punto ad una distanza nota lungo lo sviluppo di una geometria; da un vertice di una geometria è possibile posizionarsi ad una distanza misurata lungo lo sviluppo della geometria stessa.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Progressive OSnap: point at a given distance along a geometry line: from a vertex we can set a point at a distance measured along the geometry line.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_PROGRESP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Intersezione su estensione: punto determinato dall&apos;intersezione delle estensioni di due segmenti.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Quadrante: intersezione degli assi cartesiani con la circonferenza o arco (aggancio al punto più prossimo al cursore tra le quattro possibili intersezioni).&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_QUADP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;OSnap Inizio / Fine entità: vertice iniziale e finale di una geometria lineare.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_END_PLINE.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Progressive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2013,87 +1954,158 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Inizio / Fine segmento: vertice iniziale e finale di ciascun segmento di una geometria.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Intersection on extension OSnap: intersection point of the extensions of two segments.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_EXTINT.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersection on extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quadrant OSnap: intersections of the cartesian axis with a circumference of a circle or an arc.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_QUADP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quadrant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Start / End OSnap: starting and ending vertices of a linear geometry.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_END_PLINE.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start / End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Start / End segment OSnap: starting and ending vertices of each segment of a geometry.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_ENDP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <comment>aa</comment>
         <extracomment>aa</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Segment Start / End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Punto Medio: punto medio di ciascun segmento di una geometria.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Middle point OSnap: middle point of each segment of a geometry.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_MIDP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Middle point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Intersezione: intersezione tra due segmenti.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Intersection OSnap: intersection between two segments.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_INTP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
+        <source>Intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Centro: centro di un cerchio o un arco (si attiva con il cursore posizionato in prossimità della curva) o centroide di una geometria areale.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Center OSnap: center of a circle or arc or centroid of an areal geometry.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_CENP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Nodo: coordinate di una geometria puntuale.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Node OSnap: coordinate of a punctual geometry.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NODP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;OSnap Vicino: punto di un segmento in prossimità della posizione del cursore.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Near OSnap: point of a segment close to the cursor position.&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NEARP.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Snap ad oggetto (F3)</source>
+        <source>Near</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Puntamento polare</source>
+        <source>Object Snap (F3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Puntamento polare (F10)</source>
+        <source>Polar Tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Impostazioni angoli polari</source>
+        <source>Polar Tracking (F10)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Angolo incremento:</source>
+        <source>Polar angle settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OK</source>
+        <source>Increment angle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>?</source>
+        <source>Invalid progressive distance object snap: enter a number not zero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid increment angle: enter a number greater than zero and less than 360 degree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object snap settings...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2104,460 +2116,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Linee</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nome del layer che memorizza le linee di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza il nome del tipolinea.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo tipolinea:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simboli e frecce</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nome del layer che memorizza i simboli e le frecce delle quote.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo simbolo:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza il nome del simbolo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza la dimensione del simbolo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo scala:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campi generici</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotazione:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza la rotazione degli elementi puntuali della quota (simboli, frecce, testi).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colore:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Campo che memorizza il colore in formato RGB per tutti gli elementi della quota (es. &quot;255,255,255,255&quot; = bianco con opacità totale).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ID collegamento:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Campo che memorizza il codice della quota per raggruppare tutti gli elementi (eccetto il testo che ne è l&apos;elemento padre).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo componente:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di componente della quota:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = linea di quota (&amp;quot;Dimension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = linea di quota (&amp;quot;Dimension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = prima linea di estensione (&amp;quot;Extension line 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = seconda linea di estensione (&amp;quot;Extension line 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = linea porta quota usata quando il testo é fuori dalla quota (&amp;quot;Leader&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = primo blocco della freccia (&amp;quot;Block 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = secondo blocco della freccia (&amp;quot;Block 2&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = blocco della freccia nel caso leader (&amp;quot;Leader Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = simbolo dell&apos;arco (&amp;quot;Arc Block&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = primo punto da quotare (&amp;quot;Dimension point 1&amp;quot;).&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = secondo punto da quotare (&amp;quot;Dimension point 2&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Testo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza il codice univoco di ciascuna quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo che memorizza il nome dello stile di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo stile quota:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Campo tipo quota:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Campo che memorizza il tipo di quota:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = quota lineare allineata ai punti di origine delle linee di estensione.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = quota angolare, misura l&apos;angolo tra i 3 punti o tra gli oggetti selezionati.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = quota lineare, angolare o coordinata a partire dalla linea di base della quota precedente o di una quota selezionata.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = crea il centro o le linee d&apos;asse di cerchi e archi.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = quota per il diametro di un cerchio o di un arco.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = crea una linea che consente di collegare un&apos;annotazione ad una lavorazione.&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = quota lineare con una linea di quota orizzontale o verticale.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = quota radiale, misura il raggio di un cerchio o di un arco selezionato e visualizza il testo di quota con un simbolo di raggio davanti.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = quota per la lunghezza di un cerchio o di un arco.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nome del layer che memorizza i testi delle quote.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linee di quota</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di linea della linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di linea:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprimi:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprime la visualizzazione della prima linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linea quota 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprime la visualizzazione della seconda linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linea quota 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linee di estensione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di linea della prima linea di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipolinea est. 1:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipolinea est. 2:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di linea della seconda linea di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprime la visualizzazione della prima linea di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linea est. 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linea est. 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Estendi oltre linee di quota:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specifica una distanza in base alla quale estendere le linee di estensione oltre la linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta la distanza di offset delle linee di estensione dai punti sul disegno che definiscono la quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset dall&apos;origine:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attiva le linee di estensione a lunghezza fissa.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linee di estensione a lunghezza fissa</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunghezza:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunghezza totale delle linee di estensione , dalla linea di quota fino all&apos;origine di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Punte delle frecce</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simbolo per la freccia della prima linea di quota. Quando si imposta questo valore, il simbolo per la freccia della seconda linea di quota viene modificato per corrispondere a questo valore.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prima freccia:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simbolo per la freccia della seconda linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Seconda freccia:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simbolo per la freccia della linea direttrice.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Freccia direttrice:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Larghezza del simbolo freccia in orizzontale in unità di mappa quando la scala del simbolo = 1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Larghezza freccia:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scala del simbolo freccia.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scala freccia:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Aspetto del testo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Altezza del testo:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Altezza testo in unità di mappa.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di carattere:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tipo di carattere del testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Posizionamento del testo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Giustificazione del testo di quota rispetto la linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Verticale:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Orizzontale:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Posizionamento orizzontale del testo di quota lungo la linea di quota, in relazione alle linee di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Direzione vista:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Direzione di visualizzazione del testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta la distanza corrente del testo, ovvero la distanza aggiunta attorno al testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset dalla linea di quota:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allineamento del testo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Posiziona il testo orizzontalmente.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Orizzontale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allinea il testo con la linea di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allineato con la linea di quota</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Allinea il testo con la linea di quota quando si trova all&apos;interno delle linee di estensione e orizzontalmente quando si trova all&apos;esterno delle linee di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard ISO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ruota il testo con angolo fisso.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotazione fissa</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Angolo di rotazione del testo quando è stata impostata la modalità di rotazione fissa.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Adatta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Opzioni di adattamento</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Se lo spazio non è sufficiente per inserire testo e frecce all&apos;interno delle linee di estensione, la prima cosa da spostare all&apos;esterno è:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sposta il testo o le frecce all&apos;esterno delle linee di estensione, adattandoli.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Il testo e le frecce (adattati)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sposta prima le punte delle frecce al di fuori delle linee di estensione, poi il testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Frecce</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sposta prima il testo al di fuori delle linee di estensione, poi le punte delle frecce.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Se lo spazio disponibile è insufficiente sia per il testo che per le frecce, sposta entrambi all&apos;esterno delle linee di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sia il testo che le frecce</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Sopprime le punte delle frecce se non è disponibile spazio sufficiente tra le linee di estensione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprimi le frecce se non si adattano alle linee 
-di estensione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Unità primarie</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quote lineari</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Precisione:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numero di cifre decimali nel testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Separatore per i formati decimali.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Separatore decimale:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prefisso nel testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prefisso:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Suffisso:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Suffisso nel testo di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Soppressione dello zero</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprime gli zeri iniziali in tutte le quote decimali (0.5 diventa .5).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Iniziale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopprime gli zeri finali in tutte le quote decimali (5.50 diventa 5.5 e 5.0 diventa 5).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Finale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2565,55 +2124,7 @@ di estensione</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Annulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Dettagli stile di quota</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Centrato</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopra</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Esterno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sotto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alla linea di estensione 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alla linea di estensione 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopra linea di estensione 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sopra linea di estensione 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Da sinistra a destra</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Da destra a sinistra</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2653,290 +2164,1022 @@ di estensione</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&apos;.&apos; Punto</source>
+        <source>QAD - Dimension style details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&apos;,&apos; Virgola</source>
+        <source>Lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&apos; &apos; Spazio</source>
+        <source>Name of the layer for dimension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the linetype name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbols and arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the layer for dimension symbols and arrows.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the symbol name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the symbol size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generics fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the rotation of the punctual elements od dimension (symbols, arrows, text).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the RGB colorfor all elements of dimension (e.g. &quot;255,255,255,255&quot; = white with total opacity).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linking ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the ID of the dimension to group all elements (except the text which is the root element).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Component type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the component type of dimension:&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;E1&amp;quot; = Extension line 1.&lt;/p&gt;&lt;p&gt;&amp;quot;E2&amp;quot; = Extension line 2.&lt;/p&gt;&lt;p&gt;&amp;quot;L&amp;quot;  = Leader.&lt;/p&gt;&lt;p&gt;&amp;quot;B1&amp;quot; = Block 1.&lt;/p&gt;&lt;p&gt;&amp;quot;B2&amp;quot; = Block 2.&lt;/p&gt;&lt;p&gt;&amp;quot;LB&amp;quot; = Leader Block.&lt;/p&gt;&lt;p&gt;&amp;quot;AB&amp;quot; = Arc Block.&lt;/p&gt;&lt;p&gt;&amp;quot;D1&amp;quot; = Dimension point 1.&lt;/p&gt;&lt;p&gt;&amp;quot;D2&amp;quot; = Dimension point 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID Field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the unique code for each dimension.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field storing the name of the dimension style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim. style field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim. type field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Field storing the dimension type:&lt;/p&gt;&lt;p&gt;&amp;quot;AL&amp;quot; = linear dimension that is aligned with the origin points of the extension lines.&lt;/p&gt;&lt;p&gt;&amp;quot;AN&amp;quot; = angular dimension, it measures the angle between selected objects or 3 points.&lt;/p&gt;&lt;p&gt;&amp;quot;BL&amp;quot; = linear, angular, or ordinate dimension from the baseline of the previous or selected dimension.&lt;/p&gt;&lt;p&gt;&amp;quot;CE&amp;quot; = creates the center mark or the centerlines of circles and arcs.&lt;/p&gt;&lt;p&gt;&amp;quot;DI&amp;quot; = creates a diameter dimension for a circle or an arc.&lt;/p&gt;&lt;p&gt;&amp;quot;LD&amp;quot; = creates a line that connects annotation to a feature..&lt;/p&gt;&lt;p&gt;&amp;quot;LI&amp;quot; = linear dimension with a horizontal, vertical, or rotated dimension line.&lt;/p&gt;&lt;p&gt;&amp;quot;RA&amp;quot; = radial dimension, measures the radius of a selected circle or arc and displays the dimension text with a radius symbol in front of it.&lt;/p&gt;&lt;p&gt;&amp;quot;AR&amp;quot; = arc length dimensions measure the distance along an arc or polyline arc segment.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the layer storing dimension texts.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimension lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype of dimension line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses display of dimension line 1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim. line 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses display of dimension line 2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim. line 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype for extension line 1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype ext. 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype ext. 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linetype for extension line 2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses display of extension line 1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses display of extension line 2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extend beyond dim lines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies a distance to extend the extension lines above the dimension line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the distance to offset the extension lines from the points on the drawing that define the dimension.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset from origin:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enables fixed length extension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed length extension lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total length of the extension lines starting from the dimension line toward the dimension origin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowheads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead for the first dimension line. When you change the first arrowhead type, the second arrowhead automatically changes to match it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead for the second dimension line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead for the leader line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leader:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead horizontal size in map units using the symbol scale factor = 1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead scale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead scale:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text height in map units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Character type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimension text character type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the vertical placement of dimension text in relation to the dimension line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the horizontal placement of dimension text along the dimension line, in relation to the extension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View direction:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the dimension text viewing direction.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the current text gap, which is the distance around the dimension text when the dimension line is broken to accommodate the dimension text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset from dim line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Places text in a horizontal position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text aligned with Dimension Line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aligned with dimension line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aligns text with the dimension line when text is inside the extension lines, but aligns it horizontally when text is outside the extension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ISO Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Place text with fixed angle.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text angle  when fixed rotation mode is on.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If there isn&apos;t enaugh room to place both text and arrows inside extension lines, the first thing to move outside the extension lines is:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moves either the text or the arrowheads outside the extension lines based on the best fit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Either text or arrows (best fit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moves arrowheads outside the extension lines first, then text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moves text outside the extension lines first, then arrowheads.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When not enough space is available for text and arrowheads, moves both outside the extension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both text and arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses arrowheads if not enough space is available inside the extension lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppress arrows if they don&apos;t fit inside ext. lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear dimensions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays and sets the number of decimal places in the dimension text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the separator for decimal formats.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Includes a prefix that you specify in the dimension text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefix:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suffix:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Includes a suffix that you specify in the dimension text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero suppression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses leading zeros in all decimal dimensions (0.5 becomes .5).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses trailing zeros in all decimal dimensions (5.50 becomes 5.5 and 5.0 becomes 5).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trailing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Centered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>At Ext Line 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>At Ext Line 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Ext Line 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Ext Line 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left-to-Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right-to-Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;.&apos; Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos;,&apos; Comma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&apos; &apos; Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Do you want to accepts these settings ?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DimStyle_Dialog</name>
     <message>
-        <source>Descrizione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lo stile di quotatura non è stato rinominato.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Modifica descrizione per lo stile di quota: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nuova descrizione:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Eliminare lo stile di quotatura </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lo stile di quotatura non è stato cancellato.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifica stile di quota: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifica locale allo stile corrente: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta corrente</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rinomina</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifica descrizione</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Elimina</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nome dello stile di quotatura già esistente. Specificare un altro nome.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nuovo stile di quota: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Gestione stili di quota</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stile di quota corrente:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>nessuno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stili</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Rende corrente lo stile selezionato nella&apos;area Stili. Lo stile corrente è applicato alle quota create dall&apos;uente.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Definisce un nuovo stile di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nuovo...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifica lo stile di quota selezionato nella&apos;area Stili.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifica...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta modifiche locali per lo stile selezionato nella&apos;area Stili. Le modifiche locali sono modifiche che non verranno salvate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sostituisci...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Confronta due stili di quota o elenca tutte le proprietà di un stile di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Confronta...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>nessuna</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Anteprima di:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chiudi</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Dimension style manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current dimension style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the style selected under Styles to current. The current style is applied to dimensions you create.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define a new dimension style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify the selected dimension style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set temporary modifications for the selected style. The temporary modifications will not saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Override...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compare two dimension styles or list all the properties of one dimension style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compare...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview of:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>none</source>
+        <comment>currentDimStyle</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>none</source>
+        <comment>descriptionSelectedStyle</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>none</source>
+        <comment>selectedStyle</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimension style not renamed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Editing dimension style description: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New description:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove dimension style {0} ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimension style not removed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify dimension style: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set temporary overrides to dimension style: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dimension style name already existing. Specify a different name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New dimension style: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DimStyle_Diff_Dialog</name>
     <message>
-        <source>Confronta:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Con:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specifica il primo stile di quota per il confronto.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Specifica il secondo stile di quota per il confronto.Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chiudi</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visualizza i risultati dl confronto degli stili di quota. Se si confrontano due stili diversi, verranno mostrate le proprietà con valore differente. Se si imposta il secondo stile come il primo stile, verranno visualizzate tutte le proprietà dello stile di quota.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+    <message>
+        <source>QAD - Compare dimension styles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copia il risultato del confronto negli Appunti.</source>
+        <source>Compare:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QAD - Confronta stili di quota</source>
+        <source>With:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Descrizione</source>
+        <source>Specify the first dimension style.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tutte le proprietà dello stile di quota: </source>
+        <source>Specify the second dimension style. If you set the second style as the first, all dimension style properties will displayed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Rilevate {0} differenze: </source>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display the result of comparing dimension styles.If you compare two different styles, the settings that are different between the two dimension styles, their current settings, and brief descriptions are listed. If you set the second style as the first, all dimension style properties will displayed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the result of comparing into the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All properties of dimension style: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Found {0} differences: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DimStyle_New_Dialog</name>
     <message>
-        <source>Nome del nuovo stile:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copia i parametri dallo stile:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Continua...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Annulla</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Descrizione:</source>
+        <source>QAD - Create new dimension style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QAD - Crea nuovo stile di quota</source>
+        <source>New style name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start with:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continue...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Dimension</name>
     <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text prefix and suffix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leading zero suppression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trailing zero suppression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical text position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal text position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed text rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From left to right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From right to left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc len. symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim line 1 visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim line 2 visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim line linetype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dim line color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset from origin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrow 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Leader arrow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arrowhead scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center mark size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit: arrows and text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppress arrows for lack of space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 1 visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 2 visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 1 linetype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line 2 linetype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. line offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed length ext. line activated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed length ext. line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer for dim texts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer for dim lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer for dim arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for component type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for linetype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for dim ID in texts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for dim ID in lines and arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for dim style name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for dim type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for symbol name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for arrows scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field for arrows rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
-Lo stile di quotatura &quot;{0}&quot; </source>
+The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>non ha impostato il layer per i testi delle quote.
+        <source>has not the textual layer for dimension.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>non ha impostato il layer per i simboli delle quote.
+        <source>has the textual layer for dimension which is not a textual layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has not the symbol layer for dimension.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>non ha impostato il layer per le linee delle quote.
+        <source>has the symbol layer for dimension which is not a symbol layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has not the linear layer for dimension.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ha il layer per i testi delle quote non modificabile.
+        <source>has the linear layer for dimension which is not a linear layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has not the layers with the same coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the textual layer not editable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ha il layer per i simboli delle quote non modificabile.
+        <source>has the symbol layer not editable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ha il layer per le linee delle quote non modificabile.
+        <source>has the linear layer not editable.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>non ha impostato i layer con lo stesso sistema di coordinate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ha il layer per i testi delle quote che non é di tipo testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ha il layer per i simboli delle quote che non é di tipo simbolo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ha il layer per le linee delle quote che non é di tipo linea.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>da sinistra a destra</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>da destra a sinistra</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3031,280 +3274,188 @@ Lo stile di quotatura &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Numero minimo di segmenti per approssimare un arco.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap.
-Inoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, nonché quella della modalità orto.
-L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
-0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto.
-1 = Attiva il contrassegno di AutoSnap.
-2 = Attiva le descrizioni dei comandi di AutoSnap.
-4 = Attiva la calamita di AutoSnap.
-8 = Attiva il puntamento polare.
-16 = Attiva il puntamento con snap ad oggetto.
-32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numero minimo di segmenti per approssimare un cerchio.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imposta il numero massimo di comandi precedenti.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Verifica se il comando COPIA viene ripetuto automaticamente:
-0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente.
-1 = Imposta il comando COPIA in modo da creare una singola copia.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Determina le dimensioni del puntatore a croce come percentuale della dimensione dello schermo.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nome dello stile di quotatura corrente.
-Tipo carattere.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Controlla la modalità in cui i comandi TAGLIA ed ESTENDI determinano i limiti di taglio e di estensione:
-0 = Utilizza lo spigolo selezionato senza estensioni.
-1 = Estende o taglia l&apos;oggetto selezionato fino ad un&apos;estensione immaginaria del limite di taglio o di estensione.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Memorizza il raggio di raccordo corrente.Se si utilizza il comando RACCORDO per modificare il raggio di un raccordo, il valore di questa variabile di sistema cambia di conseguenza.
-Tipo reale.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distanza di offset di default:
-&lt;0 = Esegue l&apos;offset di un oggetto attraverso un punto specificato.
-&gt;=0 = Imposta la distanza di offset di default.
-Tipo reale.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Controlla la gestione dei potenziali spazi tra segmenti quando viene eseguito l&apos;offset delle polilinee:
-0 = Estende i segmenti di linea alle relative intersezioni proiettate.
-1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate. Il raggio di ciascun segmento di arco è uguale alla distanza di offset.
-2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate. La distanza perpendicolare da ciascuna cima al rispettivo vertice sull&apos;oggetto originale è uguale alla distanza di offset.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Limita il movimento del cursore alla direzione perpendicolare.
-Quando ORTHOMODE è attivata, il cursore può essere spostato solo verticalmente oppure orizzontalmente:
-0 = Disattiva la modalità orto.
-1 = Attiva la modalità orto.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colore (RGB) dei simboli di osnap (es. #FF0000 = rosso).
-Tipo carattere.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modalità degli snap ad oggetto.
-L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
-0 = Nessuno.
-1 = Punti finali (FIN).
-2 = Punto medio (MED).
-4 = Centro-centroide (CEN).
-8 = Inserimento di un oggetto puntuale (NOD).
-16 = Punto quadrante (QUA).
-32 = Intersezione (INT).
-64 = Inserimento di un oggetto puntuale (INS).
-128 = Perpendicolare (PER).
-256 = Tangente (TAN).
-512 = Vicino (NEA).
-1024 = Cancella tutti gli snap ad oggetto (C).
-2048 = Intersezione apparente (APP).
-4096 = Estensione (EST).
-8192 = Parallelo (PAR).
-65536 = Distanza progressiva (PR[dist]).
-131072 = Intersezione sull&apos;estensione (EXT_INT).
-2097152 = Punti finali dell&apos;intera polilinea (FIN_PL).
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distanza progressiva per snap &lt;Distanza progressiva&gt;.
-Tipo reale.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dimensione in pixel dei simboli di osnap
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Altezza in pixel del quadratino di selezione degli oggetti.
-Tipo intero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colore (RGB) del quadratino di selezione degli oggetti (es. #FF0000 = rosso).
-Tipo carattere.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Incremento dell&apos;angolo polare per il puntamento polare (gradi).
-Tipo reale.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path di ricerca per i files di supporto.
-Tipo carattere.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Visualizza la finestra di testo all&apos;avvio.
-Tipo booleano.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Massimo errore tollerato tra una vera curva e quella approssimata dai segmenti retti.
-Tipo reale.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CURSORCOLOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Colore (RGB) del puntatore a croce (es. #FF0000 = rosso).
-Tipo carattere.</source>
+        <source>Minumun numer of segment to approximate an arc.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of the AutoSnap marker, tooltip, and magnet.
+Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips, 
+The setting is stored as a bitcode using the sum of the following values:
+0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode.
+1 = Turns on the AutoSnap marke.
+2 = Turns on the AutoSnap tooltips.
+4 = Turns on the AutoSnap magnet.
+8 = Turns on polar tracking.
+16 = Turns on object snap tracking.
+32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minumun numer of segment to approximate a circle.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the maximum number of previous input values that are stored for a prompt in a command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether the COPY command repeats automatically:
+0 = Sets the COPY command to repeat automatically.
+1 = Sets the COPY command to create a single copy.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross pointer color (RGB, #FF0000 = red).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Character type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Determines the size of the crosshairs as a percentage of the screen size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stores the name of the current dimension style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls how the TRIM and EXTEND commands determine cutting and boundary edges:
+0 = Uses the selected edge without an extensions.
+1 = Extends or trims the selected object to an imaginary extension of the cutting or boundary edge.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stores the current fillet radius.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Real type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the default offset distance:
+&lt;0 = Offsets an object through a specified point.
+&gt;=0 =  Sets the default offset distance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls how potential gaps between segments are treated when polylines are offset:
+0 = Extends line segments to their projected intersections.
+1 = Fillets line segments at their projected intersections. The radius of each arc segment is equal to the offset distance.
+2 = Chamfers line segments at their projected intersections. The perpendicular distance from each chamfer to its corresponding vertex on the original object is equal to the offset distance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Constrains cursor movement to the perpendicular.
+When ORTHOMODE is turned on, the cursor can move only horizontally or vertically:
+0 = Turns off Ortho mode.
+1 = Turns on Ortho mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Osnap symbols color (RGB, #FF0000 = red).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets running object snaps.
+The setting is stored as a bitcode using the sum of the following values:
+0 = NONe.
+1 = ENDpoint.
+2 = MIDpoint.
+4 = CENter.
+8 = NODe.
+16 = QUAdrant.
+32 = INTersection.
+64 = INSertion.
+128 = PERpendicular.
+256 = TANgent.
+512 = NEArest.
+1024 = QUIck.
+2048 = APParent Intersection.
+4096 = EXTension.
+8192 = PARallel.
+65536 = PRogressive distance (PR[dist]).
+131072 = Intersection on extension (EXT_INT).
+2097152 = Final points on polyline (FIN_PL).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progressive distance for &lt;Progressive distance&gt; snap mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Osnap symbol size in pixel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the object selection target height, in pixels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the object selection target color (RGB, #FF0000 = red).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the polar angle increment (degree).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Searching path for support files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the text window at startup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boolean type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum error approximating a curve to segments.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Help</name>
+    <message>
+        <source>Dimensioning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DSETTINGS</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Popup_menu_graph_window</name>
     <message>
-        <source>Ripeti </source>
+        <source>Repeat </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Comandi recenti </source>
+        <source>Recent commands</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QAD</name>
     <message>
-        <source>
-Comando sconosciuto &quot;{0}&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare oggetto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selezionare oggetti: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Punti temporanei</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Linee temporanee</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QAD - Poligoni temporanei</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Il valore deve essere positivo e diverso da zero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comando: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Punto non valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Parola chiave dell&apos;opzione non valida.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Stringa non valida.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Numero intero non valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Numero intero lungo non valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Numero reale non valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Valore booleano non valido.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Risposta ambigua: specificare con maggior chiarezza...
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> o </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> ?
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-(impostato snap temporaneo)
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3321,218 +3472,294 @@ Risposta ambigua: specificare con maggior chiarezza...
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>FALSO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Il sistema di riferimento del progetto deve essere un sistema di coordinate proiettate.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Impostazioni correnti: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare angolo: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare secondo punto: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-I punti devono essere distinti.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specificare distanza: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>QAD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>punto</source>
+        <source>Draw</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>linea</source>
+        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>poligono</source>
+        <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ammessi solo layer di tipo {1}.
-</source>
+        <source>Dimensioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disegna</source>
+        <source>QAD - Dimensioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edita</source>
+        <source>Command: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Strumenti</source>
+        <source>&lt;Snap on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Quotatura</source>
+        <source>&lt;Snap off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QAD - Quotatura</source>
+        <source>&lt;Ortho on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-&lt;Snap attivato&gt;</source>
+        <source>&lt;Ortho off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-&lt;Snap disattivato&gt;</source>
+        <source>&lt;Polar on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Stile di quotatura corrente non valido.
-Verificare il valore della variabile DIMSTYLE.
-</source>
+        <source>&lt;Polar off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Nessun layer corrente.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>*Annullato*</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-E&apos; richiesto un punto, un numero reale o la parola chiave di un&apos;opzione.
+The coordinate reference system of the project must be a projected coordinate system.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-E&apos; richiesto un punto o la parola chiave di un&apos;opzione.
+Invalid command &quot;{0}&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*Canceled*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Current settings: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The command has been canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-E&apos; richiesto un punto o un numero reale.
+A symbol layer is a vectorial punctual layer without label.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-&lt;Modalità ortogonale attivata&gt;</source>
+Dimension style not valid.
+Verify the value of DIMSTYLE variable.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy of </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select objects: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify angle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-&lt;Modalità ortogonale disattivata&gt;</source>
+The points must be different.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the distance: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-&lt;Modalità polare attivata&gt;</source>
+Current layer is not a symbol layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-&lt;Modalità polare disattivata&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Il comando é stato completamente annullato.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Un layer testo é  un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+No current layer.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Un layer simbolo é un layer vettoriale di tipo punto senza etichetta.
+The current layer is not a vector layer.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente non é di tipo simbolo.</source>
+The geometry type of the current layet is {0} and it is not valid.
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Il layer corrente non é di tipo vettoriale.
+        <source>Admitted {1} layer type only.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il tipo di geometria del layer corrente é {0} e non é valido.
+The current layer is not editable.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Temporary points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Temporary lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QAD - Temporary polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Current layer is a layer referenced to {0} dimension style and it is not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The value must be positive and not zero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Current layer is not a textual layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Enter a point, a real number or a keyword.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente non é modificabile.
+Enter a point or a keyword.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>
-Il layer corrente appartiene allo stile di quotatura {0} e non é valido.
+Enter a point or a real number.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sì</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
-Il layer corrente non é di tipo testo.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo non superiore al 10% con una etichetta.
+Point not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copia di </source>
+        <source>
+Keyword not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+String not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Integer number not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Long integer number not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Real number not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Boolean not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Ambiguous answer: specify with greater clarity...
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> or </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+(temporary snap)
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FALSE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Snap</name>
-    <message>
-        <source>FIN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MED</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>CEN</source>
         <translation type="unfinished"></translation>
@@ -3562,15 +3789,7 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>VIC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>APP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>EST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3582,22 +3801,38 @@ Un layer testo é un layer vettoriale di tipo punto con trasparenza del simbolo 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>EST_INT</source>
+        <source>NONE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>FIN_PL</source>
+        <source>END</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>NES</source>
+        <source>END_PL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NEA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EXT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EXT_INT</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Text_window</name>
     <message>
-        <source>Finestra di testo QAD</source>
+        <source>QAD text window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
