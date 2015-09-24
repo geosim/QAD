@@ -9,43 +9,43 @@
     </message>
     <message>
         <source>Disegna un arco mediante diversi metodi.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diseña un arco mediante diversos métodos</translation>
     </message>
     <message>
         <source>Centro</source>
-        <translation type="unfinished"></translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin</translation>
     </message>
     <message>
         <source>Specificare centro dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
+        <translation>Especificar centro dell&apos;arco:</translation>
     </message>
     <message>
         <source>Specificare punto finale dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
+        <translation>Especificar punto final dell&apos;arco:</translation>translation>
     </message>
     <message>
         <source>Specificare angolo inscritto: </source>
-        <translation type="unfinished"></translation>
+        <translation>Especificar árgulo inscrito:</translation>
     </message>
     <message>
         <source>Specificare lunghezza della corda: </source>
-        <translation type="unfinished"></translation>
+        <translation>Especifica longuitud de la cuerda: </translation>
     </message>
     <message>
         <source>Direzione</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirección</translation>
     </message>
     <message>
         <source>Raggio</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio</translation>
     </message>
     <message>
         <source>Specificare direzione tangente per il punto iniziale dell&apos;arco: </source>
-        <translation type="unfinished"></translation>
+        <translation>Especificar dirección de la tangente por el punto inial dell&apos;arco: </translation>
     </message>
     <message>
         <source>Specificare raggio dell&apos;arco: </source>
