@@ -79,13 +79,13 @@ def getCurrLayerEditable(canvas, geomType = None):
    if geomType is not None:
       if (type(geomType) == list or type(geomType) == tuple): # se lista di tipi
          if vLayer.geometryType() not in geomType:
-            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layet is {0} and it is not valid.\n")
+            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layer is {0} and it is not valid.\n")
             errMsg = errMsg + QadMsg.translate("QAD", "Admitted {1} layer type only.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
       else:
          if vLayer.geometryType() != geomType:
-            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layet is {0} and it is not valid.\n")
+            errMsg = QadMsg.translate("QAD", "\nThe geometry type of the current layer is {0} and it is not valid.\n")
             errMsg = errMsg + QadMsg.translate("QAD", "Admitted {1} layer type only.\n")
             errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))
             return None, errMsg.format(layerGeometryTypeToStr(vLayer.geometryType()), layerGeometryTypeToStr(geomType))

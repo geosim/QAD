@@ -73,7 +73,7 @@ class QadPLINECommandClass(QadCommandClass):
       
       self.asToolForMPolygon = asToolForMPolygon
       if self.asToolForMPolygon:
-         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Polygon)
+         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Polygon, True)
       else:
          self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
          
@@ -83,6 +83,7 @@ class QadPLINECommandClass(QadCommandClass):
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
       # che non verrà salvata su un layer
       self.virtualCmd = False
+
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -97,6 +98,14 @@ class QadPLINECommandClass(QadCommandClass):
             return QadCommandClass.getPointMapTool(self, drawMode)
          elif self.mode == "ARC":
             return self.getArcPointMapTool()
+
+   
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      if rubberBandBorderColor is not None:
+         self.rubberBand.setBorderColor(rubberBandBorderColor)
+      if rubberBandFillColor is not None:
+         self.rubberBand.setFillColor(rubberBandFillColor)
+
 
    def waitForEntsel(self, msgMapTool, msg):
       if self.EntSelClass is not None:

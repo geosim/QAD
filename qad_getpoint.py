@@ -152,19 +152,10 @@ class QadGetPoint(QgsMapTool):
          self.__RubberBand = createRubberBand(self.canvas, QGis.Line)
          self.__RubberBand.setLineStyle(Qt.DotLine)
       elif self.__drawMode == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
-         self.__RubberBandElasticRectangleLeftColor = getQGISColorForRubberBand(QGis.Polygon, True)
-         # se nero
-         if self.__RubberBandElasticRectangleLeftColor.red() == 0 and \
-            self.__RubberBandElasticRectangleLeftColor.green() == 0 and \
-            self.__RubberBandElasticRectangleLeftColor.blue() == 0:
-            # colore più chiaro (non uso lighter perchè con il nero non va...)
-            alpha = self.__RubberBandElasticRectangleLeftColor.alphaF()
-            self.__RubberBandElasticRectangleRightColor = QColor(Qt.darkGray)
-            self.__RubberBandElasticRectangleRightColor.setAlphaF(alpha)
-         else:
-            # colore più scuro
-            self.__RubberBandElasticRectangleRightColor = self.__RubberBandElasticRectangleLeftColor.darker(factor=200)
-         self.__RubberBand = createRubberBand(self.canvas, QGis.Polygon, self.__RubberBandElasticRectangleLeftColor)
+         self.rectangleCrossingSelectionColor = getColorForCrossingSelectionArea()
+         self.rectangleWindowSelectionColor = getColorForWindowSelectionArea()
+            
+         self.__RubberBand = createRubberBand(self.canvas, QGis.Polygon, False, None, self.rectangleCrossingSelectionColor)
          self.__RubberBand.setLineStyle(Qt.DotLine)
          
 
@@ -181,7 +172,7 @@ class QadGetPoint(QgsMapTool):
          self.entity.clear() # entità selezionata 
          self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entità
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
-         self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare un guppo di entità  
+         self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto roby
 
    def getSelectionMode(self):
       return self.__selectionMode
@@ -380,9 +371,9 @@ class QadGetPoint(QgsMapTool):
             p1 = self.__RubberBand.getPoint(0, 0)
 
             if point.x() > p1.x(): # se il punto è a destra di p1 (punto iniziale)
-               self.__RubberBand.setColor(self.__RubberBandElasticRectangleRightColor)
+               self.__RubberBand.setFillColor(self.rectangleWindowSelectionColor)
             else:
-               self.__RubberBand.setColor(self.__RubberBandElasticRectangleLeftColor)
+               self.__RubberBand.setFillColor(self.rectangleCrossingSelectionColor)
             
             adjustedPoint = qad_utils.getAdjustedRubberBandVertex(p1, point)                     
             self.__RubberBand.movePoint(numberOfVertices - 3, QgsPoint(p1.x(), adjustedPoint.y()))

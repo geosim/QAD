@@ -67,6 +67,8 @@ class QadCIRCLECommandClass(QadCommandClass):
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
       # che non verrà salvato su un layer
       self.virtualCmd = False
+      self.rubberBandBorderColor = None
+      self.rubberBandFillColor = None
       self.centerPt = None
       self.radius = None
       self.area = 100      
@@ -75,9 +77,16 @@ class QadCIRCLECommandClass(QadCommandClass):
       if (self.plugIn is not None):
          if self.PointMapTool is None:
             self.PointMapTool = Qad_circle_maptool(self.plugIn)
+            self.PointMapTool.setRubberBandColor(self.rubberBandBorderColor, self.rubberBandFillColor)
          return self.PointMapTool
       else:
          return None
+   
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      self.rubberBandBorderColor = rubberBandBorderColor
+      self.rubberBandFillColor = rubberBandFillColor
+      if self.PointMapTool is not None:
+         self.PointMapTool.setRubberBandColor(self.rubberBandBorderColor, self.rubberBandFillColor)
          
    def run(self, msgMapTool = False, msg = None):
       self.isValidPreviousInput = True # per gestire il comando anche in macro

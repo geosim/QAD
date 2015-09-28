@@ -67,6 +67,8 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un poligono
       # che non verrà salvato su un layer
       self.virtualCmd = False
+      self.rubberBandBorderColor = None
+      self.rubberBandFillColor = None
       self.PLINECommand = None
 
    def __del__(self):
@@ -75,10 +77,19 @@ class QadMPOLYGONCommandClass(QadCommandClass):
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.PLINECommand is not None:
-         return self.PLINECommand.getPointMapTool(drawMode)
+         self.PointMapTool = self.PLINECommand.getPointMapTool(drawMode)
+         return self.PointMapTool
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
-           
+
+
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      self.rubberBandBorderColor = rubberBandBorderColor
+      self.rubberBandFillColor = rubberBandFillColor
+      if self.PLINECommand is not None:
+         self.PLINECommand.setRubberBandColor(rubberBandBorderColor, rubberBandFillColor)
+
+
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
@@ -94,6 +105,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       # RICHIESTA PRIMO PUNTO PER SELEZIONE OGGETTI
       if self.step == 0:
          self.PLINECommand = QadPLINECommandClass(self.plugIn, True)
+         self.PLINECommand.setRubberBandColor(self.rubberBandBorderColor, self.rubberBandFillColor)
          # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
          # che non verrà salvata su un layer
          self.PLINECommand.virtualCmd = True   
@@ -107,7 +119,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
          if self.PLINECommand.run(msgMapTool, msg) == True:
             verticesLen = len(self.PLINECommand.vertices)
-            if verticesLen > 3:
+            if verticesLen >= 3:
                self.vertices = self.PLINECommand.vertices[:] # copio la lista
                firstVertex = self.vertices[0]
                # se l'ultimo vertice non é uguale al primo

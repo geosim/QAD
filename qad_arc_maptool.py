@@ -107,6 +107,7 @@ class Qad_arc_maptool(QadGetPoint):
       self.arcRadius = None
       self.__rubberBand = QadRubberBand(self.canvas)
 
+
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
       self.__rubberBand.hide()

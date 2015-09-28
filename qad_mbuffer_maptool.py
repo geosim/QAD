@@ -61,7 +61,13 @@ class Qad_mbuffer_maptool(QadGetPoint):
       self.segments = 12
       self.entitySet = QadEntitySet()
       self.geomType = QGis.Polygon
-      self.__rubberBand = QadRubberBand(self.canvas)   
+      self.__rubberBand = QadRubberBand(self.canvas, True)
+
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      if rubberBandBorderColor is not None:
+         self.__rubberBand.setBorderColor(rubberBandBorderColor)
+      if rubberBandFillColor is not None:
+         self.__rubberBand.setFillColor(rubberBandFillColor)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)

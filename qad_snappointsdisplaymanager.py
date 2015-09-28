@@ -61,11 +61,13 @@ class QadSnapPointsDisplayManager():
       # svuoto la lista dei marker
       for vertexMarker in self.__vertexMarkers:
          self.__mapCanvas.scene().removeItem(vertexMarker)
+         del vertexMarker
       del self.__vertexMarkers[:]
 
       # svuoto la linea di estensione
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
+         del lineMarker
       del self.__lineMarkers[:]
 
 
@@ -157,11 +159,13 @@ class QadSnapPointsDisplayManager():
       # svuoto la lista dei marker
       for vertexMarker in self.__vertexMarkers:
          self.__mapCanvas.scene().removeItem(vertexMarker)
+         del vertexMarker
       del self.__vertexMarkers[:]
       
       # svuoto la linea di estensione
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
+         del lineMarker
       del self.__lineMarkers[:]
       
       # punti di snap

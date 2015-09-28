@@ -205,16 +205,49 @@ def getQGISColorForRubberBand(geometryType = QGis.Line, alternativeBand = False)
 
 
 #===============================================================================
+# getColorForWindowSelectionArea
+#===============================================================================
+def getColorForWindowSelectionArea():
+   """
+   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo intersezione.
+   """
+   if QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREA")) == 0:
+      color = QColor()
+      color.setAlphaF(0) # trasparente      
+   else:
+      color = QColor(QadVariables.get(QadMsg.translate("Environment variables", "WINDOWAREACOLOR")))
+      opacity = QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREAOPACITY")) # 0 = trasparente [0-100] 
+      color.setAlphaF(opacity / 100.0) # trasformo da 0-100 a 0-1
+      
+   return color
+
+
+#===============================================================================
+# getColorForCrossingSelectionArea
+#===============================================================================
+def getColorForCrossingSelectionArea():
+   """
+   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo finestra.
+   """
+   if QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREA")) == 0:
+      color = QColor()
+      color.setAlphaF(0) # trasparente      
+   else:
+      color = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CROSSINGAREACOLOR")))
+      opacity = QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREAOPACITY")) # 0 = trasparente [0-100] 
+      color.setAlphaF(opacity / 100.0) # trasformo da 0-100 a 0-1
+      
+   return color
+
+
+#===============================================================================
 # createRubberBand
 #===============================================================================
-def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = False, color = None):
+def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = False, borderColor = None, fillColor = None):
    """
    la funzione crea un rubber band di tipo <geometryType> con le impostazioni di QGIS.
    Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
    """
-   if color is None:
-      color = getQGISColorForRubberBand(geometryType, alternativeBand)
-
    settings = QSettings()
    width = int(settings.value( "/qgis/digitizing/line_width", 1))
 
@@ -222,22 +255,31 @@ def createRubberBand(mapCanvas, geometryType = QGis.Line, alternativeBand = Fals
    
    if alternativeBand:
       rb.setLineStyle(Qt.DotLine)
- 
-   rb.setColor(color)
+
+   if borderColor is None:
+      borderColor = getQGISColorForRubberBand(geometryType, alternativeBand)
+   rb.setBorderColor(borderColor)
+
+   if fillColor is None:
+      rb.setFillColor(borderColor)
+   else:
+      rb.setFillColor(fillColor)
+
    rb.setWidth(width)
+   
    return rb
 
 
 # Classe che gestisce rubber band di oggetti geometricamente non omogenei
 class QadRubberBand():
-   def __init__(self, mapCanvas, alternativeBand = False):
+   def __init__(self, mapCanvas, alternativeBand = False, borderColor = None, fillColor = None):
       """
       Se <alternativeBand> = True, il rubber band sarà impostato con più trasparenza e tipolinea punteggiato   
       """
       self.mapCanvas = mapCanvas
-      self.__rubberBandPoint = createRubberBand(self.mapCanvas, QGis.Point, alternativeBand)
-      self.__rubberBandLine = createRubberBand(self.mapCanvas, QGis.Line, alternativeBand)
-      self.__rubberBandPolygon = createRubberBand(self.mapCanvas, QGis.Polygon, alternativeBand)
+      self.__rubberBandPoint = createRubberBand(self.mapCanvas, QGis.Point, alternativeBand, borderColor, fillColor)
+      self.__rubberBandLine = createRubberBand(self.mapCanvas, QGis.Line, alternativeBand, borderColor, fillColor)
+      self.__rubberBandPolygon = createRubberBand(self.mapCanvas, QGis.Polygon, alternativeBand, borderColor, fillColor)
 
    def __del__(self):
       self.hide()
@@ -315,4 +357,11 @@ class QadRubberBand():
       self.__rubberBandLine.setLineStyle(penStyle)
       self.__rubberBandPolygon.setLineStyle(penStyle)
       
+   def setBorderColor(self, color):
+      self.__rubberBandPoint.setBorderColor(color)
+      self.__rubberBandLine.setBorderColor(color)
+      self.__rubberBandPolygon.setBorderColor(color)
+      
+   def setFillColor(self, color):
+      self.__rubberBandPolygon.setFillColor(color)
       

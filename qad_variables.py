@@ -134,6 +134,16 @@ class QadVariablesClass():
                                                             0, 1, \
                                                             VariableDescr)
       
+      # CROSSINGAREACOLOR (str): Imposta il colore (RGB) dell'area di selezione degli oggetti nel modo intersezione
+      VariableName = QadMsg.translate("Environment variables", "CROSSINGAREACOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during crossing selection (RGB, #33A02C = green)." + \
+                                       "\nThe SELECTIONAREA system variable must be on.") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#33A02C"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # rosso 
+      
       # CURSORCOLOR (str): Imposta il colore (RGB) del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORCOLOR") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Cross pointer color (RGB, #FF0000 = red).") # x lupdate                                       
@@ -334,6 +344,30 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             0.000001, 359.999999, \
                                                             VariableDescr)
+      
+      # SELECTIONAREA (int): Controlla gli effetti della visualizzazione della selezione di aree.
+      # dalla posizione corrente del puntatore
+      VariableName = QadMsg.translate("Environment variables", "SELECTIONAREA") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the display of effects for selection areas." + \
+                                       "\nSelection areas are created by the Window, Crossing, WPolygon, CPolygon, WCircle, CCircle, WObjects, CObjects, WBuffer and CBuffer options of SELECT." + \
+                                       "\n0 = Off" + \
+                                       "\n1 = On") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(1), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 1, \
+                                                            VariableDescr)
+      
+      # SELECTIONAREAOPACITY (int): Controlla gli effetti della visualizzazione della selezione di aree.
+      # dalla posizione corrente del puntatore
+      VariableName = QadMsg.translate("Environment variables", "SELECTIONAREAOPACITY") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the transparency of the selection area during window and crossing selection." + \
+                                       "\nThe valid range is 0 to 100. The lower the setting, the more transparent the area. A value of 100 makes the area opaque. The SELECTIONAREA system variable must be on.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(25), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 100, \
+                                                            VariableDescr)
 
       # SUPPORTPATH (str): Path di ricerca per i files di supporto
       VariableName = QadMsg.translate("Environment variables", "SUPPORTPATH") # x lupdate
@@ -363,6 +397,16 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.FLOAT, \
                                                             0.000001, None, \
                                                             VariableDescr)
+      
+      # WINDOWAREACOLOR (str): Imposta il colore (RGB) dell'area di selezione degli oggetti nel modo finestra
+      VariableName = QadMsg.translate("Environment variables", "WINDOWAREACOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu)." + \
+                                       "\nThe SELECTIONAREA system variable must be on.") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#1F78B4"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # rosso 
       
 
    def getVarNames(self):

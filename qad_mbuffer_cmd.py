@@ -67,6 +67,8 @@ class QadMBUFFERCommandClass(QadCommandClass):
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare un buffer
       # che non verrà salvato su un layer
       self.virtualCmd = False
+      self.rubberBandBorderColor = None
+      self.rubberBandFillColor = None      
       self.SSGetClass = QadSSGetClass(plugIn)
       self.entitySet = QadEntitySet()
       self.width = 0
@@ -84,9 +86,18 @@ class QadMBUFFERCommandClass(QadCommandClass):
          if (self.plugIn is not None):
             if self.PointMapTool is None:
                self.PointMapTool = Qad_mbuffer_maptool(self.plugIn)
+               self.PointMapTool.setRubberBandColor(self.rubberBandBorderColor, self.rubberBandFillColor)
             return self.PointMapTool
          else:
             return None
+
+   
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      self.rubberBandBorderColor = rubberBandBorderColor
+      self.rubberBandFillColor = rubberBandFillColor
+      if self.PointMapTool is not None:
+         self.PointMapTool.setRubberBandColor(self.rubberBandBorderColor, self.rubberBandFillColor)
+
 
    def AddGeoms(self, currLayer):
       bufferGeoms = []

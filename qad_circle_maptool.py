@@ -85,8 +85,15 @@ class Qad_circle_maptool(QadGetPoint):
       self.tan1 = None
       self.tan2 = None
       self.startPtForRadius = None
-      self.__rubberBand = QadRubberBand(self.canvas)
+            
+      self.__rubberBand = QadRubberBand(self.canvas, False)
       self.geomType = QGis.Polygon
+
+   def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
+      if rubberBandBorderColor is not None:
+         self.__rubberBand.setBorderColor(rubberBandBorderColor)
+      if rubberBandFillColor is not None:
+         self.__rubberBand.setFillColor(rubberBandFillColor)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)

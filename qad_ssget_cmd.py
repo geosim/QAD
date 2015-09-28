@@ -416,7 +416,7 @@ class QadSSGetClass(QadCommandClass):
                self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
                self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.NONE)
                # si appresta ad attendere un punto
-               self.waitForPoint(value == QadMsg.translate("Command_SSGET", "First corner: "))
+               self.waitForPoint(QadMsg.translate("Command_SSGET", "First corner: "))
                self.step = 2
             if value == QadMsg.translate("Command_SSGET", "Last") or value == "Last": 
                # Seleziona l'ultima entità inserita
@@ -462,7 +462,13 @@ class QadSSGetClass(QadCommandClass):
                self.MPOLYGONCommand = QadMPOLYGONCommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
                # che non verrà salvata su un layer
-               self.MPOLYGONCommand.virtualCmd = True   
+               self.MPOLYGONCommand.virtualCmd = True
+               
+               if value == QadMsg.translate("Command_SSGET", "WPolygon") or value == "WPolygon":
+                  self.MPOLYGONCommand.setRubberBandColor(None, getColorForWindowSelectionArea())
+               else:
+                  self.MPOLYGONCommand.setRubberBandColor(None, getColorForCrossingSelectionArea())
+               
                self.MPOLYGONCommand.run(msgMapTool, msg)
                self.step = 7
             elif value == QadMsg.translate("Command_SSGET", "WCircle") or value == "WCircle" or \
@@ -472,7 +478,13 @@ class QadSSGetClass(QadCommandClass):
                self.CIRCLECommand = QadCIRCLECommandClass(self.plugIn)
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
                # che non verrà salvata su un layer
-               self.CIRCLECommand.virtualCmd = True   
+               self.CIRCLECommand.virtualCmd = True
+               
+               if value == QadMsg.translate("Command_SSGET", "WCircle") or value == "WCircle":
+                  self.CIRCLECommand.setRubberBandColor(None, getColorForWindowSelectionArea())
+               else:
+                  self.CIRCLECommand.setRubberBandColor(None, getColorForCrossingSelectionArea())
+                  
                self.CIRCLECommand.run(msgMapTool, msg)
                self.step = 5
             elif value == QadMsg.translate("Command_SSGET", "WObjects") or value == "WObjects" or \
@@ -490,6 +502,12 @@ class QadSSGetClass(QadCommandClass):
                # se questo flag = True il comando serve all'interno di un altro comando per disegnare un cerchio
                # che non verrà salvata su un layer
                self.MBUFFERCommand.virtualCmd = True   
+               
+               if value == QadMsg.translate("Command_SSGET", "WBuffer") or value == "WBuffer":
+                  self.MBUFFERCommand.setRubberBandColor(None, getColorForWindowSelectionArea())
+               else:
+                  self.MBUFFERCommand.setRubberBandColor(None, getColorForCrossingSelectionArea())
+               
                self.MBUFFERCommand.run(msgMapTool, msg)
                self.step = 8
             elif value == QadMsg.translate("Command_SSGET", "Add") or value == "Add":
@@ -560,7 +578,7 @@ class QadSSGetClass(QadCommandClass):
             self.currSelectionMode = QadMsg.translate("Command_SSGET", "Box")
             self.points.append(value)           
             self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITYSET_SELECTION)
-            self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)        
+            self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)
             self.getPointMapTool().setStartPoint(value)
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specify opposite corner: "))
@@ -605,7 +623,17 @@ class QadSSGetClass(QadCommandClass):
          if type(value) == QgsPoint:
             self.points.append(value)           
             self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITYSET_SELECTION)
-            self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)        
+            self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_RECTANGLE)
+            
+            # cambio il colore impostato da setDrawMode
+            if self.currSelectionMode == QadMsg.translate("Command_SSGET", "Window") or value == "Window":
+               self.getPointMapTool().rectangleCrossingSelectionColor = self.getPointMapTool().rectangleWindowSelectionColor
+            elif self.currSelectionMode == QadMsg.translate("Command_SSGET", "Crossing") or value == "Crossing":
+                self.getPointMapTool().rectangleWindowSelectionColor = self.getPointMapTool().rectangleCrossingSelectionColor
+            
+            self.rectangleCrossingSelectionColor = getColorForCrossingSelectionArea()
+            self.rectangleWindowSelectionColor = getColorForWindowSelectionArea()
+            
             self.getPointMapTool().setStartPoint(value)
             # si appresta ad attendere un punto
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specify opposite corner: "))

@@ -119,7 +119,7 @@ class Qad(QObject):
    isSaveControlledByQAD = False
 
    def version(self):
-      return "2.8.002"
+      return "2.8.003"
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
       # memorizzo il coeff angolare ultimo segmento e l'ultimo punto selezionato
