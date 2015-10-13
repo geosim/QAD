@@ -80,10 +80,14 @@ class QadCursorRubberBand():
          self.__crosshairRubberBandDw = None
          self.__crosshairRubberBandUp = None
 
-   def __del__(self):     
+   def __del__(self):
+      self.removeItems()
+      
+   def removeItems(self):      
       if self.__boxRubberBand is not None:
          self.mapCanvas.scene().removeItem(self.__boxRubberBand)
          del self.__boxRubberBand
+         self.__boxRubberBand = None
          
       if self.__crosshairRubberBandSx is not None:
          self.mapCanvas.scene().removeItem(self.__crosshairRubberBandSx)
@@ -91,9 +95,13 @@ class QadCursorRubberBand():
          self.mapCanvas.scene().removeItem(self.__crosshairRubberBandDw)
          self.mapCanvas.scene().removeItem(self.__crosshairRubberBandUp)
          del self.__crosshairRubberBandSx
+         self.__crosshairRubberBandSx = None
          del self.__crosshairRubberBandDx
+         self.__crosshairRubberBandDx = None
          del self.__crosshairRubberBandDw
+         self.__crosshairRubberBandDw = None
          del self.__crosshairRubberBandUp
+         self.__crosshairRubberBandUp = None
 
    def moveEvent(self, point):
       # point è risultato di toMapCoordinates      

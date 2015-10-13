@@ -107,7 +107,7 @@ class Qad_fillet_maptool(QadGetPoint):
       QadGetPoint.canvasMoveEvent(self, event)
       
       self.__rubberBand.reset()
-      tmpLinearObjectList = None           
+      tmpLinearObjectList = None
        
       # si richiede la selezione del secondo oggetto
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:

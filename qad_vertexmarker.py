@@ -30,7 +30,7 @@ from qgis.gui import *
 
 
 #===============================================================================
-# QadSnapModeEnum class.
+# QadVertexmarkerIconTypeEnum class.
 #===============================================================================
 class QadVertexmarkerIconTypeEnum():
    NONE             = 0  # nessuno
@@ -74,6 +74,10 @@ class QadVertexMarker(QgsMapCanvasItem):
 
       
    def __del__(self):     
+      self.removeItem()
+
+
+   def removeItem(self):     
       self.__canvas.scene().removeItem(self)
       
 

@@ -111,6 +111,9 @@ class Qad_copy_maptool(QadGetPoint):
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
+            if f is None:
+               del layerEntitySet.featureIds[0]
+               continue
 
             # verifico se l'entità appartiene ad uno stile di quotatura
             dimEntity = self.plugIn.dimStyles.getDimEntity(layer, f.id())

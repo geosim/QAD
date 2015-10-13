@@ -168,6 +168,7 @@ class QadCommandClass():
       """ distruttore """
       self.hidePointMapToolMarkers()
       if self.PointMapTool:
+         self.PointMapTool.removeItems()
          del self.PointMapTool
 
    def instantiateNewCmd(self):

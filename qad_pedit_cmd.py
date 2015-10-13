@@ -429,7 +429,11 @@ class QadPEDITCommandClass(QadCommandClass):
       self.plugIn.beginEditCommand("Feature edited", self.entitySet.getLayerList())
 
       if self.entity.isInitialized(): # selezionato solo un oggetto
-         newFeature = qad_utils.getFeatureById(vectorLayer, newIdFeatureList[0][0])         
+         newFeature = qad_utils.getFeatureById(vectorLayer, newIdFeatureList[0][0])
+         if newFeature is None:
+            self.plugIn.destroyEditCommand()
+            return
+         
          layer = newIdFeatureList[0][1]
          f = newIdFeatureList[0][2]         
          f.setGeometry(qad_utils.setSubGeom(f.geometry(), newFeature.geometry(), self.atSubGeom))
@@ -1062,7 +1066,7 @@ class QadPEDITCommandClass(QadCommandClass):
                self.nOperationsToUndo = self.nOperationsToUndo - 1           
                self.plugIn.undoEditCommand()
             else:
-               self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))                  
+               self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
             
             if self.entity.isInitialized(): # selezionato solo un oggetto
                if self.atSubGeom is not None:

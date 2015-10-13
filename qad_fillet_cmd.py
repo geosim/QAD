@@ -442,7 +442,7 @@ class QadFILLETCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))
                   
                self.waitForFirstEntSel() # si appresta ad attendere la selezione del primo oggetto
             elif value == QadMsg.translate("Command_FILLET", "Polyline") or value == "Polyline":

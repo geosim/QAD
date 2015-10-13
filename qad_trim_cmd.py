@@ -109,6 +109,8 @@ class QadTRIMCommandClass(QadCommandClass):
             
          for featureId in layerEntitySet.featureIds:
             f = qad_utils.getFeatureById(layer, featureId)
+            if f is None:
+               continue
             
             if g.type() == QGis.Point:
                # ritorna una tupla (<The squared cartesian distance>,
@@ -330,7 +332,7 @@ class QadTRIMCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))
          elif type(value) == QgsPoint: # se é stato selezionato un punto
             self.entitySet.clear()
             if self.getPointMapTool().entity.isInitialized():

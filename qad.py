@@ -107,7 +107,18 @@ class Qad(QObject):
    # ultima opzione di costruzione del poligono conoscendo il centro
    # "Inscritto nel cerchio", Circoscritto intorno al cerchio", "Area"
    lastPolygonConstructionModeByCenter = QadMsg.translate("Command_POLYGON", "Inscribed in circle")
-
+   # ultimo delta usato nel comando lengthen
+   lastDelta_lengthen = 0.0
+   # ultimo delta angolo usato nel comando lengthen
+   lastDeltaAngle_lengthen = 0.0
+   # ultima percentuale usata nel comando lengthen
+   lastPerc_lengthen = 100.0
+   # ultima lunghezza totale usato nel comando lengthen
+   lastTotal_lengthen = 1.0
+   # ultimo angolo totale usato nel comando lengthen
+   lastTotalAngle_lengthen = 0.0
+   # ultima modalità operativa del comando lengthen
+   lastOpMode_lengthen = "DElta"
 
    # flag per identificare se un comando di QAD é attivo oppure no
    isQadActive = False
@@ -230,6 +241,32 @@ class Qad(QObject):
       # "Inscritto nel cerchio", Circoscritto intorno al cerchio", "Area"
       self.lastPolygonConstructionModeByCenter = mode
 
+   def setLastDelta_lengthen(self, lastDelta_lengthen):
+      # ultimo delta usato nel comando lengthen
+      self.lastDelta_lengthen = lastDelta_lengthen
+
+   def setLastDeltaAngle_lengthen(self, lastDeltaAngle_lengthen):
+      # ultimo delta angolo usato nel comando lengthen
+      self.lastDeltaAngle_lengthen = qad_utils.normalizeAngle(lastDeltaAngle_lengthen)
+
+   def setLastPerc_lengthen(self, lastPerc_lengthen):      
+      # ultima percentuale usata nel comando lengthen
+      if lastPerc_lengthen > 0:
+         self.lastPerc_lengthen = lastPerc_lengthen
+
+   def setLastTotal_lengthen(self, lastTotal_lengthen):      
+      # ultima lunghezza totale usato nel comando lengthen
+      if lastTotal_lengthen > 0:
+         self.lastTotal_lengthen = lastTotal_lengthen
+
+   def setLastTotalAngle_lengthen(self, lastTotalAngle_lengthen):      
+      # ultimo angolo totale usato nel comando lengthen
+      self.lastTotalAngle_lengthen = qad_utils.normalizeAngle(lastTotalAngle_lengthen)
+
+   def setLastOpMode_lengthen(self, opMode):
+      # memorizzo modalità operativa del comando lengthen: "DElta" o "Percent" o "Total" o "DYnamic"
+      if opMode == "DElta" or opMode == "Percent" or opMode == "Total" or opMode == "DYnamic":
+         self.lastOpMode_lengthen = opMode     
 
    def loadDimStyles(self):
       # carico gli stili di quotatura
@@ -369,6 +406,7 @@ class Qad(QObject):
       self.toolBar.addAction(self.trim_action)
       self.toolBar.addAction(self.mirror_action)
       self.toolBar.addAction(self.stretch_action)
+      self.toolBar.addAction(self.lengthen_action)
       self.toolBar.addAction(self.break_action)
       self.toolBar.addAction(self.pedit_action)
       self.toolBar.addAction(self.fillet_action)
@@ -674,6 +712,12 @@ class Qad(QObject):
       self.stretch_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.stretch_action)
       
+      # LENGTHEN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "LENGTHEN"))
+      self.lengthen_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.lengthen_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.lengthen_action)
+      
       # BREAK
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "BREAK"))
       self.break_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -798,6 +842,7 @@ class Qad(QObject):
       editMenu.addAction(self.trim_action)
       editMenu.addAction(self.mirror_action)
       editMenu.addAction(self.stretch_action)
+      editMenu.addAction(self.lengthen_action)
       editMenu.addAction(self.break_action)
       editMenu.addAction(self.pedit_action)
       editMenu.addAction(self.fillet_action)
@@ -1446,3 +1491,6 @@ class Qad(QObject):
 
    def runHELPCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "HELP"))
+
+   def runLENGTHENCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "LENGTHEN"))

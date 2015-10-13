@@ -507,7 +507,7 @@ class QadSnapper():
       if self.__snapType & QadSnapTypeEnum.TAN_DEF:
          if geom is not None:
             whatIs = qad_utils.whatGeomIs(point, geom)
-            if (type(whatIs) != list and type(whatIs) != tuple): # se non é  una linea
+            if (type(whatIs) != list and type(whatIs) != tuple): # se non é una linea
                result[QadSnapTypeEnum.TAN_DEF] = self.getNeaPoints(geom, point, CRS)
          
       return result

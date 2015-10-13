@@ -2663,6 +2663,9 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
       # per ciascuna entità del layer
       for featureId in limitLayerEntitySet.featureIds:
          f = getFeatureById(limitLayer, featureId)
+         if f is None:
+            continue
+         
          # Trasformo la geometria limite nel sistema di coordinate del <layer>     
          gTransformed = f.geometry()
          if limitLayer.crs() != layer.crs():
@@ -7207,6 +7210,39 @@ class QadLinearObject():
             
    
    #============================================================================
+   # getMiddlePt
+   #============================================================================
+   def getMiddlePt(self):
+      """
+      la funzione restituisce il punto medio della parte.
+      """
+      if self.isInitialized() == False:
+         return None      
+      if self.isSegment(): # segmento
+         return getMiddlePoint(self.getStartPt(), self.getEndPt())
+      else: # arco
+         return self.getArc().getMiddlePt()
+
+
+   #============================================================================
+   # getTanDirectionOnMiddlePt
+   #============================================================================
+   def getTanDirectionOnMiddlePt(self):
+      """
+      la funzione ritorna la direzione della tangente al punto medio dell'oggetto.
+      """
+      if self.isSegment(): # segmento
+         return getAngleBy2Pts(self.getStartPt(), self.getEndPt())
+      else: # se é un arco
+         arc = QadArc()
+         middlePt = self.getMiddlePt()
+         if self.isInverseArc():
+            return self.getArc().getTanDirectionOnPt(middlePt) + math.pi
+         else:
+            return self.getArc().getTanDirectionOnPt(middlePt)
+
+   
+   #============================================================================
    # length
    #============================================================================
    def length(self):
@@ -7234,8 +7270,87 @@ class QadLinearObject():
             self.defList[1].set(self.defList[1].x() + offSetX, self.defList[1].y() + offSetY)
          else: # arco
             self.getArc().center.set(self.getArc().center.x() + offSetX, self.getArc().center.y() + offSetY)
-            
-            
+      
+
+   #============================================================================
+   # lengthen_delta
+   #============================================================================
+   def lengthen_delta(self, move_startPt, delta):
+      """
+      la funzione sposta il punto iniziale (se move_startPt = True) o finale (se move_startPt = False)
+      di una distanza delta estendendo la parte lineare
+      """
+      if self.isInitialized() == False:
+         return False
+
+      length = self.length()
+      # lunghezza della parte + delta non può essere <= 0
+      if length + delta <= 0:
+         return False
+      
+      if self.isSegment(): # segmento
+         if move_startPt == True:
+            angle = getAngleBy2Pts(self.getEndPt(), self.getStartPt())
+            self.setStartPt(getPolarPointByPtAngle(self.getStartPt(), angle, delta))
+         else:
+            angle = getAngleBy2Pts(self.getStartPt(), self.getEndPt())
+            self.setEndPt(getPolarPointByPtAngle(self.getEndPt(), angle, delta))
+         return True
+      else: # arco
+         # lunghezza arco + delta non può essere >= alla circonferenza del cerchio
+         if length + delta >= 2 * math.pi * self.getArc().radius:
+            return False
+         # (2*pi) : (2*pi*r) = angle : delta            
+         angle = delta / self.getArc().radius
+         
+         if move_startPt == True:
+            if self.isInverseArc():
+               self.getArc().endAngle = self.getArc().endAngle + angle
+            else:
+               self.getArc().startAngle = self.getArc().startAngle - angle
+         else:
+            if self.isInverseArc():
+               self.getArc().startAngle = self.getArc().startAngle - angle
+            else:
+               self.getArc().endAngle = self.getArc().endAngle + angle
+         return True
+
+
+   #============================================================================
+   # lengthen_deltaAngle
+   #============================================================================
+   def lengthen_deltaAngle(self, move_startPt, delta):
+      """
+      la funzione sposta il punto iniziale (se move_startPt = True) o finale (se move_startPt = False)
+      dell'arco di un certo numero di gradi delta estendendo la parte lineare
+      """
+      if self.isInitialized() == False:
+         return False
+      
+      if self.isArc() == False: # se non è arco
+         return False
+      
+      totalAngle = self.getArc().totalAngle()
+      # angolo dell'arco + delta non può essere >= 2 * pi
+      if totalAngle + delta >= 2 * math.pi:
+         return False
+      # angolo dell'arco + delta non può essere <= 0
+      if totalAngle + delta <= 0:
+         return False
+      
+      if move_startPt == True:
+         if self.isInverseArc():
+            self.getArc().endAngle = self.getArc().endAngle + delta
+         else:
+            self.getArc().startAngle = self.getArc().startAngle - delta
+      else:
+         if self.isInverseArc():
+            self.getArc().startAngle = self.getArc().startAngle - delta
+         else:
+            self.getArc().endAngle = self.getArc().endAngle + delta
+      return True
+
+
    #============================================================================
    # getIntersectionPtsWithLinearObject
    #============================================================================
@@ -7349,6 +7464,36 @@ class QadLinearObject():
          
       return dummy.length()
       
+
+   #============================================================================
+   # getPointFromStart
+   #============================================================================
+   def getPointFromStart(self, distance):
+      """
+      la funzione restituisce un punto della parte alla distanza <distance> (che deve essere sull'oggetto) dal punto iniziale.
+      """
+      if distance < 0:
+         return None
+      l = self.length()
+      if distance > l:
+         return None
+     
+      if self.isSegment(): # segmento
+         angle = getAngleBy2Pts(self.getStartPt(), self.getEndPt())
+         return getPolarPointByPtAngle(self.getStartPt(), angle, distance)
+      else: # arco
+         # (2*pi) : (2*pi*r) = angle : delta            
+         angle = delta / self.getArc().radius
+         
+         if self.isInverseArc():
+            angle = self.getArc().endAngle - angle
+         else:
+            angle = self.getArc().startAngle + angle
+         
+         return getPolarPointByPtAngle(self.getArc().center, angle, self.getArc().radius)
+   
+      return None
+
 
    #============================================================================
    # getPartsExternalToCircle
@@ -7506,7 +7651,7 @@ class QadLinearObject():
       result = QadLinearObject(self)
       if result.isSegment(): # segmento
          result.setStartPt(coordTransform.transform(result.getStartPt()))
-         result.setEndPt(coordTransform.transform(result.setEndPt()))
+         result.setEndPt(coordTransform.transform(result.getEndPt()))
       else: # arco
          result.getArc().transform(coordTransform)
           
@@ -7761,7 +7906,7 @@ class QadLinearObjectList():
          else:
             nextLinearObject.setStartPt(pt)
 
-   
+
    #============================================================================
    # remove
    #============================================================================
@@ -8229,6 +8374,108 @@ class QadLinearObjectList():
 
 
    #============================================================================
+   # getPointFromStart
+   #============================================================================
+   def getPointFromStart(self, distance):
+      """
+      la funzione restituisce un punto della polilinea alla distanza <distance> (che deve essere sull'oggetto) dal punto iniziale.
+      Da usarsi solo se le parti rappresentano una polilinea.
+      """
+      if distance < 0:
+         return None
+      d = distance
+      for linearObject in self.defList:
+         l = linearObject.length()
+         if d > l:
+            d = d - l
+         else:
+            return linearObject.getPointFromStart(d)
+
+      return None
+
+
+   #============================================================================
+   # getLinearObjectNdxFromStart
+   #============================================================================
+   def getLinearObjectNdxFromStart(self, distance):
+      """
+      la funzione restituisce il numero della parte lineare (0-index) in cui termina la distanza dal punto iniziale della polilinea.
+      Da usarsi solo se le parti rappresentano una polilinea.
+      """
+      if distance < 0:
+         return None
+      d = distance
+      n = 0
+      for linearObject in self.defList:
+         l = linearObject.length()
+         if d > l:
+            return n
+         else:
+            n = n +1
+
+      return None
+
+
+   #============================================================================
+   # lengthen_delta
+   #============================================================================
+   def lengthen_delta(self, move_startPt, delta):
+      """
+      la funzione sposta il punto iniziale (se move_startPt = True) o finale (se move_startPt = False)
+      di una distanza delta allungando (se delta > 0) o accorciando (se delta < 0) la polilinea
+      """
+      length = self.length()
+      # lunghezza polilinea + delta non può essere <= 0
+      if length + delta <= 0:         
+         return False
+      
+      if move_startPt == False:
+         # dal punto finale
+         if delta >= 0: # allungo la polilinea
+            # ultima parte
+            return self.getLinearObjectAt(-1).lengthen_delta(False, delta)
+         else: # accorcio la polilinea
+            # cerco la parte in cui finirebbe la polilinea accorciata
+            nPart = 0
+            d = length + delta
+            for linearObject in self.defList:
+               l = linearObject.length()
+               if d > l:
+                  d = d - l
+                  nPart = nPart + 1
+               else:
+                  if linearObject.lengthen_delta(False, -(l - d)) == False:
+                     return False
+                  # se non è l'ultima parte
+                  if nPart+1 < len(self.defList):
+                     # cancello le parti successive a nPart
+                     del self.defList[nPart+1 :]
+                  break
+      else: # dal punto iniziale
+         self.reverse()
+         res = self.lengthen_delta(False, delta)
+         self.reverse()
+         return res 
+
+
+   #============================================================================
+   # lengthen_deltaAngle
+   #============================================================================
+   def lengthen_deltaAngle(self, move_startPt, delta):
+      """
+      la funzione sposta il punto iniziale del primo arco (se move_startPt = True) o 
+      punto finale dell'ultimo arco (se move_startPt = False)
+      di un certo numero di gradi delta allungando (se delta > 0) o accorciando (se delta < 0) la polilinea
+      """
+      if move_startPt == False:
+         # dal punto finale
+         return self.getLinearObjectAt(-1).lengthen_deltaAngle(False, delta)
+      else:
+         # dal punto iniziale
+         return self.getLinearObjectAt(0).lengthen_deltaAngle(True, delta)
+
+
+   #============================================================================
    # asQgsFeatureList
    #============================================================================
    def asQgsFeatureList(self, polylineMode):
@@ -8573,7 +8820,7 @@ class QadLinearObjectList():
       """
       la funzione trasforma le coordinate dei punti che compone l'oggetto lineare.
       """
-      return transform(QgsCoordinateTransform(sourceCRS, destCRS))
+      return self.transform(QgsCoordinateTransform(sourceCRS, destCRS))
          
          
    #============================================================================
@@ -8658,8 +8905,8 @@ class QadLinearObjectList():
       """
       la funzione spezza in due la lista di parti nel punto <point>.
       Ritorna una lista di due parti: la prima parte (che può essere
-      nulla se <point> conicide con il punto iniziale) e la seconda parte (che può essere
-      nulla se <point> conicide con il punto finale)
+      nulla se <point> coincide con il punto iniziale) e la seconda parte (che può essere
+      nulla se <point> coincide con il punto finale)
       """
       dummy = self.closestPartWithContext(point)
       nearestPt = dummy[1]
@@ -8733,6 +8980,8 @@ class QadLinearObjectList():
             # per ciascuna entità del layer
             for featureId in layerEntitySet.featureIds:
                f = getFeatureById(layer, featureId)
+               if f is None:
+                  continue
                # Trasformo la geometria nel sistema di coordinate del <layer> 
                gTransformed = f.geometry()
                if layer.crs() != crs:

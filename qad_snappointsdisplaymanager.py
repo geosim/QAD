@@ -32,6 +32,7 @@ from qgis.gui import *
 from qad_snapper import *
 from qad_vertexmarker import *
 from qad_rubberband import createRubberBand
+#from qad_grip import * # roby
 
 
 class QadSnapPointsDisplayManager():
@@ -56,18 +57,20 @@ class QadSnapPointsDisplayManager():
    # __del__
    #============================================================================
    def __del__(self):
+      self.removeItems()
+
+
+   def removeItems(self):
       self.hide()
       
-      # svuoto la lista dei marker
+      # svuoto la lista dei marker rimuovendoli dal canvas
       for vertexMarker in self.__vertexMarkers:
-         self.__mapCanvas.scene().removeItem(vertexMarker)
-         del vertexMarker
+         vertexMarker.removeItem()
       del self.__vertexMarkers[:]
 
-      # svuoto la linea di estensione
+      # svuoto la linea di estensione rimuovendoli dal canvas
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
-         del lineMarker
       del self.__lineMarkers[:]
 
 
@@ -158,14 +161,12 @@ class QadSnapPointsDisplayManager():
 
       # svuoto la lista dei marker
       for vertexMarker in self.__vertexMarkers:
-         self.__mapCanvas.scene().removeItem(vertexMarker)
-         del vertexMarker
+         vertexMarker.removeItem()
       del self.__vertexMarkers[:]
       
       # svuoto la linea di estensione
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
-         del lineMarker
       del self.__lineMarkers[:]
       
       # punti di snap
@@ -360,6 +361,13 @@ class QadSnapPointsDisplayManager():
       """
       Crea un marcatore puntuale
       """
+      
+      # roby
+      #vertexMarker = QadGripMarker(self.__mapCanvas)
+      #vertexMarker.setGrip(QadGripStatusEnum.SELECTED, QadGripIconTypeEnum.RECTANGLE, math.pi/4) # CIRCLE
+      #vertexMarker.setCenter(point)
+      #return vertexMarker
+      
       vertexMarker = QadVertexMarker(self.__mapCanvas)
       vertexMarker.setIconSize(self.__iconSize)
       vertexMarker.setColor(self.__color)

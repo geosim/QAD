@@ -48,14 +48,18 @@ class QadMapTool(QgsMapTool):
 
       
    def __del__(self):
+      self.removeItems()
+
+   def removeItems(self):      
       if self.__csrRubberBand is not None:
+         self.__csrRubberBand.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__csrRubberBand
+         __csrRubberBand = None
 
          
    def UpdatedVariablesEvent(self):
       # aggiorna in base alle nuove impostazioni delle variabili
-      if self.__csrRubberBand is not None:
-         del self.__csrRubberBand 
+      self.removeItems() 
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
       
 

@@ -67,6 +67,9 @@ class Qad_line_maptool(QadGetPoint):
       self.geom1 = None
       self.__rubberBand = QadRubberBand(self.canvas)   
 
+   def __del__(self):
+      QadGetPoint.__del__(self)
+      
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
       self.__rubberBand.hide()

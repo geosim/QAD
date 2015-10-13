@@ -37,7 +37,6 @@ from qad_entsel_cmd import QadEntSelClass
 from qad_msg import QadMsg
 import qad_layer
 
-
 # Classe che gestisce il comando BREAK
 class QadBREAKCommandClass(QadCommandClass):
 
@@ -99,6 +98,10 @@ class QadBREAKCommandClass(QadCommandClass):
    # breakFeatures
    #============================================================================
    def breakFeatures(self):
+      f = self.EntSelClass.entity.getFeature()
+      if f is None:
+         return
+      
       layer = self.EntSelClass.entity.layer
       LineTempLayer = None
       self.plugIn.beginEditCommand("Feature broken", layer)
@@ -107,7 +110,6 @@ class QadBREAKCommandClass(QadCommandClass):
                                                                   self.plugIn.canvas,\
                                                                   layer)                              
                   
-      f = self.EntSelClass.entity.getFeature()
       g = f.geometry()
       if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
          # Trasformo i punti di break nel sistema di coordinate del layer

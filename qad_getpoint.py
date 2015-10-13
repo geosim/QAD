@@ -129,21 +129,35 @@ class QadGetPoint(QgsMapTool):
       self.tmpEntity = QadEntity() # entità selezionata dal movimento del mouse
       
       self.snapTypeOnSelection = None # snap attivo al momento del click
-      
 
    def __del__(self):
+      self.removeItems()
+ 
+ 
+   def removeItems(self):
       if self.__csrRubberBand is not None:
+         self.__csrRubberBand.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__csrRubberBand
+         self.__csrRubberBand = None
       
       if self.__RubberBand is not None:
-         self.canvas.scene().removeItem(self.__RubberBand)
+         self.canvas.scene().removeItem(self.__RubberBand) # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
+         del self.__RubberBand
+         self.__RubberBand = None
+         
       del self.__QadSnapper
+      self.__QadSnapper = None
+      
+      self.__QadSnapPointsDisplayManager.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
       del self.__QadSnapPointsDisplayManager
+      self.__QadSnapPointsDisplayManager = None
+   
    
    def setDrawMode(self, drawMode):
       self.__drawMode = drawMode
       if self.__RubberBand is not None:
          self.__RubberBand.hide()
+         self.canvas.scene().removeItem(self.__RubberBand) # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__RubberBand
          self.__RubberBand = None
          
@@ -196,6 +210,7 @@ class QadGetPoint(QgsMapTool):
    def clear(self):     
       self.hidePointMapToolMarkers()
       if self.__RubberBand is not None:
+         self.canvas.scene().removeItem(self.__RubberBand) # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__RubberBand
          self.__RubberBand = None
 
@@ -346,6 +361,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setCursorType(self, cursorType):
       if self.__csrRubberBand is not None:
+         self.__csrRubberBand.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__csrRubberBand
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, cursorType)
       self.__cursor = QCursor(Qt.BlankCursor)     
@@ -605,12 +621,7 @@ class QadGetPoint(QgsMapTool):
    def activate(self):
       if self.__csrRubberBand is not None:
          self.__csrRubberBand.show()
-      
-      #del self.__QadSnapper
-      #del self.__QadSnapPointsDisplayManager   
-      #__QadSnapper = None
-      #__QadSnapPointsDisplayManager = None
-      
+            
       self.point = None
       self.tmpPoint = None
 

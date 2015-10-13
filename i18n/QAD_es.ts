@@ -631,6 +631,86 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_LENGTHEN</name>
+    <message>
+        <source>Lengthen an object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Current length: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, included angle: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DElta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Percent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DYnamic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter delta length &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter delta angle &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter percentage length &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter total length &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter total angle &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify new endpoint: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter delta length or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an object to change or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify total length or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an object or [{0}] &lt;{1}&gt;:  </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_LINE</name>
     <message>
         <source>Creates straight line segments.</source>
@@ -1851,6 +1931,10 @@ A mark can&apos;t be inserted into a group.</source>
     </message>
     <message>
         <source>DIMARC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LENGTHEN</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3425,6 +3509,95 @@ The setting is stored as a bitcode using the sum of the following values:
         <source>Maximum error approximating a curve to segments.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>GRIPSIZE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPCONTOUR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPHOT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPHOVER</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SELECTIONAREA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WINDOWAREACOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SELECTIONAREAOPACITY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CROSSINGAREACOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during crossing selection (RGB, #33A02C = green).
+The SELECTIONAREA system variable must be on.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of unselected grips (RGB, #100DD6 = blue).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of the grip contour (RGB, #939393 = gray).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of selected grips (RGB, #FF0000 = red).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the fill color of an unselected grip when the cursor pauses over it (RGB, #FF7F7F = orange).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the use of selection set grips for the Stretch, Move, Rotate, Scale, and Mirror Grip modes.
+0 = Hides grips.
+1 = Displays grips.
+2 = Displays additional midpoint grips on polyline segments.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grip symbol size in pixel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of effects for selection areas.
+Selection areas are created by the Window, Crossing, WPolygon, CPolygon, WCircle, CCircle, WObjects, CObjects, WBuffer and CBuffer options of SELECT.
+0 = Off
+1 = On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the transparency of the selection area during window and crossing selection.
+The valid range is 0 to 100. The lower the setting, the more transparent the area. A value of 100 makes the area opaque. The SELECTIONAREA system variable must be on.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu).
+The SELECTIONAREA system variable must be on.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Help</name>
@@ -3544,10 +3717,6 @@ Current settings: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command has been canceled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>
 A textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.
 </source>
@@ -3625,12 +3794,6 @@ No current layer.
     <message>
         <source>
 The current layer is not a vector layer.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-The geometry type of the current layet is {0} and it is not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -3755,6 +3918,22 @@ Ambiguous answer: specify with greater clarity...
     </message>
     <message>
         <source>FALSE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The command has been canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The geometry type of the current layer is {0} and it is not valid.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Invalid object.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

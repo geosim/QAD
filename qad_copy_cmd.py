@@ -134,6 +134,9 @@ class QadCOPYCommandClass(QadCommandClass):
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]
             f = layerEntitySet.getFeature(featureId)
+            if f is None:
+               del layerEntitySet.featureIds[0]
+               continue
 
             # verifico se l'entità appartiene ad uno stile di quotatura
             dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
@@ -422,7 +425,7 @@ class QadCOPYCommandClass(QadCommandClass):
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
                else:
-                  self.showMsg(QadMsg.translate("QAD", "The command has been canceled."))                  
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
                self.waitForSecondPt()
          elif type(value) == QgsPoint: # se é stato inserito lo spostamento con un punto
             self.copyGeoms(value)

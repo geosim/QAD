@@ -142,7 +142,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#33A02C"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # rosso 
+                                                            VariableDescr) # green 
       
       # CURSORCOLOR (str): Imposta il colore (RGB) del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORCOLOR") # x lupdate
@@ -151,7 +151,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # rosso 
+                                                            VariableDescr) # red 
       
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORSIZE") # x lupdate
@@ -191,6 +191,63 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.0), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             0.000001, None, \
+                                                            VariableDescr)
+
+      # GRIPCOLOR (str): Imposta il colore (RGB) dei grip non selezionati
+      VariableName = QadMsg.translate("Environment variables", "GRIPCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of unselected grips (RGB, #100DD6 = blue).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#100DD6"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # blu 
+
+      # GRIPCONTOUR (str): Imposta il colore (RGB) del bordo dei grip
+      VariableName = QadMsg.translate("Environment variables", "GRIPCONTOUR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the grip contour (RGB, #939393 = gray).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#939393"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # gray 
+
+      # GRIPHOT(str): Imposta il colore (RGB) dei grip selezionati
+      VariableName = QadMsg.translate("Environment variables", "GRIPHOT") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of selected grips (RGB, #FF0000 = red).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # red 
+
+      # GRIPHOVER(str): Imposta il colore (RGB) dei grip non selezionati quando il cursore si ferma su di essi
+      VariableName = QadMsg.translate("Environment variables", "GRIPHOVER") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the fill color of an unselected grip when the cursor pauses over it (RGB, #FF7F7F = orange).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF7F7F"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) # orange 
+
+      # GRIPS (int): Controlla la visualizzazione dei grip sugli oggetti selezionati
+      VariableName = QadMsg.translate("Environment variables", "GRIPS") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the use of selection set grips for the Stretch, Move, Rotate, Scale, and Mirror Grip modes." + \
+                                       "\n0 = Hides grips." + \
+                                       "\n1 = Displays grips." + \
+                                       "\n2 = Displays additional midpoint grips on polyline segments.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(2), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 2, \
+                                                            VariableDescr)
+
+      # GRIPSIZE (int): Imposta la dimensione in pixel dei simboli di grip
+      VariableName = QadMsg.translate("Environment variables", "GRIPSIZE") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Grip symbol size in pixel.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            1, 999, \
                                                             VariableDescr)
 
       # OFFSETDIST(float): Setta la distanza di default per l'offset
@@ -245,7 +302,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # rosso
+                                                            VariableDescr) # red
       
       # OSMODE (int): Imposta lo snap ad oggetto (somma di bit):
       # 0 = (NON) nessuno
@@ -334,7 +391,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # rosso 
+                                                            VariableDescr) # red 
 
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi)
       VariableName = QadMsg.translate("Environment variables", "POLARANG") # x lupdate
@@ -406,7 +463,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#1F78B4"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # rosso 
+                                                            VariableDescr) # blue 
       
 
    def getVarNames(self):

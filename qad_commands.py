@@ -67,17 +67,17 @@ from qad_fillet_cmd import QadFILLETCommandClass
 from qad_polygon_cmd import QadPOLYGONCommandClass
 from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
 from qad_dimstyle_cmd import QadDIMSTYLECommandClass
+from qad_lengthen_cmd import QadLENGTHENCommandClass
 from qad_help_cmd import QadHELPCommandClass
 
 
 # Classe che gestisce i comandi di Qad
 class QadCommandsClass():
    # quando si aggiunge un nuovo comando bisogna
-   # 1) aggiungerlo nella lista cmdNames nella funzione __init__ 
-   # 2) aggiungere la sua chiamata nella funzione getCommandObj
-   # 3) se il comando può essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
+   # 1) aggiungerlo nella lista __cmdObjs nella funzione __init__ 
+   # 2) se il comando può essere richiamato da menu o da toolbar vedere la funzione Qad::initGui (qad.py)
    #    e ricordarsi di inserire l'icona in resources.qrc e di ricompilare le risorse
-   # 4) aggiungere funzione per l'avvio del comando "run<nome_comando>Command"
+   # 3) aggiungere funzione per l'avvio del comando "run<nome_comando>Command"
    
    def __init__(self, plugIn):   
       self.plugIn = plugIn
@@ -117,6 +117,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
+      self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
      
       self.actualCommand = None  # Comando in corso di esecuzione
    
@@ -150,6 +151,8 @@ class QadCommandsClass():
    #============================================================================
    def getCommandObj(self, cmdName, useAlias = True):
       if cmdName is None:
+         return None
+      if cmdName == "":
          return None
       upperCommand = cmdName.upper()
       if upperCommand[0] == "_":
@@ -283,8 +286,8 @@ class QadCommandsClass():
          return
       del self.actualCommand
       self.actualCommand = None    
-      self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
       self.plugIn.setStandardMapTool()      
+      self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
 
 
    #============================================================================
