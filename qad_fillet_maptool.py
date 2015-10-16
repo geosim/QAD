@@ -209,7 +209,11 @@ class Qad_fillet_maptool(QadGetPoint):
       # si richiede la selezione del secondo oggetto
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_FIRST_LINESTRING or \
          self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:
-         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+         
+         if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_FIRST_LINESTRING:
+            self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+         else:
+            self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC)
 
          # solo layer lineari editabili che non appartengano a quote
          layerList = []
@@ -226,7 +230,7 @@ class Qad_fillet_maptool(QadGetPoint):
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
       # si richiede la selezione della polilinea
       elif self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_POLYLINE:
-         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC)
 
          # solo layer lineari o poligono editabili che non appartengano a quote
          layerList = []

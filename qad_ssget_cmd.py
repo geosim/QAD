@@ -76,6 +76,7 @@ class QadSSGetClass(QadCommandClass):
       # se SingleSelection = True viene selezionato il primo oggetto o gruppo di oggetti indicato,
       # senza che vengano richieste altre selezioni.      
       self.SingleSelection = False
+      self.pickAdd = QadVariables.get(QadMsg.translate("Environment variables", "PICKADD"))
       # selezione degli oggetti aggiunti più recentemente al gruppo di selezione (x opzione annulla)
       self.lastEntitySet = QadEntitySet()
       self.PLINECommand = None
@@ -129,6 +130,29 @@ class QadSSGetClass(QadCommandClass):
       msg = QadMsg.translate("Command_SSGET", " found {0}, total {1}")
       self.showMsg(msg.format(found, self.entitySet.count()), True) # ripete il prompt         
 
+
+   #============================================================================
+   # elaborateEntity
+   #============================================================================
+   def elaborateEntity(self, entity, shiftKey):
+      if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+         if shiftKey: # se la selezione é avvenuta con shift premuto
+            if self.pickAdd == 0: # The objects most recently selected become the selection set
+               if self.entitySet.containsEntity(entity): # se l'entità era già stata selezionata
+                  self.AddRemoveEntity(entity, False) # rimuovo l'entità
+               else:
+                  self.AddRemoveEntity(entity, True) # aggiungo l'entità
+            else:
+               self.AddRemoveEntity(entity, False) # rimuovo l'entità
+         else: # senza tasto shift
+            if self.pickAdd == 0: # The objects most recently selected become the selection set
+               self.SetEntity(entity)
+            else:
+               self.AddRemoveEntity(entity, True) # aggiungo l'entità
+      else: # se si deve rimuovere dal gruppo di selezione
+         self.AddRemoveEntity(entity, False) # rimuovo l'entità
+
+
    #============================================================================
    # SetEntity
    #============================================================================
@@ -172,35 +196,12 @@ class QadSSGetClass(QadCommandClass):
       self.entitySet.selectOnLayer(False) # incremental = False
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
-    
-   #============================================================================
-   # SetSelSet
-   #============================================================================
-   def SetSelSet(self, selSet):
-      for layerEntitySet in self.entitySet.layerEntitySetList:
-         # se il layer non é presente in selSet
-         if selSet.findLayerEntitySet(layerEntitySet) is None:            
-            layerEntitySet.deselectOnLayer()
-         else:
-            layerEntitySet.deselectOnLayer()
-            
-      self.entitySet.set(selSet)
 
-      if self.checkDimLayers == True:
-         dimEntitySet = QadEntitySet(selSet)
-         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
-         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
-         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
-         self.entitySet.unite(dimEntitySet)
-
-      self.showMsgOnAddRemove(self.entitySet.count())
-      self.entitySet.selectOnLayer(False) # incremental = False
-      self.lastEntitySet.set(selSet)
 
    #============================================================================
    # AddRemoveEntity
    #============================================================================
-   def AddRemoveEntity(self, entity):
+   def AddRemoveEntity(self, entity, Add):
       # controllo sul layer
       if self.onlyEditableLayers == True and entity.layer.isEditable() == False:
          self.showMsgOnAddRemove(0)
@@ -217,7 +218,7 @@ class QadSSGetClass(QadCommandClass):
          return
       
       self.entitySet.deselectOnLayer()
-      if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+      if Add == True: # aggiungi al gruppo di selezione
          self.entitySet.addEntity(entity)
       else: # rimuovi dal gruppo di selezione
          self.entitySet.removeEntity(entity)
@@ -228,7 +229,7 @@ class QadSSGetClass(QadCommandClass):
          # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
          self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
-         if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+         if Add == True: # aggiungi al gruppo di selezione
             self.entitySet.unite(dimEntitySet)
          else: # rimuovi dal gruppo di selezione
             self.entitySet.subtract(dimEntitySet)
@@ -240,12 +241,63 @@ class QadSSGetClass(QadCommandClass):
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
 
+
+   #============================================================================
+   # elaborateSelSet
+   #============================================================================
+   def elaborateSelSet(self, selSet, shiftKey):
+      if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+         if shiftKey: # se la selezione é avvenuta con shift premuto
+            if self.pickAdd == 0: # The objects most recently selected become the selection set
+               # verifico se ci sono degli oggetti non ancora selezionati
+               intersectSS = QadEntitySet(selSet)
+               intersectSS.subtract(self.entitySet)
+               if intersectSS.isEmpty(): # tutti gli oggetti erano già selezionati
+                  self.AddRemoveSelSet(selSet, False) # rimuovo il gruppo di selezione
+               else:
+                  self.AddRemoveSelSet(selSet, True) # aggiungo il gruppo di selezione
+            else:
+               self.AddRemoveSelSet(selSet, False) # rimuovo il gruppo di selezione
+         else: # senza tasto shift
+            if self.pickAdd == 0: # The objects most recently selected become the selection set
+               self.SetSelSet(selSet)
+            else:
+               self.AddRemoveSelSet(selSet, True) # aggiungo il gruppo di selezione
+      else: # se si deve rimuovere dal gruppo di selezione
+         self.AddRemoveEntity(selSet, False) # rimuovo  il gruppo di selezione
+
+    
+   #============================================================================
+   # SetSelSet
+   #============================================================================
+   def SetSelSet(self, selSet):
+      for layerEntitySet in self.entitySet.layerEntitySetList:
+         # se il layer non é presente in selSet
+         if selSet.findLayerEntitySet(layerEntitySet) is None:            
+            layerEntitySet.deselectOnLayer()
+         else:
+            layerEntitySet.deselectOnLayer()
+
+      self.entitySet.set(selSet)
+         
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet(selSet)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
+         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         self.entitySet.unite(dimEntitySet)
+
+      self.showMsgOnAddRemove(self.entitySet.count())
+      self.entitySet.selectOnLayer(False) # incremental = False
+      self.lastEntitySet.set(selSet)
+
+
    #============================================================================
    # AddRemoveSelSet
    #============================================================================
-   def AddRemoveSelSet(self, selSet):
+   def AddRemoveSelSet(self, selSet, Add):
       self.entitySet.deselectOnLayer()
-      if self.AddOnSelection == True: # aggiungi al gruppo di selezione
+      if Add == True: # aggiungi al gruppo di selezione
          self.entitySet.unite(selSet)
       else: # rimuovi dal gruppo di selezione
          self.entitySet.subtract(selSet)
@@ -262,7 +314,7 @@ class QadSSGetClass(QadCommandClass):
       if len(points) > 1:
          selSet = qad_utils.getSelSet("F", self.getPointMapTool(), points, \
                                       self.getLayersToCheck())
-         self.AddRemoveSelSet(selSet)
+         self.elaborateSelSet(selSet, False)
 
    #============================================================================
    # AddRemoveSelSetByPolygon
@@ -271,7 +323,7 @@ class QadSSGetClass(QadCommandClass):
       if len(points) > 2:
          selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), points, \
                                       self.getLayersToCheck())
-         self.AddRemoveSelSet(selSet)
+         self.elaborateSelSet(selSet, False)
 
    #============================================================================
    # AddRemoveSelSetByGeometry
@@ -280,14 +332,13 @@ class QadSSGetClass(QadCommandClass):
       if type(geom) == QgsGeometry: # singola geometria
          selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), geom, \
                                       self.getLayersToCheck())
-         self.AddRemoveSelSet(selSet)
       else: # lista di geometrie
          selSet = QadEntitySet()
          for g in geom:
             partial = qad_utils.getSelSet(mode, self.getPointMapTool(), g, \
                                           self.getLayersToCheck())
             selSet.unite(partial)
-         self.AddRemoveSelSet(selSet)
+      self.elaborateSelSet(selSet, False)
 
       
    #============================================================================
@@ -423,7 +474,7 @@ class QadSSGetClass(QadCommandClass):
                if self.plugIn.getLastEntity() is None:
                   self.showMsgOnAddRemove(0)
                else:
-                  self.AddRemoveEntity(self.plugIn.getLastEntity())              
+                  self.AddRemoveEntity(self.plugIn.getLastEntity(), self.AddOnSelection)
                   if self.SingleSelection == True and self.entitySet.count() > 0:
                      self.plugIn.setLastEntitySet(self.entitySet)
                      return True # fine               
@@ -442,7 +493,7 @@ class QadSSGetClass(QadCommandClass):
                # Seleziona tutti gli oggetti 
                selSet = qad_utils.getSelSet("X", self.getPointMapTool(), None, \
                                             self.getLayersToCheck())
-               self.SetSelSet(selSet)
+               self.elaborateSelSet(selSet, False)
                if self.SingleSelection == True and self.entitySet.count() > 0:
                   self.plugIn.setLastEntitySet(self.entitySet)
                   return True # fine         
@@ -540,7 +591,7 @@ class QadSSGetClass(QadCommandClass):
                      self.plugIn.dimStyles.removeAllDimLayersFromEntitySet(entitySet)
                      
                   entitySet.removeNotExisting()
-                  self.AddRemoveSelSet(entitySet)            
+                  self.elaborateSelSet(entitySet, False)
                   if self.SingleSelection == True and self.entitySet.count() > 0:
                      self.plugIn.setLastEntitySet(self.entitySet)
                      return True # fine                                   
@@ -550,7 +601,7 @@ class QadSSGetClass(QadCommandClass):
                # Inverto il tipo di selezione
                prevAddOnSelection = self.AddOnSelection
                self.AddOnSelection = not self.AddOnSelection
-               self.AddRemoveSelSet(self.lastEntitySet)               
+               self.elaborateSelSet(self.lastEntitySet, False)
                # Ripristino il tipo di selezione
                self.AddOnSelection = prevAddOnSelection
                if self.SingleSelection == True and self.entitySet.count() > 0:
@@ -584,12 +635,8 @@ class QadSSGetClass(QadCommandClass):
             self.waitForPoint(QadMsg.translate("Command_SSGET", "Specify opposite corner: "))
             self.step = 3
          else: # se é stata selezionata un'entità
-            # se la selezione é avvenuta con shift premuto o se si deve rimuovere l'entità dal gruppo
-            if shiftKey or self.AddOnSelection == False:
-               self.AddRemoveEntity(value)
-            else:
-               self.SetEntity(value)
-               
+            self.elaborateEntity(value, shiftKey)
+
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine               
@@ -670,6 +717,7 @@ class QadSSGetClass(QadCommandClass):
             value = msg
                         
          if type(value) == QgsPoint:
+            self.getPointMapTool().clear()
             self.points.append(value)
             
             if self.currSelectionMode == QadMsg.translate("Command_SSGET", "Box") or \
@@ -686,11 +734,7 @@ class QadSSGetClass(QadCommandClass):
                
             selSet = qad_utils.getSelSet(mode, self.getPointMapTool(), self.points, \
                                          self.getLayersToCheck())
-            # se la selezione é avvenuta con shift premuto o se si deve rimuovere il gruppo selSet dal gruppo
-            if shiftKey or self.AddOnSelection == False:
-               self.AddRemoveSelSet(selSet)
-            else:
-               self.SetSelSet(selSet)
+            self.elaborateSelSet(selSet, shiftKey)
          
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)

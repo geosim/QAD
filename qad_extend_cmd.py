@@ -204,7 +204,7 @@ class QadEXTENDCommandClass(QadCommandClass):
    def waitForObjectSel(self):      
       self.step = 2      
       # imposto il map tool
-      self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+      self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC)
       # solo layer lineari editabili che non appartengano a quote
       layerList = []
       for layer in self.plugIn.canvas.layers():

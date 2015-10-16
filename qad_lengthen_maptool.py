@@ -218,7 +218,7 @@ class Qad_lengthen_maptool(QadGetPoint):
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)   
       # si richiede la selezione dell'oggetto da allungare
       elif self.mode == Qad_lengthen_maptool_ModeEnum.ASK_FOR_OBJ_TO_LENGTHEN:
-         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
+         self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC)
 
          # solo layer lineari editabili che non appartengano a quote
          layerList = []

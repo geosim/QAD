@@ -562,7 +562,7 @@ class QadEntitySet():
    def intersect(self, entitySet):
       if entitySet is None:
          return
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):         
+      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
          _layerEntitySet = self.layerEntitySetList[i]
          layerEntitySet = entitySet.findLayerEntitySet(_layerEntitySet)
          if layerEntitySet is None:

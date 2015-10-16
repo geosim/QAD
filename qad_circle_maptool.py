@@ -193,7 +193,7 @@ class Qad_circle_maptool(QadGetPoint):
       elif self.mode == Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT:     
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
       # noto niente si richiede l'entita del primo punto di tangenza
-      elif self.mode == Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_TAN:     
+      elif self.mode == Qad_circle_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_TAN:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
          self.setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION)
          self.forceSnapTypeOnce(QadSnapTypeEnum.TAN_DEF)         

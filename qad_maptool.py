@@ -73,6 +73,8 @@ class QadMapTool(QgsMapTool):
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
          self.displayPopupMenu(event.pos())
+      elif event.button() == Qt.LeftButton:
+         pass
 
    def canvasDoubleClickEvent(self,event):
       pass

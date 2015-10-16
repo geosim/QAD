@@ -374,6 +374,18 @@ class QadVariablesClass():
                                                             1, 999, \
                                                             VariableDescr)
       
+      # PICKADD (int): Controlla se le selezioni successive sostituiscono il gruppo di selezione corrente o vengono aggiunte ad esso.
+      VariableName = QadMsg.translate("Environment variables", "PICKADD") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls whether subsequent selections replace the current selection set or add to it." + \
+                                       "\n0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting." + \
+                                       "\n1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting." + \
+                                       "\n2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. ") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 2, \
+                                                            VariableDescr)
+      
       # PICKBOX (int): Imposta la dimensione in pixel della distanza di selezione degli oggetti
       # dalla posizione corrente del puntatore
       VariableName = QadMsg.translate("Environment variables", "PICKBOX") # x lupdate
