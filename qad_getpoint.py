@@ -554,18 +554,22 @@ class QadGetPoint(QgsMapTool):
          if self.tmpPoint is None:
             self.tmpPoint = self.toMapCoordinates(event.pos())
 
+      # tasto shift premuto durante il movimento del mouse      
+      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False 
+
       if self.__RubberBand is not None:
          if oSnapPoint is None:
             if self.__startPoint is not None: # c'é un punto di partenza
-               if self.__OrthoMode == 1: # orto attivato
-                  self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
-               
+               if self.tmpShiftKey == False: # se non è premuto shift
+                  if self.__OrthoMode == 1: # orto attivato
+                     self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+               else: # se non è premuto shift devo fare il toggle di ortho
+                  if self.__OrthoMode == 0: # se orto disattivato lo attivo temporaneamente
+                     self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+                  
       if self.getDrawMode() != QadGetPointDrawModeEnum.NONE:
          # previsto uso della linea elastica o rettangolo elastico
          self.moveElastic(self.tmpPoint)
-
-      # tasto shift premuto durante il movimento del mouse      
-      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False 
 
 
 #    def canvasMoveEvent(self, event):

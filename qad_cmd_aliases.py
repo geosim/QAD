@@ -27,6 +27,7 @@
 # Import the PyQt and QGIS libraries
 from PyQt4.QtCore import *
 import os.path
+import codecs
 from qgis.core import *
 
 
@@ -68,15 +69,25 @@ class QadCommandAliasesClass():
       """
       # svuoto il dizionario e lo reimposto con i valori di default
       self.__commandAliases.clear()
+      
       if Path == "":
-         # Se la path non é indicata uso il file "qad.pgp" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "python/plugins/qad/"
-         Path = Path + "qad.pgp"
-
-      if not os.path.exists(Path):
-         return True
+         # Se la path non é indicata uso il file "qad.pgp" in lingua locale
+         userLocaleList = QSettings().value("locale/userLocale").split("_")
+         language = userLocaleList[0]
+         region = userLocaleList[1] if len(userLocaleList) > 1 else ""
+      
+         fileName = "qad" + "_" + language + "_" + region + ".pgp "# provo a caricare la lingua e la regione selezionate
+         Path = qad_utils.findFile(fileName)
+         if Path == "": # se file non trovato
+            fileName = "qad" + "_" + language + ".pgp " # provo a caricare la lingua
+            Path = qad_utils.findFile(fileName)
+            if Path == "": # se file non trovato
+               return True
+      else:
+         if not os.path.exists(Path):
+            return True
          
-      file = open(Path, "r") # apre il file in lettura
+      file = codecs.open(unicode(Path), "r", encoding='utf-8') # apre il file in lettura in modalità unicode utf-8
       
       for line in file:
          line = qad_utils.strip(line, [" ", "\t", "\r\n"]) # rimuovo gli spazi e i tab prima e dopo
@@ -107,9 +118,8 @@ class QadCommandAliasesClass():
          sep = command.find(" ")
          if sep > 0:
             continue
-
          self.__commandAliases[alias.upper()] = command.upper()
-           
+
       file.close()
       
       return True

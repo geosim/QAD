@@ -439,10 +439,11 @@ class QadVariablesClass():
                                                             VariableDescr)
 
       # SUPPORTPATH (str): Path di ricerca per i files di supporto
+      default = os.path.abspath(os.path.dirname(__file__) + "\\support")
       VariableName = QadMsg.translate("Environment variables", "SUPPORTPATH") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Searching path for support files.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode(""), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, default, \
                                                             QadVariableTypeEnum.STRING, \
                                                             None, None, \
                                                             VariableDescr)
@@ -569,8 +570,8 @@ class QadVariablesClass():
       self.__init__()
       if Path == "":
          # Se la path non é indicata uso il file "qad.ini" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "python/plugins/qad/"
-         Path = Path + "qad.ini"
+         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
+         Path = Path + "/qad.ini"
 
       if not os.path.exists(Path):
          return False

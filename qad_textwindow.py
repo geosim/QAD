@@ -113,7 +113,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       for cmdName in self.getCommandNames():
          cmd = self.getCommandObj(cmdName[0])
          if cmd is not None:
-            infoCmds.append([cmd.getName(), cmd.getEnglishName(), cmd.getIcon(), cmd.getNote()])
+            infoCmds.append([cmdName[0], cmd.getEnglishName(), cmd.getIcon(), cmd.getNote()])
       self.cmdSuggestWindow = QadCmdSuggestWindow(self, infoCmds)      
       self.cmdSuggestWindow.initGui()
       self.cmdSuggestWindow.show(False)
@@ -1050,6 +1050,8 @@ class QadCmdSuggestListView(QListView):
             
          item.setEditable(False)
          self.model.appendRow(item)
+         
+      self.model.sort(0)
                      
    def keyPressEvent(self, e):
       # if Return is pressed, then perform the commands

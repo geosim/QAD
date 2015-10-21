@@ -125,6 +125,8 @@ span.Titolo4Carattere
 	mso-style-link:"Titolo 4";
 	font-family:"Calibri","sans-serif";
 	font-weight:bold;}
+span.skimlinks-unlinked
+	{mso-style-name:skimlinks-unlinked;}
 @page WordSection1
 	{size:595.3pt 841.9pt;
 	margin:70.85pt 2.0cm 2.0cm 2.0cm;}

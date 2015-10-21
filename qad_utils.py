@@ -501,6 +501,34 @@ def strip(s, stripList):
 
 
 #===============================================================================
+# findFile
+#===============================================================================
+def findFile(fileName):
+   """
+   Cerca il file indicato usando i percorsi indicati dalla variabile "SUPPORTPATH" 
+   più il percorso locale di QAD. Ritorna il percorso del file in caso di successo
+   oppure "" in caso di file non trovato
+   """
+   path = QadVariables.get(QadMsg.translate("Environment variables", "SUPPORTPATH"))
+   if len(path) > 0:
+      path += ";"        
+   path += QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/"
+   # lista di directory separate da ";"
+   dirList = path.strip().split(";")
+   for _dir in dirList:
+      _dir = QDir.cleanPath(_dir)
+      if _dir != "":
+         if _dir.endswith("/") == False:
+            _dir = _dir + "/"
+         _dir = _dir + fileName
+         
+         if os.path.exists(_dir):
+            return _dir
+
+   return ""
+
+
+#===============================================================================
 # toRadians
 #===============================================================================
 def toRadians(angle):
