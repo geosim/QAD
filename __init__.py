@@ -27,7 +27,7 @@ def name():
 def description():
    return "Comandi di editazione grafica in stile CAD"
 def version():
-    return "Version 2.0"
+    return "Version 2.8"
 def icon():
     return ":/plugins/qad/icons/qad.png"
 def qgisMinimumVersion():
