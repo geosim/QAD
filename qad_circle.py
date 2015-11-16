@@ -50,9 +50,12 @@ class QadCircle():
    def whatIs(self):
       return "CIRCLE"
 
-   def set(self, center, radius):     
+   def set(self, center, radius):
+      if radius <=0:
+         return False
       self.center = QgsPoint(center)
       self.radius = radius
+      return True
 
    def transform(self, ct):
       """Transform this geometry as described by CoordinateTranasform ct."""

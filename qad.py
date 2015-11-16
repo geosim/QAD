@@ -457,7 +457,8 @@ class Qad(QObject):
          elif self.QadCommands.actualCommand is not None:
             if self.canvas.mapTool() == self.QadCommands.actualCommand.getPointMapTool():
                self.canvas.unsetMapTool(self.QadCommands.actualCommand.getPointMapTool())
-            
+         
+         self.tool.removeItems()
          del self.tool
 
 
@@ -1052,30 +1053,46 @@ class Qad(QObject):
       else:
          # layerList é un solo layer
          self.undoStack.beginEditCommand(text, [layerList])
-         
+
+
    def destroyEditCommand(self):
+      # pulisco le entità selezionate e i grip points correnti
+      self.tool.clearEntitySet()
+      self.tool.clearEntityGripPoints()
+
       self.isQadActive = True
       self.undoStack.destroyEditCommand()
       self.isQadActive = False
       self.enableUndoRedoButtons()
-      
+
+
    def endEditCommand(self):
       self.isQadActive = True
       self.undoStack.endEditCommand(self.canvas)
       self.isQadActive = False
       self.enableUndoRedoButtons()
       
-   def undoEditCommand(self, nTimes = 1):      
+   def undoEditCommand(self, nTimes = 1):
+      # pulisco le entità selezionate e i grip points correnti
+      self.tool.clearEntitySet()
+      self.tool.clearEntityGripPoints()
+      
       self.isQadActive = True
       self.undoStack.undoEditCommand(self.canvas, nTimes)
       self.isQadActive = False
       self.enableUndoRedoButtons()
-      
+
+
    def redoEditCommand(self, nTimes = 1):      
+      # pulisco le entità selezionate e i grip points correnti
+      self.tool.clearEntitySet()
+      self.tool.clearEntityGripPoints()
+
       self.isQadActive = True
       self.undoStack.redoEditCommand(self.canvas, nTimes)
       self.isQadActive = False
       self.enableUndoRedoButtons()
+
 
    def addLayerToLastEditCommand(self, text, layer):
       self.undoStack.addLayerToLastEditCommand(text, layer)
@@ -1093,6 +1110,10 @@ class Qad(QObject):
       return self.undoStack.getPrevBookmarkPos(self.undoStack.index)
    
    def undoUntilBookmark(self):
+      # pulisco le entità selezionate e i grip points correnti
+      self.tool.clearEntitySet()
+      self.tool.clearEntityGripPoints()
+
       self.isQadActive = True
       self.undoStack.undoUntilBookmark(self.canvas)
       self.isQadActive = False
@@ -1152,8 +1173,8 @@ class Qad(QObject):
    #============================================================================
    # INIZIO - funzioni per comandi 
    #============================================================================
-   def runCommand(self, command):
-      self.QadCommands.run(command)
+   def runCommand(self, command, param = None):
+      self.QadCommands.run(command, param)
 
    def runMacro(self, args):
       self.QadCommands.runMacro(args)

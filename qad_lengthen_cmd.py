@@ -153,45 +153,61 @@ class QadLENGTHENCommandClass(QadCommandClass):
       #                    <leftOf>)
       res = False
       if self.OpMode == "DElta":
+         newLinearObjectList = qad_utils.QadLinearObjectList(self.linearObjectList)
          if self.OpType == "length":
-            res = self.linearObjectList.lengthen_delta(self.move_startPt, self.value)
+            res = newLinearObjectList.lengthen_delta(self.move_startPt, self.value)
          elif self.OpType == "Angle":
-            res = self.linearObjectList.lengthen_deltaAngle(self.move_startPt, self.value)
+            res = newLinearObjectList.lengthen_deltaAngle(self.move_startPt, self.value)
       elif self.OpMode == "Percent":
-         value = self.linearObjectList.length() * self.value / 100
-         value = value - self.linearObjectList.length()
-         res = self.linearObjectList.lengthen_delta(self.move_startPt, value)
+         newLinearObjectList = qad_utils.QadLinearObjectList(self.linearObjectList)
+         value = newLinearObjectList.length() * self.value / 100
+         value = value - newLinearObjectList.length()
+         res = newLinearObjectList.lengthen_delta(self.move_startPt, value)
       elif self.OpMode == "Total":
+         newLinearObjectList = qad_utils.QadLinearObjectList(self.linearObjectList)
          if self.OpType == "length":
-            value = self.value - self.linearObjectList.length()
-            res = self.linearObjectList.lengthen_delta(self.move_startPt, value)
+            value = self.value - newLinearObjectList.length()
+            res = newLinearObjectList.lengthen_delta(self.move_startPt, value)
          elif self.OpType == "Angle":                     
-            if self.linearObjectList.qty() == 1:
-               linearObject = self.linearObjectList.getLinearObjectAt(0)
+            if newLinearObjectList.qty() == 1:
+               linearObject = newLinearObjectList.getLinearObjectAt(0)
                if linearObject.isArc() == True: # se è un arco
                   value = self.value - linearObject.getArc().totalAngle()
-                  res = self.linearObjectList.lengthen_deltaAngle(self.move_startPt, value)
+                  res = newLinearObjectList.lengthen_deltaAngle(self.move_startPt, value)
       elif self.OpMode == "DYnamic":
-         if self.linearObjectList.qty() == 1:
-            transformedPt = self.mapToLayerCoordinates(layer, point)
-            linearObject = self.linearObjectList.getLinearObjectAt(0)
-            if linearObject.isSegment():
-               newPt = qad_utils.getPerpendicularPointOnInfinityLine(linearObject.getStartPt(), linearObject.getEndPt(), transformedPt)
-            else: # arco
-               newPt = qad_utils.getPolarPointByPtAngle(linearObject.getArc().center, \
-                                                        qad_utils.getAngleBy2Pts(linearObject.getArc().center, transformedPt), \
-                                                        linearObject.getArc().radius)                  
-   
-            if self.move_startPt:
-               linearObject.setStartPt(newPt)
-            else:
-               linearObject.setEndPt(newPt)
+         newLinearObjectList = qad_utils.QadLinearObjectList(self.linearObjectList)
+         transformedPt = self.mapToLayerCoordinates(layer, point)
+            
+         if self.move_startPt:
+            linearObject = newLinearObjectList.getLinearObjectAt(0)
+         else:
+            linearObject = newLinearObjectList.getLinearObjectAt(-1)
+            
+         if linearObject.isSegment():
+            newPt = qad_utils.getPerpendicularPointOnInfinityLine(linearObject.getStartPt(), linearObject.getEndPt(), transformedPt)
+         else: # arco
+            newPt = qad_utils.getPolarPointByPtAngle(linearObject.getArc().center, \
+                                                     qad_utils.getAngleBy2Pts(linearObject.getArc().center, transformedPt), \
+                                                     linearObject.getArc().radius)                  
+
+         if newLinearObjectList.qty() > 1 and linearObject.isSegment():
+            ang = linearObject.getTanDirectionOnStartPt()
+
+         if self.move_startPt:
+            linearObject.setStartPt(newPt)
+         else:
+            linearObject.setEndPt(newPt)
+            
+         if newLinearObjectList.qty() > 1 and linearObject.isSegment() and \
+            qad_utils.TanDirectionNear(ang, linearObject.getTanDirectionOnStartPt()) == False:
+            res = False
+         else:
             res = True
 
       if res == False: # allungamento impossibile
          return False
                
-      pts = self.linearObjectList.asPolyline() 
+      pts = newLinearObjectList.asPolyline() 
       updSubGeom = QgsGeometry.fromPolyline(pts)
                
       updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom)
@@ -259,24 +275,24 @@ class QadLENGTHENCommandClass(QadCommandClass):
       self.getPointMapTool().setMode(Qad_lengthen_maptool_ModeEnum.ASK_FOR_OBJ_TO_MISURE)
 
       if self.plugIn.lastOpMode_lengthen == "DElta":
-         default = QadMsg.translate("Command_LENGTHEN", "DElta")
+         self.defaultValue = QadMsg.translate("Command_LENGTHEN", "DElta")
       elif self.plugIn.lastOpMode_lengthen == "Percent":
-         default = QadMsg.translate("Command_LENGTHEN", "Percent")
+         self.defaultValue = QadMsg.translate("Command_LENGTHEN", "Percent")
       elif self.plugIn.lastOpMode_lengthen == "Total":
-         default = QadMsg.translate("Command_LENGTHEN", "Total")
+         self.defaultValue = QadMsg.translate("Command_LENGTHEN", "Total")
       elif self.plugIn.lastOpMode_lengthen == "DYnamic":
-         default = QadMsg.translate("Command_LENGTHEN", "DYnamic")
+         self.defaultValue = QadMsg.translate("Command_LENGTHEN", "DYnamic")
       else:
-         default = None
+         self.defaultValue = None
       
       keyWords = QadMsg.translate("Command_LENGTHEN", "DElta") + "/" + \
                  QadMsg.translate("Command_LENGTHEN", "Percent") + "/" + \
                  QadMsg.translate("Command_LENGTHEN", "Total") + "/" + \
                  QadMsg.translate("Command_LENGTHEN", "DYnamic")
-      if default is None:
-         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, default)
+      if self.defaultValue is None:
+         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, self.defaultValue)
       else:
-         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, default)
+         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, self.defaultValue)
 
       englishKeyWords = "DElta" + "/" + "Percent" + "/" + "Total" + "/" + "DYnamic"
       keyWords += "_" + englishKeyWords
@@ -284,7 +300,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
-                   default, \
+                   self.defaultValue, \
                    keyWords, QadInputModeEnum.NONE)
 
 
@@ -466,7 +482,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  return True # fine comando
+                  value = self.defaultValue
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
@@ -531,12 +547,12 @@ class QadLENGTHENCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  pass # opzione di default "spostamento"
+                  value = self.plugIn.lastDelta_lengthen # opzione di default "spostamento"
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
-
-            value = self.getPointMapTool().point
+            else:
+               value = self.getPointMapTool().point
          else: # il punto arriva come parametro della funzione
             value = msg
 
@@ -681,12 +697,12 @@ class QadLENGTHENCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  pass # opzione di default "spostamento"
+                  value = self.plugIn.lastTotal_lengthen
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
-
-            value = self.getPointMapTool().point
+            else:
+               value = self.getPointMapTool().point
          else: # il punto arriva come parametro della funzione
             value = msg
 
@@ -731,7 +747,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
 
 
       #=========================================================================
-      # RISPOSTA ALLA RICHIESTA DELLA NUOVA ETREMITA' IN MODO DINAMICO (da step = 5)
+      # RISPOSTA ALLA RICHIESTA DELLA NUOVA ESTREMITA' IN MODO DINAMICO (da step = 5)
       elif self.step == 10: # dopo aver atteso un punto
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto

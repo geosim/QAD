@@ -5,52 +5,52 @@
 <context>
     <name>Command_ARC</name>
     <message>
-        <location filename="../qad.py" line="505"/>
+        <location filename="../qad.py" line="506"/>
         <source>Arc passing through 3 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="510"/>
+        <location filename="../qad.py" line="511"/>
         <source>Arc defined by start, central and final points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="515"/>
+        <location filename="../qad.py" line="516"/>
         <source>Arc defined by start, central points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="520"/>
+        <location filename="../qad.py" line="521"/>
         <source>Arc defined by start, central points and cord length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="525"/>
+        <location filename="../qad.py" line="526"/>
         <source>Arc defined by start, final points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="530"/>
+        <location filename="../qad.py" line="531"/>
         <source>Arc defined by start, final points and tangent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="535"/>
+        <location filename="../qad.py" line="536"/>
         <source>Arc defined by start, final points and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="540"/>
+        <location filename="../qad.py" line="541"/>
         <source>Arc defined by central, start and final points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="545"/>
+        <location filename="../qad.py" line="546"/>
         <source>Arc defined by central, start points and angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="550"/>
+        <location filename="../qad.py" line="551"/>
         <source>Arc defined by central, start points and cord length</source>
         <translation type="unfinished"></translation>
     </message>
@@ -214,32 +214,32 @@
 <context>
     <name>Command_CIRCLE</name>
     <message>
-        <location filename="../qad.py" line="561"/>
+        <location filename="../qad.py" line="562"/>
         <source>Circle defined by central point and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="566"/>
+        <location filename="../qad.py" line="567"/>
         <source>Circle defined by central point and diameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="571"/>
+        <location filename="../qad.py" line="572"/>
         <source>Circle defined by 2 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="576"/>
+        <location filename="../qad.py" line="577"/>
         <source>Circle defined by 3 points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="581"/>
+        <location filename="../qad.py" line="582"/>
         <source>Circle defined by 2 tangent points and radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="586"/>
+        <location filename="../qad.py" line="587"/>
         <source>Circle defined by 3 tangent points</source>
         <translation type="unfinished"></translation>
     </message>
@@ -857,6 +857,50 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_GRIPSTRETCH</name>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="716"/>
+        <location filename="../qad_stretch_cmd.py" line="782"/>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="717"/>
+        <location filename="../qad_stretch_cmd.py" line="785"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="718"/>
+        <location filename="../qad_stretch_cmd.py" line="790"/>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="719"/>
+        <location filename="../qad_stretch_cmd.py" line="798"/>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="721"/>
+        <source>Specify stretch point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="741"/>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="757"/>
+        <source>
+** STRETCH **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_HELP</name>
     <message>
         <location filename="../qad_help_cmd.py" line="57"/>
@@ -899,107 +943,107 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="241"/>
+        <location filename="../qad_lengthen_cmd.py" line="259"/>
         <source>
 Current length: {0}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="248"/>
+        <location filename="../qad_lengthen_cmd.py" line="266"/>
         <source>, included angle: {0}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="260"/>
-        <location filename="../qad_lengthen_cmd.py" line="270"/>
-        <location filename="../qad_lengthen_cmd.py" line="477"/>
+        <location filename="../qad_lengthen_cmd.py" line="278"/>
+        <location filename="../qad_lengthen_cmd.py" line="288"/>
+        <location filename="../qad_lengthen_cmd.py" line="495"/>
         <source>DElta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="262"/>
-        <location filename="../qad_lengthen_cmd.py" line="271"/>
-        <location filename="../qad_lengthen_cmd.py" line="480"/>
+        <location filename="../qad_lengthen_cmd.py" line="280"/>
+        <location filename="../qad_lengthen_cmd.py" line="289"/>
+        <location filename="../qad_lengthen_cmd.py" line="498"/>
         <source>Percent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="264"/>
-        <location filename="../qad_lengthen_cmd.py" line="272"/>
-        <location filename="../qad_lengthen_cmd.py" line="483"/>
+        <location filename="../qad_lengthen_cmd.py" line="282"/>
+        <location filename="../qad_lengthen_cmd.py" line="290"/>
+        <location filename="../qad_lengthen_cmd.py" line="501"/>
         <source>Total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="266"/>
-        <location filename="../qad_lengthen_cmd.py" line="273"/>
-        <location filename="../qad_lengthen_cmd.py" line="486"/>
+        <location filename="../qad_lengthen_cmd.py" line="284"/>
+        <location filename="../qad_lengthen_cmd.py" line="291"/>
+        <location filename="../qad_lengthen_cmd.py" line="504"/>
         <source>DYnamic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="296"/>
-        <location filename="../qad_lengthen_cmd.py" line="384"/>
-        <location filename="../qad_lengthen_cmd.py" line="542"/>
-        <location filename="../qad_lengthen_cmd.py" line="692"/>
+        <location filename="../qad_lengthen_cmd.py" line="314"/>
+        <location filename="../qad_lengthen_cmd.py" line="402"/>
+        <location filename="../qad_lengthen_cmd.py" line="560"/>
+        <location filename="../qad_lengthen_cmd.py" line="710"/>
         <source>Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="297"/>
+        <location filename="../qad_lengthen_cmd.py" line="315"/>
         <source>Enter delta length or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="348"/>
+        <location filename="../qad_lengthen_cmd.py" line="366"/>
         <source>Select an object to change or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="385"/>
+        <location filename="../qad_lengthen_cmd.py" line="403"/>
         <source>Specify total length or [{0}] &lt;{1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="317"/>
+        <location filename="../qad_lengthen_cmd.py" line="335"/>
         <source>Enter delta length &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="275"/>
-        <location filename="../qad_lengthen_cmd.py" line="277"/>
+        <location filename="../qad_lengthen_cmd.py" line="293"/>
+        <location filename="../qad_lengthen_cmd.py" line="295"/>
         <source>Select an object or [{0}] &lt;{1}&gt;:  </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="333"/>
+        <location filename="../qad_lengthen_cmd.py" line="351"/>
         <source>Enter delta angle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="347"/>
-        <location filename="../qad_lengthen_cmd.py" line="348"/>
-        <location filename="../qad_lengthen_cmd.py" line="599"/>
+        <location filename="../qad_lengthen_cmd.py" line="365"/>
+        <location filename="../qad_lengthen_cmd.py" line="366"/>
+        <location filename="../qad_lengthen_cmd.py" line="617"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="368"/>
+        <location filename="../qad_lengthen_cmd.py" line="386"/>
         <source>Enter percentage length &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="405"/>
+        <location filename="../qad_lengthen_cmd.py" line="423"/>
         <source>Enter total length &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="421"/>
+        <location filename="../qad_lengthen_cmd.py" line="439"/>
         <source>Enter total angle &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="432"/>
+        <location filename="../qad_lengthen_cmd.py" line="450"/>
         <source>Specify new endpoint: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2131,193 +2175,193 @@ Unknown variable. Enter {0} ? to list variable names.</source>
 <context>
     <name>Command_SSGET</name>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="129"/>
+        <location filename="../qad_ssget_cmd.py" line="136"/>
         <source> found {0}, total {1}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="308"/>
-        <location filename="../qad_ssget_cmd.py" line="411"/>
-        <location filename="../qad_ssget_cmd.py" line="629"/>
-        <location filename="../qad_ssget_cmd.py" line="681"/>
+        <location filename="../qad_ssget_cmd.py" line="365"/>
+        <location filename="../qad_ssget_cmd.py" line="468"/>
+        <location filename="../qad_ssget_cmd.py" line="701"/>
+        <location filename="../qad_ssget_cmd.py" line="754"/>
         <source>Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="309"/>
-        <location filename="../qad_ssget_cmd.py" line="421"/>
+        <location filename="../qad_ssget_cmd.py" line="366"/>
+        <location filename="../qad_ssget_cmd.py" line="478"/>
         <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="310"/>
-        <location filename="../qad_ssget_cmd.py" line="412"/>
-        <location filename="../qad_ssget_cmd.py" line="631"/>
+        <location filename="../qad_ssget_cmd.py" line="367"/>
+        <location filename="../qad_ssget_cmd.py" line="469"/>
+        <location filename="../qad_ssget_cmd.py" line="703"/>
         <source>Crossing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="311"/>
-        <location filename="../qad_ssget_cmd.py" line="431"/>
-        <location filename="../qad_ssget_cmd.py" line="578"/>
-        <location filename="../qad_ssget_cmd.py" line="675"/>
+        <location filename="../qad_ssget_cmd.py" line="368"/>
+        <location filename="../qad_ssget_cmd.py" line="492"/>
+        <location filename="../qad_ssget_cmd.py" line="651"/>
+        <location filename="../qad_ssget_cmd.py" line="748"/>
         <source>Box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="312"/>
-        <location filename="../qad_ssget_cmd.py" line="441"/>
+        <location filename="../qad_ssget_cmd.py" line="369"/>
+        <location filename="../qad_ssget_cmd.py" line="502"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="313"/>
-        <location filename="../qad_ssget_cmd.py" line="450"/>
+        <location filename="../qad_ssget_cmd.py" line="370"/>
+        <location filename="../qad_ssget_cmd.py" line="515"/>
         <source>Fence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="314"/>
-        <location filename="../qad_ssget_cmd.py" line="458"/>
-        <location filename="../qad_ssget_cmd.py" line="467"/>
-        <location filename="../qad_ssget_cmd.py" line="784"/>
+        <location filename="../qad_ssget_cmd.py" line="371"/>
+        <location filename="../qad_ssget_cmd.py" line="523"/>
+        <location filename="../qad_ssget_cmd.py" line="532"/>
+        <location filename="../qad_ssget_cmd.py" line="865"/>
         <source>WPolygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="315"/>
-        <location filename="../qad_ssget_cmd.py" line="459"/>
-        <location filename="../qad_ssget_cmd.py" line="787"/>
+        <location filename="../qad_ssget_cmd.py" line="372"/>
+        <location filename="../qad_ssget_cmd.py" line="524"/>
+        <location filename="../qad_ssget_cmd.py" line="868"/>
         <source>CPolygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="316"/>
-        <location filename="../qad_ssget_cmd.py" line="474"/>
-        <location filename="../qad_ssget_cmd.py" line="483"/>
-        <location filename="../qad_ssget_cmd.py" line="735"/>
+        <location filename="../qad_ssget_cmd.py" line="373"/>
+        <location filename="../qad_ssget_cmd.py" line="539"/>
+        <location filename="../qad_ssget_cmd.py" line="548"/>
+        <location filename="../qad_ssget_cmd.py" line="810"/>
         <source>WCircle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="317"/>
-        <location filename="../qad_ssget_cmd.py" line="475"/>
-        <location filename="../qad_ssget_cmd.py" line="738"/>
+        <location filename="../qad_ssget_cmd.py" line="374"/>
+        <location filename="../qad_ssget_cmd.py" line="540"/>
+        <location filename="../qad_ssget_cmd.py" line="813"/>
         <source>CCircle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="318"/>
-        <location filename="../qad_ssget_cmd.py" line="490"/>
-        <location filename="../qad_ssget_cmd.py" line="761"/>
+        <location filename="../qad_ssget_cmd.py" line="375"/>
+        <location filename="../qad_ssget_cmd.py" line="555"/>
+        <location filename="../qad_ssget_cmd.py" line="839"/>
         <source>WObjects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="319"/>
-        <location filename="../qad_ssget_cmd.py" line="491"/>
-        <location filename="../qad_ssget_cmd.py" line="764"/>
+        <location filename="../qad_ssget_cmd.py" line="376"/>
+        <location filename="../qad_ssget_cmd.py" line="556"/>
+        <location filename="../qad_ssget_cmd.py" line="842"/>
         <source>CObjects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="320"/>
-        <location filename="../qad_ssget_cmd.py" line="497"/>
-        <location filename="../qad_ssget_cmd.py" line="506"/>
-        <location filename="../qad_ssget_cmd.py" line="817"/>
+        <location filename="../qad_ssget_cmd.py" line="377"/>
+        <location filename="../qad_ssget_cmd.py" line="562"/>
+        <location filename="../qad_ssget_cmd.py" line="571"/>
+        <location filename="../qad_ssget_cmd.py" line="901"/>
         <source>WBuffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="321"/>
-        <location filename="../qad_ssget_cmd.py" line="498"/>
-        <location filename="../qad_ssget_cmd.py" line="820"/>
+        <location filename="../qad_ssget_cmd.py" line="378"/>
+        <location filename="../qad_ssget_cmd.py" line="563"/>
+        <location filename="../qad_ssget_cmd.py" line="904"/>
         <source>CBuffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="322"/>
-        <location filename="../qad_ssget_cmd.py" line="513"/>
-        <location filename="../qad_stretch_cmd.py" line="311"/>
+        <location filename="../qad_ssget_cmd.py" line="379"/>
+        <location filename="../qad_ssget_cmd.py" line="578"/>
+        <location filename="../qad_stretch_cmd.py" line="310"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="323"/>
-        <location filename="../qad_ssget_cmd.py" line="517"/>
-        <location filename="../qad_stretch_cmd.py" line="314"/>
+        <location filename="../qad_ssget_cmd.py" line="380"/>
+        <location filename="../qad_ssget_cmd.py" line="582"/>
+        <location filename="../qad_stretch_cmd.py" line="313"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="324"/>
-        <location filename="../qad_ssget_cmd.py" line="521"/>
+        <location filename="../qad_ssget_cmd.py" line="381"/>
+        <location filename="../qad_ssget_cmd.py" line="586"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="325"/>
-        <location filename="../qad_ssget_cmd.py" line="548"/>
+        <location filename="../qad_ssget_cmd.py" line="382"/>
+        <location filename="../qad_ssget_cmd.py" line="617"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="326"/>
-        <location filename="../qad_ssget_cmd.py" line="560"/>
+        <location filename="../qad_ssget_cmd.py" line="383"/>
+        <location filename="../qad_ssget_cmd.py" line="633"/>
         <source>AUto</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="327"/>
-        <location filename="../qad_ssget_cmd.py" line="566"/>
+        <location filename="../qad_ssget_cmd.py" line="384"/>
+        <location filename="../qad_ssget_cmd.py" line="639"/>
         <source>SIngle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="328"/>
-        <location filename="../qad_ssget_cmd.py" line="574"/>
+        <location filename="../qad_ssget_cmd.py" line="385"/>
+        <location filename="../qad_ssget_cmd.py" line="647"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="336"/>
+        <location filename="../qad_ssget_cmd.py" line="393"/>
         <source>Select Objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="338"/>
+        <location filename="../qad_ssget_cmd.py" line="395"/>
         <source>Remove objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="341"/>
+        <location filename="../qad_ssget_cmd.py" line="398"/>
         <source> or [{0}]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="343"/>
+        <location filename="../qad_ssget_cmd.py" line="400"/>
         <source>: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="419"/>
-        <location filename="../qad_ssget_cmd.py" line="439"/>
+        <location filename="../qad_ssget_cmd.py" line="476"/>
+        <location filename="../qad_ssget_cmd.py" line="500"/>
         <source>First corner: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="584"/>
-        <location filename="../qad_ssget_cmd.py" line="639"/>
-        <location filename="../qad_ssget_cmd.py" line="660"/>
-        <location filename="../qad_ssget_cmd.py" line="703"/>
+        <location filename="../qad_ssget_cmd.py" line="657"/>
+        <location filename="../qad_ssget_cmd.py" line="711"/>
+        <location filename="../qad_ssget_cmd.py" line="732"/>
+        <location filename="../qad_ssget_cmd.py" line="775"/>
         <source>Specify opposite corner: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_ssget_cmd.py" line="612"/>
-        <location filename="../qad_ssget_cmd.py" line="642"/>
-        <location filename="../qad_ssget_cmd.py" line="658"/>
-        <location filename="../qad_ssget_cmd.py" line="701"/>
+        <location filename="../qad_ssget_cmd.py" line="684"/>
+        <location filename="../qad_ssget_cmd.py" line="714"/>
+        <location filename="../qad_ssget_cmd.py" line="730"/>
+        <location filename="../qad_ssget_cmd.py" line="773"/>
         <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2325,69 +2369,69 @@ Unknown variable. Enter {0} ? to list variable names.</source>
 <context>
     <name>Command_STRETCH</name>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="64"/>
+        <location filename="../qad_stretch_cmd.py" line="66"/>
         <source>Stretches objects.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="227"/>
-        <location filename="../qad_stretch_cmd.py" line="302"/>
+        <location filename="../qad_stretch_cmd.py" line="226"/>
+        <location filename="../qad_stretch_cmd.py" line="301"/>
         <source>Polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="228"/>
+        <location filename="../qad_stretch_cmd.py" line="227"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="229"/>
+        <location filename="../qad_stretch_cmd.py" line="228"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="232"/>
+        <location filename="../qad_stretch_cmd.py" line="231"/>
         <source>Select vertices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="234"/>
+        <location filename="../qad_stretch_cmd.py" line="233"/>
         <source>Remove vertices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="235"/>
+        <location filename="../qad_stretch_cmd.py" line="234"/>
         <source> to stretch crossed by a selection window or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="254"/>
+        <location filename="../qad_stretch_cmd.py" line="253"/>
         <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="255"/>
+        <location filename="../qad_stretch_cmd.py" line="254"/>
         <source>Specify base point or [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="325"/>
-        <location filename="../qad_stretch_cmd.py" line="376"/>
+        <location filename="../qad_stretch_cmd.py" line="324"/>
+        <location filename="../qad_stretch_cmd.py" line="375"/>
         <source>Specify opposite corner: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="374"/>
+        <location filename="../qad_stretch_cmd.py" line="373"/>
         <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="435"/>
+        <location filename="../qad_stretch_cmd.py" line="434"/>
         <source>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="451"/>
+        <location filename="../qad_stretch_cmd.py" line="450"/>
         <source>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2495,7 +2539,7 @@ Select trim limits...</source>
 <context>
     <name>Command_UNDO</name>
     <message>
-        <location filename="../qad.py" line="687"/>
+        <location filename="../qad.py" line="688"/>
         <source>Undo last operation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2565,248 +2609,248 @@ A mark can&apos;t be inserted into a group.</source>
 <context>
     <name>Command_list</name>
     <message>
-        <location filename="../qad.py" line="482"/>
-        <location filename="../qad.py" line="1268"/>
+        <location filename="../qad.py" line="483"/>
+        <location filename="../qad.py" line="1289"/>
         <location filename="../qad_pline_cmd.py" line="52"/>
         <source>PLINE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="488"/>
-        <location filename="../qad.py" line="1271"/>
+        <location filename="../qad.py" line="489"/>
+        <location filename="../qad.py" line="1292"/>
         <location filename="../qad_setcurrlayerbygraph_cmd.py" line="50"/>
         <source>SETCURRLAYERBYGRAPH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="493"/>
-        <location filename="../qad.py" line="1274"/>
+        <location filename="../qad.py" line="494"/>
+        <location filename="../qad.py" line="1295"/>
         <location filename="../qad_setcurrlayerbygraph_cmd.py" line="123"/>
         <source>SETCURRUPDATEABLELAYERBYGRAPH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="499"/>
-        <location filename="../qad.py" line="777"/>
+        <location filename="../qad.py" line="500"/>
         <location filename="../qad.py" line="778"/>
-        <location filename="../qad.py" line="1277"/>
+        <location filename="../qad.py" line="779"/>
+        <location filename="../qad.py" line="1298"/>
         <location filename="../qad_arc_cmd.py" line="50"/>
         <source>ARC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="555"/>
-        <location filename="../qad.py" line="797"/>
+        <location filename="../qad.py" line="556"/>
         <location filename="../qad.py" line="798"/>
-        <location filename="../qad.py" line="1363"/>
+        <location filename="../qad.py" line="799"/>
+        <location filename="../qad.py" line="1384"/>
         <location filename="../qad_circle_cmd.py" line="50"/>
         <source>CIRCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="591"/>
-        <location filename="../qad.py" line="1410"/>
+        <location filename="../qad.py" line="592"/>
+        <location filename="../qad.py" line="1431"/>
         <location filename="../qad_dsettings_cmd.py" line="48"/>
         <source>DSETTINGS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="597"/>
-        <location filename="../qad.py" line="1413"/>
+        <location filename="../qad.py" line="598"/>
+        <location filename="../qad.py" line="1434"/>
         <location filename="../qad_line_cmd.py" line="51"/>
         <source>LINE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="603"/>
-        <location filename="../qad.py" line="1416"/>
+        <location filename="../qad.py" line="604"/>
+        <location filename="../qad.py" line="1437"/>
         <location filename="../qad_erase_cmd.py" line="47"/>
         <source>ERASE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="609"/>
-        <location filename="../qad.py" line="1419"/>
+        <location filename="../qad.py" line="610"/>
+        <location filename="../qad.py" line="1440"/>
         <location filename="../qad_mpolygon_cmd.py" line="49"/>
         <source>MPOLYGON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="615"/>
-        <location filename="../qad.py" line="1422"/>
+        <location filename="../qad.py" line="616"/>
+        <location filename="../qad.py" line="1443"/>
         <location filename="../qad_mbuffer_cmd.py" line="50"/>
         <source>MBUFFER</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="621"/>
-        <location filename="../qad.py" line="1425"/>
+        <location filename="../qad.py" line="622"/>
+        <location filename="../qad.py" line="1446"/>
         <location filename="../qad_rotate_cmd.py" line="53"/>
         <source>ROTATE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="627"/>
-        <location filename="../qad.py" line="1428"/>
+        <location filename="../qad.py" line="628"/>
+        <location filename="../qad.py" line="1449"/>
         <location filename="../qad_move_cmd.py" line="52"/>
         <source>MOVE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="633"/>
-        <location filename="../qad.py" line="1431"/>
+        <location filename="../qad.py" line="634"/>
+        <location filename="../qad.py" line="1452"/>
         <location filename="../qad_scale_cmd.py" line="53"/>
         <source>SCALE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="639"/>
-        <location filename="../qad.py" line="1434"/>
+        <location filename="../qad.py" line="640"/>
+        <location filename="../qad.py" line="1455"/>
         <location filename="../qad_copy_cmd.py" line="53"/>
         <source>COPY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="645"/>
-        <location filename="../qad.py" line="1437"/>
+        <location filename="../qad.py" line="646"/>
+        <location filename="../qad.py" line="1458"/>
         <location filename="../qad_offset_cmd.py" line="52"/>
         <source>OFFSET</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="651"/>
-        <location filename="../qad.py" line="1440"/>
+        <location filename="../qad.py" line="652"/>
+        <location filename="../qad.py" line="1461"/>
         <location filename="../qad_extend_cmd.py" line="51"/>
         <source>EXTEND</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="657"/>
-        <location filename="../qad.py" line="1443"/>
+        <location filename="../qad.py" line="658"/>
+        <location filename="../qad.py" line="1464"/>
         <location filename="../qad_trim_cmd.py" line="51"/>
         <source>TRIM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="663"/>
-        <location filename="../qad.py" line="1446"/>
+        <location filename="../qad.py" line="664"/>
+        <location filename="../qad.py" line="1467"/>
         <location filename="../qad_rectangle_cmd.py" line="50"/>
         <source>RECTANGLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="669"/>
-        <location filename="../qad.py" line="1481"/>
+        <location filename="../qad.py" line="670"/>
+        <location filename="../qad.py" line="1502"/>
         <location filename="../qad_polygon_cmd.py" line="48"/>
         <source>POLYGON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="675"/>
-        <location filename="../qad.py" line="1449"/>
+        <location filename="../qad.py" line="676"/>
+        <location filename="../qad.py" line="1470"/>
         <location filename="../qad_mirror_cmd.py" line="52"/>
         <source>MIRROR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="681"/>
-        <location filename="../qad.py" line="1452"/>
+        <location filename="../qad.py" line="682"/>
+        <location filename="../qad.py" line="1473"/>
         <location filename="../qad_undoredo_cmd.py" line="45"/>
         <source>UNDO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="692"/>
-        <location filename="../qad.py" line="1460"/>
+        <location filename="../qad.py" line="693"/>
+        <location filename="../qad.py" line="1481"/>
         <location filename="../qad_undoredo_cmd.py" line="175"/>
         <source>REDO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="698"/>
-        <location filename="../qad.py" line="1463"/>
+        <location filename="../qad.py" line="699"/>
+        <location filename="../qad.py" line="1484"/>
         <location filename="../qad_insert_cmd.py" line="50"/>
         <source>INSERT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="704"/>
-        <location filename="../qad.py" line="1466"/>
+        <location filename="../qad.py" line="705"/>
+        <location filename="../qad.py" line="1487"/>
         <location filename="../qad_text_cmd.py" line="51"/>
         <source>TEXT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="710"/>
-        <location filename="../qad.py" line="1469"/>
-        <location filename="../qad_stretch_cmd.py" line="51"/>
+        <location filename="../qad.py" line="711"/>
+        <location filename="../qad.py" line="1490"/>
+        <location filename="../qad_stretch_cmd.py" line="53"/>
         <source>STRETCH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="716"/>
-        <location filename="../qad.py" line="1496"/>
+        <location filename="../qad.py" line="717"/>
+        <location filename="../qad.py" line="1517"/>
         <location filename="../qad_lengthen_cmd.py" line="54"/>
         <source>LENGTHEN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="722"/>
-        <location filename="../qad.py" line="1472"/>
+        <location filename="../qad.py" line="723"/>
+        <location filename="../qad.py" line="1493"/>
         <location filename="../qad_break_cmd.py" line="48"/>
         <source>BREAK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="728"/>
-        <location filename="../qad.py" line="1475"/>
+        <location filename="../qad.py" line="729"/>
+        <location filename="../qad.py" line="1496"/>
         <location filename="../qad_pedit_cmd.py" line="52"/>
         <source>PEDIT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="734"/>
-        <location filename="../qad.py" line="1478"/>
+        <location filename="../qad.py" line="735"/>
+        <location filename="../qad.py" line="1499"/>
         <location filename="../qad_fillet_cmd.py" line="51"/>
         <source>FILLET</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="740"/>
-        <location filename="../qad.py" line="1484"/>
+        <location filename="../qad.py" line="741"/>
+        <location filename="../qad.py" line="1505"/>
         <location filename="../qad_dim_cmd.py" line="78"/>
         <source>DIMLINEAR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="745"/>
-        <location filename="../qad.py" line="1487"/>
+        <location filename="../qad.py" line="746"/>
+        <location filename="../qad.py" line="1508"/>
         <location filename="../qad_dim_cmd.py" line="454"/>
         <source>DIMALIGNED</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="750"/>
-        <location filename="../qad.py" line="1490"/>
+        <location filename="../qad.py" line="751"/>
+        <location filename="../qad.py" line="1511"/>
         <location filename="../qad_dimstyle_cmd.py" line="48"/>
         <source>DIMSTYLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="756"/>
-        <location filename="../qad.py" line="1493"/>
+        <location filename="../qad.py" line="757"/>
+        <location filename="../qad.py" line="1514"/>
         <location filename="../qad_help_cmd.py" line="44"/>
         <source>HELP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1262"/>
+        <location filename="../qad.py" line="1283"/>
         <location filename="../qad_id_cmd.py" line="44"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1265"/>
+        <location filename="../qad.py" line="1286"/>
         <location filename="../qad_setvar_cmd.py" line="45"/>
         <location filename="../qad_setvar_cmd.py" line="84"/>
         <source>SETVAR</source>
@@ -2857,7 +2901,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="153"/>
-        <location filename="../qad_getpoint.py" line="746"/>
+        <location filename="../qad_getpoint.py" line="892"/>
         <source>Perpendicular</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2873,7 +2917,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="181"/>
-        <location filename="../qad_getpoint.py" line="735"/>
+        <location filename="../qad_getpoint.py" line="881"/>
         <source>Tangent</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2889,7 +2933,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="199"/>
-        <location filename="../qad_getpoint.py" line="706"/>
+        <location filename="../qad_getpoint.py" line="852"/>
         <source>Extend</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2905,7 +2949,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="217"/>
-        <location filename="../qad_getpoint.py" line="755"/>
+        <location filename="../qad_getpoint.py" line="901"/>
         <source>Parallel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2921,7 +2965,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="235"/>
-        <location filename="../qad_getpoint.py" line="782"/>
+        <location filename="../qad_getpoint.py" line="928"/>
         <source>Progressive</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2937,7 +2981,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="253"/>
-        <location filename="../qad_getpoint.py" line="697"/>
+        <location filename="../qad_getpoint.py" line="843"/>
         <source>Intersection on extension</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2953,7 +2997,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="268"/>
-        <location filename="../qad_getpoint.py" line="726"/>
+        <location filename="../qad_getpoint.py" line="872"/>
         <source>Quadrant</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2969,7 +3013,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="328"/>
-        <location filename="../qad_getpoint.py" line="661"/>
+        <location filename="../qad_getpoint.py" line="807"/>
         <source>Start / End</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2987,7 +3031,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="353"/>
-        <location filename="../qad_getpoint.py" line="670"/>
+        <location filename="../qad_getpoint.py" line="816"/>
         <source>Segment Start / End</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3003,7 +3047,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="381"/>
-        <location filename="../qad_getpoint.py" line="679"/>
+        <location filename="../qad_getpoint.py" line="825"/>
         <source>Middle point</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3019,7 +3063,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="409"/>
-        <location filename="../qad_getpoint.py" line="688"/>
+        <location filename="../qad_getpoint.py" line="834"/>
         <source>Intersection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3035,7 +3079,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="437"/>
-        <location filename="../qad_getpoint.py" line="717"/>
+        <location filename="../qad_getpoint.py" line="863"/>
         <source>Center</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3051,7 +3095,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="465"/>
-        <location filename="../qad_getpoint.py" line="764"/>
+        <location filename="../qad_getpoint.py" line="910"/>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3067,7 +3111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="493"/>
-        <location filename="../qad_getpoint.py" line="773"/>
+        <location filename="../qad_getpoint.py" line="919"/>
         <source>Near</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3122,12 +3166,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="791"/>
+        <location filename="../qad_getpoint.py" line="937"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="802"/>
+        <location filename="../qad_getpoint.py" line="948"/>
         <source>Object snap settings...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4491,45 +4535,45 @@ The dimension style &quot;{0}&quot; </source>
     <name>Environment variables</name>
     <message>
         <location filename="../qad.py" line="430"/>
-        <location filename="../qad.py" line="466"/>
-        <location filename="../qad_variables.py" line="439"/>
+        <location filename="../qad.py" line="467"/>
+        <location filename="../qad_variables.py" line="452"/>
         <source>SHOWTEXTWINDOW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1189"/>
-        <location filename="../qad.py" line="1197"/>
+        <location filename="../qad.py" line="1210"/>
+        <location filename="../qad.py" line="1218"/>
         <location filename="../qad_dsettings_dlg.py" line="65"/>
         <location filename="../qad_dsettings_dlg.py" line="191"/>
-        <location filename="../qad_getpoint.py" line="105"/>
-        <location filename="../qad_getpoint.py" line="281"/>
-        <location filename="../qad_getpoint.py" line="319"/>
-        <location filename="../qad_getpoint.py" line="818"/>
-        <location filename="../qad_getpoint.py" line="821"/>
-        <location filename="../qad_getpoint.py" line="855"/>
-        <location filename="../qad_getpoint.py" line="856"/>
+        <location filename="../qad_getpoint.py" line="107"/>
+        <location filename="../qad_getpoint.py" line="285"/>
+        <location filename="../qad_getpoint.py" line="323"/>
+        <location filename="../qad_getpoint.py" line="964"/>
+        <location filename="../qad_getpoint.py" line="967"/>
+        <location filename="../qad_getpoint.py" line="1001"/>
+        <location filename="../qad_getpoint.py" line="1002"/>
         <location filename="../qad_variables.py" line="332"/>
         <source>OSMODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1203"/>
-        <location filename="../qad.py" line="1214"/>
-        <location filename="../qad.py" line="1223"/>
-        <location filename="../qad_getpoint.py" line="327"/>
+        <location filename="../qad.py" line="1224"/>
+        <location filename="../qad.py" line="1235"/>
+        <location filename="../qad.py" line="1244"/>
+        <location filename="../qad_getpoint.py" line="331"/>
         <location filename="../qad_variables.py" line="287"/>
         <source>ORTHOMODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1206"/>
-        <location filename="../qad.py" line="1208"/>
-        <location filename="../qad.py" line="1220"/>
+        <location filename="../qad.py" line="1227"/>
         <location filename="../qad.py" line="1229"/>
+        <location filename="../qad.py" line="1241"/>
+        <location filename="../qad.py" line="1250"/>
         <location filename="../qad_dsettings_dlg.py" line="101"/>
         <location filename="../qad_dsettings_dlg.py" line="193"/>
         <location filename="../qad_dsettings_dlg.py" line="198"/>
-        <location filename="../qad_getpoint.py" line="347"/>
+        <location filename="../qad_getpoint.py" line="351"/>
         <location filename="../qad_variables.py" line="89"/>
         <source>AUTOSNAP</source>
         <translation type="unfinished"></translation>
@@ -4537,7 +4581,7 @@ The dimension style &quot;{0}&quot; </source>
     <message>
         <location filename="../qad_arc.py" line="284"/>
         <location filename="../qad_break_cmd.py" line="109"/>
-        <location filename="../qad_circle.py" line="366"/>
+        <location filename="../qad_circle.py" line="369"/>
         <location filename="../qad_extend_cmd.py" line="99"/>
         <location filename="../qad_fillet_cmd.py" line="167"/>
         <location filename="../qad_fillet_cmd.py" line="199"/>
@@ -4561,14 +4605,16 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_pedit_cmd.py" line="602"/>
         <location filename="../qad_pedit_cmd.py" line="654"/>
         <location filename="../qad_pedit_maptool.py" line="94"/>
-        <location filename="../qad_stretch_cmd.py" line="146"/>
-        <location filename="../qad_stretch_maptool.py" line="122"/>
+        <location filename="../qad_stretch_cmd.py" line="145"/>
+        <location filename="../qad_stretch_cmd.py" line="663"/>
+        <location filename="../qad_stretch_maptool.py" line="124"/>
+        <location filename="../qad_stretch_maptool.py" line="272"/>
         <location filename="../qad_trim_cmd.py" line="99"/>
-        <location filename="../qad_utils.py" line="3554"/>
-        <location filename="../qad_utils.py" line="6166"/>
-        <location filename="../qad_utils.py" line="6248"/>
-        <location filename="../qad_utils.py" line="8787"/>
-        <location filename="../qad_variables.py" line="450"/>
+        <location filename="../qad_utils.py" line="3422"/>
+        <location filename="../qad_utils.py" line="6034"/>
+        <location filename="../qad_utils.py" line="6116"/>
+        <location filename="../qad_utils.py" line="8671"/>
+        <location filename="../qad_variables.py" line="463"/>
         <source>TOLERANCE2APPROXCURVE</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4577,17 +4623,17 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_arc.py" line="562"/>
         <location filename="../qad_arc.py" line="682"/>
         <location filename="../qad_arc.py" line="709"/>
-        <location filename="../qad_utils.py" line="6253"/>
+        <location filename="../qad_utils.py" line="6121"/>
         <location filename="../qad_variables.py" line="79"/>
         <source>ARCMINSEGMENTQTY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_circle.py" line="371"/>
-        <location filename="../qad_circle.py" line="422"/>
-        <location filename="../qad_circle.py" line="1860"/>
-        <location filename="../qad_circle.py" line="1887"/>
-        <location filename="../qad_utils.py" line="6258"/>
+        <location filename="../qad_circle.py" line="374"/>
+        <location filename="../qad_circle.py" line="425"/>
+        <location filename="../qad_circle.py" line="1863"/>
+        <location filename="../qad_circle.py" line="1890"/>
+        <location filename="../qad_utils.py" line="6126"/>
         <location filename="../qad_variables.py" line="107"/>
         <source>CIRCLEMINSEGMENTQTY</source>
         <translation type="unfinished"></translation>
@@ -4617,15 +4663,16 @@ The dimension style &quot;{0}&quot; </source>
     </message>
     <message>
         <location filename="../qad_dim.py" line="2924"/>
-        <location filename="../qad_variables.py" line="430"/>
+        <location filename="../qad_utils.py" line="512"/>
+        <location filename="../qad_variables.py" line="443"/>
         <source>SUPPORTPATH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qad_dsettings_dlg.py" line="85"/>
         <location filename="../qad_dsettings_dlg.py" line="207"/>
-        <location filename="../qad_getpoint.py" line="104"/>
-        <location filename="../qad_getpoint.py" line="318"/>
+        <location filename="../qad_getpoint.py" line="106"/>
+        <location filename="../qad_getpoint.py" line="322"/>
         <location filename="../qad_variables.py" line="360"/>
         <source>OSPROGRDISTANCE</source>
         <translation type="unfinished"></translation>
@@ -4633,8 +4680,8 @@ The dimension style &quot;{0}&quot; </source>
     <message>
         <location filename="../qad_dsettings_dlg.py" line="94"/>
         <location filename="../qad_dsettings_dlg.py" line="203"/>
-        <location filename="../qad_getpoint.py" line="348"/>
-        <location filename="../qad_variables.py" line="397"/>
+        <location filename="../qad_getpoint.py" line="352"/>
+        <location filename="../qad_variables.py" line="409"/>
         <source>POLARANG</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4659,33 +4706,33 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="111"/>
+        <location filename="../qad_getpoint.py" line="113"/>
         <location filename="../qad_rubberband.py" line="57"/>
-        <location filename="../qad_utils.py" line="647"/>
-        <location filename="../qad_utils.py" line="777"/>
-        <location filename="../qad_utils.py" line="875"/>
-        <location filename="../qad_utils.py" line="1081"/>
-        <location filename="../qad_utils.py" line="1113"/>
-        <location filename="../qad_variables.py" line="379"/>
+        <location filename="../qad_utils.py" line="675"/>
+        <location filename="../qad_utils.py" line="805"/>
+        <location filename="../qad_utils.py" line="903"/>
+        <location filename="../qad_utils.py" line="1109"/>
+        <location filename="../qad_utils.py" line="1141"/>
+        <location filename="../qad_variables.py" line="391"/>
         <source>PICKBOX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="116"/>
+        <location filename="../qad_getpoint.py" line="118"/>
         <location filename="../qad_pedit_cmd.py" line="90"/>
         <location filename="../qad_variables.py" line="369"/>
         <source>OSSIZE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="117"/>
+        <location filename="../qad_getpoint.py" line="119"/>
         <location filename="../qad_pedit_cmd.py" line="91"/>
         <location filename="../qad_variables.py" line="299"/>
         <source>OSCOLOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_maptool.py" line="144"/>
+        <location filename="../qad_maptool.py" line="229"/>
         <location filename="../qad_variables.py" line="116"/>
         <source>CMDINPUTHISTORYMAX</source>
         <translation type="unfinished"></translation>
@@ -4707,9 +4754,9 @@ The dimension style &quot;{0}&quot; </source>
     </message>
     <message>
         <location filename="../qad_rubberband.py" line="56"/>
-        <location filename="../qad_utils.py" line="653"/>
-        <location filename="../qad_utils.py" line="683"/>
-        <location filename="../qad_variables.py" line="388"/>
+        <location filename="../qad_utils.py" line="681"/>
+        <location filename="../qad_utils.py" line="711"/>
+        <location filename="../qad_variables.py" line="400"/>
         <source>PICKBOXCOLOR</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4722,7 +4769,7 @@ The dimension style &quot;{0}&quot; </source>
     <message>
         <location filename="../qad_rubberband.py" line="63"/>
         <location filename="../qad_rubberband.py" line="76"/>
-        <location filename="../qad_utils.py" line="676"/>
+        <location filename="../qad_utils.py" line="704"/>
         <location filename="../qad_variables.py" line="157"/>
         <source>CURSORSIZE</source>
         <translation type="unfinished"></translation>
@@ -4730,20 +4777,20 @@ The dimension style &quot;{0}&quot; </source>
     <message>
         <location filename="../qad_rubberband.py" line="222"/>
         <location filename="../qad_rubberband.py" line="240"/>
-        <location filename="../qad_variables.py" line="407"/>
+        <location filename="../qad_variables.py" line="419"/>
         <source>SELECTIONAREA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qad_rubberband.py" line="226"/>
-        <location filename="../qad_variables.py" line="459"/>
+        <location filename="../qad_variables.py" line="472"/>
         <source>WINDOWAREACOLOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qad_rubberband.py" line="227"/>
         <location filename="../qad_rubberband.py" line="245"/>
-        <location filename="../qad_variables.py" line="420"/>
+        <location filename="../qad_variables.py" line="432"/>
         <source>SELECTIONAREAOPACITY</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4772,9 +4819,10 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_variables.py" line="292"/>
         <location filename="../qad_variables.py" line="353"/>
         <location filename="../qad_variables.py" line="371"/>
-        <location filename="../qad_variables.py" line="381"/>
-        <location filename="../qad_variables.py" line="412"/>
-        <location filename="../qad_variables.py" line="423"/>
+        <location filename="../qad_variables.py" line="383"/>
+        <location filename="../qad_variables.py" line="393"/>
+        <location filename="../qad_variables.py" line="424"/>
+        <location filename="../qad_variables.py" line="435"/>
         <source>Integer type.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4823,9 +4871,9 @@ The setting is stored as a bitcode using the sum of the following values:
         <location filename="../qad_variables.py" line="217"/>
         <location filename="../qad_variables.py" line="226"/>
         <location filename="../qad_variables.py" line="301"/>
-        <location filename="../qad_variables.py" line="390"/>
-        <location filename="../qad_variables.py" line="432"/>
-        <location filename="../qad_variables.py" line="462"/>
+        <location filename="../qad_variables.py" line="402"/>
+        <location filename="../qad_variables.py" line="445"/>
+        <location filename="../qad_variables.py" line="475"/>
         <source>Character type.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4861,8 +4909,8 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad_variables.py" line="190"/>
         <location filename="../qad_variables.py" line="260"/>
         <location filename="../qad_variables.py" line="362"/>
-        <location filename="../qad_variables.py" line="399"/>
-        <location filename="../qad_variables.py" line="452"/>
+        <location filename="../qad_variables.py" line="411"/>
+        <location filename="../qad_variables.py" line="465"/>
         <source>Real type.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4887,6 +4935,7 @@ The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qad_maptool.py" line="104"/>
         <location filename="../qad_variables.py" line="233"/>
         <source>GRIPS</source>
         <translation type="unfinished"></translation>
@@ -4967,22 +5016,30 @@ The setting is stored as a bitcode using the sum of the following values:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="380"/>
+        <location filename="../qad_variables.py" line="379"/>
+        <source>Controls whether subsequent selections replace the current selection set or add to it.
+0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
+1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
+2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_variables.py" line="392"/>
         <source>Sets the object selection target height, in pixels.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="389"/>
+        <location filename="../qad_variables.py" line="401"/>
         <source>Sets the object selection target color (RGB, #FF0000 = red).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="398"/>
+        <location filename="../qad_variables.py" line="410"/>
         <source>Sets the polar angle increment (degree).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="408"/>
+        <location filename="../qad_variables.py" line="420"/>
         <source>Controls the display of effects for selection areas.
 Selection areas are created by the Window, Crossing, WPolygon, CPolygon, WCircle, CCircle, WObjects, CObjects, WBuffer and CBuffer options of SELECT.
 0 = Off
@@ -4990,33 +5047,33 @@ Selection areas are created by the Window, Crossing, WPolygon, CPolygon, WCircle
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="421"/>
+        <location filename="../qad_variables.py" line="433"/>
         <source>Controls the transparency of the selection area during window and crossing selection.
 The valid range is 0 to 100. The lower the setting, the more transparent the area. A value of 100 makes the area opaque. The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="431"/>
+        <location filename="../qad_variables.py" line="444"/>
         <source>Searching path for support files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="440"/>
+        <location filename="../qad_variables.py" line="453"/>
         <source>Show the text window at startup.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="441"/>
+        <location filename="../qad_variables.py" line="454"/>
         <source>Boolean type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="451"/>
+        <location filename="../qad_variables.py" line="464"/>
         <source>Maximum error approximating a curve to segments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="460"/>
+        <location filename="../qad_variables.py" line="473"/>
         <source>Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu).
 The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
@@ -5034,21 +5091,27 @@ The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_grip.py" line="97"/>
+        <location filename="../qad_grip.py" line="98"/>
         <location filename="../qad_variables.py" line="197"/>
         <source>GRIPCOLOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_grip.py" line="99"/>
+        <location filename="../qad_grip.py" line="100"/>
         <location filename="../qad_variables.py" line="215"/>
         <source>GRIPHOT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_grip.py" line="101"/>
+        <location filename="../qad_grip.py" line="102"/>
         <location filename="../qad_variables.py" line="224"/>
         <source>GRIPHOVER</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_ssget_cmd.py" line="79"/>
+        <location filename="../qad_variables.py" line="378"/>
+        <source>PICKADD</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5071,12 +5134,12 @@ The SELECTIONAREA system variable must be on.</source>
 <context>
     <name>Popup_menu_graph_window</name>
     <message>
-        <location filename="../qad_maptool.py" line="152"/>
+        <location filename="../qad_maptool.py" line="237"/>
         <source>Repeat </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_maptool.py" line="163"/>
+        <location filename="../qad_maptool.py" line="248"/>
         <source>Recent commands</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5086,7 +5149,7 @@ The SELECTIONAREA system variable must be on.</source>
     <message>
         <location filename="../qad.ui" line="13"/>
         <location filename="../qad.py" line="340"/>
-        <location filename="../qad.py" line="477"/>
+        <location filename="../qad.py" line="478"/>
         <location filename="../qad_dimstyle_details_dlg.py" line="755"/>
         <location filename="../qad_dimstyle_dlg.py" line="142"/>
         <location filename="../qad_dimstyle_dlg.py" line="166"/>
@@ -5096,33 +5159,33 @@ The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="812"/>
+        <location filename="../qad.py" line="813"/>
         <source>Draw</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="834"/>
+        <location filename="../qad.py" line="835"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="853"/>
+        <location filename="../qad.py" line="854"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="861"/>
+        <location filename="../qad.py" line="862"/>
         <source>Dimensioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="897"/>
         <location filename="../qad.py" line="898"/>
+        <location filename="../qad.py" line="899"/>
         <source>QAD - Dimensioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1147"/>
+        <location filename="../qad.py" line="1168"/>
         <location filename="../qad_textwindow.py" line="107"/>
         <location filename="../qad_textwindow.py" line="480"/>
         <location filename="../qad_textwindow.py" line="951"/>
@@ -5130,32 +5193,32 @@ The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1192"/>
+        <location filename="../qad.py" line="1213"/>
         <source>&lt;Snap on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1195"/>
+        <location filename="../qad.py" line="1216"/>
         <source>&lt;Snap off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1209"/>
+        <location filename="../qad.py" line="1230"/>
         <source>&lt;Ortho on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1212"/>
+        <location filename="../qad.py" line="1233"/>
         <source>&lt;Ortho off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1224"/>
+        <location filename="../qad.py" line="1245"/>
         <source>&lt;Polar on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad.py" line="1227"/>
+        <location filename="../qad.py" line="1248"/>
         <source>&lt;Polar off&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5174,7 +5237,7 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad_getangle_cmd.py" line="61"/>
         <location filename="../qad_getdist_cmd.py" line="61"/>
         <location filename="../qad_insert_cmd.py" line="120"/>
-        <location filename="../qad_lengthen_cmd.py" line="447"/>
+        <location filename="../qad_lengthen_cmd.py" line="465"/>
         <location filename="../qad_line_cmd.py" line="148"/>
         <location filename="../qad_mbuffer_cmd.py" line="178"/>
         <location filename="../qad_mirror_cmd.py" line="183"/>
@@ -5188,8 +5251,9 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad_rotate_cmd.py" line="225"/>
         <location filename="../qad_scale_cmd.py" line="228"/>
         <location filename="../qad_setcurrlayerbygraph_cmd.py" line="88"/>
-        <location filename="../qad_ssget_cmd.py" line="366"/>
-        <location filename="../qad_stretch_cmd.py" line="272"/>
+        <location filename="../qad_ssget_cmd.py" line="423"/>
+        <location filename="../qad_stretch_cmd.py" line="271"/>
+        <location filename="../qad_stretch_cmd.py" line="749"/>
         <location filename="../qad_text_cmd.py" line="164"/>
         <location filename="../qad_trim_cmd.py" line="239"/>
         <source>
@@ -5198,16 +5262,16 @@ The coordinate reference system of the project must be a projected coordinate sy
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_commands.py" line="208"/>
-        <location filename="../qad_commands.py" line="226"/>
-        <location filename="../qad_commands.py" line="412"/>
+        <location filename="../qad_commands.py" line="231"/>
+        <location filename="../qad_commands.py" line="249"/>
+        <location filename="../qad_commands.py" line="451"/>
         <location filename="../qad_textwindow.py" line="809"/>
         <source>
 Invalid command &quot;{0}&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_commands.py" line="277"/>
+        <location filename="../qad_commands.py" line="300"/>
         <source>*Canceled*</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5226,8 +5290,9 @@ Current settings: </source>
         <location filename="../qad_copy_cmd.py" line="428"/>
         <location filename="../qad_extend_cmd.py" line="338"/>
         <location filename="../qad_fillet_cmd.py" line="445"/>
-        <location filename="../qad_lengthen_cmd.py" line="604"/>
+        <location filename="../qad_lengthen_cmd.py" line="622"/>
         <location filename="../qad_pedit_cmd.py" line="1069"/>
+        <location filename="../qad_stretch_cmd.py" line="795"/>
         <location filename="../qad_trim_cmd.py" line="335"/>
         <source>
 The command has been canceled.</source>
@@ -5541,8 +5606,8 @@ Ambiguous answer: specify with greater clarity...
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_lengthen_cmd.py" line="218"/>
-        <location filename="../qad_lengthen_cmd.py" line="230"/>
+        <location filename="../qad_lengthen_cmd.py" line="236"/>
+        <location filename="../qad_lengthen_cmd.py" line="248"/>
         <source>
 Invalid object.</source>
         <translation type="unfinished"></translation>

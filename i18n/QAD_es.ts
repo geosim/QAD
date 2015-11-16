@@ -602,6 +602,39 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_GRIPSTRETCH</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify stretch point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** STRETCH **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_HELP</name>
     <message>
         <source>The QAD manual will be showed.</source>
@@ -3596,6 +3629,17 @@ The valid range is 0 to 100. The lower the setting, the more transparent the are
     <message>
         <source>Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu).
 The SELECTIONAREA system variable must be on.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PICKADD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether subsequent selections replace the current selection set or add to it.
+0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
+1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
+2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

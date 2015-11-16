@@ -245,7 +245,7 @@ class QadVariablesClass():
       VariableName = QadMsg.translate("Environment variables", "GRIPSIZE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Grip symbol size in pixel.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
                                                             VariableDescr)
@@ -543,8 +543,7 @@ class QadVariablesClass():
       """
       if Path == "":
          # Se la path non é indicata uso il file "qad.ini" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath()) + "python/plugins/qad/"
-         Path = Path + "qad.ini"
+         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + "qad.ini"
       
       dir = QFileInfo(Path).absoluteDir()
       if not dir.exists():
@@ -570,8 +569,7 @@ class QadVariablesClass():
       self.__init__()
       if Path == "":
          # Se la path non é indicata uso il file "qad.ini" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
-         Path = Path + "/qad.ini"
+         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + "qad.ini"
 
       if not os.path.exists(Path):
          return False

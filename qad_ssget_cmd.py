@@ -57,7 +57,7 @@ class QadSSGetClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      self.entitySet.deselectOnLayer()
+      #self.entitySet.deselectOnLayer()
 
    def init(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -77,6 +77,12 @@ class QadSSGetClass(QadCommandClass):
       # senza che vengano richieste altre selezioni.      
       self.SingleSelection = False
       self.pickAdd = QadVariables.get(QadMsg.translate("Environment variables", "PICKADD"))
+      
+      # se exitAfterSelection = True il comando viene terminato dopo una qualunque selezione 
+      # indipendentemente che sia stato selezionato o meno un oggetto o gruppo di oggetti.
+      # usato da QadVirtualSelCommandClass
+      self.exitAfterSelection = False
+      
       # selezione degli oggetti aggiunti più recentemente al gruppo di selezione (x opzione annulla)
       self.lastEntitySet = QadEntitySet()
       self.PLINECommand = None
@@ -173,14 +179,14 @@ class QadSSGetClass(QadCommandClass):
       if self.checkDimLayers == False and dimStyle is not None:
          self.showMsgOnAddRemove(0)
          return
-      
+
       for layerEntitySet in self.entitySet.layerEntitySetList:
          # se il layer non é quello di entity
          if entity.layerId() != layerEntitySet.layerId():            
             layerEntitySet.deselectOnLayer()
          else:
             layerEntitySet.deselectOnLayer()
-      
+     
       self.entitySet.deselectOnLayer()
       self.entitySet.clear()
       self.entitySet.addEntity(entity)
@@ -477,7 +483,11 @@ class QadSSGetClass(QadCommandClass):
                   self.AddRemoveEntity(self.plugIn.getLastEntity(), self.AddOnSelection)
                   if self.SingleSelection == True and self.entitySet.count() > 0:
                      self.plugIn.setLastEntitySet(self.entitySet)
-                     return True # fine               
+                     return True # fine
+               
+               if self.exitAfterSelection == True:
+                  return True # fine
+               
                self.WaitForFirstPoint()                          
             elif value == QadMsg.translate("Command_SSGET", "Box") or value == "Box":
                # Seleziona tutti gli oggetti che intersecano o si trovano all'interno di un rettangolo specificato da due punti.
@@ -496,7 +506,11 @@ class QadSSGetClass(QadCommandClass):
                self.elaborateSelSet(selSet, False)
                if self.SingleSelection == True and self.entitySet.count() > 0:
                   self.plugIn.setLastEntitySet(self.entitySet)
-                  return True # fine         
+                  return True # fine 
+
+               if self.exitAfterSelection == True:
+                  return True # fine
+
                self.WaitForFirstPoint()
             elif value == QadMsg.translate("Command_SSGET", "Fence") or value == "Fence":
                # Seleziona tutti gli oggetti che intersecano una polilinea
@@ -594,7 +608,11 @@ class QadSSGetClass(QadCommandClass):
                   self.elaborateSelSet(entitySet, False)
                   if self.SingleSelection == True and self.entitySet.count() > 0:
                      self.plugIn.setLastEntitySet(self.entitySet)
-                     return True # fine                                   
+                     return True # fine
+
+               if self.exitAfterSelection == True:
+                  return True # fine
+
                self.WaitForFirstPoint()
             elif value == QadMsg.translate("Command_SSGET", "Undo") or value == "Undo":
                # Annulla la selezione dell'oggetto aggiunto più recentemente al gruppo di selezione.
@@ -606,7 +624,11 @@ class QadSSGetClass(QadCommandClass):
                self.AddOnSelection = prevAddOnSelection
                if self.SingleSelection == True and self.entitySet.count() > 0:
                   self.plugIn.setLastEntitySet(self.entitySet)
-                  return True # fine               
+                  return True # fine
+
+               if self.exitAfterSelection == True:
+                  return True # fine
+               
                self.WaitForFirstPoint()
             elif value == QadMsg.translate("Command_SSGET", "AUto") or value == "AUto":
                # Passa alla selezione automatica: vengono selezionati gli oggetti sui quali si posiziona il puntatore.
@@ -640,6 +662,9 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine               
+
+            if self.exitAfterSelection == True:
+               return True # fine
 
             self.WaitForFirstPoint()
           
@@ -739,7 +764,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          else:
             self.showMsg(QadMsg.translate("Command_SSGET", "Window not correct."))
@@ -761,7 +789,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          return False
 
@@ -789,7 +820,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          return False
 
@@ -815,7 +849,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          return False
 
@@ -838,7 +875,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          return False
 
@@ -871,7 +911,10 @@ class QadSSGetClass(QadCommandClass):
             if self.SingleSelection == True and self.entitySet.count() > 0:
                self.plugIn.setLastEntitySet(self.entitySet)
                return True # fine
-            
+
+            if self.exitAfterSelection == True:
+               return True # fine
+
             self.WaitForFirstPoint()
          return False
 

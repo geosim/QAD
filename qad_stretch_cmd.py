@@ -38,6 +38,8 @@ from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 import qad_utils
 import qad_layer
+import qad_stretch_fun
+import qad_grip
 
 
 # Classe che gestisce il comando STRETCH
@@ -90,10 +92,8 @@ class QadSTRETCHCommandClass(QadCommandClass):
             return None
 
 
-
-
    #============================================================================
-   # rotate
+   # stretch
    #============================================================================
    def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet):
       # verifico se l'entità appartiene ad uno stile di quotatura
@@ -101,15 +101,14 @@ class QadSTRETCHCommandClass(QadCommandClass):
 
       if dimEntity is None:
          # stiro la feature e la rimuovo da entitySet (é la prima)
-         stretchedGeom = qad_utils.stretchQgsGeometry(f.geometry(), containerGeom, \
-                                                      offSetX, offSetY, \
-                                                      tolerance2ApproxCurve)
+         stretchedGeom = qad_stretch_fun.stretchQgsGeometry(f.geometry(), containerGeom, \
+                                                            offSetX, offSetY, \
+                                                            tolerance2ApproxCurve)
          
          if stretchedGeom is not None:
             f.setGeometry(stretchedGeom)
             # plugIn, layer, feature, refresh, check_validity
             if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
-               self.plugIn.destroyEditCommand()
                return False
          del layerEntitySet.featureIds[0]
       else:
@@ -505,3 +504,339 @@ class QadSTRETCHCommandClass(QadCommandClass):
             self.stretchFeatures(value)
             
          return True # fine comando
+
+
+
+# Classe che gestisce il comando STRETCH per i grip
+class QadGRIPSTRETCHCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadGRIPSTRETCHCommandClass(self.plugIn)
+   
+   def __init__(self, plugIn):
+      QadCommandClass.__init__(self, plugIn)
+      self.selectedEntityGripPoints = [] # lista in cui ogni elemento è una entità + una lista di punti da stirare
+      self.basePt = QgsPoint()
+      self.skipToNextGripCommand = False
+      self.copyEntities = False
+      self.nOperationsToUndo = 0
+   
+   def __del__(self):
+      QadCommandClass.__del__(self)
+      for SSGeom in self.SSGeomList:
+         SSGeom[0].deselectOnLayer()
+
+   def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
+      if (self.plugIn is not None):
+         if self.PointMapTool is None:
+            self.PointMapTool = Qad_gripStretch_maptool(self.plugIn)
+         return self.PointMapTool
+      else:
+         return None
+
+
+   #============================================================================
+   # addToSelectedEntityGripPoints
+   #============================================================================
+   def addToSelectedEntityGripPoints(self, entityGripPoints):
+      # entità con lista dei grip point
+      i = 0
+      layer = entityGripPoints.entity.layer
+      gripPoints = entityGripPoints.gripPoints
+      layerGripPoints = entityGripPoints.layerGripPoints # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
+
+      gripPointsLen = len(gripPoints)
+      ptList = []
+      while i < gripPointsLen:
+         gripPoint = gripPoints[i]
+         # grip point selezionato
+         if gripPoint.getStatus() == qad_grip.QadGripStatusEnum.SELECTED:
+            if gripPoint.gripType == qad_grip.QadGripPointTypeEnum.CENTER:
+               ptList.append(layerGripPoints[i])
+            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.LINE_MID_POINT:
+               # aggiungo il vertice precedente e successivo di quello intermedio
+               if i > 0:
+                  ptList.append(layerGripPoints[i - 1])
+               if i < gripPointsLen - 1:
+                  ptList.append(layerGripPoints[i + 1])
+            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.QUA_POINT:
+               ptList.append(layerGripPoints[i]) # da map coord a layer coord
+            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.VERTEX:
+               ptList.append(layerGripPoints[i]) # da map coord a layer coord
+            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.ARC_MID_POINT:
+               ptList.append(layerGripPoints[i]) # da map coord a layer coord
+         i = i + 1
+      
+      if len(ptList) > 0:
+         self.selectedEntityGripPoints.append([entityGripPoints.entity, ptList])
+
+   
+   #============================================================================
+   # setSelectedEntityGripPoints
+   #============================================================================
+   def setSelectedEntityGripPoints(self, entitySetGripPoints):
+      # lista delle entityGripPoint con dei grip point selezionati
+      # ritorna una lista in cui ogni elemento è una entità + una lista di punti da stirare
+      del self.selectedEntityGripPoints[:] # svuoto la lista
+
+      for entityGripPoints in entitySetGripPoints.entityGripPoints:
+         self.addToSelectedEntityGripPoints(entityGripPoints)
+      self.getPointMapTool().selectedEntityGripPoints = self.selectedEntityGripPoints
+
+
+   #============================================================================
+   # getSelectedEntityGripPointNdx
+   #============================================================================
+   def getSelectedEntityGripPointNdx(self, entity):
+      # lista delle entityGripPoint con dei grip point selezionati
+      # cerca la posizione di un'entità nella lista in cui ogni elemento è una entità + una lista di punti da stirare
+      i = 0
+      tot = len(self.selectedEntityGripPoints)
+      while i < tot:
+         selectedEntityGripPoint = self.selectedEntityGripPoints[i]
+         if selectedEntityGripPoint[0] == entity:
+            return i
+         i = i + 1
+      return -1
+
+
+   #============================================================================
+   # stretch
+   #============================================================================
+   def stretch(self, entity, ptList, offSetX, offSetY, tolerance2ApproxCurve):
+      # entity = entità da stirare
+      # ptList = lista dei punti da stirare
+      # offSetX, offSetY = spostamento da fare
+      # tolerance2ApproxCurve = tolleranza per ricreare le curve
+      # entitySet = gruppo di selezione delle entità da stirare
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      if entity.whatIs() == "ENTITY":
+         transformedBasePt = self.mapToLayerCoordinates(entity.layer, self.basePt)
+         # stiro la feature
+         stretchedGeom = qad_stretch_fun.gripStretchQgsGeometry(entity.getGeometry(), transformedBasePt, ptList, \
+                                                                offSetX, offSetY, \
+                                                                tolerance2ApproxCurve)
+         
+         if stretchedGeom is not None:
+            f = entity.getFeature()
+            f.setGeometry(stretchedGeom)
+            if self.copyEntities == False:
+               # plugIn, layer, feature, refresh, check_validity
+               if qad_layer.updateFeatureToLayer(self.plugIn, entity.layer, f, False, False) == False:
+                  return False
+            else:
+               # plugIn, layer, features, coordTransform, refresh, check_validity
+               if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:
+                  return False
+               
+      elif entity.whatIs() == "DIMENTITY":
+         # stiro la quota
+         dimEntitySet = entity.getEntitySet()
+         if self.copyEntities == False:
+            if entity.deleteToLayers(self.plugIn) == False:
+               return False                      
+         entity.stretch(self.plugIn, ptList, offSetX, offSetY)
+         if entity.addToLayers(self.plugIn) == False:
+            return False             
+            
+      return True
+
+
+   #============================================================================
+   # stretchFeatures
+   #============================================================================
+   def stretchFeatures(self, newPt):
+      # mi ricavo un unico QadEntitySet con le entità selezionate
+      entitySet = QadEntitySet()
+      for selectedEntity in self.selectedEntityGripPoints:
+         entitySet.addEntity(selectedEntity[0])
+      self.plugIn.beginEditCommand("Feature stretched", entitySet.getLayerList())
+      
+      dimElaboratedList = [] # lista delle quotature già elaborate
+      
+      for selectedEntity in self.selectedEntityGripPoints:
+         entity = selectedEntity[0]
+         ptList = selectedEntity[1]
+         layer = entity.layer
+         
+         tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
+                                                                     self.plugIn.canvas,\
+                                                                     layer)                              
+                  
+         if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
+            transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
+            transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
+            offSetX = transformedNewPt.x() - transformedBasePt.x()
+            offSetY = transformedNewPt.y() - transformedBasePt.y()
+         else:
+            offSetX = newPt.x() - self.basePt.x()
+            offSetY = newPt.y() - self.basePt.y()
+
+         # verifico se l'entità appartiene ad uno stile di quotatura
+         dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
+         if dimEntity is None:                        
+            if self.stretch(entity, ptList, offSetX, offSetY, tolerance2ApproxCurve) == False:
+               self.plugIn.destroyEditCommand()
+               return
+         else:
+            found = False
+            for dimElaborated in dimElaboratedList:
+               if dimElaborated == dimEntity:
+                  found = True
+            
+            if found == False: # quota non ancora elaborata
+               dimEntitySet = dimEntity.getEntitySet()
+               # creo un'unica lista contenente i grip points di tutti i componenti della quota
+               dimPtlist = []
+               for dimComponent in dimEntitySet:
+                  i = self.getSelectedEntityGripPointNdx(dimComponent)
+                  if i >= 0:
+                     dimPtlist.extend(self.selectedEntityGripPoints[i][1])
+
+               dimElaboratedList.append(dimEntity)
+               if self.stretch(dimEntity, dimPtlist, offSetX, offSetY, tolerance2ApproxCurve) == False:
+                  self.plugIn.destroyEditCommand()
+                  return
+
+      self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+                           
+                           
+   #============================================================================
+   # waitForStretchPoint
+   #============================================================================
+   def waitForStretchPoint(self):
+      self.step = 1
+      self.plugIn.setLastPoint(self.basePt)
+      # imposto il map tool
+      self.getPointMapTool().basePt = self.basePt
+      self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)
+      
+      keyWords = QadMsg.translate("Command_GRIPSTRETCH", "Base point") + "/" + \
+                 QadMsg.translate("Command_GRIPSTRETCH", "Copy") + "/" + \
+                 QadMsg.translate("Command_GRIPSTRETCH", "Undo") + "/" + \
+                 QadMsg.translate("Command_GRIPSTRETCH", "eXit")
+
+      prompt = QadMsg.translate("Command_GRIPSTRETCH", "Specify stretch point or [{0}]: ").format(keyWords)
+
+      englishKeyWords = "Base point" + "/" + "Copy" + "/" + "Undo" + "/" + "eXit"
+      keyWords += "_" + englishKeyWords
+      # si appresta ad attendere un punto o enter o una parola chiave         
+      # msg, inputType, default, keyWords, nessun controllo
+      self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
+                   None, \
+                   keyWords, QadInputModeEnum.NONE)      
+
+
+   #============================================================================
+   # waitForBasePt
+   #============================================================================
+   def waitForBasePt(self):
+      self.step = 2   
+      # imposto il map tool
+      self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT)                                
+
+      # si appresta ad attendere un punto
+      self.waitForPoint(QadMsg.translate("Command_GRIPSTRETCH", "Specify base point: "))
+
+
+   #============================================================================
+   # run
+   #============================================================================
+   def run(self, msgMapTool = False, msg = None):
+      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
+         return True # fine comando
+     
+      #=========================================================================
+      # RICHIESTA SELEZIONE OGGETTI
+      if self.step == 0: # inizio del comando
+         if len(self.selectedEntityGripPoints) == 0: # non ci sono oggetti da stirare
+            return True
+         self.showMsg(QadMsg.translate("Command_GRIPSTRETCH", "\n** STRETCH **\n"))
+         # si appresta ad attendere un punto di stiramento
+         self.waitForStretchPoint()
+         return False
+      
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA DI UN PUNTO DI STIRAMENTO
+      elif self.step == 1:
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  value = None
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+            else:
+               value = self.getPointMapTool().point
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == unicode:
+            if value == QadMsg.translate("Command_GRIPSTRETCH", "Base point") or value == "Base point":
+               # si appresta ad attendere il punto base
+               self.waitForBasePt()
+            elif value == QadMsg.translate("Command_GRIPSTRETCH", "Copy") or value == "Copy":
+               # Copia entità lasciando inalterate le originali
+               self.copyEntities = True                     
+               # si appresta ad attendere un punto di stiramento
+               self.waitForStretchPoint()
+            elif value == QadMsg.translate("Command_GRIPSTRETCH", "Undo") or value == "Undo":
+               if self.nOperationsToUndo > 0: 
+                  self.nOperationsToUndo = self.nOperationsToUndo - 1
+                  self.plugIn.undoEditCommand()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
+               # si appresta ad attendere un punto di stiramento
+               self.waitForStretchPoint()
+            elif value == QadMsg.translate("Command_GRIPSTRETCH", "eXit") or value == "eXit":
+               return True # fine comando
+         elif type(value) == QgsPoint: # se é stato selezionato un punto
+            self.stretchFeatures(value)
+
+            if self.copyEntities == False:
+               return True
+            # si appresta ad attendere un punto di stiramento
+            self.waitForStretchPoint()
+          
+         else:
+            self.skipToNextGripCommand = True
+            return True # fine comando
+                                          
+         return False 
+
+              
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA PUNTO BASE (da step = 1)
+      elif self.step == 2: # dopo aver atteso un punto
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  pass # opzione di default "spostamento"
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == QgsPoint: # se é stato inserito il punto base
+            self.basePt.set(value.x(), value.y())
+            # imposto il map tool
+            self.getPointMapTool().basePt = self.basePt
+            
+         # si appresta ad attendere un punto di stiramento
+         self.waitForStretchPoint()
+
+         return False

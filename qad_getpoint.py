@@ -417,7 +417,7 @@ class QadGetPoint(QgsMapTool):
          #   self.__RubberBand.removeLastPoint()
          self.__RubberBand.addPoint(startPoint, False)
          
-         point = self.toMapCoordinates(self.canvas.mouseLastXY())
+         point = self.toMapCoordinates(self.canvas.mouseLastXY()) # posizione
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y
@@ -557,7 +557,8 @@ class QadGetPoint(QgsMapTool):
       # tasto shift premuto durante il movimento del mouse      
       self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False 
 
-      if self.__RubberBand is not None:
+      # se l'obiettivo é selezionare un punto
+      if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
          if oSnapPoint is None:
             if self.__startPoint is not None: # c'é un punto di partenza
                if self.tmpShiftKey == False: # se non è premuto shift
@@ -723,7 +724,7 @@ class QadGetPoint(QgsMapTool):
             self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)            
             
       self.shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-      self.plugIn.QadCommands.continueCommandFromMapTool()     
+      self.plugIn.QadCommands.continueCommandFromMapTool()
       #self.plugIn.setStandardMapTool()
 
    def canvasReleaseEvent(self, event):
@@ -763,6 +764,8 @@ class QadGetPoint(QgsMapTool):
     
    def activate(self):
       if self.__csrRubberBand is not None:
+         # posizione corrente del mouse
+         self.__csrRubberBand.moveEvent(self.toMapCoordinates(self.canvas.mouseLastXY()))
          self.__csrRubberBand.show()
             
       self.point = None

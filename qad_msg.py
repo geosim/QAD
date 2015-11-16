@@ -90,7 +90,7 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    language = userLocaleList[0]
    region = userLocaleList[1] if len(userLocaleList) > 1 else ""
 
-   path = QDir.cleanPath(os.path.dirname(source)) + "/help/help"
+   path = QDir.cleanPath(os.path.dirname(source) + "/help/help")
    helpPath = path + "_" + language + "_" + region # provo a caricare la lingua e la regione selezionate
    
    if not os.path.exists(helpPath):

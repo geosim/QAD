@@ -789,7 +789,7 @@ def getEntSel(point, mQgsMapTool, \
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
    di dimensioni PICKBOX centrato sul punto <point>
-   layer = opzionale, lista dei layer in cui cercare
+   layersToCheck = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
    checkLineLayer = opzionale, considera i layer di tipo linea
    checkPolygonLayer = opzionale, considera i layer di tipo poligono
@@ -2100,7 +2100,7 @@ def doubleSmaller(a, b, tolerance = 1.e-9):
 #===============================================================================
 def TanDirectionNear(a, b, tolerance = 1.e-9):
    """
-   la funzione compara 2 direzini di tangenti (ma permette una tolleranza)
+   la funzione compara 2 direzioni di tangenti (ma permette una tolleranza)
    """
    if doubleNear(a, b):
       return True
@@ -3057,166 +3057,6 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
          pt = intPt
    
    return pt
-
-
-#===============================================================================
-# stretchQgsGeometry
-#===============================================================================
-def stretchPoint(point, containerGeom, offSetX, offSetY):   
-   if containerGeom.contains(point):
-      return movePoint(point, offSetX, offSetY)
-   
-   return None
-
-
-#===============================================================================
-# stretchQgsGeometry
-#===============================================================================
-def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):   
-   wkbType = geom.wkbType()
-   if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
-      pt = stretchPoint(geom.asPoint(), containerGeom, offSetX, offSetY)
-      if pt is not None:
-         return QgsGeometry.fromPoint(pt)
-            
-   if wkbType == QGis.WKBMultiPoint:
-      stretchedGeom = QgsGeometry(geom)
-      points = stretchedGeom.asMultiPoint() # vettore di punti
-      atSubGeom = 0
-      for pt in points:
-         subGeom = QgsGeometry.fromPoint(pt)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
-      return stretchedGeom
-
-   if wkbType == QGis.WKBLineString:
-      return stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-   
-   if wkbType == QGis.WKBMultiLineString:
-      stretchedGeom = QgsGeometry(geom)
-      lines = stretchedGeom.asMultiPolyline() # lista di linee
-      atSubGeom = 0
-      for line in lines:        
-         subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
-      return stretchedGeom
-         
-   if wkbType == QGis.WKBPolygon:
-      stretchedGeom = QgsGeometry(geom)
-      lines = stretchedGeom.asPolygon() # lista di linee
-      atSubGeom = 0
-      for line in lines:        
-         subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
-      return stretchedGeom
-      
-   if wkbType == QGis.WKBMultiPolygon:
-      stretchedGeom = QgsGeometry(geom)
-      polygons = geom.asMultiPolygon() # vettore di poligoni
-      atSubGeom = 0
-      for polygon in polygons:
-         subGeom = QgsGeometry.fromPolygon(polygon)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
-      return stretchedGeom
-   
-   return None
-   
-   
-#===============================================================================
-# stretchQgsLineStringGeometry
-#===============================================================================
-def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):
-   obj = whatGeomIs(0, geom)
-   if (type(obj) != list and type(obj) != tuple):
-      objType = obj.whatIs()
-      if objType == "CIRCLE": # se é cerchio
-         if containerGeom.contains(obj.center): # punto interno a containerGeom
-            obj.center.setX(obj.center.x() + offSetX)
-            obj.center.setY(obj.center.y() + offSetY)
-            return QgsGeometry.fromPolyline(obj.asPolyline(tolerance2ApproxCurve))
-
-   stretchedGeom = QgsGeometry(geom)
-   snapper = QadSnapper()
-   points = snapper.getEndPoints(stretchedGeom)
-   del snapper
-
-   linearObjectListToStretch = QadLinearObjectList()
-   linearObjectListToStretch.fromPolyline(geom.asPolyline())
-   
-   for point in points:
-      if containerGeom.contains(point): # punto interno a containerGeom                  
-         atPart = linearObjectListToStretch.containsPt(point)
-         while atPart >= 0:
-            linearObject = linearObjectListToStretch.getLinearObjectAt(atPart)
-            pt = linearObject.getStartPt()        
-            if ptNear(pt, point): # cambio punto iniziale
-               pt.setX(pt.x() + offSetX)
-               pt.setY(pt.y() + offSetY)
-               if linearObject.isSegment():
-                  linearObject.setStartPt(pt)
-               else:
-                  oldArc = linearObject.getArc()
-                  middlePt = oldArc.getMiddlePt()
-                  distFromMiddleChord = getDistance(middlePt, getPerpendicularPointOnInfinityLine(oldArc.getStartPt(), oldArc.getEndPt(), middlePt))
-                  
-                  newArc = QadArc()
-                  if linearObject.isInverseArc():                  
-                     middlePt = getMiddlePoint(pt, oldArc.getStartPt())
-                     middlePt = getPolarPointByPtAngle(middlePt, \
-                                                       getAngleBy2Pts(pt, oldArc.getStartPt()) + math.pi / 2, \
-                                                       distFromMiddleChord)                  
-                     if newArc.fromStartSecondEndPts(oldArc.getStartPt(), middlePt, pt) == False:
-                        return None
-                  else:
-                     middlePt = getMiddlePoint(pt, oldArc.getEndPt())
-                     middlePt = getPolarPointByPtAngle(middlePt, \
-                                                       getAngleBy2Pts(pt, oldArc.getEndPt()) - math.pi / 2, \
-                                                       distFromMiddleChord)                  
-                     if newArc.fromStartSecondEndPts(pt, middlePt, oldArc.getEndPt()) == False:
-                        return None
-                  linearObject.setArc(newArc, linearObject.isInverseArc())         
-            else:
-               pt = linearObject.getEndPt()
-               if ptNear(pt, point): # cambio punto finale
-                  pt.setX(pt.x() + offSetX)
-                  pt.setY(pt.y() + offSetY)
-                  if linearObject.isSegment():
-                     linearObject.setEndPt(pt)
-                  else:
-                     oldArc = linearObject.getArc()
-                     middlePt = oldArc.getMiddlePt()
-                     distFromMiddleChord = getDistance(middlePt, getPerpendicularPointOnInfinityLine(oldArc.getStartPt(), oldArc.getEndPt(), middlePt))
-                     
-                     newArc = QadArc()
-                     if linearObject.isInverseArc():
-                        middlePt = getMiddlePoint(pt, oldArc.getEndPt())
-                        middlePt = getPolarPointByPtAngle(middlePt, \
-                                                          getAngleBy2Pts(pt, oldArc.getEndPt()) - math.pi / 2, \
-                                                          distFromMiddleChord)                  
-                        if newArc.fromStartSecondEndPts(pt, middlePt, oldArc.getEndPt()) == False:
-                           return None
-                     else:
-                        middlePt = getMiddlePoint(pt, oldArc.getStartPt())
-                        middlePt = getPolarPointByPtAngle(middlePt, \
-                                                          getAngleBy2Pts(pt, oldArc.getStartPt()) + math.pi / 2, \
-                                                          distFromMiddleChord)                  
-                        if newArc.fromStartSecondEndPts(oldArc.getStartPt(), middlePt, pt) == False:
-                           return None
-                     linearObject.setArc(newArc, linearObject.isInverseArc())            
-                  
-            atPart = linearObjectListToStretch.containsPt(point, atPart + 1)
-            
-   pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
-   stretchedGeom = QgsGeometry.fromPolyline(pts)    
-      
-   return stretchedGeom   
            
 
 #===============================================================================
@@ -7115,12 +6955,12 @@ class QadLinearObject():
    #============================================================================
    def getStartPt(self):
       """
-      la funzione ritorna il punto iniziale dell'oggetto.
+      la funzione ritorna il punto iniziale dell'oggetto (ne alloca uno nuovo).
       """
       if self.isInitialized() == False:
          return None
       if self.isSegment(): # segmento
-         return self.defList[0]
+         return QgsPoint(self.defList[0])
       else: # arco
          if self.isInverseArc():
             return self.defList[0].getEndPt()
@@ -8191,6 +8031,22 @@ class QadLinearObjectList():
       """
       linearObject = self.getLinearObjectAt(-1) # ultimo oggetto lineare
       return None if linearObject is None else linearObject.getEndPt()
+
+
+   #============================================================================
+   # getCentroid
+   #============================================================================
+   def getCentroid(self, tolerance2ApproxCurve = None):
+      """
+      la funzione restituisce il punto centroide di una polilinea chiusa.
+      """
+      if self.isClosed(): # verifico se polilinea chiusa
+         ptList = self.asPolyline(tolerance2ApproxCurve)
+         g =  QgsGeometry.fromPolygon([ptList])
+         if g is not None: 
+            return g.centroid().asPoint()
+
+      return None
 
 
    #============================================================================

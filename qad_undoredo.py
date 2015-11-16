@@ -93,7 +93,7 @@ class QadUndoRecord():
       # si sta distruggendo un comando che coinvolge una lista di layer
       if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
          for layer in self.layerList:
-            layer.destroyEditCommand()
+            layer.destroyEditCommand() # Destroy active command and reverts all changes in it
          return True
       else:
          return False

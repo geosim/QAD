@@ -705,7 +705,7 @@ class QadDimStyle():
          return False
       
       if os.path.dirname(path) == "":
-         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/" + path)
+         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + path
       else:
          _path = path
          
@@ -3093,6 +3093,17 @@ class QadDimEntity():
          return True
 
 
+   def __eq__(self, dimEntity):
+      """self == other"""
+      if self.isInitialized() == False or dimEntity.isInitialized() == False :
+         return False
+
+      if self.getTextualLayer() == dimEntity.getTextualLayer() and self.getDimId() == dimEntity.getDimId():
+         return True
+      else:
+         return False    
+
+
    #============================================================================
    # getTextualLayer
    #============================================================================
@@ -3337,6 +3348,8 @@ class QadDimEntity():
       """
       Trova fra i vari punti possibili un punto che indichi dove si trova la linea di quota
       se containerGeom <> None il punto deve essere contenuto in containerGeom
+      containerGeom = può essere una QgsGeometry rappresentante un poligono contenente i punti di geom da stirare
+                      oppure una lista dei punti da stirare
       """
       
       if len(self.dimStyle.componentFieldName) > 0:
@@ -3348,12 +3361,21 @@ class QadDimEntity():
                if value == QadDimComponentEnum.DIM_LINE1 or value == QadDimComponentEnum.DIM_LINE2:
                   pts = f.geometry().asPolyline()
                   if containerGeom is not None: # verifico che il punto iniziale sia interno a containerGeom
-                     if containerGeom.contains(pts[0]) == True:
-                        return pts[0]
-                     else:
-                        # verifico che il punto finale sia interno a containerGeom
-                        if containerGeom.contains(pts[-1]) == True:
-                           return pts[-1]
+                     if type(containerGeom) == QgsGeometry: # geometria   
+                        if containerGeom.contains(pts[0]) == True:
+                           return pts[0]
+                        else:
+                           # verifico che il punto finale sia interno a containerGeom
+                           if containerGeom.contains(pts[-1]) == True:
+                              return pts[-1]
+                     elif type(containerGeom) == list: # lista di punti
+                        for containerPt in containerGeom:
+                           if ptNear(containerPt, pts[0]): # se i punti sono sufficientemente vicini
+                              return pts[0]
+                           else:
+                              # verifico il punto finale
+                              if ptNear(containerPt,pts[-1]):
+                                 return pts[-1]
                   else:
                      return pts[0] # punto iniziale
             except:
@@ -3367,8 +3389,13 @@ class QadDimEntity():
                if value == QadDimComponentEnum.BLOCK1 or value == QadDimComponentEnum.BLOCK2:
                   dimLinePosPt = f.geometry().asPoint()
                   if containerGeom is not None: # verifico che il punto sia interno a containerGeom
-                     if containerGeom.contains(dimLinePosPt) == True:
-                        return dimLinePosPt
+                     if type(containerGeom) == QgsGeometry: # geometria   
+                        if containerGeom.contains(dimLinePosPt) == True:
+                           return dimLinePosPt
+                     elif type(containerGeom) == list: # lista di punti
+                        for containerPt in containerGeom:
+                           if ptNear(containerPt, dimLinePosPt): # se i punti sono sufficientemente vicini
+                              return dimLinePosPt
                   else:
                      return dimLinePosPt
             except:
@@ -3653,6 +3680,12 @@ class QadDimEntity():
    # stretch
    #============================================================================
    def stretch(self, plugIn, containerGeom, offSetX, offSetY):
+      """
+      containerGeom = può essere una QgsGeometry rappresentante un poligono contenente i punti di geom da stirare
+                      oppure una lista dei punti da stirare
+      offSetX = spostamento X
+      offSetY = spostamento Y
+      """
       measure = None if self.isCalculatedText() else self.getTextValue()
             
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione

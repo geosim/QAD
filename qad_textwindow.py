@@ -585,7 +585,7 @@ class QadEdit(QTextEdit):
 
       # Se é stato premuto il tasto F10
       if e.key() == Qt.Key_F10:
-         # Attivo o disattivo lo snap
+         # Attivo o disattivo il modo polare
          self.parentWidget().togglePolarMode()
          return
 

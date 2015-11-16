@@ -132,50 +132,64 @@ class Qad_lengthen_maptool(QadGetPoint):
          if self.tmpEntity.isInitialized():
             if self.setInfo(self.tmpEntity, self.tmpPoint) == False:
                return
-                  
+
             if self.OpMode == "DElta":
+               newTmpLinearObjectList = qad_utils.QadLinearObjectList(self.tmpLinearObjectList)
                if self.OpType == "length":
-                  res = self.tmpLinearObjectList.lengthen_delta(self.move_startPt, self.value)
+                  res = newTmpLinearObjectList.lengthen_delta(self.move_startPt, self.value)
                elif self.OpType == "Angle":
-                  res = self.tmpLinearObjectList.lengthen_deltaAngle(self.move_startPt, self.value)
+                  res = newTmpLinearObjectList.lengthen_deltaAngle(self.move_startPt, self.value)
             elif self.OpMode == "Percent":
-               value = self.tmpLinearObjectList.length() * self.value / 100
-               value = value - self.tmpLinearObjectList.length()
-               res = self.tmpLinearObjectList.lengthen_delta(self.move_startPt, value)
+               newTmpLinearObjectList = qad_utils.QadLinearObjectList(self.tmpLinearObjectList)
+               value = newTmpLinearObjectList.length() * self.value / 100
+               value = value - newTmpLinearObjectList.length()
+               res = newTmpLinearObjectList.lengthen_delta(self.move_startPt, value)
             elif self.OpMode == "Total":
+               newTmpLinearObjectList = qad_utils.QadLinearObjectList(self.tmpLinearObjectList)
                if self.OpType == "length":
                   value = self.value - self.tmpLinearObjectList.length()
-                  res = self.tmpLinearObjectList.lengthen_delta(self.move_startPt, value)
+                  res = newTmpLinearObjectList.lengthen_delta(self.move_startPt, value)
                elif self.OpType == "Angle":                     
-                  if self.tmpLinearObjectList.qty() == 1:
-                     linearObject = self.tmpLinearObjectList.getLinearObjectAt(0)
+                  if newTmpLinearObjectList.qty() == 1:
+                     linearObject = newTmpLinearObjectList.getLinearObjectAt(0)
                      if linearObject.isArc() == True: # se è un arco
                         value = self.value - linearObject.getArc().totalAngle()
-                        res = self.tmpLinearObjectList.lengthen_deltaAngle(self.move_startPt, value)
+                        res = newTmpLinearObjectList.lengthen_deltaAngle(self.move_startPt, value)
                
       # si richiede un punto per la nuova estremità
       elif self.mode == Qad_lengthen_maptool_ModeEnum.ASK_FOR_DYNAMIC_POINT:
-         if self.tmpLinearObjectList.qty() == 1:
-            transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.layer, self.tmpPoint)
+         newTmpLinearObjectList = qad_utils.QadLinearObjectList(self.tmpLinearObjectList)
+         transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.layer, self.tmpPoint)
+         
+         if self.move_startPt:
+            linearObject = newTmpLinearObjectList.getLinearObjectAt(0)
+         else:
+            linearObject = newTmpLinearObjectList.getLinearObjectAt(-1)
             
-            linearObject = self.tmpLinearObjectList.getLinearObjectAt(0)
-            if linearObject.isSegment():
-               newPt = qad_utils.getPerpendicularPointOnInfinityLine(linearObject.getStartPt(), linearObject.getEndPt(), transformedPt)
-            else: # arco
-               newPt = qad_utils.getPolarPointByPtAngle(linearObject.getArc().center, \
-                                                        qad_utils.getAngleBy2Pts(linearObject.getArc().center, transformedPt), \
-                                                        linearObject.getArc().radius)                  
+         if linearObject.isSegment():
+            newPt = qad_utils.getPerpendicularPointOnInfinityLine(linearObject.getStartPt(), linearObject.getEndPt(), transformedPt)
+         else: # arco
+            newPt = qad_utils.getPolarPointByPtAngle(linearObject.getArc().center, \
+                                                     qad_utils.getAngleBy2Pts(linearObject.getArc().center, transformedPt), \
+                                                     linearObject.getArc().radius)                  
 
-            if self.move_startPt:
-               linearObject.setStartPt(newPt)
-            else:
-               linearObject.setEndPt(newPt)
+         if newTmpLinearObjectList.qty() > 1 and linearObject.isSegment():
+            ang = linearObject.getTanDirectionOnStartPt()
+
+         if self.move_startPt:
+            linearObject.setStartPt(newPt)
+         else:
+            linearObject.setEndPt(newPt)
+
+         if newTmpLinearObjectList.qty() > 1 and linearObject.isSegment() and \
+            qad_utils.TanDirectionNear(ang, linearObject.getTanDirectionOnStartPt()) == False:
+            res = False
+         else:
             res = True
       
-
       if res == False: # allungamento impossibile
          return
-      pts = self.tmpLinearObjectList.asPolyline()
+      pts = newTmpLinearObjectList.asPolyline()
       geom = QgsGeometry.fromPolyline(pts)
       self.__rubberBand.addGeometry(geom, self.layer)
       

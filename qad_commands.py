@@ -31,7 +31,7 @@ from qgis.core import *
 from qgis.gui import *
 
 
-from qad_maptool import QadMapTool
+from qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
 from qad_msg import QadMsg
 from qad_cmd_aliases import *
 
@@ -177,8 +177,8 @@ class QadCommandsClass():
             return self.getCommandObj(command, False)
          else:
             return None
-
-
+      
+      
    #============================================================================
    # getCommandNames
    #============================================================================
@@ -198,9 +198,32 @@ class QadCommandsClass():
    #============================================================================
    # run
    #============================================================================
-   def run(self, command):
+   def run(self, command, param = None):
       # se c'é un comando attivo
       if self.actualCommand is not None:
+         return
+
+      # eccezione per comando virtuale "QadVirtualSelCommandClass" che in realtà non è un comando
+      # ma è usato per selezionare oggetti quando nessun comando è attivo
+      if command == "QadVirtualSelCommandClass":
+         self.actualCommand = QadVirtualSelCommandClass(self.plugIn)
+         # param è la posizione corrente del mouse
+         if self.actualCommand.run(False, param) == True: # comando terminato
+            self.clearCommand()
+         return
+
+      # eccezione per comando virtuale "QadVirtualGripCommandsClass" che in realtà non è un comando
+      # ma è usato per modificare gli oggetti selezionati da grip points
+      if command == "QadVirtualGripCommandsClass":
+         self.actualCommand = QadVirtualGripCommandsClass(self.plugIn)
+         # param è una lista in cui:
+         # il primo elemento è entitySetGripPoints
+         # il secondo elemento è il punto del grip corrente
+         self.actualCommand.entitySetGripPoints = param[0]
+         self.actualCommand.basePt = param[1]
+         self.actualCommand.initNextCommand()
+         if self.actualCommand.run(False) == True: # comando terminato
+            self.clearCommand()
          return
       
       self.actualCommand = self.getCommandObj(command)
@@ -274,8 +297,11 @@ class QadCommandsClass():
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
          self.plugIn.setStandardMapTool()               
       else:
-         self.showErr(QadMsg.translate("QAD", "*Canceled*"))
+         self.showMsg(QadMsg.translate("QAD", "*Canceled*"))
          self.clearCommand()
+      # pulisco le entità selezionate e i grip points correnti
+      self.plugIn.tool.clearEntitySet()
+      self.plugIn.tool.clearEntityGripPoints()
 
 
    #============================================================================
@@ -284,6 +310,19 @@ class QadCommandsClass():
    def clearCommand(self):
       if self.actualCommand is None:
          return
+      
+      # eccezione per comando virtuale "QadVirtualGripCommandsClass" che in realtà non è un comando
+      # ma è usato per modificare gli oggetti selezionati da grip points
+      if self.actualCommand.getName() == "QadVirtualGripCommandsClass":
+         # ridisegno i grip point nelle nuove posizioni resettando quelli selezionati
+         self.plugIn.tool.clearEntityGripPoints()
+         self.plugIn.tool.refreshEntityGripPoints()
+      else:
+         # eccezione per comando virtuale "QadVirtualSelCommandClass" che in realtà non è un comando
+         # ma è usato per selezionare oggetti quando nessun comando è attivo
+         if self.actualCommand.getName() != "QadVirtualSelCommandClass":
+            qad_utils.deselectAll(self.plugIn.canvas.layers())
+         
       del self.actualCommand
       self.actualCommand = None    
       self.plugIn.setStandardMapTool()      

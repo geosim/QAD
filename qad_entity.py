@@ -116,11 +116,13 @@ class QadEntity():
          return None      
       return QgsGeometry(feature.geometry()) # fa una copia
 
-   def setGeometry(self, geom):
-      feature = self.getFeature()
-      if feature is None:
-         return None      
-      return feature.setGeometry(geom)
+#    questa funzione non ha senso perchè feature è una variabile locale temporanea a cui viene settata la geometria
+#    ma poi, a fine funzione, viene distrutta.
+#    def setGeometry(self, geom):
+#       feature = self.getFeature()
+#       if feature is None:
+#          return None      
+#       return feature.setGeometry(geom)
 
 
    def getAttribute(self, attribName):
@@ -154,7 +156,7 @@ class QadEntity():
          return False
 
       self.layer.deselect(self.featureId)
-   
+
       
 #===============================================================================
 # QadLayerEntitySet entities of a layer class
@@ -213,8 +215,14 @@ class QadLayerEntitySet():
             self.addFeatures(features)
       else:
          return self.set(layer.layer, layer.featureIds)
-     
-      
+
+
+   def initByCurrentQgsSelectedFeatures(self, layer):
+      self.clear()
+      self.layer = layer
+      self.featureIds = self.layer.selectedFeaturesIds()
+
+
    def getFeature(self, featureId):
       if self.isInitialized() == False:
          return None
@@ -314,14 +322,20 @@ class QadLayerEntitySet():
                                       
    def addFeature(self, feature):
       if self.isInitialized() == False:
-         return
+         return False
       
       if type(feature) == QgsFeature:
          if self.containsFeature(feature.id()) == False:    
             self.featureIds.append(feature.id())
+            return True
+         else:
+            return False
       else:
          if self.containsFeature(feature) == False:    
             self.featureIds.append(feature)
+            return True
+         else:
+            return False
 
 
    def removeFeature(self, feature):
@@ -422,9 +436,8 @@ class QadLayerEntitySet():
 class QadEntitySet():
     
    def __init__(self, entitySet = None):
-      if entitySet is None:
-         self.layerEntitySetList = []
-      else:
+      self.layerEntitySetList = []
+      if entitySet is not None:
          self.set(entitySet)
 
 
@@ -450,10 +463,20 @@ class QadEntitySet():
       del self.layerEntitySetList[:] 
 
 
-   def set(self, entitySet):
-      self.layerEntitySetList = []
+   def set(self, entitySet):      
+      self.clear()
       for layerEntitySet in entitySet.layerEntitySetList:
          self.addLayerEntitySet(layerEntitySet)
+
+
+   def initByCurrentQgsSelectedFeatures(self, layers):
+      self.clear()
+
+      for layer in layers:
+         if layer.selectedFeatureCount() > 0:
+            layerEntitySet = QadLayerEntitySet()
+            layerEntitySet.initByCurrentQgsSelectedFeatures(layer)
+            self.layerEntitySetList.append(layerEntitySet)
 
 
    def findLayerEntitySet(self, layer):
@@ -518,7 +541,7 @@ class QadEntitySet():
          layerEntitySet = QadLayerEntitySet()
          layerEntitySet.set(entity.layer)
          self.layerEntitySetList.append(layerEntitySet)
-      layerEntitySet.addFeature(entity.featureId)
+      return layerEntitySet.addFeature(entity.featureId)
          
 
    def removeEntity(self, entity):
