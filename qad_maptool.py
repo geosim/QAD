@@ -37,6 +37,7 @@ from qad_generic_cmd import QadCommandClass
 from qad_ssget_cmd import QadSSGetClass
 from qad_grip import *
 from qad_stretch_cmd import QadGRIPSTRETCHCommandClass
+from qad_move_cmd import QadGRIPMOVECommandClass
 from qad_msg import QadMsg
 
 
@@ -338,6 +339,7 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          
       if self.commandNum == QadVirtualGripCommandsEnum.STRECTH:
          self.commandNum = QadVirtualGripCommandsEnum.MOVE
+         self.currentCommand = QadGRIPMOVECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.MOVE:
          self.commandNum = QadVirtualGripCommandsEnum.ROTATE
       elif self.commandNum == QadVirtualGripCommandsEnum.ROTATE:
@@ -347,9 +349,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
       elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR or self.commandNum == -1:
          self.commandNum = QadVirtualGripCommandsEnum.STRECTH
          self.currentCommand = QadGRIPSTRETCHCommandClass(self.plugIn)
-         self.currentCommand.basePt = self.basePt
       
       if self.currentCommand is not None:
+         self.currentCommand.basePt = self.basePt
          self.currentCommand.setSelectedEntityGripPoints(self.entitySetGripPoints)
          return True
       else:

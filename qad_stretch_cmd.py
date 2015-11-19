@@ -510,9 +510,11 @@ class QadSTRETCHCommandClass(QadCommandClass):
 # Classe che gestisce il comando STRETCH per i grip
 class QadGRIPSTRETCHCommandClass(QadCommandClass):
 
+
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
       return QadGRIPSTRETCHCommandClass(self.plugIn)
+
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -521,11 +523,11 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       self.skipToNextGripCommand = False
       self.copyEntities = False
       self.nOperationsToUndo = 0
+
    
    def __del__(self):
       QadCommandClass.__del__(self)
-      for SSGeom in self.SSGeomList:
-         SSGeom[0].deselectOnLayer()
+
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
@@ -609,7 +611,6 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       # ptList = lista dei punti da stirare
       # offSetX, offSetY = spostamento da fare
       # tolerance2ApproxCurve = tolleranza per ricreare le curve
-      # entitySet = gruppo di selezione delle entità da stirare
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
          transformedBasePt = self.mapToLayerCoordinates(entity.layer, self.basePt)

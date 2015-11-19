@@ -857,43 +857,87 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
-    <name>Command_GRIPSTRETCH</name>
+    <name>Command_GRIPMOVE</name>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="716"/>
-        <location filename="../qad_stretch_cmd.py" line="782"/>
+        <location filename="../qad_move_cmd.py" line="418"/>
+        <location filename="../qad_move_cmd.py" line="484"/>
         <source>Base point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="717"/>
-        <location filename="../qad_stretch_cmd.py" line="785"/>
+        <location filename="../qad_move_cmd.py" line="419"/>
+        <location filename="../qad_move_cmd.py" line="487"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="718"/>
-        <location filename="../qad_stretch_cmd.py" line="790"/>
+        <location filename="../qad_move_cmd.py" line="420"/>
+        <location filename="../qad_move_cmd.py" line="492"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="719"/>
-        <location filename="../qad_stretch_cmd.py" line="798"/>
+        <location filename="../qad_move_cmd.py" line="421"/>
+        <location filename="../qad_move_cmd.py" line="500"/>
         <source>eXit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="721"/>
-        <source>Specify stretch point or [{0}]: </source>
+        <location filename="../qad_move_cmd.py" line="423"/>
+        <source>Specify move point or [{0}]: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="741"/>
+        <location filename="../qad_move_cmd.py" line="443"/>
         <source>Specify base point: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_stretch_cmd.py" line="757"/>
+        <location filename="../qad_move_cmd.py" line="459"/>
+        <source>
+** MOVE **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPSTRETCH</name>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="717"/>
+        <location filename="../qad_stretch_cmd.py" line="783"/>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="718"/>
+        <location filename="../qad_stretch_cmd.py" line="786"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="719"/>
+        <location filename="../qad_stretch_cmd.py" line="791"/>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="720"/>
+        <location filename="../qad_stretch_cmd.py" line="799"/>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="722"/>
+        <source>Specify stretch point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="742"/>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qad_stretch_cmd.py" line="758"/>
         <source>
 ** STRETCH **
 </source>
@@ -1154,22 +1198,22 @@ The points must be different.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_move_cmd.py" line="173"/>
+        <location filename="../qad_move_cmd.py" line="172"/>
         <source>Displacement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_move_cmd.py" line="174"/>
+        <location filename="../qad_move_cmd.py" line="173"/>
         <source>Specify base point or [{0}] &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_move_cmd.py" line="211"/>
+        <location filename="../qad_move_cmd.py" line="210"/>
         <source>Specify the displacement fom the origin point 0,0 &lt;{0}, {1}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_move_cmd.py" line="227"/>
+        <location filename="../qad_move_cmd.py" line="226"/>
         <source>Specify the second point or &lt;use first point as displacement from the origin point 0,0&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -4606,7 +4650,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_pedit_cmd.py" line="654"/>
         <location filename="../qad_pedit_maptool.py" line="94"/>
         <location filename="../qad_stretch_cmd.py" line="145"/>
-        <location filename="../qad_stretch_cmd.py" line="663"/>
+        <location filename="../qad_stretch_cmd.py" line="664"/>
         <location filename="../qad_stretch_maptool.py" line="124"/>
         <location filename="../qad_stretch_maptool.py" line="272"/>
         <location filename="../qad_trim_cmd.py" line="99"/>
@@ -4732,7 +4776,7 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_maptool.py" line="229"/>
+        <location filename="../qad_maptool.py" line="230"/>
         <location filename="../qad_variables.py" line="116"/>
         <source>CMDINPUTHISTORYMAX</source>
         <translation type="unfinished"></translation>
@@ -4935,7 +4979,7 @@ The SELECTIONAREA system variable must be on.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_maptool.py" line="104"/>
+        <location filename="../qad_maptool.py" line="105"/>
         <location filename="../qad_variables.py" line="233"/>
         <source>GRIPS</source>
         <translation type="unfinished"></translation>
@@ -5134,12 +5178,12 @@ The SELECTIONAREA system variable must be on.</source>
 <context>
     <name>Popup_menu_graph_window</name>
     <message>
-        <location filename="../qad_maptool.py" line="237"/>
+        <location filename="../qad_maptool.py" line="238"/>
         <source>Repeat </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_maptool.py" line="248"/>
+        <location filename="../qad_maptool.py" line="249"/>
         <source>Recent commands</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5188,7 +5232,7 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad.py" line="1168"/>
         <location filename="../qad_textwindow.py" line="107"/>
         <location filename="../qad_textwindow.py" line="480"/>
-        <location filename="../qad_textwindow.py" line="951"/>
+        <location filename="../qad_textwindow.py" line="953"/>
         <source>Command: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -5241,7 +5285,8 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad_line_cmd.py" line="148"/>
         <location filename="../qad_mbuffer_cmd.py" line="178"/>
         <location filename="../qad_mirror_cmd.py" line="183"/>
-        <location filename="../qad_move_cmd.py" line="149"/>
+        <location filename="../qad_move_cmd.py" line="148"/>
+        <location filename="../qad_move_cmd.py" line="451"/>
         <location filename="../qad_mpolygon_cmd.py" line="95"/>
         <location filename="../qad_offset_cmd.py" line="425"/>
         <location filename="../qad_pedit_cmd.py" line="940"/>
@@ -5253,7 +5298,7 @@ The SELECTIONAREA system variable must be on.</source>
         <location filename="../qad_setcurrlayerbygraph_cmd.py" line="88"/>
         <location filename="../qad_ssget_cmd.py" line="423"/>
         <location filename="../qad_stretch_cmd.py" line="271"/>
-        <location filename="../qad_stretch_cmd.py" line="749"/>
+        <location filename="../qad_stretch_cmd.py" line="750"/>
         <location filename="../qad_text_cmd.py" line="164"/>
         <location filename="../qad_trim_cmd.py" line="239"/>
         <source>
@@ -5265,7 +5310,7 @@ The coordinate reference system of the project must be a projected coordinate sy
         <location filename="../qad_commands.py" line="231"/>
         <location filename="../qad_commands.py" line="249"/>
         <location filename="../qad_commands.py" line="451"/>
-        <location filename="../qad_textwindow.py" line="809"/>
+        <location filename="../qad_textwindow.py" line="811"/>
         <source>
 Invalid command &quot;{0}&quot;.</source>
         <translation type="unfinished"></translation>
@@ -5291,8 +5336,9 @@ Current settings: </source>
         <location filename="../qad_extend_cmd.py" line="338"/>
         <location filename="../qad_fillet_cmd.py" line="445"/>
         <location filename="../qad_lengthen_cmd.py" line="622"/>
+        <location filename="../qad_move_cmd.py" line="497"/>
         <location filename="../qad_pedit_cmd.py" line="1069"/>
-        <location filename="../qad_stretch_cmd.py" line="795"/>
+        <location filename="../qad_stretch_cmd.py" line="796"/>
         <location filename="../qad_trim_cmd.py" line="335"/>
         <source>
 The command has been canceled.</source>
@@ -5491,95 +5537,95 @@ Current layer is not a textual layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="705"/>
+        <location filename="../qad_textwindow.py" line="707"/>
         <source>
 Enter a point, a real number or a keyword.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="707"/>
+        <location filename="../qad_textwindow.py" line="709"/>
         <source>
 Enter a point or a keyword.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="709"/>
+        <location filename="../qad_textwindow.py" line="711"/>
         <source>
 Enter a point or a real number.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="711"/>
+        <location filename="../qad_textwindow.py" line="713"/>
         <source>
 Point not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="713"/>
+        <location filename="../qad_textwindow.py" line="715"/>
         <source>
 Keyword not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="715"/>
+        <location filename="../qad_textwindow.py" line="717"/>
         <source>
 String not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="717"/>
+        <location filename="../qad_textwindow.py" line="719"/>
         <source>
 Integer number not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="719"/>
+        <location filename="../qad_textwindow.py" line="721"/>
         <source>
 Long integer number not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="721"/>
+        <location filename="../qad_textwindow.py" line="723"/>
         <source>
 Real number not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="723"/>
+        <location filename="../qad_textwindow.py" line="725"/>
         <source>
 Boolean not valid.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="762"/>
+        <location filename="../qad_textwindow.py" line="764"/>
         <source>
 Ambiguous answer: specify with greater clarity...
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="768"/>
+        <location filename="../qad_textwindow.py" line="770"/>
         <source> or </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="770"/>
+        <location filename="../qad_textwindow.py" line="772"/>
         <source> ?
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_textwindow.py" line="834"/>
+        <location filename="../qad_textwindow.py" line="836"/>
         <source>
 (temporary snap)
 </source>

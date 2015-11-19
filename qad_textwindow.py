@@ -622,7 +622,9 @@ class QadEdit(QTextEdit):
          # if Return is pressed, then perform the commands
          if e.key() == Qt.Key_Return:
             self.entered()
-         elif e.key() == Qt.Key_Space and self.inputType & QadInputTypeEnum.COMMAND:            
+         # if Space is pressed during command request or value not string request
+         elif e.key() == Qt.Key_Space and \
+              (self.inputType & QadInputTypeEnum.COMMAND or not(self.inputType & QadInputTypeEnum.STRING)):
             self.entered()          
          # if Up or Down is pressed
          elif e.key() == Qt.Key_Down:

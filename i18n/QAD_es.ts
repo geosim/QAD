@@ -602,6 +602,39 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_GRIPMOVE</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify move point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** MOVE **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_GRIPSTRETCH</name>
     <message>
         <source>Base point</source>

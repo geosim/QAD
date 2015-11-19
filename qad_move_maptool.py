@@ -48,6 +48,7 @@ class Qad_move_maptool_ModeEnum():
    # noto il punto base si richiede il secondo punto per lo spostamento
    BASE_PT_KNOWN_ASK_FOR_MOVE_PT = 2     
 
+
 #===============================================================================
 # Qad_move_maptool class
 #===============================================================================
@@ -139,7 +140,9 @@ class Qad_move_maptool(QadGetPoint):
       self.mode = mode
       # noto niente si richiede il punto base
       if self.mode == Qad_move_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
+         self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__rubberBand.reset()
       # noto il punto base si richiede il secondo punto
       elif self.mode == Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
