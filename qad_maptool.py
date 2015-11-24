@@ -38,6 +38,10 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_grip import *
 from qad_stretch_cmd import QadGRIPSTRETCHCommandClass
 from qad_move_cmd import QadGRIPMOVECommandClass
+from qad_rotate_cmd import QadGRIPROTATECommandClass
+from qad_scale_cmd import QadGRIPSCALECommandClass
+from qad_mirror_cmd import QadGRIPMIRRORCommandClass
+
 from qad_msg import QadMsg
 
 
@@ -342,10 +346,13 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          self.currentCommand = QadGRIPMOVECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.MOVE:
          self.commandNum = QadVirtualGripCommandsEnum.ROTATE
+         self.currentCommand = QadGRIPROTATECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.ROTATE:
          self.commandNum = QadVirtualGripCommandsEnum.SCALE
+         self.currentCommand = QadGRIPSCALECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.SCALE:
          self.commandNum = QadVirtualGripCommandsEnum.MIRROR
+         self.currentCommand = QadGRIPMIRRORCommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR or self.commandNum == -1:
          self.commandNum = QadVirtualGripCommandsEnum.STRECTH
          self.currentCommand = QadGRIPSTRETCHCommandClass(self.plugIn)

@@ -166,7 +166,9 @@ class Qad_scale_maptool(QadGetPoint):
       self.mode = mode
       # noto niente si richiede il punto base
       if self.mode == Qad_scale_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
+         self.clear()
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__rubberBand.reset()
       # noto il punto base si richiede il secondo punto per la scala
       elif self.mode == Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
@@ -174,6 +176,7 @@ class Qad_scale_maptool(QadGetPoint):
       # si richiede il primo punto per la lunghezza di riferimento
       elif self.mode == Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_PT_REFERENCE_LEN:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__rubberBand.reset()
       # noto il primo punto si richiede il secondo punto per la lunghezza di riferimento
       elif self.mode == Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT_REFERENCE_LEN:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
@@ -185,6 +188,7 @@ class Qad_scale_maptool(QadGetPoint):
       # si richiede il primo punto per la nuova lunghezza
       elif self.mode == Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_NEW_LEN_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__rubberBand.reset()
       # noto il primo punto si richiede il secondo punto per la nuova lunghezza
       elif self.mode == Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_NEW_LEN_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)

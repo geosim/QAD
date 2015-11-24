@@ -257,7 +257,7 @@ class QadSnapper():
       """
       il punto é espresso in __snapPointCRS se CRS = None
       """
-      if CRS is not None:
+      if startPoint is not None and CRS is not None:
          self.__startPoint = self.__transformPoint(startPoint, CRS, self.getSnapPointCRS()) # trasformo il punto
       else:
          self.__startPoint = startPoint     

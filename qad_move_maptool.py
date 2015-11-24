@@ -78,32 +78,28 @@ class Qad_move_maptool(QadGetPoint):
    #============================================================================
    # move
    #============================================================================
-   def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):
+   def move(self, entity, offSetX, offSetY):
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
-      
-      if dimEntity is None:
-         # sposto la feature e la rimuovo da entitySet (é la prima)
-         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
-         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
-         del layerEntitySet.featureIds[0]
+      if entity.whatIs() == "ENTITY":
+         # sposto l'entità
+         movedGeom = qad_utils.moveQgsGeometry(entity.getGeometry(), offSetX, offSetY)
+         if movedGeom is not None:
+            self.__rubberBand.addGeometry(movedGeom, entity.layer)
       else:
-         # sposto la quota e la rimuovo da entitySet
-         dimEntitySet = dimEntity.getEntitySet()
-         dimEntity.move(offSetX, offSetY)
-         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
-         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
-         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
-         entitySet.subtract(dimEntitySet)
+         # sposto la quota
+         entity.move(offSetX, offSetY)
+         self.__rubberBand.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
+         self.__rubberBand.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
+         self.__rubberBand.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
 
    
    def addMovedGeometries(self, newPt):
       self.__rubberBand.reset()            
 
-      # copio entitySet
-      entitySet = QadEntitySet(self.entitySet)
+      dimElaboratedList = [] # lista delle quotature già elaborate
+      entity = QadEntity()
       
-      for layerEntitySet in entitySet.layerEntitySetList:
+      for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
@@ -111,12 +107,23 @@ class Qad_move_maptool(QadGetPoint):
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
 
-         while len(layerEntitySet.featureIds) > 0:
-            featureId = layerEntitySet.featureIds[0]
-            f = layerEntitySet.getFeature(featureId)
-            self.move(f, offSetX, offSetY, layerEntitySet, entitySet)
-            
-      
+         for featureId in layerEntitySet.featureIds:
+            # verifico se l'entità appartiene ad uno stile di quotatura
+            dimEntity = self.plugIn.dimStyles.getDimEntity(layer, featureId)  
+            if dimEntity is None:
+               entity.set(layer, featureId)
+               f = layerEntitySet.getFeature(featureId)
+               self.move(entity, offSetX, offSetY)
+            else:            
+               found = False
+               for dimElaborated in dimElaboratedList:
+                  if dimElaborated == dimEntity:
+                     found = True
+               if found == False: # quota non ancora elaborata
+                  dimElaboratedList.append(dimEntity)
+                  self.stretch(dimEntity, offSetX, offSetY)
+
+
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
                      

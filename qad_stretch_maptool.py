@@ -243,17 +243,17 @@ class Qad_gripStretch_maptool(QadGetPoint):
          transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(entity.layer, self.basePt)
          # stiro la feature 
          stretchedGeom = qad_stretch_fun.gripStretchQgsGeometry(entity.getGeometry(), self.basePt, ptList, \
-                                                      offSetX, offSetY, \
-                                                      tolerance2ApproxCurve)
+                                                                offSetX, offSetY, \
+                                                                tolerance2ApproxCurve)
          
          if stretchedGeom is not None:
             self.__rubberBand.addGeometry(stretchedGeom, entity.layer)
       elif entity.whatIs() == "DIMENTITY":
          # stiro la quota
-         dimEntity.stretch(self.plugIn, ptList, offSetX, offSetY)
-         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
-         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
-         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         entity.stretch(self.plugIn, ptList, offSetX, offSetY)
+         self.__rubberBand.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
+         self.__rubberBand.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
+         self.__rubberBand.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
 
    
    #============================================================================

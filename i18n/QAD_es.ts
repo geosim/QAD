@@ -602,6 +602,40 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_GRIPMIRROR</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** MIRROR **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The points must be different.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_GRIPMOVE</name>
     <message>
         <source>Base point</source>
@@ -631,6 +665,100 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
         <source>
 ** MOVE **
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPROTATE</name>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify rotation angle or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify reference angle &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** ROTATE **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPSCALE</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify new length or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify scale factor or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify reference length &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** SCALE **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

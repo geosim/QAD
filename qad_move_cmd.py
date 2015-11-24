@@ -125,9 +125,6 @@ class QadMOVECommandClass(QadCommandClass):
       self.plugIn.beginEditCommand("Feature moved", entitySet.getLayerList())
       
       for layerEntitySet in entitySet.layerEntitySetList:                        
-         layer = layerEntitySet.layer
-         
-         movedObjects = []
          transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layerEntitySet.layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
@@ -334,7 +331,7 @@ class QadGRIPMOVECommandClass(QadCommandClass):
       # tolerance2ApproxCurve = tolleranza per ricreare le curve
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
-         # sposto la feature
+         # sposto l'entità
          movedGeom = qad_utils.moveQgsGeometry(entity.getGeometry(), offSetX, offSetY)
          
          if movedGeom is not None:
@@ -351,7 +348,6 @@ class QadGRIPMOVECommandClass(QadCommandClass):
                
       elif entity.whatIs() == "DIMENTITY":
          # stiro la quota
-         dimEntitySet = entity.getEntitySet()
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False                      
@@ -374,7 +370,6 @@ class QadGRIPMOVECommandClass(QadCommandClass):
       for layerEntitySet in self.entitySet.layerEntitySetList:                        
          layer = layerEntitySet.layer
          
-         movedObjects = []
          transformedBasePt = self.mapToLayerCoordinates(layerEntitySet.layer, self.basePt)
          transformedNewPt = self.mapToLayerCoordinates(layerEntitySet.layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
@@ -457,12 +452,12 @@ class QadGRIPMOVECommandClass(QadCommandClass):
          if self.entitySet.isEmpty(): # non ci sono oggetti da spostare
             return True
          self.showMsg(QadMsg.translate("Command_GRIPMOVE", "\n** MOVE **\n"))
-         # si appresta ad attendere un punto di stiramento
+         # si appresta ad attendere un punto di spostamento
          self.waitForMovePoint()
          return False
       
       #=========================================================================
-      # RISPOSTA ALLA RICHIESTA DI UN PUNTO DI STIRAMENTO
+      # RISPOSTA ALLA RICHIESTA DI UN PUNTO DI SPOSTAMENTO
       elif self.step == 1:
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
@@ -541,4 +536,4 @@ class QadGRIPMOVECommandClass(QadCommandClass):
          # si appresta ad attendere un punto di spostamento
          self.waitForMovePoint()
 
-         return False      
+         return False

@@ -138,6 +138,7 @@ class Qad_mirror_maptool(QadGetPoint):
       # noto niente si richiede il primo punto della linea speculare
       if self.mode == Qad_mirror_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__rubberBand.reset()
       # noto il primo punto si richiede il secondo punto della linea speculare
       elif self.mode == Qad_mirror_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)

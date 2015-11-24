@@ -633,7 +633,6 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                
       elif entity.whatIs() == "DIMENTITY":
          # stiro la quota
-         dimEntitySet = entity.getEntitySet()
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False                      
