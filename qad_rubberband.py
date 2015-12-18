@@ -217,7 +217,7 @@ def getQGISColorForRubberBand(geometryType = QGis.Line, alternativeBand = False)
 #===============================================================================
 def getColorForWindowSelectionArea():
    """
-   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo intersezione.
+   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo finestra.
    """
    if QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREA")) == 0:
       color = QColor()
@@ -235,7 +235,7 @@ def getColorForWindowSelectionArea():
 #===============================================================================
 def getColorForCrossingSelectionArea():
    """
-   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo finestra.
+   La funzione legge il colore (RGB) dell'area di selezione degli oggetti nel modo intersezione.
    """
    if QadVariables.get(QadMsg.translate("Environment variables", "SELECTIONAREA")) == 0:
       color = QColor()
@@ -316,11 +316,11 @@ class QadRubberBand():
       # si vuole inserire una linea chiusa in un layer poligono 
       geomType = layer.geometryType()
       #geomType = geom.type()
-      if geomType == QGis.Point:      
+      if geomType == QGis.Point:
          self.__rubberBandPoint.addGeometry(geom, layer)
-      elif geomType == QGis.Line:      
+      elif geomType == QGis.Line:
          self.__rubberBandLine.addGeometry(geom, layer)
-      elif geomType == QGis.Polygon:      
+      elif geomType == QGis.Polygon:
          self.__rubberBandPolygon.addGeometry(geom, layer)
       
    def addGeometries(self, geoms, layer):

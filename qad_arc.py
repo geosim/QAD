@@ -557,22 +557,24 @@ class QadArc():
       partendo dalla posizione startVertex (0-indexed)
       ritorna la posizione nella lista del punto iniziale e finale se é stato trovato un arco
       altrimenti None
-      """     
+      N.B. in punti NON devono essere in coordinate geografiche
+      """
       if atLeastNSegment is None:
          _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
       else:
          _atLeastNSegment = atLeastNSegment
       
       totPoints = len(points)
-      # perchésia un arco ci vogliono almeno _atLeastNSegment segmenti
+      # perché sia un    arco ci vogliono almeno _atLeastNSegment segmenti
       if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
+      
+      # per problemi di approssimazione dei calcoli
+      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di una distanza con il raggio
 
-      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
-            
       InfinityLinePerpOnMiddle1 = None
       InfinityLinePerpOnMiddle2 = None
-                 
+                                  
       nSegment = 0
       i = startVertex
       while i < totPoints - 1:
@@ -602,6 +604,7 @@ class QadArc():
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
+                  
                   # calcolo il verso dell'arco e l'angolo dell'arco                 
                   # se un punto intermedio dell'arco è a sinistra del
                   # segmento che unisce i due punti allora il verso è antiorario

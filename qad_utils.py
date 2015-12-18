@@ -699,8 +699,6 @@ def getGetPointCursor():
    """
    Ritorna l'immagine del cursore per la selezione di un punto 
    """
-   #return QCursor(Qt.BlankCursor) roby
-    
    pickBox = QadVariables.get(QadMsg.translate("Environment variables", "CURSORSIZE"))
    size = 1 + pickBox * 2
    # <width/cols> <height/rows> <colors> <char on pixel>
@@ -2468,7 +2466,7 @@ def rotateQgsGeometry(geom, basePt, angle):
                newPt = rotatePoint(pt, basePt, angle)
                pt.set(newPt.x(), newPt.y())
                
-      return QgsGeometry.fromPolygon(polygons)
+      return QgsGeometry.fromMultiPolygon(polygons)
 
    return None
 
@@ -2541,7 +2539,7 @@ def scaleQgsGeometry(geom, basePt, scale):
                newPt = scalePoint(pt, basePt, scale)
                pt.set(newPt.x(), newPt.y())
                
-      return ApproxCurvesOnGeom(QgsGeometry.fromPolygon(polygons))   
+      return ApproxCurvesOnGeom(QgsGeometry.fromMultiPolygon(polygons))
 
    return None
 
@@ -2614,7 +2612,7 @@ def moveQgsGeometry(geom, offSetX, offSetY):
                newPt = movePoint(pt, offSetX, offSetY)
                pt.set(newPt.x(), newPt.y())
                
-      return QgsGeometry.fromPolygon(polygons)
+      return QgsGeometry.fromMultiPolygon(polygons)
 
    return None
 
@@ -3245,7 +3243,7 @@ def mirrorQgsGeometry(geom, pt1, pt2):
                newPt = mirrorPoint(pt, pt1, mirrorAngle)
                pt.set(newPt.x(), newPt.y())
                
-      return QgsGeometry.fromPolygon(polygons)
+      return QgsGeometry.fromMultiPolygon(polygons)
 
    return None
 
@@ -6819,6 +6817,13 @@ class QadLinearObject():
 
 
    #============================================================================
+   # whatIs
+   #============================================================================
+   def whatIs(self):
+      return "LINE" if self.isSegment() else "ARC"
+
+
+   #============================================================================
    # isInverseArc
    #============================================================================
    def isInverseArc(self):
@@ -7622,6 +7627,13 @@ class QadLinearObjectList():
       # deflist = (<QadLinearObject1><QadLinearObject2>...)
       if linearObjectList is not None:
          self.set(linearObjectList)
+
+
+   #============================================================================
+   # whatIs
+   #============================================================================
+   def whatIs(self):
+      return "LINEAROBJS"
 
    
    #============================================================================
@@ -8532,7 +8544,7 @@ class QadLinearObjectList():
       isStartPt = True
       minDist = sys.float_info.max
       # considero il punto iniziale della polilinea a cui unirsi
-      if linearObjectListToJoinTo.getStartPt() is None: # roby test
+      if linearObjectListToJoinTo.getStartPt() is None: # test
          fermati = True
       dist = getDistance(ptToJoin, linearObjectListToJoinTo.getStartPt())
       if dist < minDist:
@@ -8940,7 +8952,7 @@ def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve
    found = True
    while found == True:
       found = False
-      if ptToJoin is None: # test roby
+      if ptToJoin is None: # test
          fermati = True
       # cerco le features nel punto iniziale usando un micro rettangolo secondo <toleranceDist>
       selectRect = QgsRectangle(ptToJoin.x() - toleranceDist, ptToJoin.y() - toleranceDist, \

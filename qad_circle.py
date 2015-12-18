@@ -419,7 +419,8 @@ class QadCircle():
       setta le caratteristiche del primo cerchio incontrato nella lista di punti
       partendo dalla posizione startVertex (0-indexed)
       ritorna la posizione nella lista del punto iniziale e finale se é stato trovato un cerchio
-      altrimenti None
+      altrimenti None.
+      N.B. in punti NON devono essere in coordinate geografiche
       """
       if atLeastNSegment is None:
          _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
@@ -431,7 +432,8 @@ class QadCircle():
       if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 
-      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di unna distanza con il raggio
+      # per problemi di approssimazione dei calcoli
+      epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di una distanza con il raggio
 
       InfinityLinePerpOnMiddle1 = None
       InfinityLinePerpOnMiddle2 = None
@@ -465,7 +467,8 @@ class QadCircle():
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
                   maxDifference = radius * epsilon
-                  # calcolo il verso dell'arco e l'angolo dell'arco                 
+                  
+                  # calcolo il verso dell'arco e l'angolo dell'arco
                   # se un punto intermedio dell'arco è a sinistra del
                   # segmento che unisce i due punti allora il verso è antiorario
                   startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False

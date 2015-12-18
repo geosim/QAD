@@ -34,6 +34,7 @@ from qad_variables import *
 from qad_rubberband import *
 from qad_getpoint import *
 from qad_generic_cmd import QadCommandClass
+from qad_entity import *
 from qad_ssget_cmd import QadSSGetClass
 from qad_grip import *
 from qad_stretch_cmd import QadGRIPSTRETCHCommandClass
@@ -56,7 +57,7 @@ class QadMapTool(QgsMapTool):
       self.cursor = QCursor(Qt.BlankCursor)
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
       self.entitySet = QadEntitySet()
-      self.entitySetGripPoints = QadEntitySetGripPoints(plugIn.iface.mapCanvas())
+      self.entitySetGripPoints = QadEntitySetGripPoints(plugIn)
       
    def __del__(self):
       self.removeItems()
@@ -136,7 +137,7 @@ class QadMapTool(QgsMapTool):
                      selectedEntityGripPoints = self.entitySetGripPoints.getSelectedEntityGripPoints()
 
                # lancio il comando
-               self.plugIn.runCommand("QadVirtualGripCommandsClass", [self.entitySetGripPoints, gripPoint])
+               self.plugIn.runCommand("QadVirtualGripCommandsClass", [QadVirtualGripCommandsEnum.STRECTH, self.entitySetGripPoints, gripPoint])
             else: # shift premuto
                # inverto lo stato ai grip che intersecano il punto 
                self.entitySetGripPoints.toggleSelectIntersectingGripPoints(gripPoint)
@@ -300,11 +301,18 @@ class QadVirtualSelCommandClass(QadCommandClass):
 # QadVirtualGripCommandsEnum class.   
 #===============================================================================
 class QadVirtualGripCommandsEnum():
-   STRECTH = 1
-   MOVE    = 2
-   ROTATE  = 3
-   SCALE   = 4
-   MIRROR  = 5
+   NONE            = 0
+   STRECTH         = 1
+   MOVE            = 2
+   ROTATE          = 3
+   SCALE           = 4
+   MIRROR          = 5
+   LENGTHEN        = 6
+   ADD_VERTEX      = 7
+   REMOVE_VERTEX   = 8
+   CONVERT_TO_ARC  = 9
+   CONVERT_TO_LINE = 10
+   CHANGE_RADIUS   = 11
 
 
 # Classe che gestisce i comando disponibili sui grip quando QAD è in stato di quiete
@@ -319,7 +327,7 @@ class QadVirtualGripCommandsClass(QadCommandClass):
 
    def __init__(self, plugIn):      
       QadCommandClass.__init__(self, plugIn)
-      self.commandNum = -1
+      self.commandNum = QadVirtualGripCommandsEnum.NONE
       self.currentCommand = None
       self.entitySetGripPoints = None
       self.basePt = QgsPoint()
@@ -335,30 +343,62 @@ class QadVirtualGripCommandsClass(QadCommandClass):
       else:
          return None
 
+   def getCommand(self):
+      if self.commandNum == QadVirtualGripCommandsEnum.STRECTH:
+         return QadGRIPSTRETCHCommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.MOVE:
+         return QadGRIPMOVECommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.ROTATE:
+         return QadGRIPROTATECommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.SCALE:
+         return QadGRIPSCALECommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR:
+         return QadGRIPMIRRORCommandClass(self.plugIn)
+      return None
+
+
+   def initStartCommand(self, commandNum):
+      if self.currentCommand is not None:
+         del self.currentCommand
+         self.currentCommand = None
+         
+      self.commandNum = commandNum
+      self.currentCommand = self.getCommand()
+
+      if self.currentCommand is not None:
+         self.currentCommand.basePt.set(self.basePt.x(), self.basePt.y())
+         self.currentCommand.setSelectedEntityGripPoints(self.entitySetGripPoints)
+         return True
+      else:
+         return False
+
 
    def initNextCommand(self):
       if self.currentCommand is not None:
          del self.currentCommand
          self.currentCommand = None
          
-      if self.commandNum == QadVirtualGripCommandsEnum.STRECTH:
+      if self.commandNum == QadVirtualGripCommandsEnum.STRECTH or \
+         self.commandNum == QadVirtualGripCommandsEnum.LENGTHEN or \
+         self.commandNum == QadVirtualGripCommandsEnum.ADD_VERTEX or \
+         self.commandNum == QadVirtualGripCommandsEnum.REMOVE_VERTEX or \
+         self.commandNum == QadVirtualGripCommandsEnum.CONVERT_TO_ARC or \
+         self.commandNum == QadVirtualGripCommandsEnum.CONVERT_TO_LINE or \
+         self.commandNum == QadVirtualGripCommandsEnum.CHANGE_RADIUS:
          self.commandNum = QadVirtualGripCommandsEnum.MOVE
-         self.currentCommand = QadGRIPMOVECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.MOVE:
          self.commandNum = QadVirtualGripCommandsEnum.ROTATE
-         self.currentCommand = QadGRIPROTATECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.ROTATE:
          self.commandNum = QadVirtualGripCommandsEnum.SCALE
-         self.currentCommand = QadGRIPSCALECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.SCALE:
          self.commandNum = QadVirtualGripCommandsEnum.MIRROR
-         self.currentCommand = QadGRIPMIRRORCommandClass(self.plugIn)
-      elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR or self.commandNum == -1:
-         self.commandNum = QadVirtualGripCommandsEnum.STRECTH
-         self.currentCommand = QadGRIPSTRETCHCommandClass(self.plugIn)
-      
+      elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR:
+         self.commandNum = QadVirtualGripCommandsEnum.MOVE
+
+      self.currentCommand = self.getCommand()
+
       if self.currentCommand is not None:
-         self.currentCommand.basePt = self.basePt
+         self.currentCommand.basePt.set(self.basePt.x(), self.basePt.y())
          self.currentCommand.setSelectedEntityGripPoints(self.entitySetGripPoints)
          return True
       else:

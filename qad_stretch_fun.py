@@ -249,7 +249,7 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
 #===============================================================================
 def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
    """
-   Stira una geometria mediante grip point
+   Stira una geometria in coordinate piane mediante grip point
    geom = geometria da stirare
    ptListToStretch = lista dei punti di geom da stirare
    offSetX = spostamento X
@@ -309,6 +309,36 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
          atSubGeom = atSubGeom + 1
       return stretchedGeom
    
+   return None
+
+
+#===============================================================================
+# gripStretchQadGeometry
+#===============================================================================
+def gripStretchQadGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
+   """
+   Stira una entità qad in coordinate piane mediante grip point
+   geom = entità qad da stirare
+   ptListToStretch = lista dei punti di geom da stirare
+   offSetX = spostamento X
+   offSetY = spostamento Y
+   tolerance2ApproxCurve = tolleranza per rigenerare le curve
+   """
+   if type(geom) == list: # entità composta da più geometrie
+      res = []
+      for subGeom in geom:
+         res.append(gripStretchQadGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve))
+      return res
+   else:
+      if type(geom) == QgsPoint:
+         return stretchPoint(geom, ptListToStretch, offSetX, offSetY)
+      elif geom.whatIs() == "ARC":
+         return gripStretchArc(geom, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)         
+      elif geom.whatIs() == "CIRCLE":
+         return gripStretchCircle(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+      elif geom.whatIs() == "LINEAROBJS":
+         return gripStretchQgsLinearObjectList(geom, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+
    return None
 
 
@@ -422,7 +452,7 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
          if newArc is not None:
             return QgsGeometry.fromPolyline(newArc.asPolyline(tolerance2ApproxCurve))
       return None
-
+   
    linearObjectListToStretch = qad_utils.QadLinearObjectList()
    linearObjectListToStretch.fromPolyline(geom.asPolyline())
    
@@ -460,3 +490,49 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
    stretchedGeom = QgsGeometry.fromPolyline(pts)    
       
    return stretchedGeom   
+
+
+#===============================================================================
+# gripStretchQgsLinearObjectList
+#===============================================================================
+def gripStretchQgsLinearObjectList(linearObjectList, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
+   """
+   Stira i punti di grip di una linestring che sono contenuti in ptListToStretch
+   linearObjectListToStretch = geometria da stirare
+   ptListToStretch = lista dei punti da stirare
+   offSetX = spostamento X
+   offSetY = spostamento Y
+   """
+   linearObjectListToStretch = qad_utils.QadLinearObjectList(linearObjectList)
+   
+   atPart = 0
+   while atPart < linearObjectListToStretch.qty():
+      linearObject = linearObjectListToStretch.getLinearObjectAt(atPart)      
+      if linearObject.isSegment():
+         pt = linearObject.getStartPt()
+         if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
+            # cambio punto iniziale        
+            pt.setX(pt.x() + offSetX)
+            pt.setY(pt.y() + offSetY)
+            linearObject.setStartPt(pt)
+            
+         pt = linearObject.getEndPt()
+         if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
+            # cambio punto finale
+            pt.setX(pt.x() + offSetX)
+            pt.setY(pt.y() + offSetY)
+            linearObject.setEndPt(pt)
+      else: # se è arco
+         newArc, newInverseFlag = gripStretchArc(linearObject.getArc(), ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve, linearObject.isInverseArc())
+         if newArc is None:
+            return None
+         linearObject.setArc(newArc, newInverseFlag)
+
+      atPart = atPart + 1
+   
+   pt = linearObjectListToStretch.getCentroid(tolerance2ApproxCurve) # verifico se polilinea ha un centroide
+   if pt is not None:
+      if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
+         linearObjectListToStretch.move(offSetX, offSetY)
+
+   return linearObjectListToStretch

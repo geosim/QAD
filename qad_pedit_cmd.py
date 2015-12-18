@@ -39,6 +39,7 @@ import qad_utils
 import qad_layer
 from qad_variables import *
 from qad_snappointsdisplaymanager import *
+from qad_dim import QadDimStyles
 
 
 # Classe che gestisce il comando PEDIT
@@ -986,7 +987,7 @@ class QadPEDITCommandClass(QadCommandClass):
                   if layer.type() == QgsMapLayer.VectorLayer and \
                      (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                      layer.isEditable():
-                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+                     if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),

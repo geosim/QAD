@@ -32,7 +32,6 @@ from qgis.gui import *
 from qad_snapper import *
 from qad_vertexmarker import *
 from qad_rubberband import createRubberBand
-#from qad_grip import * # roby
 
 
 class QadSnapPointsDisplayManager():
@@ -361,13 +360,6 @@ class QadSnapPointsDisplayManager():
       """
       Crea un marcatore puntuale
       """
-      
-      # roby
-      #vertexMarker = QadGripMarker(self.__mapCanvas)
-      #vertexMarker.setGrip(QadGripStatusEnum.SELECTED, QadGripIconTypeEnum.RECTANGLE, math.pi/4) # CIRCLE
-      #vertexMarker.setCenter(point)
-      #return vertexMarker
-      
       vertexMarker = QadVertexMarker(self.__mapCanvas)
       vertexMarker.setIconSize(self.__iconSize)
       vertexMarker.setColor(self.__color)

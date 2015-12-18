@@ -36,7 +36,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_dim import *
-from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
 
 
 #===============================================================================
@@ -71,19 +71,19 @@ class Qad_rotate_maptool(QadGetPoint):
       self.ReferenceAng = 0
       self.Pt1NewAng = None
       self.entitySet = QadEntitySet()
-      self.__rubberBand = QadRubberBand(self.canvas)
+      self.__highlight = QadHighlight(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      self.__rubberBand.hide()
+      self.__highlight.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      self.__rubberBand.show()
+      self.__highlight.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      self.__rubberBand.reset()
+      self.__highlight.reset()
       self.mode = None    
    
    
@@ -96,20 +96,20 @@ class Qad_rotate_maptool(QadGetPoint):
          # ruoto l'entità
          rotatedGeom = qad_utils.rotateQgsGeometry(entity.getGeometry(), basePt, angle)
          if rotatedGeom is not None:
-            self.__rubberBand.addGeometry(rotatedGeom, entity.layer)
+            self.__highlight.addGeometry(rotatedGeom, entity.layer)
       else:
          # ruoto la quota
          entity.rotate(self.plugIn, basePt, angle)
-         self.__rubberBand.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
-         self.__rubberBand.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
-         self.__rubberBand.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
+         self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
+         self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
+         self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
    
    
    #============================================================================
    # addRotatedGeometries
    #============================================================================
    def addRotatedGeometries(self, angle):
-      self.__rubberBand.reset()            
+      self.__highlight.reset()            
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       entity = QadEntity()
@@ -121,7 +121,7 @@ class Qad_rotate_maptool(QadGetPoint):
 
          for featureId in layerEntitySet.featureIds:
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(layer, featureId)  
+            dimEntity = QadDimStyles.getDimEntity(layer, featureId)  
             if dimEntity is None:
                entity.set(layer, featureId)
                self.rotate(entity, transformedBasePt, angle)
@@ -156,12 +156,12 @@ class Qad_rotate_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      self.__rubberBand.show()          
+      self.__highlight.show()          
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         self.__rubberBand.hide()
+         self.__highlight.hide()
       except:
          pass
 
@@ -171,7 +171,7 @@ class Qad_rotate_maptool(QadGetPoint):
       if self.mode == Qad_rotate_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()
+         self.__highlight.reset()
       # noto il punto base si richiede il secondo punto per l'angolo di rotazione
       elif self.mode == Qad_rotate_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_ROTATION_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
@@ -179,7 +179,7 @@ class Qad_rotate_maptool(QadGetPoint):
       # si richiede il primo punto per l'angolo di riferimento
       elif self.mode == Qad_rotate_maptool_ModeEnum.ASK_FOR_FIRST_PT_REFERENCE_ANG:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()            
+         self.__highlight.reset()            
       # noto il primo punto si richiede il secondo punto per l'angolo di riferimento
       elif self.mode == Qad_rotate_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT_REFERENCE_ANG:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)

@@ -106,7 +106,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
       self.forcedDimLineAlignment = None # allineamento della linea di quota forzato
       self.forcedDimLineRot = 0.0 # rotazione della linea di quota forzato
       
-      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
+      _dimStyle = QadDimStyles.findDimStyle(dimStyleName)
       if _dimStyle is not None:
          self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perché può venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.LINEAR
@@ -478,7 +478,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
       self.measure = None # misura della quota (se None viene calcolato)
       # leggo lo stile di quotatura corrente
       dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
-      _dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)      
+      _dimStyle = QadDimStyles.findDimStyle(dimStyleName)      
       if _dimStyle is not None:
          self.dimStyle = QadDimStyle(_dimStyle) # ne faccio una copia perché può venire modificato dal comando
          self.dimStyle.dimType = QadDimTypeEnum.ALIGNED
@@ -803,7 +803,7 @@ class QadDIMARCCommandClass(QadCommandClass):
       self.leader = False
       # leggo lo stile di quotatura corrente
       dimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
-      self.dimStyle = self.plugIn.dimStyles.findDimStyle(dimStyleName)
+      self.dimStyle = QadDimStyles.findDimStyle(dimStyleName)
       if self.dimStyle is not None:
          self.dimStyle.dimType = QadDimTypeEnum.ALIGNED
       

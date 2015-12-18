@@ -38,6 +38,8 @@ from qad_ssget_cmd import QadSSGetClass
 from qad_entity import *
 import qad_utils
 import qad_layer
+from qad_dim import QadDimStyles
+
 
 # Classe che gestisce il comando MBUFFER
 class QadMBUFFERCommandClass(QadCommandClass):
@@ -73,7 +75,6 @@ class QadMBUFFERCommandClass(QadCommandClass):
       self.entitySet = QadEntitySet()
       self.width = 0
       self.segments = self.plugIn.segments
-      self.segments = 3 # roby
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -187,7 +188,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
             return True # fine comando
          
          # il layer corrente non deve appartenere a quotature
-         dimStyleList = self.plugIn.dimStyles.getDimListByLayer(currLayer)
+         dimStyleList = QadDimStyles.getDimListByLayer(currLayer)
          if len(dimStyleList) > 0:
             dimStyleNames = ""
             for i in xrange(0, len(dimStyleList), 1):

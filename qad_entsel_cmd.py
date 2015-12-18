@@ -35,6 +35,7 @@ from qad_textwindow import *
 from qad_entity import *
 from qad_getpoint import *
 import qad_utils
+from qad_dim import QadDimStyles
 
 
 #===============================================================================
@@ -75,7 +76,7 @@ class QadEntSelClass(QadCommandClass):
       del self.entity
       if self.selDimEntity: # se è possibile restituire un oggetto QadDimEntity
          # verifico se l'entità appartiene ad uno stile di quotatura
-         self.entity = self.plugIn.dimStyles.getDimEntity(layer, fid)
+         self.entity = QadDimStyles.getDimEntity(layer, fid)
          if self.entity is None: # se non è una quota
             self.entity = QadEntity()
             self.entity.set(layer, fid)
@@ -100,7 +101,7 @@ class QadEntSelClass(QadCommandClass):
               (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
-               len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+               len(QadDimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
          
       return layerList
@@ -166,11 +167,11 @@ class QadEntSelClass(QadCommandClass):
                   # controllo sul layer
                   if self.onlyEditableLayers == False or lastEnt.layer.isEditable() == True:
                      # controllo sul tipo
-                     if (self.checkPointLayer == True and entity.layer.geometryType() == QGis.Point) or \
-                        (self.checkLineLayer == True and entity.layer.geometryType() == QGis.Line) or \
-                        (self.checkPolygonLayer == True and entity.layer.geometryType() == QGis.Polygon):
+                     if (self.checkPointLayer == True and lastEnt.layer.geometryType() == QGis.Point) or \
+                        (self.checkLineLayer == True and lastEnt.layer.geometryType() == QGis.Line) or \
+                        (self.checkPolygonLayer == True and lastEnt.layer.geometryType() == QGis.Polygon):
                         # controllo su layer delle quotature
-                        if self.checkDimLayers == True or len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+                        if self.checkDimLayers == True or lastEnt.isDimensionComponent() == False:
                            self.setEntity(lastEnt.layer, lastEnt.featureId)
          elif type(value) == QgsPoint:
             if entity is None:

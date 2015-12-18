@@ -35,6 +35,7 @@ from qad_snapper import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_rubberband import QadRubberBand
+from qad_dim import QadDimStyles
 
 
 #===============================================================================
@@ -219,7 +220,7 @@ class Qad_fillet_maptool(QadGetPoint):
          layerList = []
          for layer in self.plugIn.canvas.layers():
             if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
-               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+               if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList
@@ -238,7 +239,7 @@ class Qad_fillet_maptool(QadGetPoint):
             if layer.type() == QgsMapLayer.VectorLayer and \
                (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                layer.isEditable():
-               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+               if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList

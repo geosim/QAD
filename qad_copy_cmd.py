@@ -139,7 +139,7 @@ class QadCOPYCommandClass(QadCommandClass):
                continue
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+            dimEntity = QadDimStyles.getDimEntity(layerEntitySet.layer, f.id())
             
             if self.series and self.seriesLen > 0: # devo fare una serie
                if self.adjust == True:

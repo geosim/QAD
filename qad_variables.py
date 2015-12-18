@@ -27,6 +27,7 @@ from PyQt4.QtCore import *
 import os.path
 from qgis.core import *
 
+
 import qad_utils
 from qad_msg import QadMsg
 
@@ -536,14 +537,26 @@ class QadVariablesClass():
    def getVariable(self, VarName):
       UpperVarName = VarName
       return self.__VariableValuesDict.get(UpperVarName.upper())
-        
+
+
+   def getDefaultQadIniFilePath(self):
+      # ottiene il percorso automatico incluso il nome del file dove salvare il file qad.ini
+      # se esiste un progetto caricato il percorso è quello del progetto
+      prjFileInfo = QFileInfo(QgsProject.instance().fileName())
+      path = prjFileInfo.absolutePath()
+      if len(path) == 0:
+         # se non esiste un progetto caricato uso il percorso di installazione di qad
+         path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
+      return path + "/" + "qad.ini"
+   
+            
    def save(self, Path=""):
       """
       Salva il dizionario delle variabili su file 
       """
       if Path == "":
-         # Se la path non é indicata uso il file "qad.ini" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + "qad.ini"
+         # Se la path non é indicata uso il file "qad.ini" del progetto o dell'installazione di qad 
+         Path = self.getDefaultQadIniFilePath()
       
       dir = QFileInfo(Path).absoluteDir()
       if not dir.exists():
@@ -568,8 +581,8 @@ class QadVariablesClass():
       self.__VariableValuesDict.clear()
       self.__init__()
       if Path == "":
-         # Se la path non é indicata uso il file "qad.ini" in 
-         Path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + "qad.ini"
+         # Se la path non é indicata uso il file "qad.ini" del progetto o dell'installazione di qad 
+         Path = self.getDefaultQadIniFilePath()
 
       if not os.path.exists(Path):
          return False

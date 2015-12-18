@@ -33,6 +33,7 @@ from qad_arc import *
 from qad_circle import *
 from qad_variables import *
 from qad_entity import *
+from qad_dim import *
 
 
 #===============================================================================
@@ -160,6 +161,7 @@ class QadGripPointTypeEnum():
    CENTER         = 3  # centro di un cerchio o di un arco
    QUA_POINT      = 4  # punto quadrante
    ARC_MID_POINT  = 5  # punto medio di un arco
+   END_VERTEX     = 6  # vertice iniziale e finale di una geometria
 
 
 #===============================================================================
@@ -223,7 +225,7 @@ class QadEntityGripPoint():
       return self.gripMarker.status
    
    def gripType2IconType(self, gripType):
-      if gripType == QadGripPointTypeEnum.VERTEX:
+      if gripType == QadGripPointTypeEnum.VERTEX or gripType == QadGripPointTypeEnum.END_VERTEX:
          return QadGripIconTypeEnum.BOX
       elif gripType == QadGripPointTypeEnum.LINE_MID_POINT or gripType == QadGripPointTypeEnum.ARC_MID_POINT:
          return QadGripIconTypeEnum.RECTANGLE
@@ -247,16 +249,13 @@ class QadEntityGripPoints(QgsMapCanvasItem):
    #============================================================================
    # __init__
    #============================================================================
-   def __init__(self, mapCanvas, entity = None, grips = 2):
-      self.mapCanvas = mapCanvas
+   def __init__(self, plugIn, entity = None, grips = 2):
+      self.plugIn = plugIn
+      self.mapCanvas = plugIn.canvas
       self.gripPoints = [] # lista dei punti di grip in map coordinate
-      self.layerGripPoints = [] # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
-                                # sono costretto a usare questa lista perchè se prendo un punto geometrico dell'entità che è in coordinate lat. long. 
-                                # e lo trasformo in map coordinate, quando lo dovrò ritraformare in layer coordinate si cambia il 5° decimale 
-                                # che equivale a più di 1 metro di errore. 
       if entity is not None:
          self.entity = QadEntity(entity)      
-         self.gripPoints, self.layerGripPoints = self.initGripPoints(grips)
+         self.gripPoints = self.initGripPoints(grips)
 
 
    def __del__(self):
@@ -266,14 +265,13 @@ class QadEntityGripPoints(QgsMapCanvasItem):
    def set(self, layer, featureId, grips = 2):
       self.entity = QadEntity()
       self.entity.set(layer, featureId)
-      self.gripPoints, self.layerGripPoints = self.initGripPoints(grips)
+      self.gripPoints = self.initGripPoints(grips)
 
 
    def removeItems(self):
       for gripPoint in self.gripPoints:
          gripPoint.removeItem()
       del self.gripPoints[:]
-      del self.layerGripPoints[:]
 
 
    def selectIntersectingGripPoints(self, point):
@@ -344,20 +342,24 @@ class QadEntityGripPoints(QgsMapCanvasItem):
          
 
    def initGripPoints(self, grips = 2):
+      # restituisce una lista di QadEntityGripPoint
       atGeom = 0
       atSubGeom = 0
       result = []
-      layerPoints = [] # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
 
       g = self.entity.getGeometry()
       if g is None:
-         return result, layerPoints
+         return result
+
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = QadDimStyles.getDimEntity(self.entity)
+      if dimEntity is not None:
+         return self.getGripPointsFromDimComponent(dimEntity, self.entity)
+         
       wkbType = g.wkbType()
       if wkbType == QGis.WKBPoint:
-         layerPt = g.asPoint()
-         layerPoints.append(layerPt)
          # converto il punto dal layer coordinate in map coordinates
-         pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt)
+         pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, g.asPoint())
          gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.VERTEX)
          result.append(gp)
          
@@ -365,7 +367,6 @@ class QadEntityGripPoints(QgsMapCanvasItem):
          pointList = g.asMultiPoint() # vettore di punti
          atGeom = 0
          for point in pointList:
-            layerPoints.append(point)
             # converto il punto dal layer coordinate in map coordinates
             pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, point)
             gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.VERTEX, atGeom)
@@ -373,56 +374,58 @@ class QadEntityGripPoints(QgsMapCanvasItem):
             result.append(gp)
             
       elif wkbType == QGis.WKBLineString:
-         result, layerPoints = self.getGripPointsFromPolyline(g.asPolyline(), 0, 0, grips)
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         g.transform(coordTransform)           
+         result = self.getGripPointsFromPolyline(g.asPolyline(), 0, 0, grips)
          
       elif wkbType == QGis.WKBMultiLineString:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         g.transform(coordTransform)  
+
          lineList = g.asMultiPolyline() # vettore di linee
          atGeom = 0
          for line in lineList:
-            partial1, partial2 = self.getGripPointsFromPolyline(line, atGeom, 0, grips)
-            result.extend(partial1)
-            layerPoints.extend(partial2)
+            result.extend(self.getGripPointsFromPolyline(line, atGeom, 0, grips))
             atGeom = atGeom + 1
                         
       elif wkbType == QGis.WKBPolygon:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         g.transform(coordTransform)  
+
          lineList = g.asPolygon() # vettore di linee    
          atGeom = 0
          for line in lineList:
-            partial1, partial2 = self.getGripPointsFromPolyline(line, atGeom, 0, grips)
-            result.extend(partial1)
-            layerPoints.extend(partial2)
+            result.extend(self.getGripPointsFromPolyline(line, atGeom, 0, grips))
+            atGeom = atGeom + 1
             # aggiungo il centroide
-            layerPt = g.centroid().asPoint()
-            layerPoints.append(layerPt)
-            # converto il punto dal layer coordinate in map coordinates
-            pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt)
+            pt = QgsGeometry().fromPolygon([line]).centroid().asPoint()
             gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.CENTER, atGeom, 0)
             result.append(gp)
-            atGeom = atGeom + 1         
          
       elif wkbType == QGis.WKBMultiPolygon:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         g.transform(coordTransform)  
+
          polygonList = g.asMultiPolygon() # vettore di poligoni
          atGeom = 0
          for polygon in polygonList:
             atSubGeom = 0
             result1 = []
             for line in polygon:
-               partial1, partial2 = self.getGripPointsFromPolyline(line, atGeom, atSubGeom, grips)
-               result.extend(partial1)
-               layerPoints.extend(partial2)
+               result.extend(self.getGripPointsFromPolyline(line, atGeom, atSubGeom, grips))
                # aggiungo il centroide
-               sub_g =  QgsGeometry.fromPolygon(line)
-               layerPt = sub_g.centroid().asPoint()
-               layerPoints.append(layerPt)
-               # converto il punto dal layer coordinate in map coordinates
-               pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt)
+               pt = QgsGeometry.fromPolygon([line]).centroid().asPoint()
                gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.CENTER, atGeom, atSubGeom)
                result.append(gp)
                
                atSubGeom = atSubGeom + 1
             atGeom = atGeom + 1
-   
-      return result, layerPoints
+
+      return result
    
    
    def getGripPointsFromPolyline(self, pointList, atGeom = 0, atSubGeom = 0, grips = 2):
@@ -445,28 +448,25 @@ class QadEntityGripPoints(QgsMapCanvasItem):
    
    def getGripPointsFromQadLinearObjectList(self, linearObjectList, atGeom = 0, atSubGeom = 0, grips = 2):
       """
-      Ottiene una lista di punti di grip da una QadLinearObjectList (vertici e punti medi con rotaz)
+      Ottiene una lista di punti di grip da una QadLinearObjectList in map coordinate (vertici e punti medi con rotaz)
       grips = 1 Displays grips
       grips = 2 Displays additional midpoint grips on polyline segments
       """
       result = []
-      layerPoints = [] # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
      
+      isClosed = linearObjectList.isClosed()
       nVertex = 0
       while nVertex < linearObjectList.qty():
          linearObject = linearObjectList.getLinearObjectAt(nVertex)
          startPt = linearObject.getStartPt()
-         layerPoints.append(startPt)         
-         # converto il punto dal layer coordinate in map coordinates
-         startPt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, startPt);         
-         gp = QadEntityGripPoint(self.mapCanvas, startPt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, nVertex)
+         if isClosed == False and nVertex == 0:
+            gp = QadEntityGripPoint(self.mapCanvas, startPt, QadGripPointTypeEnum.END_VERTEX, atGeom, atSubGeom, nVertex)
+         else:
+            gp = QadEntityGripPoint(self.mapCanvas, startPt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, nVertex)
          result.append(gp)
          if grips == 2:
             middlePt = linearObject.getMiddlePt()
-            layerPoints.append(middlePt)
             rot = linearObject.getTanDirectionOnMiddlePt()
-            # converto il punto dal layer coordinate in map coordinates
-            middlePt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, middlePt);
             if linearObject.isSegment(): # linea
                gp = QadEntityGripPoint(self.mapCanvas, middlePt, QadGripPointTypeEnum.LINE_MID_POINT, atGeom, atSubGeom, nVertex, rot)
             else: # arco
@@ -476,71 +476,74 @@ class QadEntityGripPoints(QgsMapCanvasItem):
       
       linearObject = linearObjectList.getLinearObjectAt(-1) # ultima parte
       endPt = linearObject.getEndPt()
-      layerPoints.append(endPt)
-      # converto il punto dal layer coordinate in map coordinates
-      endPt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, endPt);
-      gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, nVertex)
+      if isClosed == False:
+         gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.END_VERTEX, atGeom, atSubGeom, nVertex)
+      else:
+         gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, nVertex)
+      
       result.append(gp)
          
-      return result, layerPoints
+      return result
 
 
    def getGripPointsFromQadCircle(self, circle, atGeom = 0, atSubGeom = 0):
       """
-      Ottiene una lista di punti di grip da un QadCircle (centro e punti quadrante)
+      Ottiene una lista di punti di grip da un QadCircle in map coordinate (centro e punti quadrante)
       """
       result = []
-      layerPoints = [] # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
-      layerPoints.append(QgsPoint(circle.center))
-      # converto il punto dal layer coordinate in map coordinates
-      center = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, circle.center);
-      gp = QadEntityGripPoint(self.mapCanvas, center, QadGripPointTypeEnum.CENTER, atGeom, atSubGeom, -1)
+      gp = QadEntityGripPoint(self.mapCanvas, circle.center, QadGripPointTypeEnum.CENTER, atGeom, atSubGeom, -1)
       result.append(gp)
       qua_points = circle.getQuadrantPoints()
       for pt in qua_points:
-         layerPoints.append(pt)
-         # converto il punto dal layer coordinate in map coordinates
-         pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, pt);
          gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.QUA_POINT, atGeom, atSubGeom, -1)
          result.append(gp)
          
-      return result, layerPoints
+      return result
 
 
    def getGripPointsFromQadArc(self, arc, atGeom = 0, atSubGeom = 0, grips = 2):
       """
-      Ottiene una lista di punti di grip da un QadArc (punto centrale, iniziale, finale, medio)
+      Ottiene una lista di punti di grip da un QadArc in map coordinate (punto centrale, iniziale, finale, medio)
       """
       result = []
-      layerPoints = [] # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
-      layerPoints.append(QgsPoint(arc.center))
-      # converto il punto dal layer coordinate in map coordinates
-      pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, arc.center);
-      gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.CENTER, atGeom, atSubGeom, -1)
+      gp = QadEntityGripPoint(self.mapCanvas, arc.center, QadGripPointTypeEnum.CENTER, atGeom, atSubGeom, -1)
       result.append(gp)
-      # converto il punto dal layer coordinate in map coordinates
-      layerPt = arc.getStartPt()
-      layerPoints.append(layerPt)
-      pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt);
-      gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, 0)
+
+      startPt = arc.getStartPt()
+      gp = QadEntityGripPoint(self.mapCanvas, startPt, QadGripPointTypeEnum.END_VERTEX, atGeom, atSubGeom, 0)
       result.append(gp)
-      # converto il punto dal layer coordinate in map coordinates
-      layerPt = arc.getEndPt()
-      layerPoints.append(layerPt)
-      pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt);
-      gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, 1)
+
+      endPt = arc.getEndPt()
+      gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.END_VERTEX, atGeom, atSubGeom, 1)
       result.append(gp)
+      
       if grips == 2:
-         layerPt = arc.getMiddlePt()
-         layerPoints.append(layerPt)
-         rot = arc.getTanDirectionOnPt(layerPt)
-         # converto il punto dal layer coordinate in map coordinates
-         pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, layerPt);
-         gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.ARC_MID_POINT, atGeom, atSubGeom, 1)
+         middlePt = arc.getMiddlePt()
+         gp = QadEntityGripPoint(self.mapCanvas, middlePt, QadGripPointTypeEnum.ARC_MID_POINT, atGeom, atSubGeom, 1)
          result.append(gp)
          
-      return result, layerPoints
+      return result
 
+
+   def getGripPointsFromDimComponent(self, dimEntity, component):
+      """
+      Ottiene una lista di punti di grip del componente di una quotatura
+      """
+      result = []
+      dimComponent = dimEntity.getDimComponentByEntity(component)
+      if dimComponent is None:
+         return result
+      elif dimComponent == QadDimComponentEnum.TEXT_PT or \
+           dimComponent == QadDimComponentEnum.DIM_PT1 or \
+           dimComponent == QadDimComponentEnum.DIM_PT2:
+         g = component.getGeometry()
+         if g.wkbType() == QGis.WKBPoint:
+            # converto il punto dal layer coordinate in map coordinates
+            pt = self.mapCanvas.mapSettings().layerToMapCoordinates(self.entity.layer, g.asPoint())
+            gp = QadEntityGripPoint(self.mapCanvas, pt, QadGripPointTypeEnum.VERTEX)
+            result.append(gp)
+
+      return result
 
 
 #===============================================================================
@@ -555,8 +558,9 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
    #============================================================================
    # __init__
    #============================================================================
-   def __init__(self, mapCanvas):
-      self.mapCanvas = mapCanvas
+   def __init__(self, plugIn):
+      self.plugIn = plugIn
+      self.mapCanvas = plugIn.canvas
       self.entityGripPoints = []
 
 
@@ -584,7 +588,7 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
       # for each layer
       for layerEntitySet in entitySet.layerEntitySetList:
          for featureId in layerEntitySet.featureIds:
-            entityGripPoints = QadEntityGripPoints(self.mapCanvas)
+            entityGripPoints = QadEntityGripPoints(self.plugIn)
             entityGripPoints.set(layerEntitySet.layer, featureId, grips)
             self.entityGripPoints.append(entityGripPoints)
 
@@ -598,7 +602,7 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
       if grips == 0: # nasconde i grip
          return      
       if self.containsEntity(entity) == False:
-         entityGripPoints = QadEntityGripPoints(self.mapCanvas)
+         entityGripPoints = QadEntityGripPoints(self.plugIn)
          entityGripPoints.set(entity.layer, entity.featureId, grips)
          self.entityGripPoints.append(entityGripPoints)
 

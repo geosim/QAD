@@ -35,7 +35,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
-from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
 from qad_dim import *
 
 
@@ -59,19 +59,19 @@ class Qad_move_maptool(QadGetPoint):
                         
       self.basePt = None
       self.entitySet = QadEntitySet()
-      self.__rubberBand = QadRubberBand(self.canvas)
+      self.__highlight = QadHighlight(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      self.__rubberBand.hide()
+      self.__highlight.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      self.__rubberBand.show()
+      self.__highlight.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      self.__rubberBand.reset()
+      self.__highlight.reset()
       self.mode = None    
 
    
@@ -84,17 +84,17 @@ class Qad_move_maptool(QadGetPoint):
          # sposto l'entità
          movedGeom = qad_utils.moveQgsGeometry(entity.getGeometry(), offSetX, offSetY)
          if movedGeom is not None:
-            self.__rubberBand.addGeometry(movedGeom, entity.layer)
+            self.__highlight.addGeometry(movedGeom, entity.layer)
       else:
          # sposto la quota
          entity.move(offSetX, offSetY)
-         self.__rubberBand.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
-         self.__rubberBand.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
-         self.__rubberBand.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
+         self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
+         self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
+         self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
 
    
    def addMovedGeometries(self, newPt):
-      self.__rubberBand.reset()            
+      self.__highlight.reset()            
 
       dimElaboratedList = [] # lista delle quotature già elaborate
       entity = QadEntity()
@@ -109,7 +109,7 @@ class Qad_move_maptool(QadGetPoint):
 
          for featureId in layerEntitySet.featureIds:
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(layer, featureId)  
+            dimEntity = QadDimStyles.getDimEntity(layer, featureId)  
             if dimEntity is None:
                entity.set(layer, featureId)
                f = layerEntitySet.getFeature(featureId)
@@ -134,12 +134,12 @@ class Qad_move_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      self.__rubberBand.show()          
+      self.__highlight.show()          
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         self.__rubberBand.hide()
+         self.__highlight.hide()
       except:
          pass
 
@@ -149,7 +149,7 @@ class Qad_move_maptool(QadGetPoint):
       if self.mode == Qad_move_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
          self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()
+         self.__highlight.reset()
       # noto il punto base si richiede il secondo punto
       elif self.mode == Qad_move_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)

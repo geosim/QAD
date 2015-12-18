@@ -29,6 +29,8 @@ from qgis.core import *
 from qgis.gui import *
 import sys
 import string
+import difflib
+
 
 from qad_ui_textwindow import Ui_QadTextWindow, Ui_QadCmdSuggestWindow
 from qad_msg import QadMsg
@@ -986,21 +988,31 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       if mode == True:         
          filteredInfoCmds = []
          upperFilter = filter.strip().upper()
-         if len(upperFilter) > 0: 
-            if upperFilter[0] == "_": # versione inglese 
-               upperFilter = upperFilter[1:]
+         if len(upperFilter) > 0:
+            if filter == "*": # se incomincia per * significa tutti i comandi
                # lista composta da elementi con:
                # <nome locale comando>, <nome inglese comando>, <icona>, <note>
                for infoCmd in self.infoCmds:
-                  if string.find(infoCmd[1].upper(), upperFilter) == 0 or filter == "*": # se incomincia per
-                     filteredInfoCmds.append(["_" + infoCmd[1], infoCmd[2], infoCmd[3]])
-            else: # versione italiana
-               # lista composta da elementi con:
-               # <nome locale comando>, <nome inglese comando>, <icona>, <note>
-               for infoCmd in self.infoCmds:
-                  if string.find(infoCmd[0].upper(), upperFilter) == 0 or filter == "*": # se incomincia per
-                     filteredInfoCmds.append([infoCmd[0], infoCmd[2], infoCmd[3]])
-                  
+                  filteredInfoCmds.append([infoCmd[0], infoCmd[2], infoCmd[3]])
+            else:
+               if upperFilter[0] == "_": # versione inglese 
+                  upperFilter = upperFilter[1:]
+                  # lista composta da elementi con:
+                  # <nome locale comando>, <nome inglese comando>, <icona>, <note>
+                  for infoCmd in self.infoCmds:
+                      # se "incomincia per" o se "abbastanza simile"
+                     if string.find(infoCmd[1].upper(), upperFilter) == 0 or \
+                        difflib.SequenceMatcher(None, infoCmd[1].upper(), upperFilter).ratio() > 0.6:
+                        filteredInfoCmds.append(["_" + infoCmd[1], infoCmd[2], infoCmd[3]])
+               else: # versione italiana
+                  # lista composta da elementi con:
+                  # <nome locale comando>, <nome inglese comando>, <icona>, <note>
+                  for infoCmd in self.infoCmds:
+                      # se "incomincia per" o se "abbastanza simile"
+                     if string.find(infoCmd[0].upper(), upperFilter) == 0 or \
+                        difflib.SequenceMatcher(None, infoCmd[0].upper(), upperFilter).ratio() > 0.6:
+                        filteredInfoCmds.append([infoCmd[0], infoCmd[2], infoCmd[3]])
+
          if len(filteredInfoCmds) == 0:
             self.setVisible(False)
          else:

@@ -162,7 +162,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             entity = QadEntity()
             entity.set(layer, featureId)
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimStyle, dimId = self.plugIn.dimStyles.getDimIdByEntity(entity)
+            dimStyle, dimId = QadDimStyles.getDimIdByEntity(entity)
 
             if dimStyle is not None:
                dimEntity = QadDimEntity()
@@ -433,7 +433,7 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
             entity.set(layer, featureId)
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
+            dimEntity = QadDimStyles.getDimEntity(entity)  
             if dimEntity is None:
                if self.mirror(entity, transformedBasePt, transformedNewPt, rotFldName) == False:
                   self.plugIn.destroyEditCommand()

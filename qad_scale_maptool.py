@@ -36,7 +36,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_dim import *
-from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
 
 
 #===============================================================================
@@ -71,19 +71,19 @@ class Qad_scale_maptool(QadGetPoint):
       self.ReferenceLen = 0
       self.Pt1NewLen = None
       self.entitySet = QadEntitySet()
-      self.__rubberBand = QadRubberBand(self.canvas)
+      self.__highlight = QadHighlight(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      self.__rubberBand.hide()
+      self.__highlight.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      self.__rubberBand.show()
+      self.__highlight.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      self.__rubberBand.reset()
+      self.__highlight.reset()
       self.mode = None    
 
 
@@ -92,20 +92,20 @@ class Qad_scale_maptool(QadGetPoint):
    #============================================================================
    def scale(self, f, basePt, scale, layerEntitySet, entitySet):
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+      dimEntity = QadDimStyles.getDimEntity(layerEntitySet.layer, f.id())
            
       if dimEntity is None:
          # scalo la feature e la rimuovo da entitySet (é la prima)
          f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
-         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         self.__highlight.addGeometry(f.geometry(), layerEntitySet.layer)
          del layerEntitySet.featureIds[0]
       else:
          # scalo la quota e la rimuovo da entitySet
          dimEntitySet = dimEntity.getEntitySet()
          dimEntity.scale(self.plugIn, basePt, scale)
-         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
-         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
-         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         self.__highlight.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__highlight.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__highlight.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
          entitySet.subtract(dimEntitySet)
 
    
@@ -113,7 +113,7 @@ class Qad_scale_maptool(QadGetPoint):
    # addScaledGeometries
    #============================================================================
    def addScaledGeometries(self, scale):
-      self.__rubberBand.reset()            
+      self.__highlight.reset()            
       
       # copio entitySet
       entitySet = QadEntitySet(self.entitySet)
@@ -153,12 +153,12 @@ class Qad_scale_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      self.__rubberBand.show()          
+      self.__highlight.show()          
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         self.__rubberBand.hide()
+         self.__highlight.hide()
       except:
          pass
 
@@ -168,7 +168,7 @@ class Qad_scale_maptool(QadGetPoint):
       if self.mode == Qad_scale_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_BASE_PT:
          self.clear()
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()
+         self.__highlight.reset()
       # noto il punto base si richiede il secondo punto per la scala
       elif self.mode == Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
@@ -176,7 +176,7 @@ class Qad_scale_maptool(QadGetPoint):
       # si richiede il primo punto per la lunghezza di riferimento
       elif self.mode == Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_PT_REFERENCE_LEN:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()
+         self.__highlight.reset()
       # noto il primo punto si richiede il secondo punto per la lunghezza di riferimento
       elif self.mode == Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT_REFERENCE_LEN:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
@@ -188,7 +188,7 @@ class Qad_scale_maptool(QadGetPoint):
       # si richiede il primo punto per la nuova lunghezza
       elif self.mode == Qad_scale_maptool_ModeEnum.ASK_FOR_FIRST_NEW_LEN_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
-         self.__rubberBand.reset()
+         self.__highlight.reset()
       # noto il primo punto si richiede il secondo punto per la nuova lunghezza
       elif self.mode == Qad_scale_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_NEW_LEN_PT:
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)

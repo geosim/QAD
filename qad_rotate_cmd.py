@@ -97,7 +97,7 @@ class QadROTATECommandClass(QadCommandClass):
    #============================================================================
    def rotate(self, f, basePt, angle, rotFldName, layerEntitySet, entitySet):
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+      dimEntity = QadDimStyles.getDimEntity(layerEntitySet.layer, f.id())
       
       if dimEntity is None:
          # ruoto la feature e la rimuovo da entitySet (é la prima)
@@ -589,7 +589,7 @@ class QadGRIPROTATECommandClass(QadCommandClass):
             entity.set(layer, featureId)
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
+            dimEntity = QadDimStyles.getDimEntity(entity)  
             if dimEntity is None:
                if self.rotate(entity, transformedBasePt, angle, rotFldName) == False:
                   self.plugIn.destroyEditCommand()
@@ -602,7 +602,8 @@ class QadGRIPROTATECommandClass(QadCommandClass):
             
                if found == False: # quota non ancora elaborata
                   dimElaboratedList.append(dimEntity)
-                  if self.rotate(dimEntity, transformedBasePt, angle, rotFldName) == False:
+                  # basePt va espresso in map cooridnate
+                  if self.rotate(dimEntity, self.basePt, angle, rotFldName) == False:
                      self.plugIn.destroyEditCommand()
                      return
 

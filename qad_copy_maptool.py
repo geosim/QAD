@@ -35,7 +35,7 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
-from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
 from qad_dim import *
 from qad_entity import *
 
@@ -61,19 +61,19 @@ class Qad_copy_maptool(QadGetPoint):
       self.entitySet = QadEntitySet()
       self.seriesLen = 0
       self.adjust = False
-      self.__rubberBand = QadRubberBand(self.canvas)
+      self.__highlight = QadHighlight(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      self.__rubberBand.hide()
+      self.__highlight.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      self.__rubberBand.show()
+      self.__highlight.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      self.__rubberBand.reset()
+      self.__highlight.reset()
       self.mode = None    
 
    
@@ -84,17 +84,17 @@ class Qad_copy_maptool(QadGetPoint):
       if dimEntity is None:
          # sposto la feature 
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
-         self.__rubberBand.addGeometry(f.geometry(), layerEntitySet.layer)
+         self.__highlight.addGeometry(f.geometry(), layerEntitySet.layer)
       else:
          # sposto la quota
          dimEntity.move(offSetX, offSetY)
-         self.__rubberBand.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
-         self.__rubberBand.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
-         self.__rubberBand.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         self.__highlight.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
+         self.__highlight.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
+         self.__highlight.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
    
    
    def setCopiedGeometries(self, newPt):
-      self.__rubberBand.reset()            
+      self.__highlight.reset()            
       
       # copio entitySet
       entitySet = QadEntitySet(self.entitySet)
@@ -116,7 +116,7 @@ class Qad_copy_maptool(QadGetPoint):
                continue
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(layer, f.id())
+            dimEntity = QadDimStyles.getDimEntity(layer, f.id())
 
             if self.seriesLen > 0: # devo fare una serie              
                if self.adjust == True:
@@ -150,12 +150,12 @@ class Qad_copy_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      self.__rubberBand.show()          
+      self.__highlight.show()          
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         self.__rubberBand.hide()
+         self.__highlight.hide()
       except:
          pass
 

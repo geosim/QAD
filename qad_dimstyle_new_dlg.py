@@ -53,7 +53,7 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
       self.setupUi(self)
                  
       self.dimNameList = []
-      for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
+      for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
          self.DimStyleNameFrom.addItem(dimStyle.name, dimStyle)
          self.dimNameList.append(dimStyle.name)
       

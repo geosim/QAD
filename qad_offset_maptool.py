@@ -35,7 +35,8 @@ from qad_snapper import *
 from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
-from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
+from qad_dim import QadDimStyles
 
 
 #===============================================================================
@@ -68,23 +69,23 @@ class Qad_offset_maptool(QadGetPoint):
       self.lastOffSetOnLeftSide = 0
       self.lastOffSetOnRightSide = 0
       self.gapType = 0     
-      self.__rubberBand = QadRubberBand(self.canvas)
+      self.__highlight = QadHighlight(self.canvas)
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      self.__rubberBand.hide()
+      self.__highlight.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      self.__rubberBand.show()
+      self.__highlight.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      self.__rubberBand.reset()
+      self.__highlight.reset()
       self.mode = None    
    
    def addOffSetGeometries(self, newPt):
-      self.__rubberBand.reset()            
+      self.__highlight.reset()            
             
       transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.layer, newPt)
       
@@ -127,7 +128,7 @@ class Qad_offset_maptool(QadGetPoint):
          else:
             offsetGeom = QgsGeometry.fromPolyline(line)
 
-         self.__rubberBand.addGeometry(offsetGeom, self.layer)
+         self.__highlight.addGeometry(offsetGeom, self.layer)
             
       
    def canvasMoveEvent(self, event):
@@ -143,12 +144,12 @@ class Qad_offset_maptool(QadGetPoint):
     
    def activate(self):
       QadGetPoint.activate(self)            
-      self.__rubberBand.show()          
+      self.__highlight.show()          
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         self.__rubberBand.hide()
+         self.__highlight.hide()
       except:
          pass
 
@@ -185,7 +186,7 @@ class Qad_offset_maptool(QadGetPoint):
             if layer.type() == QgsMapLayer.VectorLayer and \
                (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                layer.isEditable():
-               if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+               if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
          self.layersToCheck = layerList

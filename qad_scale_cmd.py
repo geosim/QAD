@@ -97,7 +97,7 @@ class QadSCALECommandClass(QadCommandClass):
    #============================================================================
    def scale(self, f, basePt, scale, sizeFldName, layerEntitySet, entitySet):
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+      dimEntity = QadDimStyles.getDimEntity(layerEntitySet.layer, f.id())
             
       if dimEntity is None:
          # scalo la feature e la rimuovo da entitySet (é la prima)
@@ -613,7 +613,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
             entity.set(layer, featureId)
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
+            dimEntity = QadDimStyles.getDimEntity(entity)  
             if dimEntity is None:
                if self.scale(entity, transformedBasePt, scale, sizeFldName) == False:
                   self.plugIn.destroyEditCommand()

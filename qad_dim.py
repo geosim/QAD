@@ -30,9 +30,11 @@ from qgis.gui import *
 import codecs
 import ConfigParser
 import math
+import sys
 
 
 import qad_utils
+import qad_stretch_fun
 import qad_layer
 import qad_label
 from qad_entity import *
@@ -111,6 +113,7 @@ class QadDimComponentEnum():
    ARC_BLOCK = "AB" # simbolo dell'arco ("Arc Block")
    DIM_PT1 = "D1" # primo punto da quotare ("Dimension point 1")
    DIM_PT2 = "D2" # secondo punto da quotare ("Dimension point 2")
+   TEXT_PT = "T" # punto del testo di quota ("Text")
 
 
 #===============================================================================
@@ -693,6 +696,20 @@ class QadDimStyle():
       
       return True
 
+
+   #============================================================================
+   # getDefaultDimFilePath
+   #============================================================================
+   def getDefaultDimFilePath(self, fileName):
+      # ottiene il percorso automatico dove salvare/caricare il file della quotatura
+      # se esiste un progetto caricato il percorso è quello del progetto
+      prjFileInfo = QFileInfo(QgsProject.instance().fileName())
+      path = prjFileInfo.absolutePath()
+      if len(path) == 0:
+         # se non esiste un progetto caricato uso il percorso di installazione di qad
+         path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
+      return path + "/" + fileName
+
    
    #============================================================================
    # load
@@ -704,8 +721,8 @@ class QadDimStyle():
       if path is None or path == "":
          return False
       
-      if os.path.dirname(path) == "":
-         _path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/" + path
+      if os.path.dirname(path) == "": # path contiene solo il nome del file (senza dir)
+         _path = self.getDefaultDimFilePath(path)
       else:
          _path = path
          
@@ -1099,7 +1116,7 @@ class QadDimStyle():
       """
       Ricava un QadEntitySet con tutte le feature della quota dimId.
       """
-      result = QadEntitySet()      
+      result = QadEntitySet()
       if len(self.idFieldName) == 0 or len(self.idParentFieldName) == 0:
          return result
       
@@ -2300,7 +2317,7 @@ class QadDimStyle():
        
       if (sourceCrs is not None) and sourceCrs != self.getLinearLayer().crs():
          coordTransform = QgsCoordinateTransform(sourceCrs, self.getLinearLayer().crs()) # trasformo la geometria
-         g.transform(coordTransform)                        
+         g.transform(coordTransform)
        
       f.setGeometry(g)
                   
@@ -2831,15 +2848,20 @@ class QadDimStyle():
 
 
 #===============================================================================
-# QadDimStyles list of dimension styles
+# QadDimStylesClass list of dimension styles
 #===============================================================================
-class QadDimStyles():
+class QadDimStylesClass():
    
    def __init__(self, dimStyleList = None):
       if dimStyleList is None:
          self.dimStyleList = []
       else:
          self.set(dimStyleList)
+
+
+   def __del__(self):
+      if dimStyleList is None:
+         del self.dimStyleList[:]
 
          
    def isEmpty(self):
@@ -2915,16 +2937,19 @@ class QadDimStyles():
    def load(self, dir = None, append = False):
       """
       Carica le impostazioni di tutti gli stili di quotatura presenti nella directory indicata.
-      se dir = None verranno utilizzati i percorsi dei file di supporto + il percorso locale di qad
+      se dir = None se esiste un progetto caricato il percorso è quello del progetto altrimenti + il percorso locale di qad
       """
       if dir is None:
          if append == False:
             self.clear()
         
-         path = QadVariables.get(QadMsg.translate("Environment variables", "SUPPORTPATH"))
+         # se esiste un progetto caricato il percorso è quello del progetto
+         prjFileInfo = QFileInfo(QgsProject.instance().fileName())
+         path = prjFileInfo.absolutePath()
          if len(path) > 0:
-            path += ";"        
-         path += QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/"        
+            path += "/;"
+         path += QgsApplication.qgisSettingsDirPath() + "python/plugins/qad/"
+        
          # lista di directory separate da ";"
          dirList = path.strip().split(";")
          for _dir in dirList:
@@ -3322,7 +3347,11 @@ class QadDimEntity():
    #============================================================================
    # getDimPts
    #============================================================================
-   def getDimPts(self):
+   def getDimPts(self, destinationCrs = None):
+      """
+      destinationCrs = sistema di coordinate in cui verrà restituito il risultato
+      """
+            
       dimPt1 = None
       dimPt2 = None
 
@@ -3332,9 +3361,17 @@ class QadDimEntity():
             try:
                value = f.attribute(self.dimStyle.componentFieldName)
                if value == QadDimComponentEnum.DIM_PT1: # primo punto da quotare ("Dimension point 1")
-                  dimPt1 = f.geometry().asPoint()
+                  g = f.geometry()
+                  if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+                     g.transform(QgsCoordinateTransform(self.getSymbolLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+                  
+                  dimPt1 = g.asPoint()
                elif value == QadDimComponentEnum.DIM_PT2: # secondo punto da quotare ("Dimension point 2")
-                  dimPt2 = f.geometry().asPoint()
+                  g = f.geometry()
+                  if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+                     g.transform(QgsCoordinateTransform(self.getSymbolLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+                  
+                  dimPt2 = g.asPoint()
             except:
                return None, None
 
@@ -3344,12 +3381,13 @@ class QadDimEntity():
    #============================================================================
    # getDimLinePosPt
    #============================================================================
-   def getDimLinePosPt(self, containerGeom = None):
+   def getDimLinePosPt(self, containerGeom = None, destinationCrs = None):
       """
-      Trova fra i vari punti possibili un punto che indichi dove si trova la linea di quota
+      Trova fra i vari punti possibili un punto che indichi dove si trova la linea di quota (in destinationCrs tipicamente = map coordinate)
       se containerGeom <> None il punto deve essere contenuto in containerGeom
-      containerGeom = può essere una QgsGeometry rappresentante un poligono contenente i punti di geom da stirare
-                      oppure una lista dei punti da stirare
+      containerGeom = può essere una QgsGeometry rappresentante un poligono (in destinationCrs tipicamente = map coordinate) contenente i punti di geom da stirare
+                      oppure una lista dei punti da stirare (in destinationCrs tipicamente = map coordinate)
+      destinationCrs = sistema di coordinate in cui è espresso containerGeom e in cui verrà restituito il risultato
       """
       
       if len(self.dimStyle.componentFieldName) > 0:
@@ -3359,7 +3397,12 @@ class QadDimEntity():
                value = f.attribute(self.dimStyle.componentFieldName)
                # primo punto da quotare ("Dimension point 1") o secondo punto da quotare ("Dimension point 2")
                if value == QadDimComponentEnum.DIM_LINE1 or value == QadDimComponentEnum.DIM_LINE2:
-                  pts = f.geometry().asPolyline()
+                  g = f.geometry()
+
+                  if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+                     g.transform(QgsCoordinateTransform(self.getLinearLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+
+                  pts = g.asPolyline()
                   if containerGeom is not None: # verifico che il punto iniziale sia interno a containerGeom
                      if type(containerGeom) == QgsGeometry: # geometria   
                         if containerGeom.contains(pts[0]) == True:
@@ -3387,7 +3430,12 @@ class QadDimEntity():
                value = f.attribute(self.dimStyle.componentFieldName)
                # primo blocco della freccia ("Block 1") o secondo blocco della freccia ("Block 2")
                if value == QadDimComponentEnum.BLOCK1 or value == QadDimComponentEnum.BLOCK2:
-                  dimLinePosPt = f.geometry().asPoint()
+                  g = f.geometry()
+
+                  if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+                     g.transform(QgsCoordinateTransform(self.getSymbolLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+                  
+                  dimLinePosPt = g.asPoint()
                   if containerGeom is not None: # verifico che il punto sia interno a containerGeom
                      if type(containerGeom) == QgsGeometry: # geometria   
                         if containerGeom.contains(dimLinePosPt) == True:
@@ -3486,6 +3534,18 @@ class QadDimEntity():
 
 
    #============================================================================
+   # getTextPt
+   #============================================================================
+   def getTextPt(self, destinationCrs = None):
+      # destinationCrs = sistema di coordinate in cui verrà restituito il risultato
+      g = self.textualFeature.geometry()
+      if (destinationCrs is not None) and destinationCrs != self.getTextualLayer().crs():
+         g.transform(QgsCoordinateTransform(self.getTextualLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+      
+      return g.asPoint()
+
+
+   #============================================================================
    # isCalculatedText
    #============================================================================
    def isCalculatedText(self):
@@ -3509,24 +3569,62 @@ class QadDimEntity():
    # move
    #============================================================================
    def move(self, offSetX, offSetY):
-      self.textualFeature.setGeometry(qad_utils.moveQgsGeometry(self.textualFeature.geometry(), offSetX, offSetY))
+      # offSetX = spostamento X in map coordinate
+      # offSetY = spostamento Y in map coordinate
+      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      
+      g = self.textualFeature.geometry()
+      
+      if (destinationCrs is not None) and destinationCrs != self.getTextualLayer().crs():
+         g.transform(QgsCoordinateTransform(self.getTextualLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+
+      g = qad_utils.moveQgsGeometry(g, offSetX, offSetY)
+
+      if (destinationCrs is not None) and destinationCrs != self.getTextualLayer().crs():
+         g.transform(QgsCoordinateTransform(destinationCrs, self.getTextualLayer().crs())) # trasformo la geometria in layer coordinate
+      
+      self.textualFeature.setGeometry(g)
+
 
       for f in self.linearFeatures:
-         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
+         g = f.geometry()
+         
+         if (destinationCrs is not None) and destinationCrs != self.getLinearLayer().crs():
+            g.transform(QgsCoordinateTransform(self.getLinearLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+
+         g = qad_utils.moveQgsGeometry(g, offSetX, offSetY)
+
+         if (destinationCrs is not None) and destinationCrs != self.getLinearLayer().crs():
+            g.transform(QgsCoordinateTransform(destinationCrs, self.getLinearLayer().crs())) # trasformo la geometria in layer coordinate
+         
+         f.setGeometry(g)
       
       for f in self.symbolFeatures:
-         f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
+         g = f.geometry()
+         
+         if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+            g.transform(QgsCoordinateTransform(self.getSymbolLayer().crs(), destinationCrs)) # trasformo la geometria in map coordinate
+
+         g = qad_utils.moveQgsGeometry(g, offSetX, offSetY)
+
+         if (destinationCrs is not None) and destinationCrs != self.getSymbolLayer().crs():
+            g.transform(QgsCoordinateTransform(destinationCrs, self.getSymbolLayer().crs())) # trasformo la geometria in layer coordinate
+         
+         f.setGeometry(g)
 
       
    #============================================================================
    # rotate
    #============================================================================
    def rotate(self, plugIn, basePt, angle):
+      # basePt = punto base espresso in map coordinate
+      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      
       measure = self.getTextValue()
       
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None):
             dimPt1 = qad_utils.rotatePoint(dimPt1, basePt, angle)
@@ -3540,8 +3638,8 @@ class QadDimEntity():
                                                                             measure)
             self.set(dimEntity)
       elif self.dimStyle.dimType == QadDimTypeEnum.LINEAR: # quota lineare con una linea di quota orizzontale o verticale
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None) and \
@@ -3574,11 +3672,14 @@ class QadDimEntity():
    # scale
    #============================================================================
    def scale(self, plugIn, basePt, scale):
+      # basePt = punto base espresso in map coordinate
+      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+
       measure = None if self.isCalculatedText() else self.getTextValue()
       
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None):
             dimPt1 = qad_utils.scalePoint(dimPt1, basePt, scale)
@@ -3592,8 +3693,8 @@ class QadDimEntity():
                                                                             measure)
             self.set(dimEntity)
       elif self.dimStyle.dimType == QadDimTypeEnum.LINEAR: # quota lineare con una linea di quota orizzontale o verticale
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None) and \
@@ -3625,11 +3726,14 @@ class QadDimEntity():
    # mirror
    #============================================================================
    def mirror(self, plugIn, mirrorPt, mirrorAngle):
+      # mirrorPt = punto base espresso in map coordinate
+      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+
       measure = None if self.isCalculatedText() else self.getTextValue()
             
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None):
             dimPt1 = qad_utils.mirrorPoint(dimPt1, mirrorPt, mirrorAngle)
@@ -3643,8 +3747,8 @@ class QadDimEntity():
                                                                             measure)
             self.set(dimEntity)
       elif self.dimStyle.dimType == QadDimTypeEnum.LINEAR: # quota lineare con una linea di quota orizzontale o verticale
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(None, destinationCrs)
          preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None) and \
@@ -3682,28 +3786,41 @@ class QadDimEntity():
    def stretch(self, plugIn, containerGeom, offSetX, offSetY):
       """
       containerGeom = può essere una QgsGeometry rappresentante un poligono contenente i punti di geom da stirare
-                      oppure una lista dei punti da stirare
-      offSetX = spostamento X
-      offSetY = spostamento Y
+                      oppure una lista dei punti da stirare espressi in map coordinate
+      offSetX = spostamento X in map coordinate
+      offSetY = spostamento Y in map coordinate
       """
+      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      
       measure = None if self.isCalculatedText() else self.getTextValue()
             
       if self.dimStyle.dimType == QadDimTypeEnum.ALIGNED: # quota lineare allineata ai punti di origine delle linee di estensione
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt(containerGeom)
-         if (dimPt1 is not None) and (dimPt2 is not None) and \
-            (linePosPt is not None):
-
-            newPt = qad_utils.stretchPoint(dimPt1, containerGeom, offSetX, offSetY)
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(containerGeom, destinationCrs)
+         
+         if dimPt1 is not None:
+            newPt = qad_stretch_fun.stretchPoint(dimPt1, containerGeom, offSetX, offSetY)
             if newPt is not None:
                dimPt1 = newPt
-            newPt = qad_utils.stretchPoint(dimPt2, containerGeom, offSetX, offSetY)
+         
+         if dimPt2 is not None:
+            newPt = qad_stretch_fun.stretchPoint(dimPt2, containerGeom, offSetX, offSetY)
             if newPt is not None:
                dimPt2 = newPt
-            newPt = qad_utils.stretchPoint(linePosPt, containerGeom, offSetX, offSetY)
+
+         if linePosPt is not None:
+            newPt = qad_stretch_fun.stretchPoint(linePosPt, containerGeom, offSetX, offSetY)
             if newPt is not None:
                linePosPt = newPt
-                          
+         else:
+            linePosPt = self.getDimLinePosPt()
+            # verifico se è stato coinvolto il testo della quota
+            if qad_stretch_fun.isPtContainedForStretch(self.getTextPt(destinationCrs), containerGeom):
+               if linePosPt is not None:
+                  linePosPt = qad_utils.movePoint(linePosPt, offSetX, offSetY)
+         
+         if (dimPt1 is not None) and (dimPt2 is not None) and \
+            (linePosPt is not None):
             dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(plugIn.canvas, \
                                                                             dimPt1, \
                                                                             dimPt2, \
@@ -3711,27 +3828,38 @@ class QadDimEntity():
                                                                             measure)
             self.set(dimEntity)
       elif self.dimStyle.dimType == QadDimTypeEnum.LINEAR: # quota lineare con una linea di quota orizzontale o verticale
-         dimPt1, dimPt2 = self.getDimPts()
-         linePosPt = self.getDimLinePosPt(containerGeom)
-         preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
+         dimPt1, dimPt2 = self.getDimPts(destinationCrs)
+         linePosPt = self.getDimLinePosPt(containerGeom, destinationCrs)
+         
+         dimLinearAlignment, dimLineRotation = self.getDimLinearAlignment()
+         
+         if dimPt1 is not None:
+            newPt = qad_stretch_fun.stretchPoint(dimPt1, containerGeom, offSetX, offSetY)
+            if newPt is not None:
+               dimPt1 = newPt
+               
+         if dimPt2 is not None:
+            newPt = qad_stretch_fun.stretchPoint(dimPt2, containerGeom, offSetX, offSetY)
+            if newPt is not None:
+               dimPt2 = newPt
+
+         if linePosPt is not None:
+            newPt = qad_stretch_fun.stretchPoint(linePosPt, containerGeom, offSetX, offSetY)
+            if newPt is not None:
+               linePosPt = newPt
+         else:
+            linePosPt = self.getDimLinePosPt()
+            # verifico se è stato coinvolto il testo della quota
+            if qad_stretch_fun.isPtContainedForStretch(self.getTextPt(destinationCrs), containerGeom):
+               if linePosPt is not None:
+                  linePosPt = qad_utils.movePoint(linePosPt, offSetX, offSetY)
+
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None) and \
-            (preferredAlignment is not None) and (dimLineRotation is not None):
+            (dimLinearAlignment is not None) and (dimLineRotation is not None):
             textForcedRot = self.getTextRot()
             if textForcedRot is not None:
                self.dimStyle.textForcedRot = textForcedRot
-
-            newPt = qad_utils.stretchPoint(dimPt1, containerGeom, offSetX, offSetY)
-            if newPt is not None:
-               dimPt1 = newPt
-            newPt = qad_utils.stretchPoint(dimPt2, containerGeom, offSetX, offSetY)
-            if newPt is not None:
-               dimPt2 = newPt
-            newPt = qad_utils.stretchPoint(linePosPt, containerGeom, offSetX, offSetY)
-            if newPt is not None:
-               linePosPt = newPt
-
-            dimLinearAlignment, dimLineRotation = self.getDimLinearAlignment()
 
             if dimLinearAlignment == QadDimStyleAlignmentEnum.VERTICAL:
                dimLineRotation = math.pi / 2
@@ -3745,3 +3873,29 @@ class QadDimEntity():
                                                                            dimLinearAlignment, \
                                                                            dimLineRotation)
             self.set(dimEntity)
+
+
+   #============================================================================
+   # getDimComponentByEntity
+   #============================================================================
+   def getDimComponentByEntity(self, entity):
+      """
+      La funzione, data un'entità, restituisce il componente della quotatura.
+      """
+      if entity.layer == self.getTextualLayer():
+         return QadDimComponentEnum.TEXT_PT
+      elif entity.layer == self.getLinearLayer() or \
+           entity.layer == self.getSymbolLayer():
+         try:
+            return entity.getFeature().attribute(self.dimStyle.componentFieldName)
+         except:
+            return None
+         
+      return None
+
+
+#===============================================================================
+#  = variabile globale
+#===============================================================================
+
+QadDimStyles = QadDimStylesClass()                 # lista degli stili di quotatura caricati

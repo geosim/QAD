@@ -121,10 +121,19 @@ class QadCommandsClass():
      
       self.actualCommand = None  # Comando in corso di esecuzione
    
+      exceptionList = []
+      for cmdObj in self.__cmdObjs:
+         exceptionList.append(cmdObj.getName())
+         exceptionList.append("_" + cmdObj.getEnglishName())
+         
       # carico alias dei comandi
       self.commandAliases = QadCommandAliasesClass()
-      self.commandAliases.load()
+      self.commandAliases.load("", exceptionList)
       
+      # scarto gli alias che hanno lo stesso nome dei comandi
+      
+
+
    def isValidCommand(self, command):
       cmd = self.getCommandObj(command)
       if cmd:
@@ -217,11 +226,12 @@ class QadCommandsClass():
       if command == "QadVirtualGripCommandsClass":
          self.actualCommand = QadVirtualGripCommandsClass(self.plugIn)
          # param è una lista in cui:
-         # il primo elemento è entitySetGripPoints
-         # il secondo elemento è il punto del grip corrente
-         self.actualCommand.entitySetGripPoints = param[0]
-         self.actualCommand.basePt = param[1]
-         self.actualCommand.initNextCommand()
+         # il primo elemento è il codice del comando da eseguire
+         # il secondo elemento è entitySetGripPoints
+         # il terzo elemento è il punto del grip corrente
+         self.actualCommand.entitySetGripPoints = param[1]
+         self.actualCommand.basePt = param[2]
+         self.actualCommand.initStartCommand(param[0])
          if self.actualCommand.run(False) == True: # comando terminato
             self.clearCommand()
          return
@@ -325,7 +335,7 @@ class QadCommandsClass():
          
       del self.actualCommand
       self.actualCommand = None    
-      self.plugIn.setStandardMapTool()      
+      self.plugIn.setStandardMapTool()
       self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
 
 

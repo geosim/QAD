@@ -189,7 +189,7 @@ class QadGetPoint(QgsMapTool):
          self.entity.clear() # entità selezionata 
          self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entità
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
-         self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto roby
+         self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
 
    def getSelectionMode(self):
       return self.__selectionMode
@@ -445,8 +445,9 @@ class QadGetPoint(QgsMapTool):
 
    def toggleReferenceLines(self, geom, point, crs):
       if self.__stopTimer == False and (geom is not None) and (point is not None):
-         self.__QadSnapper.toggleReferenceLines(geom, point, crs)
-         self.__QadSnapper.toggleIntExtLine(geom, point, crs)
+         if self.__QadSnapper is not None:
+            self.__QadSnapper.toggleReferenceLines(geom, point, crs)
+            self.__QadSnapper.toggleIntExtLine(geom, point, crs)
       
       
    def canvasMoveEvent(self, event):

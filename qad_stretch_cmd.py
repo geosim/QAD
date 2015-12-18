@@ -92,34 +92,43 @@ class QadSTRETCHCommandClass(QadCommandClass):
             return None
 
 
-   #============================================================================
-   # stretch
-   #============================================================================
-   def stretch(self, f, containerGeom, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet):
+   def stretch(self, entity, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):
+      # entity = entità da stirare
+      # ptList = lista dei punti da stirare
+      # offSetX, offSetY = spostamento da fare
+      # tolerance2ApproxCurve = tolleranza per ricreare le curve
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
-
-      if dimEntity is None:
-         # stiro la feature e la rimuovo da entitySet (é la prima)
-         stretchedGeom = qad_stretch_fun.stretchQgsGeometry(f.geometry(), containerGeom, \
+      if entity.whatIs() == "ENTITY":
+         stretchedGeom = entity.getGeometry()
+         # controllo inserito perchè con le quote, questa viene cancellata e ricreata quindi alcuni oggetti potrebbero non esistere più
+         if stretchedGeom is None: # se non c'è lo salto senza errore
+            return True
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         stretchedGeom.transform(coordTransform)           
+         # stiro la feature
+         stretchedGeom = qad_stretch_fun.stretchQgsGeometry(stretchedGeom, containerGeom, \
                                                             offSetX, offSetY, \
                                                             tolerance2ApproxCurve)
          
          if stretchedGeom is not None:
+            # trasformo la geometria nel crs del layer
+            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+            stretchedGeom.transform(coordTransform)
+                       
+            f = entity.getFeature()
             f.setGeometry(stretchedGeom)
             # plugIn, layer, feature, refresh, check_validity
-            if qad_layer.updateFeatureToLayer(self.plugIn, layerEntitySet.layer, f, False, False) == False:
+            if qad_layer.updateFeatureToLayer(self.plugIn, entity.layer, f, False, False) == False:
                return False
-         del layerEntitySet.featureIds[0]
-      else:
-         # ruoto la quota e la rimuovo da entitySet
-         dimEntitySet = dimEntity.getEntitySet()
-         if dimEntity.deleteToLayers(self.plugIn) == False:
+
+      elif entity.whatIs() == "DIMENTITY":
+         # stiro la quota
+         if entity.deleteToLayers(self.plugIn) == False:
             return False                      
-         dimEntity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
-         if dimEntity.addToLayers(self.plugIn) == False:
+         entity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
+         if entity.addToLayers(self.plugIn) == False:
             return False             
-         entitySet.subtract(dimEntitySet)
             
       return True
 
@@ -133,43 +142,46 @@ class QadSTRETCHCommandClass(QadCommandClass):
       for SSGeom in self.SSGeomList:
          entitySet.unite(SSGeom[0])
       self.plugIn.beginEditCommand("Feature stretched", entitySet.getLayerList())
-      del entitySet
       
+      dimElaboratedList = [] # lista delle quotature già elaborate
+
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+      offSetX = newPt.x() - self.basePt.x()
+      offSetY = newPt.y() - self.basePt.y()
+      
+      entity = QadEntity()
       for SSGeom in self.SSGeomList:
          # copio entitySet
          entitySet = QadEntitySet(SSGeom[0])
          geomSel = SSGeom[1]
+
          for layerEntitySet in entitySet.layerEntitySetList:
             layer = layerEntitySet.layer
-         
-            tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                        self.plugIn.canvas,\
-                                                                        layer)                              
+
+            for featureId in layerEntitySet.featureIds:
+               entity.set(layer, featureId)
+
+               # verifico se l'entità appartiene ad uno stile di quotatura
+               dimEntity = QadDimStyles.getDimEntity(entity)  
+               if dimEntity is None:                        
+                  if self.stretch(entity, geomSel, offSetX, offSetY, tolerance2ApproxCurve) == False:
+                     self.plugIn.destroyEditCommand()
+                     return
+               else:
+                  found = False
+                  for dimElaborated in dimElaboratedList:
+                     if dimElaborated == dimEntity:
+                        found = True
                   
-            g = QgsGeometry(geomSel)
-            if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
-               # Trasformo la geometria nel sistema di coordinate del layer
-               coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), \
-                                                       layer.crs())          
-               g.transform(coordTransform)
-               transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
-               transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
-               offSetX = transformedNewPt.x() - transformedBasePt.x()
-               offSetY = transformedNewPt.y() - transformedBasePt.y()
-            else:
-               offSetX = newPt.x() - self.basePt.x()
-               offSetY = newPt.y() - self.basePt.y()
-                           
-            while len(layerEntitySet.featureIds) > 0:
-               featureId = layerEntitySet.featureIds[0]
-               f = layerEntitySet.getFeature(featureId)        
-               if self.stretch(f, g, offSetX, offSetY, tolerance2ApproxCurve, layerEntitySet, entitySet) == False:
-                  self.plugIn.destroyEditCommand()
-                  return
+                  if found == False: # quota non ancora elaborata
+                     dimElaboratedList.append(dimEntity)
+                     if self.stretch(dimEntity, geomSel, offSetX, offSetY, tolerance2ApproxCurve) == False:
+                        self.plugIn.destroyEditCommand()
+                        return
 
       self.plugIn.endEditCommand()
-                           
-                           
+
+
    #============================================================================
    # setEntitySetGeom
    #============================================================================
@@ -424,7 +436,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
             value = msg
 
          # imposto il map tool
-         self.getPointMapTool().SSGeomList = self.SSGeomList                                
+         self.getPointMapTool().SSGeomList = self.SSGeomList
 
          if value is None or type(value) == unicode:
             self.basePt.set(0, 0)
@@ -544,10 +556,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
    def addToSelectedEntityGripPoints(self, entityGripPoints):
       # entità con lista dei grip point
       i = 0
-      layer = entityGripPoints.entity.layer
       gripPoints = entityGripPoints.gripPoints
-      layerGripPoints = entityGripPoints.layerGripPoints # lista di QgsPoint che rappresentano i punti di grip in layer coordinate
-
       gripPointsLen = len(gripPoints)
       ptList = []
       while i < gripPointsLen:
@@ -555,19 +564,20 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
          # grip point selezionato
          if gripPoint.getStatus() == qad_grip.QadGripStatusEnum.SELECTED:
             if gripPoint.gripType == qad_grip.QadGripPointTypeEnum.CENTER:
-               ptList.append(layerGripPoints[i])
+               ptList.append(gripPoint.getPoint())
             elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.LINE_MID_POINT:
                # aggiungo il vertice precedente e successivo di quello intermedio
                if i > 0:
-                  ptList.append(layerGripPoints[i - 1])
+                  ptList.append(gripPoints[i - 1].getPoint())
                if i < gripPointsLen - 1:
-                  ptList.append(layerGripPoints[i + 1])
+                  ptList.append(gripPoints[i + 1].getPoint())
             elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.QUA_POINT:
-               ptList.append(layerGripPoints[i]) # da map coord a layer coord
-            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.VERTEX:
-               ptList.append(layerGripPoints[i]) # da map coord a layer coord
+               ptList.append(gripPoint.getPoint())
+            elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.VERTEX or \
+                 gripPoint.gripType == qad_grip.QadGripPointTypeEnum.END_VERTEX:
+               ptList.append(gripPoint.getPoint())
             elif gripPoint.gripType == qad_grip.QadGripPointTypeEnum.ARC_MID_POINT:
-               ptList.append(layerGripPoints[i]) # da map coord a layer coord
+               ptList.append(gripPoint.getPoint())
          i = i + 1
       
       if len(ptList) > 0:
@@ -613,13 +623,24 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       # tolerance2ApproxCurve = tolleranza per ricreare le curve
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
-         transformedBasePt = self.mapToLayerCoordinates(entity.layer, self.basePt)
+         stretchedGeom = entity.getGeometry()
+         # controllo inserito perchè con le quote, questa viene cancellata e ricreata quindi alcuni oggetti potrebbero non esistere più
+         if stretchedGeom is None: # se non c'è lo salto senza errore
+            return True
+
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         stretchedGeom.transform(coordTransform)           
          # stiro la feature
-         stretchedGeom = qad_stretch_fun.gripStretchQgsGeometry(entity.getGeometry(), transformedBasePt, ptList, \
+         stretchedGeom = qad_stretch_fun.gripStretchQgsGeometry(stretchedGeom, self.basePt, ptList, \
                                                                 offSetX, offSetY, \
                                                                 tolerance2ApproxCurve)
          
          if stretchedGeom is not None:
+            # trasformo la geometria nel crs del layer
+            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+            stretchedGeom.transform(coordTransform)
+                       
             f = entity.getFeature()
             f.setGeometry(stretchedGeom)
             if self.copyEntities == False:
@@ -660,22 +681,13 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
          ptList = selectedEntity[1]
          layer = entity.layer
          
-         tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                     self.plugIn.canvas,\
-                                                                     layer)                              
-                  
-         if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
-            transformedBasePt = self.mapToLayerCoordinates(layer, self.basePt)
-            transformedNewPt = self.mapToLayerCoordinates(layer, newPt)
-            offSetX = transformedNewPt.x() - transformedBasePt.x()
-            offSetY = transformedNewPt.y() - transformedBasePt.y()
-         else:
-            offSetX = newPt.x() - self.basePt.x()
-            offSetY = newPt.y() - self.basePt.y()
+         tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+         offSetX = newPt.x() - self.basePt.x()
+         offSetY = newPt.y() - self.basePt.y()
 
          # verifico se l'entità appartiene ad uno stile di quotatura
-         dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
-         if dimEntity is None:                        
+         dimEntity = QadDimStyles.getDimEntity(entity)  
+         if dimEntity is None:
             if self.stretch(entity, ptList, offSetX, offSetY, tolerance2ApproxCurve) == False:
                self.plugIn.destroyEditCommand()
                return
@@ -689,10 +701,13 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                dimEntitySet = dimEntity.getEntitySet()
                # creo un'unica lista contenente i grip points di tutti i componenti della quota
                dimPtlist = []
-               for dimComponent in dimEntitySet:
-                  i = self.getSelectedEntityGripPointNdx(dimComponent)
-                  if i >= 0:
-                     dimPtlist.extend(self.selectedEntityGripPoints[i][1])
+               for layerEntitySet in dimEntitySet.layerEntitySetList:
+                  for featureId in layerEntitySet.featureIds:
+                     componentDim = QadEntity()
+                     componentDim.set(layerEntitySet.layer, featureId)
+                     i = self.getSelectedEntityGripPointNdx(componentDim)
+                     if i >= 0:
+                        dimPtlist.extend(self.selectedEntityGripPoints[i][1])
 
                dimElaboratedList.append(dimEntity)
                if self.stretch(dimEntity, dimPtlist, offSetX, offSetY, tolerance2ApproxCurve) == False:

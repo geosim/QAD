@@ -62,7 +62,7 @@ class QadCommandAliasesClass():
    #============================================================================
    # load
    #============================================================================
-   def load(self, Path=""):
+   def load(self, Path = "", exceptionList = None):
       """
       Carica la lista degli alias dei comandi da file
       Ritorna True in caso di successo, false in caso di errore
@@ -118,7 +118,12 @@ class QadCommandAliasesClass():
          sep = command.find(" ")
          if sep > 0:
             continue
-         self.__commandAliases[alias.upper()] = command.upper()
+         
+         if exceptionList is None:
+            self.__commandAliases[alias.upper()] = command.upper()
+         else:
+            if alias.upper() not in exceptionList: 
+               self.__commandAliases[alias.upper()] = command.upper()
 
       file.close()
       

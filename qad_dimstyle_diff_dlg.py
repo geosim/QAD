@@ -48,7 +48,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       self.setupUi(self)
                  
       self.dimNameList = []
-      for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
+      for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
          self.dimStyle1.addItem(dimStyle.name, dimStyle)
          self.dimStyle2.addItem(dimStyle.name, dimStyle)
       

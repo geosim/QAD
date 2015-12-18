@@ -41,6 +41,7 @@ from qad_msg import QadMsg
 import qad_layer
 from qad_arc import *
 from qad_circle import *
+from qad_dim import QadDimStyles
 
 
 # Classe che gestisce il comando LENGTHEN
@@ -518,7 +519,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
                for layer in self.plugIn.canvas.layers():
                   if layer.type() == QgsMapLayer.VectorLayer and \
                      layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
-                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+                     if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
@@ -635,7 +636,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
                for layer in self.plugIn.canvas.layers():
                   if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and \
                      layer.isEditable():
-                     if len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+                     if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),

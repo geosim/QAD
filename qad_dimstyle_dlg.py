@@ -76,7 +76,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       
       # Inizializzazione della lista degli stili
       model = QStandardItemModel(self.dimStyleList)      
-      for dimStyle in self.plugIn.dimStyles.dimStyleList: # lista degli stili di quotatura caricati
+      for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
          # Create an item with a caption
          item = QStandardItem(dimStyle.name)
          item.setEditable(True)
@@ -138,7 +138,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def renSelectedDimStyle(self, newName):
       if self.selectedDimStyle is None:
          return
-      if self.plugIn.dimStyles.renameDimStyle(self.selectedDimStyle.name, newName) == False:
+      if QadDimStyles.renameDimStyle(self.selectedDimStyle.name, newName) == False:
          QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
                               QadMsg.translate("DimStyle_Dialog", "Dimension style not renamed."))
       else:
@@ -166,7 +166,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), msg, \
                                  QMessageBox.Yes | QMessageBox.No)
       if res == QMessageBox.Yes:
-         if self.plugIn.dimStyles.removeDimStyle(self.selectedDimStyle.name, True) == False:
+         if QadDimStyles.removeDimStyle(self.selectedDimStyle.name, True) == False:
             QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
                                  QadMsg.translate("DimStyle_Dialog", "Dimension style not removed."))
          else:
@@ -179,8 +179,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       Form = QadDIMSTYLE_NEW_Dialog(self.plugIn, self.selectedDimStyle.name if self.selectedDimStyle is not None else None)
       if Form.exec_() == QDialog.Accepted:
          Form.dimStyle.path = ""
-         self.plugIn.dimStyles.addDimStyle(Form.dimStyle, True)
-         self.selectedDimStyle = self.plugIn.dimStyles.findDimStyle(Form.dimStyle.name)
+         QadDimStyles.addDimStyle(Form.dimStyle, True)
+         self.selectedDimStyle = QadDimStyles.findDimStyle(Form.dimStyle.name)
          # setto lo stile corrente
          QadVariables.set(QadMsg.translate("Environment variables", "DIMSTYLE"), self.selectedDimStyle.name)
          self.init()      

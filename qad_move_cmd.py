@@ -92,7 +92,7 @@ class QadMOVECommandClass(QadCommandClass):
    #============================================================================
    def move(self, f, offSetX, offSetY, layerEntitySet, entitySet):
       # verifico se l'entità appartiene ad uno stile di quotatura
-      dimEntity = self.plugIn.dimStyles.getDimEntity(layerEntitySet.layer, f.id())
+      dimEntity = QadDimStyles.getDimEntity(layerEntitySet.layer, f.id())
             
       if dimEntity is None:
          # sposto la feature e la rimuovo da entitySet (é la prima)
@@ -379,7 +379,7 @@ class QadGRIPMOVECommandClass(QadCommandClass):
             entity.set(layerEntitySet.layer, featureId)
 
             # verifico se l'entità appartiene ad uno stile di quotatura
-            dimEntity = self.plugIn.dimStyles.getDimEntity(entity.layer, entity.featureId)  
+            dimEntity = QadDimStyles.getDimEntity(entity)  
             if dimEntity is None:                        
                if self.move(entity, offSetX, offSetY) == False:
                   self.plugIn.destroyEditCommand()

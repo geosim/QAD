@@ -32,7 +32,7 @@ from qad_generic_cmd import QadCommandClass
 from qad_msg import QadMsg
 from qad_textwindow import *
 from qad_entity import *
-from qad_dim import *
+from qad_dim import QadDimStyles
 from qad_getpoint import *
 from qad_pline_cmd import QadPLINECommandClass
 from qad_circle_cmd import QadCIRCLECommandClass
@@ -123,7 +123,7 @@ class QadSSGetClass(QadCommandClass):
               (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
-               len(self.plugIn.dimStyles.getDimListByLayer(layer)) == 0:
+               len(QadDimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
          
       return layerList
@@ -175,31 +175,22 @@ class QadSSGetClass(QadCommandClass):
          return
       
       # controllo su layer delle quotature
-      dimStyle, dimId = self.plugIn.dimStyles.getDimIdByEntity(entity)
-      if self.checkDimLayers == False and dimStyle is not None:
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      dimEntity = QadDimStyles.getDimEntity(entity)
+      if self.checkDimLayers == False and dimEntity is not None:
          self.showMsgOnAddRemove(0)
          return
 
-      for layerEntitySet in self.entitySet.layerEntitySetList:
-         # se il layer non é quello di entity
-         if entity.layerId() != layerEntitySet.layerId():            
-            layerEntitySet.deselectOnLayer()
-         else:
-            layerEntitySet.deselectOnLayer()
-     
       self.entitySet.deselectOnLayer()
       self.entitySet.clear()
       self.entitySet.addEntity(entity)
 
-      if self.checkDimLayers == True and dimStyle is not None:
-         # Mi ricavo tutti i componenti della quotatura
-         dimEntity = QadDimEntity()
-         dimEntity.initByDimId(dimStyle, dimId)
+      if self.checkDimLayers == True and dimEntity is not None:
          # Aggiungo i componenenti della quotatura a set <entitySet>
          self.entitySet.unite(dimEntity.getEntitySet())
 
       self.showMsgOnAddRemove(self.entitySet.count())
-      self.entitySet.selectOnLayer(False) # incremental = False
+      self.entitySet.selectOnLayer(False) # incremental = False aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
 
@@ -219,7 +210,7 @@ class QadSSGetClass(QadCommandClass):
          self.showMsgOnAddRemove(0)
          return
       # controllo su layer delle quotature
-      if self.checkDimLayers == False and len(self.plugIn.dimStyles.getDimListByLayer(entity.layer)) > 0:
+      if self.checkDimLayers == False and len(QadDimStyles.getDimListByLayer(entity.layer)) > 0:
          self.showMsgOnAddRemove(0)
          return
       
@@ -234,7 +225,7 @@ class QadSSGetClass(QadCommandClass):
          dimEntitySet.addEntity(entity)
          # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge/rimuove tutti i componenti delle quotature all'entitySet.
-         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         QadDimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
          if Add == True: # aggiungi al gruppo di selezione
             self.entitySet.unite(dimEntitySet)
          else: # rimuovi dal gruppo di selezione
@@ -290,7 +281,7 @@ class QadSSGetClass(QadCommandClass):
          dimEntitySet = QadEntitySet(selSet)
          # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
          # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
-         self.plugIn.dimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         QadDimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
          self.entitySet.unite(dimEntitySet)
 
       self.showMsgOnAddRemove(self.entitySet.count())
@@ -561,6 +552,9 @@ class QadSSGetClass(QadCommandClass):
                self.step = 6
             elif value == QadMsg.translate("Command_SSGET", "WBuffer") or value == "WBuffer" or \
                  value == QadMsg.translate("Command_SSGET", "CBuffer") or value == "CBuffer":
+               # ho dovuto spostare questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
+               from qad_mbuffer_cmd import QadMBUFFERCommandClass
+               
                # "FBuffer" = Seleziona oggetti che si trovano completamente all'interno di buffer intorno ad oggetti da selezionare
                # "IBuffer" = Seleziona oggetti che intersecano o si trovano all'interno di buffer intorno ad oggetti da selezionare
                self.MBUFFERCommand = QadMBUFFERCommandClass(self.plugIn)
@@ -602,7 +596,7 @@ class QadSSGetClass(QadCommandClass):
                      entitySet.removeGeomType(QGis.Polygon)
                   # controllo sulle quotature
                   if self.checkDimLayers == False:
-                     self.plugIn.dimStyles.removeAllDimLayersFromEntitySet(entitySet)
+                     QadDimStyles.removeAllDimLayersFromEntitySet(entitySet)
                      
                   entitySet.removeNotExisting()
                   self.elaborateSelSet(entitySet, False)
@@ -917,7 +911,3 @@ class QadSSGetClass(QadCommandClass):
 
             self.WaitForFirstPoint()
          return False
-
-
-# ho dovuto spostare in fondo questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
-from qad_mbuffer_cmd import QadMBUFFERCommandClass
