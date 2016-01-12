@@ -508,6 +508,7 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA SECONDO PUNTO PER SPECCHIO
       elif self.step == 1: # dopo aver atteso un punto si riavvia il comando
+         ctrlKey = False
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # é stato attivato un altro plugin che ha disattivato Qad
@@ -520,6 +521,7 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
 
+            ctrlKey = self.getPointMapTool().ctrlKey
             value = self.getPointMapTool().point
          else: # il punto arriva come parametro della funzione
             value = msg
@@ -551,6 +553,10 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
                return False
             
             self.secondMirrorPt.set(value.x(), value.y())
+
+            if ctrlKey:
+               self.copyEntities = True
+
             self.mirrorGeoms()
 
             if self.copyEntities == False:
@@ -592,5 +598,3 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
          self.waitForMirrorPoint()
 
          return False
-
-

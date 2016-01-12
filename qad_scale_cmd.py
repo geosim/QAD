@@ -711,6 +711,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA DEL FATTORE DI SCALA
       elif self.step == 1:
+         ctrlKey = False         
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # é stato attivato un altro plugin che ha disattivato Qad
@@ -724,6 +725,8 @@ class QadGRIPSCALECommandClass(QadCommandClass):
                   return False
             else:
                value = self.getPointMapTool().point
+
+            ctrlKey = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
 
@@ -765,6 +768,10 @@ class QadGRIPSCALECommandClass(QadCommandClass):
                scale = scale / self.ReferenceLen
                
             self.plugIn.setLastScale(scale)
+            
+            if ctrlKey:
+               self.copyEntities = True
+            
             self.scaleFeatures(scale)
 
             if self.copyEntities == False:

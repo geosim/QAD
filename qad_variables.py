@@ -75,10 +75,10 @@ class QadVariablesClass():
       Inizializza un dizionario con le variabili e i loro valori di default 
       """
       self.__VariableValuesDict = dict() # variabile privata <nome variabile>-<valore variabile>
-
+      
       # ARCMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un arco
       VariableName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Minumun numer of segment to approximate an arc.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Minimum number of segments to approximate an arc.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(12), \
                                                             QadVariableTypeEnum.INT, \
@@ -89,10 +89,10 @@ class QadVariablesClass():
       # 8 = Attiva il puntamento polare
       VariableName = QadMsg.translate("Environment variables", "AUTOSNAP")
       VariableDescr = QadMsg.translate("Environment variables", "Controls the display of the AutoSnap marker, tooltip, and magnet." + \
-                                       "\nAlso turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips, " + \
+                                       "\nAlso turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips." + \
                                        "\nThe setting is stored as a bitcode using the sum of the following values:" + \
                                        "\n0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode." + \
-                                       "\n1 = Turns on the AutoSnap marke." + \
+                                       "\n1 = Turns on the AutoSnap mark." + \
                                        "\n2 = Turns on the AutoSnap tooltips." + \
                                        "\n4 = Turns on the AutoSnap magnet." + \
                                        "\n8 = Turns on polar tracking." + \
@@ -101,12 +101,12 @@ class QadVariablesClass():
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(63), \
                                                             QadVariableTypeEnum.INT, \
-                                                            0, None, \
+                                                            0, 64, \
                                                             VariableDescr)
       
       # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un cerchio
       VariableName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Minumun numer of segment to approximate a circle.") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Minimum number of segments to approximate a circle.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(12), \
                                                             QadVariableTypeEnum.INT, \
@@ -249,6 +249,33 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
+                                                            VariableDescr)
+
+      # INPUTSEARCHDELAY  (int): Controlla il tempo trascorso prima che le funzionalità di tastiera vengano visualizzate sulla riga di comando
+      VariableName = QadMsg.translate("Environment variables", "INPUTSEARCHDELAY") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the amount of time that elapses before automated keyboard features display at the Command prompt." + \
+                                       "\nValid values are real numbers from 100 to 10,000, which represent milliseconds." + \
+                                       "\nThe time delay setting in the INPUTSEARCHOPTIONS system variable must be turned on for INPUTSEARCHDELAY to have an effect.") # x lupdate      
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(300), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            100, 10000, \
+                                                            VariableDescr)
+
+      # INPUTSEARCHOPTIONS (int): Controlla i tipi di funzioni automatiche della tastiera disponibili dalla riga di comando
+      VariableName = QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls what types of automated keyboard features are available at the Command prompt." + \
+                                       "\nThe setting is stored as a bitcode using the sum of the following values:" + \
+                                       "\n 0 = Turns off all automated keyboard features when typing at the Command prompt." + \
+                                       "\n 1 = Turns on any automated keyboard features when typing at the Command prompt." + \
+                                       "\n 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke." + \
+                                       "\n 4 = Displays a list of suggestions as keystrokes are entered." + \
+                                       "\n 8 = Displays the icon of the command or system variable, if available." + \
+                                       "\n16 = Excludes the display of system variables.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(15), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 31, \
                                                             VariableDescr)
 
       # OFFSETDIST(float): Setta la distanza di default per l'offset
@@ -491,10 +518,10 @@ class QadVariablesClass():
       Modifica il valore di una variabile 
       """
       UpperVarName = VarName.upper()
-      variable = self.getVariable(VarName)
+      variable = self.getVariable(UpperVarName)
       
       if variable is None: # se non c'è la variablie
-         self.__VariableValuesDict[VariableName] = QadVariable(UpperVarName, VarValue, \
+         self.__VariableValuesDict[UpperVarName] = QadVariable(UpperVarName, VarValue, \
                                                                QadVariableTypeEnum.UNKNOWN, \
                                                                None, None, \
                                                                "")

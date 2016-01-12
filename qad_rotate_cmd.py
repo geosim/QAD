@@ -686,6 +686,7 @@ class QadGRIPROTATECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA DI UN PUNTO DI ROTAZIONE
       elif self.step == 1:
+         ctrlKey = False
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # é stato attivato un altro plugin che ha disattivato Qad
@@ -699,6 +700,8 @@ class QadGRIPROTATECommandClass(QadCommandClass):
                   return False
             else:
                value = self.getPointMapTool().point
+
+            ctrlKey = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
 
@@ -731,6 +734,9 @@ class QadGRIPROTATECommandClass(QadCommandClass):
                angle = qad_utils.toRadians(value)
             angle = angle - self.ReferenceAng
             self.plugIn.setLastRot(angle)
+
+            if ctrlKey:
+               self.copyEntities = True
             
             self.rotateFeatures(angle)
 

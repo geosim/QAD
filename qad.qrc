@@ -67,5 +67,6 @@
         <file>icons/dimStyle.png</file>
         <file>icons/help.png</file>
         <file>icons/lengthen.png</file>
+        <file>icons/variable.png</file>
     </qresource>    
 </RCC>

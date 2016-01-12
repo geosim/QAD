@@ -49,7 +49,10 @@ class QadSETVARCommandClass(QadCommandClass):
 
    def connectQAction(self, action):
       QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runSETVARCommand)
-   
+
+   def getIcon(self):
+      return QIcon(":/plugins/qad/icons/variable.png")
+
    def getNote(self):
       # impostare le note esplicative del comando      
       return QadMsg.translate("Command_SETVAR", "Sets the QAD environment variables.")

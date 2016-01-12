@@ -3556,28 +3556,7 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Minumun numer of segment to approximate an arc.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Integer type.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Controls the display of the AutoSnap marker, tooltip, and magnet.
-Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips, 
-The setting is stored as a bitcode using the sum of the following values:
-0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode.
-1 = Turns on the AutoSnap marke.
-2 = Turns on the AutoSnap tooltips.
-4 = Turns on the AutoSnap magnet.
-8 = Turns on polar tracking.
-16 = Turns on object snap tracking.
-32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minumun numer of segment to approximate a circle.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3801,6 +3780,52 @@ The SELECTIONAREA system variable must be on.</source>
 0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
 1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
 2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INPUTSEARCHOPTIONS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INPUTSEARCHDELAY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls what types of automated keyboard features are available at the Command prompt.
+The setting is stored as a bitcode using the sum of the following values:
+ 0 = Turns off all automated keyboard features when typing at the Command prompt.
+ 1 = Turns on any automated keyboard features when typing at the Command prompt.
+ 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke.
+ 4 = Displays a list of suggestions as keystrokes are entered.
+ 8 = Displays the icon of the command or system variable, if available.
+16 = Excludes the display of system variables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the amount of time that elapses before automated keyboard features display at the Command prompt.
+Valid values are real numbers from 100 to 10,000, which represent milliseconds.
+The time delay setting in the INPUTSEARCHOPTIONS system variable must be turned on for INPUTSEARCHDELAY to have an effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments to approximate an arc.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of the AutoSnap marker, tooltip, and magnet.
+Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips.
+The setting is stored as a bitcode using the sum of the following values:
+0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode.
+1 = Turns on the AutoSnap mark.
+2 = Turns on the AutoSnap tooltips.
+4 = Turns on the AutoSnap magnet.
+8 = Turns on polar tracking.
+16 = Turns on object snap tracking.
+32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments to approximate a circle.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

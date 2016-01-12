@@ -1214,6 +1214,12 @@ class Qad(QObject):
    def getCommandObj(self, cmdName):
       return self.QadCommands.getCommandObj(cmdName)
    
+   def getMoreUsedCmd(self, filter):
+      return self.QadCommands.getMoreUsedCmd(filter)
+
+   def isValidEnvVariable(self, variable):
+      return self.QadCommands.isValidEnvVariable(variable)
+   
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
       self.QadCommands.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
    

@@ -777,6 +777,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA DI UN PUNTO DI STIRAMENTO
       elif self.step == 1:
+         ctrlKey = False
          if msgMapTool == True: # il punto arriva da una selezione grafica
             # la condizione seguente si verifica se durante la selezione di un punto
             # é stato attivato un altro plugin che ha disattivato Qad
@@ -790,6 +791,8 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                   return False
             else:
                value = self.getPointMapTool().point
+
+            ctrlKey = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
 
@@ -813,6 +816,9 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_GRIPSTRETCH", "eXit") or value == "eXit":
                return True # fine comando
          elif type(value) == QgsPoint: # se é stato selezionato un punto
+            if ctrlKey:
+               self.copyEntities = True
+               
             self.stretchFeatures(value)
 
             if self.copyEntities == False:

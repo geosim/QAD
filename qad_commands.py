@@ -34,6 +34,7 @@ from qgis.gui import *
 from qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
 from qad_msg import QadMsg
 from qad_cmd_aliases import *
+from qad_variables import QadVariables
 
 from qad_getpoint import *
 from qad_generic_cmd import QadCommandClass
@@ -118,9 +119,10 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
       self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
-     
+      
       self.actualCommand = None  # Comando in corso di esecuzione
    
+      # scarto gli alias che hanno lo stesso nome dei comandi
       exceptionList = []
       for cmdObj in self.__cmdObjs:
          exceptionList.append(cmdObj.getName())
@@ -130,10 +132,9 @@ class QadCommandsClass():
       self.commandAliases = QadCommandAliasesClass()
       self.commandAliases.load("", exceptionList)
       
-      # scarto gli alias che hanno lo stesso nome dei comandi
+      self.usedCmdNames = QadUsedCmdNamesClass()
       
-
-
+      
    def isValidCommand(self, command):
       cmd = self.getCommandObj(command)
       if cmd:
@@ -141,6 +142,15 @@ class QadCommandsClass():
          return True
       else:
          return False
+
+
+   def isValidEnvVariable(self, variable):
+      # verifico se è una variabile di sistema
+      if QadVariables.get(variable) is not None:
+         return True
+      else:
+         return False
+   
    
    def showCommandPrompt(self):
       if self.plugIn is not None:
@@ -238,10 +248,18 @@ class QadCommandsClass():
       
       self.actualCommand = self.getCommandObj(command)
       if self.actualCommand is None:
+         # verifico se è una variabile di sistema
+         if QadVariables.get(command) is not None:
+            self.showMsg("\n")
+            # lancio comando SETVAR per settare la variabile
+            args = [QadMsg.translate("Command_list", "SETVAR"), command]
+            return self.runMacro(args)
+            
          msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return
-         
+      
+      self.usedCmdNames.setUsed(command)
       if self.actualCommand.run() == True: # comando terminato
          self.clearCommand()
          
@@ -408,8 +426,32 @@ class QadCommandsClass():
       if self.actualCommand.getPointMapTool() is None:
          return
       self.actualCommand.getPointMapTool().refreshAutoSnap()
-            
-            
+
+
+
+   #============================================================================
+   # getMoreUsedCmd
+   #============================================================================
+   def getMoreUsedCmd(self, filter):
+      upperFilter = filter.upper()
+      cmdName, qty = self.usedCmdNames.getMoreUsed(upperFilter)
+      if cmdName == "": # nessun comando
+         if upperFilter[0] == "_":
+            englishName = True
+            upperFilter = upperFilter[1:] # salto il primo carattere di "_"
+         else:
+            englishName = False 
+         
+         for cmd in self.__cmdObjs:
+            if englishName:
+               if cmd.getEnglishName().startswith(upperFilter): # in inglese
+                  return cmd.getEnglishName(), 0
+            else:
+               if cmd.getName().startswith(upperFilter): # in lingua locale
+                  return cmd.getName(), 0
+      return cmdName, 0
+
+
 #===============================================================================
 # QadMacroRunnerCommandClass
 #===============================================================================
@@ -479,3 +521,47 @@ class QadMacroRunnerCommandClass(QadCommandClass):
                self.showEvaluateMsg(arg)
 
       return False
+
+
+#===============================================================================
+# QadUsedCmdNamesClass usata per contare quante volte sono stati usati i comandi
+#===============================================================================
+
+
+class QadUsedCmdNamesClass():
+   def __init__(self):
+      self.__nUsedCmdNames = [] # lista interna di item composti da (nome comando o alias, n. di volte che è stato usato)
+
+   def __del__(self):
+      del self.__nUsedCmdNames[:]
+
+
+   def setUsed(self, cmdName):
+      uName = cmdName.upper()
+      for _cmdName in self.__nUsedCmdNames:
+         if _cmdName[0] == uName:
+            _cmdName[1] = _cmdName[1] + 1
+            return _cmdName[1]
+
+      self.__nUsedCmdNames.append([uName, 1])
+      return 1
+
+
+   def getUsed(self, cmdName):
+      uName = cmdName.upper()
+      for _cmdName in self.__nUsedCmdNames:
+         if _cmdName[0] == uName:
+            return _cmdName[1]
+
+      return 0
+   
+   def getMoreUsed(self, filter):
+      moreUsedCmd = ""
+      nUsedCmd = 0
+      for _cmdName in self.__nUsedCmdNames:
+         if _cmdName[0].startswith(filter):
+            if _cmdName[1] > nUsedCmd:
+               moreUsedCmd = _cmdName[0]
+               nUsedCmd = _cmdName[1]
+
+      return moreUsedCmd, nUsedCmd
