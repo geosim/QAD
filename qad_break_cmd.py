@@ -106,17 +106,11 @@ class QadBREAKCommandClass(QadCommandClass):
       LineTempLayer = None
       self.plugIn.beginEditCommand("Feature broken", layer)
       
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugIn.canvas,\
-                                                                  layer)                              
-                  
-      g = f.geometry()
-      if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
-         # Trasformo i punti di break nel sistema di coordinate del layer
-         self.firstPt = self.mapToLayerCoordinates(layer, self.firstPt)
-         self.secondPt = self.mapToLayerCoordinates(layer, self.secondPt)
-         
-      result = qad_utils.breakQgsGeometry(layer, f.geometry(), self.firstPt, self.secondPt, \
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))                           
+
+      # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+      g = self.layerToMapCoordinates(layer, f.geometry())         
+      result = qad_utils.breakQgsGeometry(g, self.firstPt, self.secondPt, \
                                           tolerance2ApproxCurve)                  
       if result is not None:
          line1 = result[0]
@@ -124,19 +118,21 @@ class QadBREAKCommandClass(QadCommandClass):
          atSubGeom = result[2]
          if layer.geometryType() == QGis.Line:
             if line1 is not None:
-               updGeom = qad_utils.setSubGeom(f.geometry(), line1, atSubGeom)
+               updGeom = qad_utils.setSubGeom(g, line1, atSubGeom)
                if updGeom is None:
                   self.plugIn.destroyEditCommand()
                   return
                brokenFeature1 = QgsFeature(f)
-               brokenFeature1.setGeometry(updGeom)            
+               # trasformo la geometria nel crs del layer
+               brokenFeature1.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
                # plugIn, layer, feature, refresh, check_validity
                if qad_layer.updateFeatureToLayer(self.plugIn, layer, brokenFeature1, False, False) == False:
                   self.plugIn.destroyEditCommand()
                   return
             if line2 is not None:
                brokenFeature2 = QgsFeature(f)      
-               brokenFeature2.setGeometry(line2)
+               # trasformo la geometria nel crs del layer
+               brokenFeature2.setGeometry(self.mapToLayerCoordinates(layer, line2))
                # plugIn, layer, feature, coordTransform, refresh, check_validity
                if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False) == False:
                   self.plugIn.destroyEditCommand()
@@ -155,11 +151,11 @@ class QadBREAKCommandClass(QadCommandClass):
 
             # trasformo la geometria in quella dei layer temporanei
             # plugIn, pointGeoms, lineGeoms, polygonGeoms, coord, refresh
-            if qad_layer.addGeometriesToQADTempLayers(self.plugIn, None, lineGeoms, None, layer.crs(), False) == False:
+            if qad_layer.addGeometriesToQADTempLayers(self.plugIn, None, lineGeoms, None, None, False) == False:
                self.plugIn.destroyEditCommand()
                return
             
-            updGeom = qad_utils.delSubGeom(f.geometry(), atSubGeom)         
+            updGeom = qad_utils.delSubGeom(g, atSubGeom)
 
             if updGeom is None or updGeom.isGeosEmpty(): # da cancellare
                # plugIn, layer, feature id, refresh
@@ -168,7 +164,8 @@ class QadBREAKCommandClass(QadCommandClass):
                   return
             else:
                brokenFeature1 = QgsFeature(f)
-               brokenFeature1.setGeometry(updGeom)
+               # trasformo la geometria nel crs del layer
+               brokenFeature1.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
                # plugIn, layer, feature, refresh, check_validity
                if qad_layer.updateFeatureToLayer(self.plugIn, layer, brokenFeature1, False, False) == False:
                   self.plugIn.destroyEditCommand()

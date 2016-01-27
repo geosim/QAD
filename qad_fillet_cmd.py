@@ -113,8 +113,6 @@ class QadFILLETCommandClass(QadCommandClass):
       Setta self.entity, self.atSubGeom, self.linearObjectList, self.partAt, self.pointAt
       di primo o del secondo oggetto da raccordare (vedi <firstObj>)
       """
-      transformedPt = self.mapToLayerCoordinates(layer, point)
-      
       if firstObj:
          e = self.entity1
          l = self.linearObjectList1
@@ -123,12 +121,13 @@ class QadFILLETCommandClass(QadCommandClass):
          l = self.linearObjectList2
          
       e.set(layer, featureId)
-      geom = e.getGeometry()
+      # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+      geom = self.layerToMapCoordinates(layer, e.getGeometry())
       # ritorna una tupla (<The squared cartesian distance>,
       #                    <minDistPoint>
       #                    <afterVertex>
       #                    <leftOf>)
-      dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
+      dummy = qad_utils.closestSegmentWithContext(point, geom)
       if dummy[2] is not None:
          # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
          if firstObj:
@@ -143,7 +142,7 @@ class QadFILLETCommandClass(QadCommandClass):
          #                                    <punto più vicino>
          #                                    <indice della parte più vicina>       
          #                                    <"a sinistra di">)
-         dummy = l.closestPartWithContext(transformedPt)
+         dummy = l.closestPartWithContext(point)
          
          if firstObj:           
             self.partAt1 = dummy[2]
@@ -164,20 +163,19 @@ class QadFILLETCommandClass(QadCommandClass):
    def filletPolyline(self):         
       layer = self.entity1.layer
 
-      transformedRadius = qad_utils.distMapToLayerCoordinates(self.radius, self.plugIn.canvas, layer)
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugin.canvas, \
-                                                                  layer)                              
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       f = self.entity1.getFeature()
-      geom = f.geometry() 
+      # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+      geom = self.layerToMapCoordinates(layer, f.getGeometry())
 
-      self.linearObjectList1.fillet(transformedRadius)
+      self.linearObjectList1.fillet(self.radius)
                
       updSubGeom = QgsGeometry.fromPolyline(self.linearObjectList1.asPolyline(tolerance2ApproxCurve))
       updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom1)
       if updGeom is None:
          return False
-      f.setGeometry(updGeom)
+      # trasformo la geometria nel crs del layer
+      f.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
          
       self.plugIn.beginEditCommand("Feature edited", layer)
       
@@ -196,30 +194,19 @@ class QadFILLETCommandClass(QadCommandClass):
    # fillet
    #============================================================================
    def fillet(self):
-      transformedRadius = qad_utils.distMapToLayerCoordinates(self.radius, self.plugIn.canvas, self.entity1.layer)
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugIn.canvas,\
-                                                                  self.entity1.layer)                              
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")) 
       
-      if self.entity1.layer.crs() != self.entity2.layer.crs():
-         coordTransform = QgsCoordinateTransform(self.entity1.layer.crs(),\
-                                                 self.entity2.layer.crs()) # trasformo la geometria
-         transformedLinearObjectList2 = self.linearObjectList2.transform(coordTransform)
-         transformedPointAt2 = coordTransform.transform(self.pointAt2)         
-      else:
-         # stessa entità e stessa parte
-         if self.entity1.layer.id() == self.entity2.layer.id() and \
-            self.entity1.featureId == self.entity2.featureId and \
-            self.partAt1 == self.partAt2:
-            return False
-         
-         transformedLinearObjectList2 = qad_utils.QadLinearObjectList(self.linearObjectList2)
-         transformedPointAt2 = self.pointAt2
+      # stessa entità e stessa parte
+      if self.entity1.layer.id() == self.entity2.layer.id() and \
+         self.entity1.featureId == self.entity2.featureId and \
+         self.partAt1 == self.partAt2:
+         return False
    
-      epsg = self.entity1.layer.crs().authid()      
+      # uso il crs del canvas per lavorare con coordinate piane xy
+      epsg = self.plugIn.canvas.mapRenderer().destinationCrs().authid()
       res = qad_utils.getFilletLinearObjectList(self.linearObjectList1, self.partAt1, self.pointAt1, \
-                                                transformedLinearObjectList2, self.partAt2, transformedPointAt2,\
-                                                self.filletMode, transformedRadius, epsg)      
+                                                self.linearObjectList2, self.partAt2, self.pointAt2,\
+                                                self.filletMode, self.radius, epsg)
       if res is None: # raccordo non possibile
          msg = QadMsg.translate("Command_FILLET", "\nFillet with radius <{0}> impossible.")
          #showMsg
@@ -234,13 +221,15 @@ class QadFILLETCommandClass(QadCommandClass):
 
       if whatToDoPoly1 == 1: # 1=modificare       
          f = self.entity1.getFeature()
-         geom = f.geometry() 
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         geom = self.layerToMapCoordinates(self.entity1.layer, f.geometry())
          updSubGeom = QgsGeometry.fromPolyline(filletLinearObjectList.asPolyline(tolerance2ApproxCurve))
          updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom1)
          if updGeom is None:
             self.plugIn.destroyEditCommand()
             return False
-         f.setGeometry(updGeom)
+         # trasformo la geometria nel crs del layer
+         f.setGeometry(self.mapToLayerCoordinates(self.entity1.layer, updGeom))
          
          # plugIn, layer, feature, refresh, check_validity
          if qad_layer.updateFeatureToLayer(self.plugIn, self.entity1.layer, f, False, False) == False:
@@ -254,26 +243,18 @@ class QadFILLETCommandClass(QadCommandClass):
             return False
 
       if whatToDoPoly2 == 1: # 1=modificare
-         
-         if self.entity1.layer.crs() != self.entity2.layer.crs():
-            coordTransform = QgsCoordinateTransform(self.entity2.layer.crs(),\
-                                                    self.entity1.layer.crs()) # trasformo la geometria
-            transformedLinearObjectList2 = self.filletLinearObjectList.transform(coordTransform)
-         else:
-            transformedLinearObjectList2 = filletLinearObjectList
-         
-         tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                     self.plugIn.canvas,\
-                                                                     self.entity2.layer)                              
+         tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
 
          f = self.entity2.getFeature()
-         geom = f.geometry() 
-         updSubGeom = QgsGeometry.fromPolyline(transformedLinearObjectList2.asPolyline(tolerance2ApproxCurve))
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         geom = self.layerToMapCoordinates(self.entity2.layer, f.geometry())
+         updSubGeom = QgsGeometry.fromPolyline(filletLinearObjectList.asPolyline(tolerance2ApproxCurve))
          updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom2)
          if updGeom is None:
             self.plugIn.destroyEditCommand()
             return False
-         f.setGeometry(updGeom)
+         # trasformo la geometria nel crs del layer
+         f.setGeometry(self.mapToLayerCoordinates(self.entity2.layer, updGeom))
          
          # plugIn, layer, feature, refresh, check_validity
          if qad_layer.updateFeatureToLayer(self.plugIn, self.entity2.layer, f, False, False) == False:
@@ -288,6 +269,9 @@ class QadFILLETCommandClass(QadCommandClass):
 
       if whatToDoPoly1 == 0 and whatToDoPoly2 == 0: # 0=niente      
          geom = QgsGeometry.fromPolyline(filletLinearObjectList.asPolyline(tolerance2ApproxCurve))
+         # trasformo la geometria nel crs del layer
+         geom = self.mapToLayerCoordinates(self.entity1.layer, geom)
+
          # plugIn, layer, geom, coordTransform, refresh, check_validity
          if qad_layer.addGeomToLayer(self.plugIn, self.entity1.layer, geom, None, False, False) == False:
             self.plugIn.destroyEditCommand()

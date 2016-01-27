@@ -90,21 +90,22 @@ class Qad_mbuffer_maptool(QadGetPoint):
                
       # noto il primo punto si richiede la larghezza del buffer
       if self.mode == Qad_mbuffer_maptool_ModeEnum.FIRST_PT_ASK_FOR_BUFFER_WIDTH:
+         width = qad_utils.getDistance(self.startPtForBufferWidth, self.tmpPoint)
+         tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+         
          for layerEntitySet in self.entitySet.layerEntitySetList:
-            transformedPt1 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.startPtForBufferWidth)
-            transformedPt2 = self.canvas.mapRenderer().mapToLayerCoordinates(layerEntitySet.layer, self.tmpPoint)
-            width = qad_utils.getDistance(transformedPt1, transformedPt2)
-            tolerance = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                            self.canvas,\
-                                                            layerEntitySet.layer)
-            
+            layer = layerEntitySet.layer
             geoms = layerEntitySet.getGeometryCollection()
+            
             for geom in geoms:
-               bufferGeom = qad_utils.ApproxCurvesOnGeom(geom.buffer(width, self.segments), \
+               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+               newGeom = self.layerToMapCoordinates(layer, geom)
+               bufferGeom = qad_utils.ApproxCurvesOnGeom(newGeom.buffer(width, self.segments), \
                                                          self.segments, self.segments, \
                                                          tolerance)
                if bufferGeom:
-                  self.__rubberBand.addGeometry(bufferGeom, layerEntitySet.layer)
+                  # trasformo la geometria nel crs del layer
+                  self.__rubberBand.addGeometry(self.mapToLayerCoordinates(layer, bufferGeom), layer)
                            
     
    def activate(self):

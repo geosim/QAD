@@ -105,37 +105,33 @@ class QadOFFSETCommandClass(QadCommandClass):
       featureCacheLen = len(self.featureCache)
       layer = self.entity.layer
       f = self.entity.getFeature()
-      transformedPt = self.mapToLayerCoordinates(layer, newPt)
 
       # ritorna una tupla (<The squared cartesian distance>,
       #                    <minDistPoint>
       #                    <afterVertex>
       #                    <leftOf>)
-      dummy = qad_utils.closestSegmentWithContext(transformedPt, self.subGeom)
+      dummy = qad_utils.closestSegmentWithContext(newPt, self.subGeom)
       if self.offSet < 0:
          afterVertex = dummy[2]
          pt = qad_utils.getPerpendicularPointOnInfinityLine(self.subGeom.vertexAt(afterVertex - 1), \
                                                             self.subGeom.vertexAt(afterVertex), \
-                                                            transformedPt)
-         offSetDistance = qad_utils.getDistance(transformedPt, pt)
+                                                            newPt)
+         offSetDistance = qad_utils.getDistance(newPt, pt)
       else:        
-         offSetDistance = qad_utils.distMapToLayerCoordinates(self.offSet, \
-                                                              self.plugIn.canvas,\
-                                                              layer)                     
+         offSetDistance = self.offSet                     
          if self.multi == True:
             if dummy[3] < 0: # alla sinistra
                offSetDistance = offSetDistance + self.lastOffSetOnLeftSide
                self.lastOffSetOnLeftSide = offSetDistance
-               self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide                     
+               self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide
             else: # alla destra
                offSetDistance = offSetDistance + self.lastOffSetOnRightSide
                self.lastOffSetOnRightSide = offSetDistance            
                self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
 
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugIn.canvas,\
-                                                                  layer)
-      epsg = layer.crs().authid()      
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+      # uso il crs del canvas per lavorare con coordinate piane xy
+      epsg = self.plugIn.canvas.mapRenderer().destinationCrs().authid()
       lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
@@ -152,14 +148,16 @@ class QadOFFSETCommandClass(QadCommandClass):
             offsetGeom = QgsGeometry.fromPolyline(line)
 
          if offsetGeom.type() == QGis.Line or offsetGeom.type() == QGis.Polygon:           
-            offsetFeature = QgsFeature(f)                              
-            offsetFeature.setGeometry(offsetGeom)
+            offsetFeature = QgsFeature(f)
+            # trasformo la geometria nel crs del layer
+            offsetFeature.setGeometry(self.mapToLayerCoordinates(layer, offsetGeom))
             self.featureCache.append([layer, offsetFeature])
             self.addFeatureToRubberBand(layer, offsetFeature)            
             added = True           
 
       if added:      
          self.undoFeatureCacheIndexes.append(featureCacheLen)
+
 
    #============================================================================
    # undoGeomsInCache
@@ -175,6 +173,7 @@ class QadOFFSETCommandClass(QadCommandClass):
             del self.featureCache[-1] # cancello feature
             i = i - 1
          self.refreshRubberBand()
+
             
    #============================================================================
    # addFeatureToRubberBand
@@ -236,12 +235,6 @@ class QadOFFSETCommandClass(QadCommandClass):
       self.plugIn.beginEditCommand("Feature offseted", layerList)
 
       for featuresLayer in featuresLayers:
-         if featuresLayer[0].crs() != currLayer.crs():
-            coordTransform = QgsCoordinateTransform(featuresLayer[0].crs(),\
-                                                    currLayer.crs()) # trasformo la geometria
-         else:
-            coordTransform = None
-         
          # filtro le features per tipo
          pointGeoms, lineGeoms, polygonGeoms = qad_utils.filterFeaturesByType(featuresLayer[1], \
                                                                               currLayer.geometryType())
@@ -255,14 +248,14 @@ class QadOFFSETCommandClass(QadCommandClass):
                   if l.type() == QGis.Line:
                       polygonToLines.append(l)
             # plugIn, layer, geoms, coordTransform , refresh, check_validity
-            if qad_layer.addGeomsToLayer(self.plugIn, currLayer, polygonToLines, coordTransform, False, False) == False:
+            if qad_layer.addGeomsToLayer(self.plugIn, currLayer, polygonToLines, None, False, False) == False:
                self.plugIn.destroyEditCommand()
                return
                
             del polygonGeoms[:] # svuoto la lista
 
          # plugIn, layer, features, coordTransform, refresh, check_validity
-         if qad_layer.addFeaturesToLayer(self.plugIn, currLayer, featuresLayer[1], coordTransform, False, False) == False:  
+         if qad_layer.addFeaturesToLayer(self.plugIn, currLayer, featuresLayer[1], None, False, False) == False:
             self.plugIn.destroyEditCommand()
             return
 
@@ -550,19 +543,19 @@ class QadOFFSETCommandClass(QadCommandClass):
             if entity is not None and entity.isInitialized(): # se é stata selezionata una entità
                self.entity.set(entity.layer, entity.featureId)
                self.getPointMapTool().layer = self.entity.layer
-               geom = entity.getGeometry()
-               transformedPt = self.mapToLayerCoordinates(self.entity.layer, value)
+               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+               geom = self.layerToMapCoordinates(entity.layer, entity.getGeometry())
 
                # ritorna una tupla (<The squared cartesian distance>,
                #                    <minDistPoint>
                #                    <afterVertex>
                #                    <leftOf>)
-               dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
+               dummy = qad_utils.closestSegmentWithContext(value, geom)
                if dummy[2] is not None:
                   # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
                   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
                   self.subGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])[0]
-                  self.subGeomSelectedPt = QgsPoint(transformedPt)
+                  self.subGeomSelectedPt = QgsPoint(value)
                   
                   self.getPointMapTool().subGeom = self.subGeom
                   if self.offSet < 0: # richiesta di punto di passaggio

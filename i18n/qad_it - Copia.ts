@@ -865,25 +865,25 @@ Il raccordo con raggio {0} non esiste.</translation>
     <name>Command_GRIPMIRROR</name>
     <message>
         <location filename="../qad_mirror_cmd.py" line="467"/>
-        <location filename="../qad_mirror_cmd.py" line="528"/>
+        <location filename="../qad_mirror_cmd.py" line="530"/>
         <source>Base point</source>
         <translation>Punto base</translation>
     </message>
     <message>
         <location filename="../qad_mirror_cmd.py" line="468"/>
-        <location filename="../qad_mirror_cmd.py" line="531"/>
+        <location filename="../qad_mirror_cmd.py" line="533"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
         <location filename="../qad_mirror_cmd.py" line="469"/>
-        <location filename="../qad_mirror_cmd.py" line="536"/>
+        <location filename="../qad_mirror_cmd.py" line="538"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_mirror_cmd.py" line="470"/>
-        <location filename="../qad_mirror_cmd.py" line="544"/>
+        <location filename="../qad_mirror_cmd.py" line="546"/>
         <source>eXit</source>
         <translation>eSci</translation>
     </message>
@@ -901,7 +901,7 @@ Il raccordo con raggio {0} non esiste.</translation>
 ** SPECCHIO **</translation>
     </message>
     <message>
-        <location filename="../qad_mirror_cmd.py" line="548"/>
+        <location filename="../qad_mirror_cmd.py" line="550"/>
         <source>
 The points must be different.</source>
         <translation>
@@ -912,25 +912,25 @@ I punti devono essere distinti.</translation>
     <name>Command_GRIPMOVE</name>
     <message>
         <location filename="../qad_move_cmd.py" line="413"/>
-        <location filename="../qad_move_cmd.py" line="479"/>
+        <location filename="../qad_move_cmd.py" line="482"/>
         <source>Base point</source>
         <translation>Punto base</translation>
     </message>
     <message>
         <location filename="../qad_move_cmd.py" line="414"/>
-        <location filename="../qad_move_cmd.py" line="482"/>
+        <location filename="../qad_move_cmd.py" line="485"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
         <location filename="../qad_move_cmd.py" line="415"/>
-        <location filename="../qad_move_cmd.py" line="487"/>
+        <location filename="../qad_move_cmd.py" line="490"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_move_cmd.py" line="416"/>
-        <location filename="../qad_move_cmd.py" line="495"/>
+        <location filename="../qad_move_cmd.py" line="498"/>
         <source>eXit</source>
         <translation>eSci</translation>
     </message>
@@ -963,31 +963,31 @@ I punti devono essere distinti.</translation>
     </message>
     <message>
         <location filename="../qad_rotate_cmd.py" line="624"/>
-        <location filename="../qad_rotate_cmd.py" line="706"/>
+        <location filename="../qad_rotate_cmd.py" line="709"/>
         <source>Base point</source>
         <translation>Punto base</translation>
     </message>
     <message>
         <location filename="../qad_rotate_cmd.py" line="625"/>
-        <location filename="../qad_rotate_cmd.py" line="709"/>
+        <location filename="../qad_rotate_cmd.py" line="712"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
         <location filename="../qad_rotate_cmd.py" line="626"/>
-        <location filename="../qad_rotate_cmd.py" line="714"/>
+        <location filename="../qad_rotate_cmd.py" line="717"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_rotate_cmd.py" line="627"/>
-        <location filename="../qad_rotate_cmd.py" line="722"/>
+        <location filename="../qad_rotate_cmd.py" line="725"/>
         <source>Reference</source>
         <translation>Riferimento</translation>
     </message>
     <message>
         <location filename="../qad_rotate_cmd.py" line="628"/>
-        <location filename="../qad_rotate_cmd.py" line="725"/>
+        <location filename="../qad_rotate_cmd.py" line="728"/>
         <source>eXit</source>
         <translation>eSci</translation>
     </message>
@@ -1010,7 +1010,7 @@ I punti devono essere distinti.</translation>
 ** RUOTA **</translation>
     </message>
     <message>
-        <location filename="../qad_rotate_cmd.py" line="811"/>
+        <location filename="../qad_rotate_cmd.py" line="817"/>
         <source>Specify second point: </source>
         <translation>Specificare secondo punto: </translation>
     </message>
@@ -1019,31 +1019,31 @@ I punti devono essere distinti.</translation>
     <name>Command_GRIPSCALE</name>
     <message>
         <location filename="../qad_scale_cmd.py" line="640"/>
-        <location filename="../qad_scale_cmd.py" line="731"/>
+        <location filename="../qad_scale_cmd.py" line="734"/>
         <source>Base point</source>
         <translation>Punto base</translation>
     </message>
     <message>
         <location filename="../qad_scale_cmd.py" line="641"/>
-        <location filename="../qad_scale_cmd.py" line="734"/>
+        <location filename="../qad_scale_cmd.py" line="737"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
         <location filename="../qad_scale_cmd.py" line="642"/>
-        <location filename="../qad_scale_cmd.py" line="739"/>
+        <location filename="../qad_scale_cmd.py" line="742"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_scale_cmd.py" line="643"/>
-        <location filename="../qad_scale_cmd.py" line="747"/>
+        <location filename="../qad_scale_cmd.py" line="750"/>
         <source>Reference</source>
         <translation>Riferimento</translation>
     </message>
     <message>
         <location filename="../qad_scale_cmd.py" line="644"/>
-        <location filename="../qad_scale_cmd.py" line="750"/>
+        <location filename="../qad_scale_cmd.py" line="753"/>
         <source>eXit</source>
         <translation>eSci</translation>
     </message>
@@ -1076,8 +1076,8 @@ I punti devono essere distinti.</translation>
 ** SCALA **</translation>
     </message>
     <message>
-        <location filename="../qad_scale_cmd.py" line="842"/>
-        <location filename="../qad_scale_cmd.py" line="869"/>
+        <location filename="../qad_scale_cmd.py" line="849"/>
+        <location filename="../qad_scale_cmd.py" line="876"/>
         <source>Specify second point: </source>
         <translation>Specificare secondo punto: </translation>
     </message>
@@ -1086,25 +1086,25 @@ I punti devono essere distinti.</translation>
     <name>Command_GRIPSTRETCH</name>
     <message>
         <location filename="../qad_stretch_cmd.py" line="731"/>
-        <location filename="../qad_stretch_cmd.py" line="797"/>
+        <location filename="../qad_stretch_cmd.py" line="800"/>
         <source>Base point</source>
         <translation>Punto base</translation>
     </message>
     <message>
         <location filename="../qad_stretch_cmd.py" line="732"/>
-        <location filename="../qad_stretch_cmd.py" line="800"/>
+        <location filename="../qad_stretch_cmd.py" line="803"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
         <location filename="../qad_stretch_cmd.py" line="733"/>
-        <location filename="../qad_stretch_cmd.py" line="805"/>
+        <location filename="../qad_stretch_cmd.py" line="808"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_stretch_cmd.py" line="734"/>
-        <location filename="../qad_stretch_cmd.py" line="813"/>
+        <location filename="../qad_stretch_cmd.py" line="816"/>
         <source>eXit</source>
         <translation>eSci</translation>
     </message>
@@ -3154,7 +3154,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="153"/>
-        <location filename="../qad_getpoint.py" line="892"/>
+        <location filename="../qad_getpoint.py" line="799"/>
         <source>Perpendicular</source>
         <translation>Perpendicolare</translation>
     </message>
@@ -3175,7 +3175,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="181"/>
-        <location filename="../qad_getpoint.py" line="881"/>
+        <location filename="../qad_getpoint.py" line="788"/>
         <source>Tangent</source>
         <translation>Tangente</translation>
     </message>
@@ -3196,7 +3196,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="199"/>
-        <location filename="../qad_getpoint.py" line="852"/>
+        <location filename="../qad_getpoint.py" line="759"/>
         <source>Extend</source>
         <translation>Estensione</translation>
     </message>
@@ -3217,7 +3217,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="217"/>
-        <location filename="../qad_getpoint.py" line="901"/>
+        <location filename="../qad_getpoint.py" line="808"/>
         <source>Parallel</source>
         <translation>Parallelo</translation>
     </message>
@@ -3238,7 +3238,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="235"/>
-        <location filename="../qad_getpoint.py" line="928"/>
+        <location filename="../qad_getpoint.py" line="835"/>
         <source>Progressive</source>
         <translation>Progressivo</translation>
     </message>
@@ -3259,7 +3259,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="253"/>
-        <location filename="../qad_getpoint.py" line="843"/>
+        <location filename="../qad_getpoint.py" line="750"/>
         <source>Intersection on extension</source>
         <translation>Intersezione su estensione</translation>
     </message>
@@ -3280,7 +3280,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="268"/>
-        <location filename="../qad_getpoint.py" line="872"/>
+        <location filename="../qad_getpoint.py" line="779"/>
         <source>Quadrant</source>
         <translation>Quadrante</translation>
     </message>
@@ -3301,7 +3301,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="328"/>
-        <location filename="../qad_getpoint.py" line="807"/>
+        <location filename="../qad_getpoint.py" line="714"/>
         <source>Start / End</source>
         <translation>Inizio / Fine</translation>
     </message>
@@ -3324,7 +3324,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="353"/>
-        <location filename="../qad_getpoint.py" line="816"/>
+        <location filename="../qad_getpoint.py" line="723"/>
         <source>Segment Start / End</source>
         <translation>Inizio / Fine segmento</translation>
     </message>
@@ -3345,7 +3345,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="381"/>
-        <location filename="../qad_getpoint.py" line="825"/>
+        <location filename="../qad_getpoint.py" line="732"/>
         <source>Middle point</source>
         <translation>Punto medio</translation>
     </message>
@@ -3366,7 +3366,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="409"/>
-        <location filename="../qad_getpoint.py" line="834"/>
+        <location filename="../qad_getpoint.py" line="741"/>
         <source>Intersection</source>
         <translation>Intersezione</translation>
     </message>
@@ -3387,7 +3387,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="437"/>
-        <location filename="../qad_getpoint.py" line="863"/>
+        <location filename="../qad_getpoint.py" line="770"/>
         <source>Center</source>
         <translation>Centro</translation>
     </message>
@@ -3408,7 +3408,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="465"/>
-        <location filename="../qad_getpoint.py" line="910"/>
+        <location filename="../qad_getpoint.py" line="817"/>
         <source>Node</source>
         <translation>Nodo</translation>
     </message>
@@ -3429,7 +3429,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../qad_dsettings.ui" line="493"/>
-        <location filename="../qad_getpoint.py" line="919"/>
+        <location filename="../qad_getpoint.py" line="826"/>
         <source>Near</source>
         <translation>Vicino</translation>
     </message>
@@ -3484,12 +3484,12 @@ p, li { white-space: pre-wrap; }
         <translation>Angolo di incremento polare non corretto: impostare valore numerico maggiore di 0 e minore di 360 gradi.</translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="937"/>
+        <location filename="../qad_getpoint.py" line="844"/>
         <source>None</source>
         <translation>Nessuno</translation>
     </message>
     <message>
-        <location filename="../qad_getpoint.py" line="948"/>
+        <location filename="../qad_getpoint.py" line="855"/>
         <source>Object snap settings...</source>
         <translation>Impostazioni snap ad oggetto...</translation>
     </message>
@@ -4867,12 +4867,12 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad_dsettings_dlg.py" line="65"/>
         <location filename="../qad_dsettings_dlg.py" line="191"/>
         <location filename="../qad_getpoint.py" line="106"/>
-        <location filename="../qad_getpoint.py" line="284"/>
-        <location filename="../qad_getpoint.py" line="322"/>
-        <location filename="../qad_getpoint.py" line="964"/>
-        <location filename="../qad_getpoint.py" line="967"/>
-        <location filename="../qad_getpoint.py" line="1001"/>
-        <location filename="../qad_getpoint.py" line="1002"/>
+        <location filename="../qad_getpoint.py" line="289"/>
+        <location filename="../qad_getpoint.py" line="327"/>
+        <location filename="../qad_getpoint.py" line="871"/>
+        <location filename="../qad_getpoint.py" line="874"/>
+        <location filename="../qad_getpoint.py" line="908"/>
+        <location filename="../qad_getpoint.py" line="909"/>
         <location filename="../qad_variables.py" line="360"/>
         <source>OSMODE</source>
         <translation>OSMODE</translation>
@@ -4881,7 +4881,7 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad.py" line="1247"/>
         <location filename="../qad.py" line="1258"/>
         <location filename="../qad.py" line="1267"/>
-        <location filename="../qad_getpoint.py" line="330"/>
+        <location filename="../qad_getpoint.py" line="335"/>
         <location filename="../qad_variables.py" line="315"/>
         <source>ORTHOMODE</source>
         <translation>ORTHOMODE</translation>
@@ -4894,7 +4894,7 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad_dsettings_dlg.py" line="101"/>
         <location filename="../qad_dsettings_dlg.py" line="193"/>
         <location filename="../qad_dsettings_dlg.py" line="198"/>
-        <location filename="../qad_getpoint.py" line="350"/>
+        <location filename="../qad_getpoint.py" line="355"/>
         <location filename="../qad_variables.py" line="90"/>
         <source>AUTOSNAP</source>
         <translation>AUTOSNAP</translation>
@@ -4992,7 +4992,7 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad_dsettings_dlg.py" line="85"/>
         <location filename="../qad_dsettings_dlg.py" line="207"/>
         <location filename="../qad_getpoint.py" line="105"/>
-        <location filename="../qad_getpoint.py" line="321"/>
+        <location filename="../qad_getpoint.py" line="326"/>
         <location filename="../qad_variables.py" line="388"/>
         <source>OSPROGRDISTANCE</source>
         <translation>OSPROGRDISTANCE</translation>
@@ -5000,7 +5000,7 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
     <message>
         <location filename="../qad_dsettings_dlg.py" line="94"/>
         <location filename="../qad_dsettings_dlg.py" line="203"/>
-        <location filename="../qad_getpoint.py" line="351"/>
+        <location filename="../qad_getpoint.py" line="356"/>
         <location filename="../qad_variables.py" line="437"/>
         <source>POLARANG</source>
         <translation>POLARANG</translation>
@@ -5121,11 +5121,6 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <translation>CROSSINGAREACOLOR</translation>
     </message>
     <message>
-        <location filename="../qad_variables.py" line="81"/>
-        <source>Minumun numer of segment to approximate an arc.</source>
-        <translation>Numero minimo di segmenti per approssimare un arco.</translation>
-    </message>
-    <message>
         <location filename="../qad_variables.py" line="82"/>
         <location filename="../qad_variables.py" line="101"/>
         <location filename="../qad_variables.py" line="110"/>
@@ -5147,11 +5142,6 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad_variables.py" line="463"/>
         <source>Integer type.</source>
         <translation>Tipo intero.</translation>
-    </message>
-    <message>
-        <location filename="../qad_variables.py" line="109"/>
-        <source>Minumun numer of segment to approximate a circle.</source>
-        <translation>Numero minimo di segmenti per approssimare un cerchio.</translation>
     </message>
     <message>
         <location filename="../qad_variables.py" line="118"/>
@@ -5186,29 +5176,6 @@ Lo stile di quotatura &quot;{0}&quot; </translation>
         <location filename="../qad_variables.py" line="503"/>
         <source>Character type.</source>
         <translation>Tipo carattere.</translation>
-    </message>
-    <message>
-        <location filename="../qad_variables.py" line="91"/>
-        <source>Controls the display of the AutoSnap marker, tooltip, and magnet.
-Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips, 
-The setting is stored as a bitcode using the sum of the following values:
-0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode.
-1 = Turns on the AutoSnap mark.
-2 = Turns on the AutoSnap tooltips.
-4 = Turns on the AutoSnap magnet.
-8 = Turns on polar tracking.
-16 = Turns on object snap tracking.
-32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.</source>
-        <translation>Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap.
-Inoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, nonché quella della modalità orto.
-L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
-0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto.
-1 = Attiva il contrassegno di AutoSnap.
-2 = Attiva le descrizioni dei comandi di AutoSnap.
-4 = Attiva la calamita di AutoSnap.
-8 = Attiva il puntamento polare.
-16 = Attiva il puntamento con snap ad oggetto.
-32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto.</translation>
     </message>
     <message>
         <location filename="../qad_variables.py" line="140"/>
@@ -5275,6 +5242,39 @@ La variabile di sistema SELECTIONAREA deve essere attiva.</translation>
         <location filename="../qad_variables.py" line="234"/>
         <source>GRIPS</source>
         <translation>GRIPS</translation>
+    </message>
+    <message>
+        <location filename="../qad_variables.py" line="81"/>
+        <source>Minimum number of segments to approximate an arc.</source>
+        <translation>Numero minimo di segmenti per approssimare un arco.</translation>
+    </message>
+    <message>
+        <location filename="../qad_variables.py" line="91"/>
+        <source>Controls the display of the AutoSnap marker, tooltip, and magnet.
+Also turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips.
+The setting is stored as a bitcode using the sum of the following values:
+0 = Turns off the AutoSnap marker, tooltips, and magnet. Also turns off polar tracking, object snap tracking, and tooltips for polar tracking, object snap tracking, and Ortho mode.
+1 = Turns on the AutoSnap mark.
+2 = Turns on the AutoSnap tooltips.
+4 = Turns on the AutoSnap magnet.
+8 = Turns on polar tracking.
+16 = Turns on object snap tracking.
+32 = Turns on tooltips for polar tracking, object snap tracking, and Ortho mode.</source>
+        <translation>Controlla la visualizzazione del contrassegno, della descrizione e della calamita di AutoSnap.
+Inoltre, attiva il puntamento polare e con snap ad oggetto e controlla la visualizzazione delle descrizioni corrispondenti, nonché quella della modalità orto.
+L&apos;impostazione è memorizzata come codice binario che utilizza la somma dei seguenti valori:
+0 = Disattiva il contrassegno, le descrizioni dei comandi e la calamita di AutoSnap. Inoltre, disattiva il puntamento polare e con snap ad oggetto, nonché la visualizzazione delle descrizioni corrispondenti e della modalità orto.
+1 = Attiva il contrassegno di AutoSnap.
+2 = Attiva le descrizioni dei comandi di AutoSnap.
+4 = Attiva la calamita di AutoSnap.
+8 = Attiva il puntamento polare.
+16 = Attiva il puntamento con snap ad oggetto.
+32 = Attiva la visualizzazione delle descrizioni del puntamento polare e con snap ad oggetto, nonché della modalità orto.</translation>
+    </message>
+    <message>
+        <location filename="../qad_variables.py" line="109"/>
+        <source>Minimum number of segments to approximate a circle.</source>
+        <translation>Numero minimo di segmenti per approssimare un cerchio.</translation>
     </message>
     <message>
         <location filename="../qad_variables.py" line="235"/>
@@ -5715,12 +5715,12 @@ Impostazioni correnti: </translation>
         <location filename="../qad_extend_cmd.py" line="339"/>
         <location filename="../qad_fillet_cmd.py" line="446"/>
         <location filename="../qad_lengthen_cmd.py" line="623"/>
-        <location filename="../qad_mirror_cmd.py" line="541"/>
-        <location filename="../qad_move_cmd.py" line="492"/>
+        <location filename="../qad_mirror_cmd.py" line="543"/>
+        <location filename="../qad_move_cmd.py" line="495"/>
         <location filename="../qad_pedit_cmd.py" line="1070"/>
-        <location filename="../qad_rotate_cmd.py" line="719"/>
-        <location filename="../qad_scale_cmd.py" line="744"/>
-        <location filename="../qad_stretch_cmd.py" line="810"/>
+        <location filename="../qad_rotate_cmd.py" line="722"/>
+        <location filename="../qad_scale_cmd.py" line="747"/>
+        <location filename="../qad_stretch_cmd.py" line="813"/>
         <location filename="../qad_trim_cmd.py" line="336"/>
         <source>
 The command has been canceled.</source>
@@ -5914,8 +5914,8 @@ Il layer corrente appartiene allo stile di quotatura {0} e non é valido.
         <location filename="../qad_scale_cmd.py" line="387"/>
         <location filename="../qad_scale_cmd.py" line="429"/>
         <location filename="../qad_scale_cmd.py" line="494"/>
-        <location filename="../qad_scale_cmd.py" line="755"/>
-        <location filename="../qad_scale_cmd.py" line="867"/>
+        <location filename="../qad_scale_cmd.py" line="758"/>
+        <location filename="../qad_scale_cmd.py" line="874"/>
         <source>
 The value must be positive and not zero.</source>
         <translation>

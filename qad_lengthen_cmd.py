@@ -42,6 +42,7 @@ import qad_layer
 from qad_arc import *
 from qad_circle import *
 from qad_dim import QadDimStyles
+import qad_grip
 
 
 # Classe che gestisce il comando LENGTHEN
@@ -769,4 +770,264 @@ class QadLENGTHENCommandClass(QadCommandClass):
          # si appresta ad attendere la selezione degli oggetti da allungare
          self.waitForObjectSel()
             
+         return False
+
+
+
+
+#============================================================================
+# Classe che gestisce il comando LENGTHEN per i grip
+#============================================================================
+class QadGRIPLENGTHENCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadGRIPLENGTHENCommandClass(self.plugIn)
+   
+   def __init__(self, plugIn):
+      QadCommandClass.__init__(self, plugIn)
+      self.entity = None
+      self.skipToNextGripCommand = False
+      self.copyEntities = False
+      self.basePt = QgsPoint()
+      self.nOperationsToUndo = 0
+      
+      self.linearObjectList = None
+      self.atSubGeom = None
+      self.move_startPt = None
+
+
+   def __del__(self):
+      QadCommandClass.__del__(self)
+      
+   def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):      
+      if (self.plugIn is not None):
+         if self.PointMapTool is None:
+            self.PointMapTool = Qad_lengthen_maptool(self.plugIn)
+         return self.PointMapTool
+      else:
+         return None
+
+
+   #============================================================================
+   # setSelectedEntityGripPoints
+   #============================================================================
+   def setSelectedEntityGripPoints(self, entitySetGripPoints):
+      # lista delle entityGripPoint con dei grip point selezionati
+      # setta la prima entità con un grip selezionato
+      self.entity = None
+      for entityGripPoints in entitySetGripPoints.entityGripPoints:
+         for gripPoint in entityGripPoints.gripPoints:
+            # grip point selezionato
+            if gripPoint.getStatus() == qad_grip.QadGripStatusEnum.SELECTED:
+               # verifico se l'entità appartiene ad uno stile di quotatura
+               if entityGripPoints.entity.isDimensionComponent():
+                  return False
+               if entityGripPoints.entity.getEntityType() != QadEntityGeomTypeEnum.ARC and \
+                  entityGripPoints.entity.getEntityType() != QadEntityGeomTypeEnum.LINESTRING:
+                  return False
+               
+               # setta: self.entity, self.linearObjectList, self.atSubGeom e self.move_startPt
+               self.entity = entityGripPoints.entity
+               
+               if self.linearObjectList is not None:
+                  del self.linearObjectList
+                  self.linearObjectList = None
+
+               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+               geom = self.layerToMapCoordinates(self.entity.layer, self.entity.getGeometry())
+               
+               # ritorna una tupla (<The squared cartesian distance>,
+               #                    <minDistPoint>
+               #                    <afterVertex>
+               #                    <leftOf>)
+               res = False
+               dummy = qad_utils.closestSegmentWithContext(gripPoint.getPoint(), geom)
+               if dummy[2] is None:
+                  return False
+               # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
+               subGeom, self.atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])               
+               self.linearObjectList = qad_utils.QadLinearObjectList()
+
+               self.linearObjectList.fromPolyline(subGeom.asPolyline())
+               
+               if qad_utils.getDistance(self.linearObjectList.getStartPt(), gripPoint.getPoint()) <= \
+                  qad_utils.getDistance(self.linearObjectList.getEndPt(), gripPoint.getPoint()):
+                  # si allunga dal punto iniziale
+                  self.move_startPt = True
+               else:
+                  # si allunga dal punto finale
+                  self.move_startPt = False
+
+               # imposto il map tool
+               if self.getPointMapTool().setInfo(self.entity, gripPoint.getPoint()) == False:
+                  return False
+               
+               return True
+      return False
+
+
+   #============================================================================
+   # lengthen
+   #============================================================================
+   def lengthen(self, point):
+      layer = self.entity.layer
+      f = self.entity.getFeature()
+      if f is None: # non c'è più la feature
+         return False
+      # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+      geom = self.layerToMapCoordinates(layer, self.entity.getGeometry())
+                  
+      # ritorna una tupla (<The squared cartesian distance>,
+      #                    <minDistPoint>
+      #                    <afterVertex>
+      #                    <leftOf>)
+      res = False
+      newLinearObjectList = qad_utils.QadLinearObjectList(self.linearObjectList)
+         
+      if self.move_startPt:
+         linearObject = newLinearObjectList.getLinearObjectAt(0)
+      else:
+         linearObject = newLinearObjectList.getLinearObjectAt(-1)
+         
+      if linearObject.isSegment():
+         newPt = qad_utils.getPerpendicularPointOnInfinityLine(linearObject.getStartPt(), linearObject.getEndPt(), point)
+      else: # arco
+         newPt = qad_utils.getPolarPointByPtAngle(linearObject.getArc().center, \
+                                                  qad_utils.getAngleBy2Pts(linearObject.getArc().center, point), \
+                                                  linearObject.getArc().radius)                  
+
+      if newLinearObjectList.qty() > 1 and linearObject.isSegment():
+         ang = linearObject.getTanDirectionOnStartPt()
+
+      if self.move_startPt:
+         linearObject.setStartPt(newPt)
+      else:
+         linearObject.setEndPt(newPt)
+         
+      if newLinearObjectList.qty() > 1 and linearObject.isSegment() and \
+         qad_utils.TanDirectionNear(ang, linearObject.getTanDirectionOnStartPt()) == False:
+         res = False
+      else:
+         res = True
+
+      if res == False: # allungamento impossibile
+         return False
+               
+      pts = newLinearObjectList.asPolyline() 
+      updSubGeom = QgsGeometry.fromPolyline(pts)
+               
+      updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom)
+      if updGeom is None:
+         return False
+      # trasformo la geometria nel crs del layer
+      f.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
+         
+      self.plugIn.beginEditCommand("Feature edited", layer)
+      
+      if self.copyEntities == False:
+         # plugIn, layer, feature, refresh, check_validity
+         if qad_layer.updateFeatureToLayer(self.plugIn, layer, f, False, False) == False:
+            self.plugIn.destroyEditCommand()
+            return False
+      else:
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False) == False:
+            self.plugIn.destroyEditCommand()
+            return False
+      
+      self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+      
+      return True
+
+
+   def waitForDynamicPt(self):
+      keyWords = QadMsg.translate("Command_GRIP", "Copy") + "/" + \
+                 QadMsg.translate("Command_GRIP", "Undo") + "/" + \
+                 QadMsg.translate("Command_GRIP", "eXit")
+      prompt = QadMsg.translate("Command_GRIPLENGTHEN", "Specify new endpoint or [{0}]: ").format(keyWords)
+
+      englishKeyWords = "Copy" + "/" + "Undo" + "/" "eXit"
+      keyWords += "_" + englishKeyWords
+
+      # si appresta ad attendere un punto o enter o una parola chiave         
+      # msg, inputType, default, keyWords, nessun controllo
+      self.waitFor(prompt, \
+                   QadInputTypeEnum.POINT2D | QadInputTypeEnum.KEYWORDS, \
+                   None, \
+                   keyWords, QadInputModeEnum.NONE)
+      self.step = 1
+      # imposto il map tool
+      self.getPointMapTool().setMode(Qad_lengthen_maptool_ModeEnum.ASK_FOR_DYNAMIC_POINT)
+
+
+   #============================================================================
+   # run
+   #============================================================================
+   def run(self, msgMapTool = False, msg = None):
+      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
+         return True # fine comando
+
+      #=========================================================================
+      # RICHIESTA SELEZIONE OGGETTO
+      if self.step == 0: # inizio del comando
+         self.waitForDynamicPt()
+         return False
+
+      #=========================================================================
+      # RISPOSTA ALLA SELEZIONE OGGETTI DA MISURARE
+      elif self.step == 1:
+         ctrlKey = False
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  if self.copyEntities == False:
+                     self.skipToNextGripCommand = True
+                  return True # fine comando
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+            ctrlKey = self.getPointMapTool().ctrlKey
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == unicode:
+            if value == QadMsg.translate("Command_GRIP", "Copy") or value == "Copy":
+               # Copia entità lasciando inalterate le originali
+               self.copyEntities = True                     
+
+               self.waitForDynamicPt()
+            elif value == QadMsg.translate("Command_GRIP", "Undo") or value == "Undo":
+               if self.nOperationsToUndo > 0: 
+                  self.nOperationsToUndo = self.nOperationsToUndo - 1
+                  self.plugIn.undoEditCommand()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
+
+               self.waitForDynamicPt()
+            elif value == QadMsg.translate("Command_GRIP", "eXit") or value == "eXit":
+               return True # fine comando
+         elif type(value) == QgsPoint: # se é stato selezionato un punto
+            if ctrlKey:
+               self.copyEntities = True
+   
+            self.lengthen(value)
+
+            if self.copyEntities == False:
+               return True
+
+            self.waitForDynamicPt()
+         else:
+            if self.copyEntities == False:
+               self.skipToNextGripCommand = True
+            return True # fine comando
+                                          
          return False

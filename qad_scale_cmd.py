@@ -781,7 +781,8 @@ class QadGRIPSCALECommandClass(QadCommandClass):
             self.waitForScale()
           
          else:
-            self.skipToNextGripCommand = True
+            if self.copyEntities == False:
+               self.skipToNextGripCommand = True
             return True # fine comando
                                           
          return False 

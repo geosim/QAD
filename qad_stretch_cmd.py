@@ -519,7 +519,9 @@ class QadSTRETCHCommandClass(QadCommandClass):
 
 
 
+#============================================================================
 # Classe che gestisce il comando STRETCH per i grip
+#============================================================================
 class QadGRIPSTRETCHCommandClass(QadCommandClass):
 
 
@@ -728,10 +730,10 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       self.getPointMapTool().basePt = self.basePt
       self.getPointMapTool().setMode(Qad_stretch_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_MOVE_PT)
       
-      keyWords = QadMsg.translate("Command_GRIPSTRETCH", "Base point") + "/" + \
-                 QadMsg.translate("Command_GRIPSTRETCH", "Copy") + "/" + \
-                 QadMsg.translate("Command_GRIPSTRETCH", "Undo") + "/" + \
-                 QadMsg.translate("Command_GRIPSTRETCH", "eXit")
+      keyWords = QadMsg.translate("Command_GRIP", "Base point") + "/" + \
+                 QadMsg.translate("Command_GRIP", "Copy") + "/" + \
+                 QadMsg.translate("Command_GRIP", "Undo") + "/" + \
+                 QadMsg.translate("Command_GRIP", "eXit")
 
       prompt = QadMsg.translate("Command_GRIPSTRETCH", "Specify stretch point or [{0}]: ").format(keyWords)
 
@@ -797,15 +799,15 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
             value = msg
 
          if type(value) == unicode:
-            if value == QadMsg.translate("Command_GRIPSTRETCH", "Base point") or value == "Base point":
+            if value == QadMsg.translate("Command_GRIP", "Base point") or value == "Base point":
                # si appresta ad attendere il punto base
                self.waitForBasePt()
-            elif value == QadMsg.translate("Command_GRIPSTRETCH", "Copy") or value == "Copy":
+            elif value == QadMsg.translate("Command_GRIP", "Copy") or value == "Copy":
                # Copia entità lasciando inalterate le originali
                self.copyEntities = True                     
                # si appresta ad attendere un punto di stiramento
                self.waitForStretchPoint()
-            elif value == QadMsg.translate("Command_GRIPSTRETCH", "Undo") or value == "Undo":
+            elif value == QadMsg.translate("Command_GRIP", "Undo") or value == "Undo":
                if self.nOperationsToUndo > 0: 
                   self.nOperationsToUndo = self.nOperationsToUndo - 1
                   self.plugIn.undoEditCommand()
@@ -813,7 +815,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                   self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
                # si appresta ad attendere un punto di stiramento
                self.waitForStretchPoint()
-            elif value == QadMsg.translate("Command_GRIPSTRETCH", "eXit") or value == "eXit":
+            elif value == QadMsg.translate("Command_GRIP", "eXit") or value == "eXit":
                return True # fine comando
          elif type(value) == QgsPoint: # se é stato selezionato un punto
             if ctrlKey:
@@ -827,7 +829,8 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
             self.waitForStretchPoint()
           
          else:
-            self.skipToNextGripCommand = True
+            if self.copyEntities == False:
+               self.skipToNextGripCommand = True
             return True # fine comando
                                           
          return False 

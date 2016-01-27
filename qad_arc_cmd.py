@@ -37,6 +37,7 @@ from qad_msg import QadMsg
 from qad_textwindow import *
 import qad_utils
 import qad_layer
+import qad_grip
 
 
 # Classe che gestisce il comando ARC
@@ -805,4 +806,252 @@ class QadARCCommandClass(QadCommandClass):
                       keyWords, QadInputModeEnum.NOT_NULL)
          
          self.step = 5
+         return False
+
+
+#============================================================================
+# Classe che gestisce il comando per cambiare il raggio di un arco per i grip
+#============================================================================
+class QadGRIPCHANGEARCRADIUSCommandClass(QadCommandClass):
+
+   def instantiateNewCmd(self):
+      """ istanzia un nuovo comando dello stesso tipo """
+      return QadGRIPCHANGEARCRADIUSCommandClass(self.plugIn)
+
+   
+   def __init__(self, plugIn):
+      QadCommandClass.__init__(self, plugIn)
+      self.entity = None
+      self.skipToNextGripCommand = False
+      self.copyEntities = False
+      self.basePt = QgsPoint()
+      self.nOperationsToUndo = 0
+
+   
+   def __del__(self):
+      QadCommandClass.__del__(self)
+
+
+   def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
+      if (self.plugIn is not None):
+         if self.PointMapTool is None:
+            self.PointMapTool = Qad_gripChangeArcRadius_maptool(self.plugIn)
+         return self.PointMapTool
+      else:
+         return None
+
+   
+   #============================================================================
+   # setSelectedEntityGripPoints
+   #============================================================================
+   def setSelectedEntityGripPoints(self, entitySetGripPoints):
+      # lista delle entityGripPoint con dei grip point selezionati
+      # setta la prima entità con un grip selezionato
+      self.entity = None
+      for entityGripPoints in entitySetGripPoints.entityGripPoints:
+         for gripPoint in entityGripPoints.gripPoints:
+            # grip point selezionato
+            if gripPoint.getStatus() == qad_grip.QadGripStatusEnum.SELECTED:
+               # verifico se l'entità appartiene ad uno stile di quotatura
+               if entityGripPoints.entity.isDimensionComponent():
+                  return False
+               if entityGripPoints.entity.getEntityType() != QadEntityGeomTypeEnum.ARC:
+                  return False
+               
+               self.entity = entityGripPoints.entity
+               arc = entityGripPoints.entity.getQadGeom() # arco in map coordinate
+               self.basePt.set(arc.center.x(), arc.center.y())
+               return True
+      return False
+   
+
+   #============================================================================
+   # changeRadius
+   #============================================================================
+   def changeRadius(self, radius):
+      # radius = nuovo raggio dell'arco
+      if radius <= 0:
+         return False
+      arc = self.entity.getQadGeom()
+      arc.radius = radius
+      points = arc.asPolyline()
+      if points is None:
+         return False
+      
+      g = QgsGeometry.fromPolyline(points)
+      f = self.entity.getFeature()      
+      f.setGeometry(g)
+      
+      self.plugIn.beginEditCommand("Feature stretched", [self.entity.layer])
+      
+      if self.copyEntities == False:
+         # plugIn, layer, feature, refresh, check_validity
+         if qad_layer.updateFeatureToLayer(self.plugIn, self.entity.layer, f, False, False) == False:
+            self.plugIn.destroyEditCommand()
+            return False
+      else:
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeatureToLayer(self.plugIn, self.entity.layer, f, None, False, False) == False:
+            self.plugIn.destroyEditCommand()
+            return False
+
+      self.plugIn.setLastRadius(radius)
+      self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+
+      return True
+
+
+   #============================================================================
+   # waitForRadius
+   #============================================================================
+   def waitForRadius(self):
+      keyWords = QadMsg.translate("Command_GRIP", "Base point") + "/" + \
+                 QadMsg.translate("Command_GRIP", "Copy") + "/" + \
+                 QadMsg.translate("Command_GRIP", "Undo") + "/" + \
+                 QadMsg.translate("Command_GRIP", "eXit")
+      prompt = QadMsg.translate("Command_GRIPCHANGEARCRADIUS", "Specify the radius or [{0}]: ").format(keyWords)
+
+      englishKeyWords = "Base point" + "/" + "Copy" + "/" + "Undo" + "/" "eXit"
+      keyWords += "_" + englishKeyWords
+      # si appresta ad attendere un punto o enter o una parola chiave
+      # msg, inputType, default, keyWords, valori positivi
+      self.waitFor(prompt, \
+                   QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
+                   None, \
+                   keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
+      self.step = 1
+      # imposto il map tool
+      self.getPointMapTool().setEntity(self.entity) # setta basePt nel centro dell'arco
+      self.getPointMapTool().basePt = self.basePt
+      self.getPointMapTool().setMode(Qad_gripChangeArcRadius_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_RADIUS_PT)
+
+
+   #============================================================================
+   # waitForBasePt
+   #============================================================================
+   def waitForBasePt(self):
+      self.step = 2   
+      # imposto il map tool
+      self.getPointMapTool().setMode(Qad_gripChangeArcRadius_maptool_ModeEnum.ASK_FOR_BASE_PT)
+
+      # si appresta ad attendere un punto
+      self.waitForPoint(QadMsg.translate("Command_GRIP", "Specify base point: "))
+
+
+   #============================================================================
+   # run
+   #============================================================================
+   def run(self, msgMapTool = False, msg = None):
+      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+         self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
+         return True # fine comando
+     
+      #=========================================================================
+      # RICHIESTA SELEZIONE OGGETTI
+      if self.step == 0: # inizio del comando
+         if self.entity is None: # non ci sono oggetti da stirare
+            return True
+         self.showMsg(QadMsg.translate("Command_GRIPCHANGEARCRADIUS", "\n** RADIUS **\n"))
+         # si appresta ad attendere raggio
+         self.waitForRadius()
+         return False
+      
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA DEL RAGGIO DI RACCORDO (da step = 1)
+      elif self.step == 1:
+         ctrlKey = False
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  if self.copyEntities == False:
+                     self.skipToNextGripCommand = True
+                  return True # fine comando
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+            ctrlKey = self.getPointMapTool().ctrlKey
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == unicode:
+            if value == QadMsg.translate("Command_GRIP", "Base point") or value == "Base point":
+               # si appresta ad attendere il punto base
+               self.waitForBasePt()
+            elif value == QadMsg.translate("Command_GRIP", "Copy") or value == "Copy":
+               # Copia entità lasciando inalterate le originali
+               self.copyEntities = True                     
+               # si appresta ad attendere raggio
+               self.waitForRadius()
+            elif value == QadMsg.translate("Command_GRIP", "Undo") or value == "Undo":
+               if self.nOperationsToUndo > 0: 
+                  self.nOperationsToUndo = self.nOperationsToUndo - 1
+                  self.plugIn.undoEditCommand()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                  
+               # si appresta ad attendere raggio
+               self.waitForRadius()
+            elif value == QadMsg.translate("Command_GRIP", "eXit") or value == "eXit":
+               return True # fine comando
+         elif type(value) == QgsPoint or type(value) == float: # se é stato inserito il raggio
+            if type(value) == QgsPoint: # se é stato inserito il raggio con un punto
+               if value == self.basePt:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe value must be positive and not zero."))
+                  # si appresta ad attendere raggio
+                  self.waitForRadius()
+                  return False
+                                      
+               radius = qad_utils.getDistance(self.basePt, value)
+            else:
+               radius = value
+
+            if ctrlKey:
+               self.copyEntities = True
+   
+            self.changeRadius(radius)
+
+            if self.copyEntities == False:
+               return True
+            # si appresta ad attendere raggio
+            self.waitForRadius()
+         else:
+            if self.copyEntities == False:
+               self.skipToNextGripCommand = True
+            return True # fine comando
+
+         return False
+              
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA PUNTO BASE (da step = 1)
+      elif self.step == 2: # dopo aver atteso un punto
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  pass # opzione di default
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == QgsPoint: # se é stato inserito il punto base
+            self.basePt.set(value.x(), value.y())
+            # imposto il map tool
+            self.getPointMapTool().basePt = self.basePt
+            
+         # si appresta ad attendere raggio
+         self.waitForRadius()
+
          return False

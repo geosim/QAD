@@ -602,6 +602,87 @@ Fillet with radius &lt;{0}&gt; impossible.</source>
     </message>
 </context>
 <context>
+    <name>Command_GRIP</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPARCLINECONVERT</name>
+    <message>
+        <source>Specify the arc middle point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPCHANGEARCRADIUS</name>
+    <message>
+        <source>Specify the radius or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** RADIUS **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPINSERTREMOVEVERTEX</name>
+    <message>
+        <source>Specify the position of the new vertex or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** ADD VERTEX **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** REMOVE VERTEX **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** CONVERT TO ARC **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+** CONVERT TO LINE **
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_GRIPLENGTHEN</name>
+    <message>
+        <source>Specify new endpoint or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_GRIPMIRROR</name>
     <message>
         <source>Base point</source>
@@ -764,22 +845,6 @@ The points must be different.</source>
 </context>
 <context>
     <name>Command_GRIPSTRETCH</name>
-    <message>
-        <source>Base point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>eXit</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Specify stretch point or [{0}]: </source>
         <translation type="unfinished"></translation>
@@ -1233,10 +1298,6 @@ Polygon not valid.
     </message>
     <message>
         <source>Enter a selection option for the second vertex [{0}] &lt;{1}&gt;: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3848,6 +3909,45 @@ The setting is stored as a bitcode using the sum of the following values:
     </message>
     <message>
         <source>Recent commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Popup_menu_grip_window</name>
+    <message>
+        <source>Stretch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lengthen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stretch vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add vertex before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert to arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove vertex</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

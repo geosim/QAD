@@ -37,6 +37,7 @@ from qad_variables import *
 from qad_getpoint import *
 from qad_arc import *
 from qad_rubberband import QadRubberBand
+from qad_highlight import QadHighlight
 
 
 #===============================================================================
@@ -280,3 +281,100 @@ class Qad_arc_maptool(QadGetPoint):
          self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
          self.setStartPoint(self.arcStartPt)
          
+
+
+#===============================================================================
+# Qad_scale_maptool_ModeEnum class.
+#===============================================================================
+class Qad_gripChangeArcRadius_maptool_ModeEnum():
+   # si richiede il punto base
+   ASK_FOR_BASE_PT = 1     
+   # noto il punto base si richiede il secondo punto per il raggio
+   BASE_PT_KNOWN_ASK_FOR_RADIUS_PT = 2
+
+
+#===============================================================================
+# Qad_gripChangeArcRadius_maptool class
+#===============================================================================
+class Qad_gripChangeArcRadius_maptool(QadGetPoint):
+    
+   def __init__(self, plugIn):
+      QadGetPoint.__init__(self, plugIn)
+                        
+      self.basePt = None
+      self.entity = None
+      self.arc = None 
+      self.coordTransform = None
+      self.__highlight = QadHighlight(self.canvas)
+
+   def hidePointMapToolMarkers(self):
+      QadGetPoint.hidePointMapToolMarkers(self)
+      self.__highlight.hide()
+
+   def showPointMapToolMarkers(self):
+      QadGetPoint.showPointMapToolMarkers(self)
+      self.__highlight.show()
+                             
+   def clear(self):
+      QadGetPoint.clear(self)
+      self.__highlight.reset()
+      self.mode = None
+
+   def setEntity(self, entity):
+      self.entity = QadEntity(entity)
+      self.arc = self.entity.getQadGeom() # arco in map coordinate
+      self.basePt = self.arc.center
+      self.coordTransform = QgsCoordinateTransform(self.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+
+
+   #============================================================================
+   # stretch
+   #============================================================================
+   def changeRadius(self, radius):
+      self.__highlight.reset()
+      # radius = nuovo raggio dell'arco
+      # tolerance2ApproxCurve = tolleranza per ricreare le curve
+      self.arc.radius = radius
+      points = self.arc.asPolyline()
+      if points is None:
+         return False
+      
+      g = QgsGeometry.fromPolyline(points)
+      # trasformo la geometria nel crs del layer
+      g.transform(self.coordTransform)      
+      self.__highlight.addGeometry(g, self.entity.layer)
+            
+      
+   def canvasMoveEvent(self, event):
+      QadGetPoint.canvasMoveEvent(self, event)
+
+      # noto il punto base si richiede il secondo punto per il raggio
+      if self.mode == Qad_gripChangeArcRadius_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_RADIUS_PT:
+         radius = qad_utils.getDistance(self.basePt, self.tmpPoint)
+         self.changeRadius(radius)                           
+         
+    
+   def activate(self):
+      QadGetPoint.activate(self)            
+      self.__highlight.show()
+
+   def deactivate(self):
+      try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
+         QadGetPoint.deactivate(self)
+         self.__highlight.hide()
+      except:
+         pass
+      
+      
+   def setMode(self, mode):
+      self.mode = mode
+      # noto niente si richiede il punto base
+      if self.mode == Qad_gripChangeArcRadius_maptool_ModeEnum.ASK_FOR_BASE_PT:
+         self.clear()
+         self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+         self.__highlight.reset()
+      # noto il punto base si richiede il secondo punto per il raggio
+      elif self.mode == Qad_gripChangeArcRadius_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_RADIUS_PT:
+         self.setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
+         self.setStartPoint(self.basePt)
+      

@@ -42,6 +42,9 @@ from qad_move_cmd import QadGRIPMOVECommandClass
 from qad_rotate_cmd import QadGRIPROTATECommandClass
 from qad_scale_cmd import QadGRIPSCALECommandClass
 from qad_mirror_cmd import QadGRIPMIRRORCommandClass
+from qad_arc_cmd import QadGRIPCHANGEARCRADIUSCommandClass
+from qad_lengthen_cmd import QadGRIPLENGTHENCommandClass
+from qad_pedit_cmd import QadGRIPINSERTREMOVEVERTEXCommandClass, QadGRIPARCLINECONVERTCommandClass
 
 from qad_msg import QadMsg
 
@@ -58,7 +61,11 @@ class QadMapTool(QgsMapTool):
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
       self.entitySet = QadEntitySet()
       self.entitySetGripPoints = QadEntitySetGripPoints(plugIn)
-      
+   
+      self.gripPopupMenu = None
+      self.timerForGripMenu = QTimer()
+      self.timerForGripMenu.setSingleShot(True)
+
    def __del__(self):
       self.removeItems()
 
@@ -119,28 +126,28 @@ class QadMapTool(QgsMapTool):
       # volevo mettere questo evento nel canvasReleaseEvent
       # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
-         self.displayPopupMenu(event.pos())
+         self.displayPopupMenuOnQuiescentState(event.pos())
       elif event.button() == Qt.LeftButton:
          # verifico se tasto shift premuto
          shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
          # posizione corrente del mouse
          point = self.toMapCoordinates(event.pos())
          # leggo il punto grip che si interseca alla posizione del mouse
-         gripPoint = self.entitySetGripPoints.isIntersecting(point)
-         if gripPoint is not None:
+         entityGripPoint = self.entitySetGripPoints.isIntersecting(point)
+         if entityGripPoint is not None:
             if shiftKey == False: # lancio il comando
                selectedEntityGripPoints = self.entitySetGripPoints.getSelectedEntityGripPoints()
                # se non ci sono già grip selezionati
                if len(selectedEntityGripPoints) == 0:
                   # seleziono il corrente
-                  if self.entitySetGripPoints.selectIntersectingGripPoints(gripPoint) > 0:
+                  if self.entitySetGripPoints.selectIntersectingGripPoints(point) > 0:
                      selectedEntityGripPoints = self.entitySetGripPoints.getSelectedEntityGripPoints()
 
                # lancio il comando
-               self.plugIn.runCommand("QadVirtualGripCommandsClass", [QadVirtualGripCommandsEnum.STRECTH, self.entitySetGripPoints, gripPoint])
+               self.plugIn.runCommand("QadVirtualGripCommandsClass", [QadVirtualGripCommandsEnum.STRECTH, self.entitySetGripPoints, point])
             else: # shift premuto
                # inverto lo stato ai grip che intersecano il punto 
-               self.entitySetGripPoints.toggleSelectIntersectingGripPoints(gripPoint)
+               self.entitySetGripPoints.toggleSelectIntersectingGripPoints(point)
          else:
             result = qad_utils.getEntSel(event.pos(), self)
             if result is not None:
@@ -163,10 +170,32 @@ class QadMapTool(QgsMapTool):
       pass
 
 
-   def canvasMoveEvent(self,event):
+   def canvasMoveEvent(self, event):
+      self.timerForGripMenu.stop()
       point = self.toMapCoordinates(event.pos())
       self.__csrRubberBand.moveEvent(point)
-      self.entitySetGripPoints.hoverIntersectingGripPoints(point)
+      if self.entitySetGripPoints.hoverIntersectingGripPoints(point) == 1:
+         for entityGripPoint in self.entitySetGripPoints.entityGripPoints:
+            for gripPoint in entityGripPoint.gripPoints:
+               if gripPoint.isIntersecting(point) and gripPoint.getStatus() == QadGripStatusEnum.HOVER:
+                  pos = QPoint(event.pos().x(), event.pos().y())
+                  shot = lambda: self.displayPopupMenuOnGrip(pos, entityGripPoint.entity, gripPoint)
+                  
+                  del self.timerForGripMenu
+                  self.timerForGripMenu = QTimer()
+                  self.timerForGripMenu.setSingleShot(True)
+                  self.timerForGripMenu.timeout.connect(shot)
+                  self.timerForGripMenu.start(1000)
+                  return
+   
+         # se non ci sono grip point selezionati
+         if len(self.entitySetGripPoints.getSelectedEntityGripPoints()) == 0:
+            # leggo il punto grip che si interseca alla posizione del mouse
+            entityGripPoint = self.entitySetGripPoints.isIntersecting(point)
+            if entityGripPoint is not None:               
+               # leggo il primo punto di grip che interseca point (in map coordinate)
+               gripPoint = entityGripPoint.isIntersecting(point)
+               
 
    def canvasReleaseEvent(self, event):
       pass
@@ -213,6 +242,7 @@ class QadMapTool(QgsMapTool):
    
    def deactivate(self):
       self.__csrRubberBand.hide()
+      self.timerForGripMenu.stop()
       
    def isTransient(self):
       return False # questo tool non fa zoom o pan
@@ -222,9 +252,9 @@ class QadMapTool(QgsMapTool):
 
 
    #============================================================================
-   # displayPopupMenu
+   # displayPopupMenuOnQuiescentState
    #============================================================================
-   def displayPopupMenu(self, pos):
+   def displayPopupMenuOnQuiescentState(self, pos):
       popupMenu = QMenu(self.canvas)
       history = self.plugIn.getHistoryfromTxtWindow()
       isLastCmdToInsert = True
@@ -263,6 +293,225 @@ class QadMapTool(QgsMapTool):
       
       if isLastCmdToInsert == False: # menu non vuoto
          popupMenu.popup(self.canvas.mapToGlobal(pos))
+
+
+   #============================================================================
+   # runCmdFromPopupMenuOnGrip
+   #============================================================================
+   def runCmdFromPopupMenuOnGrip(self, virtualGripCommand, gripPoint):
+      # seleziona il grip
+      gripPoint.select()
+      # lancio il comando
+      self.plugIn.runCommand("QadVirtualGripCommandsClass", [virtualGripCommand, self.entitySetGripPoints, gripPoint.getPoint()])
+
+
+   #============================================================================
+   # displayPopupMenuOnGrip
+   #============================================================================
+   def displayPopupMenuOnGrip(self, pos, entity, gripPoint):
+      if self.gripPopupMenu is not None:
+         self.gripPopupMenu.hide()
+         del self.gripPopupMenu
+         self.gripPopupMenu = None
+         
+      popupMenu = QadGripPopupMenu(self.canvas)
+      
+      found = False
+      
+      # verifico se l'entità appartiene ad uno stile di quotatura
+      if entity.isDimensionComponent():
+         pass
+      else:
+         entityType = entity.getEntityType(gripPoint.atGeom, gripPoint.atSubGeom)
+         if entityType == QadEntityGeomTypeEnum.ARC:
+            arc = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
+            
+            # se punti finali
+            if gripPoint.isIntersecting(arc.getStartPt()) or gripPoint.isIntersecting(arc.getEndPt()):
+               found = True
+               msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+               QObject.connect(action, SIGNAL("triggered()"), f)
+               popupMenu.addAction(action)
+
+               msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
+               QObject.connect(action, SIGNAL("triggered()"), f)
+               popupMenu.addAction(action)
+            # se punto medio
+            elif gripPoint.isIntersecting(entity.qadGeom.getMiddlePt()):
+               found = True
+               msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+               QObject.connect(action, SIGNAL("triggered()"), f)
+               popupMenu.addAction(action)
+               
+               msg = QadMsg.translate("Popup_menu_grip_window", "Radius")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.CHANGE_RADIUS, gripPoint)
+               QObject.connect(action, SIGNAL("triggered()"), f)
+               popupMenu.addAction(action)
+            
+               msg = QadMsg.translate("Popup_menu_grip_window", "Convert to line")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ARC_TO_LINE, gripPoint)
+               QObject.connect(action, SIGNAL("triggered()"), f)
+               popupMenu.addAction(action)
+               
+         elif entityType == QadEntityGeomTypeEnum.LINESTRING:
+            linearObjectList = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
+            isClosed = linearObjectList.isClosed()
+            nVertex = 0
+            found = False
+            while nVertex < linearObjectList.qty():
+               linearObject = linearObjectList.getLinearObjectAt(nVertex)
+
+               if gripPoint.isIntersecting(linearObject.getStartPt()):
+                  found = True
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Stretch vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+                  
+                  # punto iniziale
+                  if isClosed == False and nVertex == 0:
+                     msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
+                     action = QAction(msg, popupMenu)
+                     f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
+                     QObject.connect(action, SIGNAL("triggered()"), f)
+                     popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+                  break
+               
+               # punto medio
+               if gripPoint.isIntersecting(linearObject.getMiddlePt()):
+                  found = True
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+                  
+                  if linearObject.isSegment(): # linea
+                     msg = QadMsg.translate("Popup_menu_grip_window", "Convert to arc")
+                     action = QAction(msg, popupMenu)
+                     f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LINE_TO_ARC, gripPoint)
+                  else: # arco
+                     msg = QadMsg.translate("Popup_menu_grip_window", "Convert to line")
+                     action = QAction(msg, popupMenu)
+                     f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ARC_TO_LINE, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+                  break
+               
+               nVertex = nVertex + 1
+               
+            linearObject = linearObjectList.getLinearObjectAt(-1) # ultima parte
+            if not found and isClosed == False:
+               # punto finale
+               if gripPoint.isIntersecting(linearObject.getEndPt()):
+                  found = True
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Stretch vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+
+            if isClosed == False: # polyline
+               # ci devono essere almeno 2 parti
+               if linearObjectList.qty() >= 2:
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Remove vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.REMOVE_VERTEX, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+            else: # polygon
+               # ci devono essere almeno 4 parti
+               if linearObjectList.qty() >= 4:
+                  msg = QadMsg.translate("Popup_menu_grip_window", "Remove vertex")
+                  action = QAction(msg, popupMenu)
+                  f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.REMOVE_VERTEX, gripPoint)
+                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  popupMenu.addAction(action)
+                     
+      if found: # menu non vuoto
+         popupMenu.popup(self.canvas.mapToGlobal(pos))
+         self.gripPopupMenu = popupMenu
+         
+      return None
+
+
+class QadGripPopupMenu(QMenu):
+   def __init__(self, parent):
+      QMenu.__init__(self, parent)
+      self.offset = 0
+
+   def popup(self, pos, action = None):
+      newPos = QPoint(pos.x() + self.offset, pos.y() + self.offset)
+      QMenu.popup(self, newPos, action)
+   
+#    def leaveEvent(self, event):
+#       if event.pos().x() < -1 * self.offset or event.pos().y() < -1 * self.offset:
+#          self.hide()
+     #self.hide()
+
+   def mouseMoveEvent(self, event):
+      x = event.pos().x()
+      y = event.pos().y()
+      if x < -1 * self.offset or y < -1 * self.offset or \
+         x > self.width() or y > self.height():
+         self.hide()
+      else:
+         QMenu.mouseMoveEvent(self, event)
+
+#             newPos = self.parentWidget().mapFromGlobal(event.globalPos())
+#             newMouseEvent = QMouseEvent(QEvent.MouseMove, newPos, Qt.NoButton, event.buttons(), event.modifiers())
+#             self.parentWidget().mouseMoveEvent(newMouseEvent)
 
 
 # Classe che gestisce il comando di selezione quando QAD è in stato di quiete
@@ -310,9 +559,10 @@ class QadVirtualGripCommandsEnum():
    LENGTHEN        = 6
    ADD_VERTEX      = 7
    REMOVE_VERTEX   = 8
-   CONVERT_TO_ARC  = 9
-   CONVERT_TO_LINE = 10
+   LINE_TO_ARC     = 9
+   ARC_TO_LINE     = 10
    CHANGE_RADIUS   = 11
+   ADD_VERTEX_BEFORE = 12
 
 
 # Classe che gestisce i comando disponibili sui grip quando QAD è in stato di quiete
@@ -354,6 +604,31 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          return QadGRIPSCALECommandClass(self.plugIn)
       elif self.commandNum == QadVirtualGripCommandsEnum.MIRROR:
          return QadGRIPMIRRORCommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.CHANGE_RADIUS:
+         return QadGRIPCHANGEARCRADIUSCommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.LENGTHEN:
+         return QadGRIPLENGTHENCommandClass(self.plugIn)
+      elif self.commandNum == QadVirtualGripCommandsEnum.ADD_VERTEX:
+         cmd = QadGRIPINSERTREMOVEVERTEXCommandClass(self.plugIn)
+         cmd.setInsertVertexAfter_Mode()
+         return cmd
+      elif self.commandNum == QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE:
+         cmd = QadGRIPINSERTREMOVEVERTEXCommandClass(self.plugIn)
+         cmd.setInsertVertexBefore_Mode()
+         return cmd
+      elif self.commandNum == QadVirtualGripCommandsEnum.REMOVE_VERTEX:
+         cmd = QadGRIPINSERTREMOVEVERTEXCommandClass(self.plugIn)
+         cmd.setRemoveVertex_mode()
+         return cmd
+      elif self.commandNum == QadVirtualGripCommandsEnum.LINE_TO_ARC:
+         cmd = QadGRIPARCLINECONVERTCommandClass(self.plugIn)
+         cmd.setLineToArcConvert_Mode()
+         return cmd
+      elif self.commandNum == QadVirtualGripCommandsEnum.ARC_TO_LINE:
+         cmd = QadGRIPARCLINECONVERTCommandClass(self.plugIn)
+         cmd.setArcToLineConvert_Mode()
+         return cmd
+      
       return None
 
 
@@ -381,9 +656,10 @@ class QadVirtualGripCommandsClass(QadCommandClass):
       if self.commandNum == QadVirtualGripCommandsEnum.STRECTH or \
          self.commandNum == QadVirtualGripCommandsEnum.LENGTHEN or \
          self.commandNum == QadVirtualGripCommandsEnum.ADD_VERTEX or \
+         self.commandNum == QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE or \
          self.commandNum == QadVirtualGripCommandsEnum.REMOVE_VERTEX or \
-         self.commandNum == QadVirtualGripCommandsEnum.CONVERT_TO_ARC or \
-         self.commandNum == QadVirtualGripCommandsEnum.CONVERT_TO_LINE or \
+         self.commandNum == QadVirtualGripCommandsEnum.LINE_TO_ARC or \
+         self.commandNum == QadVirtualGripCommandsEnum.ARC_TO_LINE or \
          self.commandNum == QadVirtualGripCommandsEnum.CHANGE_RADIUS:
          self.commandNum = QadVirtualGripCommandsEnum.MOVE
       elif self.commandNum == QadVirtualGripCommandsEnum.MOVE:

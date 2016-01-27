@@ -62,7 +62,6 @@ class Qad_fillet_maptool(QadGetPoint):
 
       self.filletMode = 1 # modalità di raccordo; 1=Taglia-estendi, 2=Non taglia-estendi
       self.radius = 0.0
-      self.transformedRadius = 0.0
       
       self.layer = None 
       self.linearObjectList = qad_utils.QadLinearObjectList()
@@ -98,11 +97,7 @@ class Qad_fillet_maptool(QadGetPoint):
       self.partAt = partAt
       self.pointAt = pointAt
 
-      self.transformedRadius = qad_utils.distMapToLayerCoordinates(self.radius, self.canvas, self.layer)                                        
-      self.tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                       self.canvas,\
-                                                                       self.layer)                              
-
+      self.tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
 
    def canvasMoveEvent(self, event):
       QadGetPoint.canvasMoveEvent(self, event)
@@ -113,19 +108,14 @@ class Qad_fillet_maptool(QadGetPoint):
       # si richiede la selezione del secondo oggetto
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:
          if self.tmpEntity.isInitialized():                                                         
-            transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.tmpEntity.layer, self.tmpPoint)
-            geom = self.tmpEntity.getGeometry()
-            
-            if self.layer.crs() != self.tmpEntity.layer.crs():
-               coordTransform = QgsCoordinateTransform(self.tmpEntity.layer.crs(),\
-                                                       self.layer.crs()) # trasformo la geometria
-               geom.transform(coordTransform)            
+            # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+            geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
             
             # ritorna una tupla (<The squared cartesian distance>,
             #                    <minDistPoint>
             #                    <afterVertex>
             #                    <leftOf>)
-            dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
+            dummy = qad_utils.closestSegmentWithContext(self.tmpPoint, geom)
             if dummy[2] is not None:
                # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
                subGeom, atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])               
@@ -136,7 +126,7 @@ class Qad_fillet_maptool(QadGetPoint):
                #                                    <punto più vicino>
                #                                    <indice della parte più vicina>       
                #                                    <"a sinistra di">)
-               dummy = tmpLinearObjectList.closestPartWithContext(transformedPt)
+               dummy = tmpLinearObjectList.closestPartWithContext(self.tmpPoint)
                tmpPartAt = dummy[2]
                tmpPointAt = dummy[1]
                
@@ -146,7 +136,8 @@ class Qad_fillet_maptool(QadGetPoint):
                   self.partAt == tmpPartAt:
                   return
 
-               epsg = self.layer.crs().authid()
+               # uso il crs del canvas per lavorare con coordinate piane xy
+               epsg = self.canvas.mapRenderer().destinationCrs().authid()
                
                if self.tmpShiftKey == True: # tasto shift premuto durante il movimento del mouse
                   # filletMode = 1 # modalità di raccordo; 1=Taglia-estendi
@@ -157,7 +148,7 @@ class Qad_fillet_maptool(QadGetPoint):
                else:               
                   res = qad_utils.getFilletLinearObjectList(self.linearObjectList, self.partAt, self.pointAt, \
                                                             tmpLinearObjectList, tmpPartAt, tmpPointAt,\
-                                                            self.filletMode, self.transformedRadius, epsg)
+                                                            self.filletMode, self.radius, epsg)
                if res is None: # raccordo non possibile
                   return
                tmpLinearObjectList = res[0]
@@ -165,30 +156,29 @@ class Qad_fillet_maptool(QadGetPoint):
       # si richiede la selezione della polilinea
       elif self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_POLYLINE:
          if self.tmpEntity.isInitialized():
-            self.transformedRadius = qad_utils.distMapToLayerCoordinates(self.radius, self.canvas, self.tmpEntity.layer)                                        
-            transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.tmpEntity.layer, self.tmpPoint)            
-            self.tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                             self.canvas,\
-                                                                             self.tmpEntity.layer)                                         
-            geom = self.tmpEntity.getGeometry()
+            # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+            geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
             # ritorna una tupla (<The squared cartesian distance>,
             #                    <minDistPoint>
             #                    <afterVertex>
             #                    <leftOf>)
-            dummy = qad_utils.closestSegmentWithContext(transformedPt, geom)
+            dummy = qad_utils.closestSegmentWithContext(self.tmpPoint, geom)
             if dummy[2] is not None:
                # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
                subGeom, atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])               
-               tmpLinearObjectList = qad_utils.QadLinearObjectList()               
+               tmpLinearObjectList = qad_utils.QadLinearObjectList()
                tmpLinearObjectList.fromPolyline(subGeom.asPolyline())
-               tmpLinearObjectList.fillet(self.transformedRadius)
+               tmpLinearObjectList.fillet(self.radius)
       
       if tmpLinearObjectList is not None:
-         pts = tmpLinearObjectList.asPolyline(self.tolerance2ApproxCurve) 
+         pts = tmpLinearObjectList.asPolyline(self.tolerance2ApproxCurve)
          if self.layer.geometryType() == QGis.Polygon:
             geom = QgsGeometry.fromPolygon([pts])
          else:
             geom = QgsGeometry.fromPolyline(pts)
+            
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         geom = self.layerToMapCoordinates(self.layer, geom)            
          self.__rubberBand.addGeometry(geom, self.layer)
       
     

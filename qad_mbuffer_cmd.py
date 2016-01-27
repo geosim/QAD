@@ -74,7 +74,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
       self.SSGetClass = QadSSGetClass(plugIn)
       self.entitySet = QadEntitySet()
       self.width = 0
-      self.segments = self.plugIn.segments
+      self.segments = self.plugIn.segments # il numero di segmenti per l'approssimazione delle curve
 
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -102,28 +102,20 @@ class QadMBUFFERCommandClass(QadCommandClass):
 
    def AddGeoms(self, currLayer):
       bufferGeoms = []
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
             
       for layerEntitySet in self.entitySet.layerEntitySetList:
+         layer = layerEntitySet.layer
          geoms = layerEntitySet.getGeometryCollection()
-         width = qad_utils.distMapToLayerCoordinates(self.width, \
-                                                     self.SSGetClass.getPointMapTool().canvas,\
-                                                     layerEntitySet.layer)
-         tolerance = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                         self.SSGetClass.getPointMapTool().canvas,\
-                                                         layerEntitySet.layer)
-         if layerEntitySet.layer.crs() != currLayer.crs():
-            coordTransform = QgsCoordinateTransform(layerEntitySet.layer.crs(),\
-                                                    currLayer.crs()) # trasformo la geometria
-         else:
-            coordTransform = None
          
          for geom in geoms:
-            g = qad_utils.ApproxCurvesOnGeom(geom.buffer(width, self.segments), \
+            # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+            newGeom = self.layerToMapCoordinates(layer, geom)
+            g = qad_utils.ApproxCurvesOnGeom(newGeom.buffer(self.width, self.segments), \
                                              self.segments, self.segments, \
                                              tolerance)
-            if coordTransform is not None:
-               g.transform(coordTransform)            
-            bufferGeoms.append(g)
+            # trasformo la geometria nel crs del layer
+            bufferGeoms.append(self.mapToLayerCoordinates(layer, g))
 
       self.plugIn.beginEditCommand("Feature buffered", currLayer)
       
@@ -167,7 +159,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
       # trasformo la geometria in quella dei layer temporanei 
       # plugIn, pointGeoms, lineGeoms, polygonGeoms, coord, refresh
       if qad_layer.addGeometriesToQADTempLayers(self.plugIn, pointGeoms, lineGeoms, polygonGeoms, \
-                                                currLayer.crs(), False) == False:
+                                                None, False) == False:
          self.plugIn.destroyEditCommand()
          return
 

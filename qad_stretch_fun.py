@@ -38,13 +38,15 @@ from qad_snapper import *
 #===============================================================================
 # isPtContainedForStretch
 #===============================================================================
-def isPtContainedForStretch(point, containerGeom, tolerance = 1.e-9):
+def isPtContainedForStretch(point, containerGeom, tolerance=None):
    """
    Funzione di ausilio per le funzioni di stretch (stretchPoint e stretchQgsLineStringGeometry).
    Se containerGeom è un oggetto QgsGeometry allora ritorna True se il punto è contenuto a livello spaziale
    dalla geometria containerGeom.
    Se containerGeom è una lista di punti allora ritorna True se il punto è fra quelli della lista.
    """
+   if tolerance is None:
+      tolerance = qad_utils.TOLERANCE
    if type(containerGeom) == QgsGeometry: # geometria   
       return containerGeom.contains(point)
    elif type(containerGeom) == list: # lista di punti
