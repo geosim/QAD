@@ -46,7 +46,7 @@ class Qad_scale_maptool_ModeEnum():
    # noto niente si richiede il punto base
    NONE_KNOWN_ASK_FOR_BASE_PT = 1     
    # noto il punto base si richiede il secondo punto per la scala
-   BASE_PT_KNOWN_ASK_FOR_SCALE_PT = 2     
+   BASE_PT_KNOWN_ASK_FOR_SCALE_PT = 2
    # si richiede il primo punto per la lunghezza di riferimento
    ASK_FOR_FIRST_PT_REFERENCE_LEN = 3     
    # noto il primo punto si richiede il secondo punto per la lunghezza di riferimento
@@ -113,7 +113,7 @@ class Qad_scale_maptool(QadGetPoint):
    # addScaledGeometries
    #============================================================================
    def addScaledGeometries(self, scale):
-      self.__highlight.reset()            
+      self.__highlight.reset()
       
       # copio entitySet
       entitySet = QadEntitySet(self.entitySet)

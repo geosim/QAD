@@ -90,75 +90,71 @@ class QadEXTENDCommandClass(QadCommandClass):
    # extendFeatures
    #============================================================================
    def extendFeatures(self, geom, toExtend):
+      # geom è in map coordinates
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       LineTempLayer = None
       self.plugIn.beginEditCommand("Feature extended" if toExtend else "Feature trimmed", \
                                    self.entitySet.getLayerList())
       
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
-         #layer.beginEditCommand("Feature extended") # test
-         tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                     self.plugIn.canvas,\
-                                                                     layer)                              
-                  
-         g = QgsGeometry(geom)
-         if self.plugIn.canvas.mapRenderer().destinationCrs() != layer.crs():         
-            # Trasformo la geometria nel sistema di coordinate del layer
-            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), \
-                                                    layer.crs())          
-            g.transform(coordTransform)
-            
+                              
          for featureId in layerEntitySet.featureIds:
             f = qad_utils.getFeatureById(layer, featureId)
             if f is None:
                continue
+            # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+            f_geom = self.layerToMapCoordinates(layer, f.geometry())
             
-            if g.type() == QGis.Point:
+            if geom.type() == QGis.Point:               
                # ritorna una tupla (<The squared cartesian distance>,
                #                    <minDistPoint>
                #                    <afterVertex>
                #                    <leftOf>)
-               dummy = qad_utils.closestSegmentWithContext(g.asPoint(), f.geometry())
+               dummy = qad_utils.closestSegmentWithContext(geom.asPoint(), f_geom)
                if dummy[1] is not None:
                   intPts = [dummy[1]]
             else:
-               intPts = qad_utils.getIntersectionPoints(g, f.geometry())
+               intPts = qad_utils.getIntersectionPoints(geom, f_geom)
                
             for intPt in intPts:               
                if toExtend:
-                  newGeom = qad_utils.extendQgsGeometry(layer, f.geometry(), intPt, \
+                  newGeom = qad_utils.extendQgsGeometry(self.plugIn.canvas.mapRenderer().destinationCrs(), f_geom, intPt, \
                                                         self.limitEntitySet, self.edgeMode, \
                                                         tolerance2ApproxCurve)
                   if newGeom is not None:
                      # aggiorno la feature con la geometria estesa
                      extendedFeature = QgsFeature(f)
-                     extendedFeature.setGeometry(newGeom)
+                     # trasformo la geometria nel crs del layer
+                     extendedFeature.setGeometry(self.mapToLayerCoordinates(layer, newGeom))
                      # plugIn, layer, feature, refresh, check_validity
                      if qad_layer.updateFeatureToLayer(self.plugIn, layer, extendedFeature, False, False) == False:
                         self.plugIn.destroyEditCommand()
                         return
                else: # trim
-                  result = qad_utils.trimQgsGeometry(layer, f.geometry(), intPt, \
-                                                    self.limitEntitySet, self.edgeMode, \
-                                                    tolerance2ApproxCurve)                  
+                  result = qad_utils.trimQgsGeometry(self.plugIn.canvas.mapRenderer().destinationCrs(), f_geom, intPt, \
+                                                     self.limitEntitySet, self.edgeMode, \
+                                                     tolerance2ApproxCurve)                  
                   if result is not None:
                      line1 = result[0]
                      line2 = result[1]
                      atSubGeom = result[2]
                      if layer.geometryType() == QGis.Line:
-                        updGeom = qad_utils.setSubGeom(f.geometry(), line1, atSubGeom)
+                        updGeom = qad_utils.setSubGeom(f_geom, line1, atSubGeom)
                         if updGeom is None:
                            self.plugIn.destroyEditCommand()
                            return
                         trimmedFeature1 = QgsFeature(f)
-                        trimmedFeature1.setGeometry(updGeom)
+                        # trasformo la geometria nel crs del layer
+                        trimmedFeature1.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
                         # plugIn, layer, feature, refresh, check_validity
                         if qad_layer.updateFeatureToLayer(self.plugIn, layer, trimmedFeature1, False, False) == False:
                            self.plugIn.destroyEditCommand()
                            return
                         if line2 is not None:
                            trimmedFeature2 = QgsFeature(f)      
-                           trimmedFeature2.setGeometry(line2)
+                           # trasformo la geometria nel crs del layer
+                           trimmedFeature2.setGeometry(self.mapToLayerCoordinates(layer, line2))
                            # plugIn, layer, feature, coordTransform, refresh, check_validity
                            if qad_layer.addFeatureToLayer(self.plugIn, layer, trimmedFeature2, None, False, False) == False:
                               self.plugIn.destroyEditCommand()
@@ -176,11 +172,11 @@ class QadEXTENDCommandClass(QadCommandClass):
 
                         # trasformo la geometria in quella dei layer temporanei
                         # plugIn, pointGeoms, lineGeoms, polygonGeoms, coord, refresh
-                        if qad_layer.addGeometriesToQADTempLayers(self.plugIn, None, lineGeoms, None, layer.crs(), False) == False:
+                        if qad_layer.addGeometriesToQADTempLayers(self.plugIn, None, lineGeoms, None, None, False) == False:
                            self.plugIn.destroyEditCommand()
                            return
                                                       
-                        updGeom = qad_utils.delSubGeom(f.geometry(), atSubGeom)         
+                        updGeom = qad_utils.delSubGeom(f_geom, atSubGeom)
                         
                         if updGeom is None or updGeom.isGeosEmpty(): # da cancellare
                            # plugIn, layer, feature id, refresh
@@ -189,7 +185,8 @@ class QadEXTENDCommandClass(QadCommandClass):
                               return
                         else:
                            trimmedFeature1 = QgsFeature(f)
-                           trimmedFeature1.setGeometry(updGeom)
+                           # trasformo la geometria nel crs del layer
+                           trimmedFeature1.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
                            # plugIn, layer, feature, refresh, check_validity
                            if qad_layer.updateFeatureToLayer(self.plugIn, layer, trimmedFeature1, False, False) == False:
                               self.plugIn.destroyEditCommand()

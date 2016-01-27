@@ -915,3 +915,33 @@ class QadGetPoint(QgsMapTool):
       d.exec_()
       self.refreshSnapType()
 
+
+   def mapToLayerCoordinates(self, layer, point_geom):
+      # transform point o geometry coordinates from output CRS to layer's CRS 
+      if self.canvas is None:
+         return None
+      if type(point_geom) == QgsPoint:
+         return self.canvas.mapRenderer().mapToLayerCoordinates(layer, point_geom)
+      elif type(point_geom) == QgsGeometry:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.canvas.mapRenderer().destinationCrs(), layer.crs())
+         g = QgsGeometry(point_geom)
+         g.transform(coordTransform)
+         return g
+      else:
+         return None
+
+   def layerToMapCoordinates(self, layer, point_geom):
+      # transform point o geometry coordinates from layer's CRS to output CRS 
+      if self.canvas is None:
+         return None
+      if type(point_geom) == QgsPoint:
+         return self.canvas.mapRenderer().layerToMapCoordinates(layer, point_geom)
+      elif type(point_geom) == QgsGeometry:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(layer.crs(), self.canvas.mapRenderer().destinationCrs())
+         g = QgsGeometry(point_geom)
+         g.transform(coordTransform)
+         return g
+      else:
+         return None

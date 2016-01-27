@@ -210,6 +210,30 @@ class QadEntity():
          return QadEntityGeomTypeEnum.NONE
 
 
+   def getQadGeom(self, atGeom = 0, atSubGeom = 0):
+      # se entityType non è già stato inizializzato
+      if self.qadGeom is None:
+         self.__initQadInfo()
+      
+      # se qadGeom è stato inizializzato
+      if self.qadGeom is not None:
+         if type(self.qadGeom) == list:
+            if atGeom < len(self.qadGeom):
+               if type(self.qadGeom[atGeom]) == list:
+                  if atSubGeom < len(self.qadGeom[atGeom]):
+                     return self.qadGeom[atGeom][atSubGeom]
+                  else:
+                     return None
+               else:
+                  return None if atSubGeom != 0 else self.qadGeom[atGeom]
+            else:
+               return None
+         else:
+            return None if atGeom != 0 else self.qadGeom
+      else:
+         return None
+
+
    def isInitialized(self):
       if (self.layer is None) or (self.featureId is None):
          return False
@@ -255,6 +279,7 @@ class QadEntity():
 
 
    def set(self, layer, featureId):
+      self.clear()
       self.layer = layer # il layer non si può copiare
       self.featureId = featureId # copio l'identificativo di feature
       return self
@@ -374,6 +399,8 @@ class QadEntity():
 
    def gripGeomStretch(self, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
       newQadGeom = self.gripStretch(basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+      if newQadGeom is None:
+         return None
       return self.__getGeomFromQadGeom(newQadGeom, tolerance2ApproxCurve)
 
 

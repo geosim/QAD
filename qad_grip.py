@@ -179,7 +179,7 @@ class QadEntityGripPoint():
    def __init__(self, mapCanvas, point, type, atGeom = 0, atSubGeom = 0, nVertex = 0, rot = 0.0):
       self.atGeom = atGeom # numero di geometria (0-index)
       self.atSubGeom = atSubGeom # numero di sotto-geometria (0-index)
-      self.nVertex = nVertex # numero di vertice della QadLinearObjectList della geometria e sotto-geometria (0-index)      
+      self.nVertex = nVertex # numero di vertice della QadLinearObjectList della geometria e sotto-geometria (0-index)
       
       self.gripType = type
          
@@ -323,10 +323,10 @@ class QadEntityGripPoints(QgsMapCanvasItem):
 
 
    def isIntersecting(self, point):
-      # ritorna il punto di intersezione in map coordinate      
+      # ritorna il primo punto di grip che interseca point (in map coordinate)
       for gripPoint in self.gripPoints:
          if gripPoint.isIntersecting(point):
-            return gripPoint.getPoint()
+            return gripPoint
       return None
 
 
@@ -444,7 +444,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
             linearObjectList = qad_utils.QadLinearObjectList()
             linearObjectList.fromPolyline(pointList)
             return self.getGripPointsFromQadLinearObjectList(linearObjectList, atGeom, atSubGeom, grips)
-      
+
    
    def getGripPointsFromQadLinearObjectList(self, linearObjectList, atGeom = 0, atSubGeom = 0, grips = 2):
       """
@@ -473,13 +473,12 @@ class QadEntityGripPoints(QgsMapCanvasItem):
                gp = QadEntityGripPoint(self.mapCanvas, middlePt, QadGripPointTypeEnum.ARC_MID_POINT, atGeom, atSubGeom, nVertex, rot)
             result.append(gp)
          nVertex = nVertex + 1
-      
-      linearObject = linearObjectList.getLinearObjectAt(-1) # ultima parte
-      endPt = linearObject.getEndPt()
+
+      # solo se la polilinea è aperta
       if isClosed == False:
+         linearObject = linearObjectList.getLinearObjectAt(-1) # ultima parte
+         endPt = linearObject.getEndPt()      
          gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.END_VERTEX, atGeom, atSubGeom, nVertex)
-      else:
-         gp = QadEntityGripPoint(self.mapCanvas, endPt, QadGripPointTypeEnum.VERTEX, atGeom, atSubGeom, nVertex)
       
       result.append(gp)
          
@@ -519,7 +518,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
       
       if grips == 2:
          middlePt = arc.getMiddlePt()
-         gp = QadEntityGripPoint(self.mapCanvas, middlePt, QadGripPointTypeEnum.ARC_MID_POINT, atGeom, atSubGeom, 1)
+         gp = QadEntityGripPoint(self.mapCanvas, middlePt, QadGripPointTypeEnum.ARC_MID_POINT, atGeom, atSubGeom, 0)
          result.append(gp)
          
       return result
@@ -637,7 +636,7 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
       for entityGripPoint in self.entityGripPoints:
          res = entityGripPoint.isIntersecting(point)
          if res is not None:
-            return res 
+            return entityGripPoint 
       return None
 
       

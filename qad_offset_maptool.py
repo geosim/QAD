@@ -86,33 +86,29 @@ class Qad_offset_maptool(QadGetPoint):
    
    def addOffSetGeometries(self, newPt):
       self.__highlight.reset()            
-            
-      transformedPt = self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(self.layer, newPt)
       
       # ritorna una tupla (<The squared cartesian distance>,
       #                    <minDistPoint>
       #                    <afterVertex>
       #                    <leftOf>)
-      dummy = qad_utils.closestSegmentWithContext(transformedPt, self.subGeom)
+      dummy = qad_utils.closestSegmentWithContext(newPt, self.subGeom)
       if self.offSet < 0:
          afterVertex = dummy[2]
          pt = qad_utils.getPerpendicularPointOnInfinityLine(self.subGeom.vertexAt(afterVertex - 1), \
                                                             self.subGeom.vertexAt(afterVertex), \
-                                                            transformedPt)
-         offSetDistance = qad_utils.getDistance(transformedPt, pt)
+                                                            newPt)
+         offSetDistance = qad_utils.getDistance(newPt, pt)
       else:           
-         offSetDistance = qad_utils.distMapToLayerCoordinates(self.offSet, \
-                                                              self.plugIn.canvas,\
-                                                              self.layer)
+         offSetDistance = self.offSet
+
          if dummy[3] < 0: # alla sinistra
             offSetDistance = offSetDistance + self.lastOffSetOnLeftSide
          else: # alla destra
             offSetDistance = offSetDistance + self.lastOffSetOnRightSide         
       
-      tolerance2ApproxCurve = qad_utils.distMapToLayerCoordinates(QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")), \
-                                                                  self.plugIn.canvas,\
-                                                                  self.layer)
-      epsg = self.layer.crs().authid()      
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+      # uso il crs del canvas per lavorare con coordinate piane xy
+      epsg = self.canvas.mapRenderer().destinationCrs().authid()
       lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
@@ -128,7 +124,7 @@ class Qad_offset_maptool(QadGetPoint):
          else:
             offsetGeom = QgsGeometry.fromPolyline(line)
 
-         self.__highlight.addGeometry(offsetGeom, self.layer)
+         self.__highlight.addGeometry(self.mapToLayerCoordinates(self.layer, offsetGeom), self.layer)
             
       
    def canvasMoveEvent(self, event):

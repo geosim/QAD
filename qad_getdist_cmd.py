@@ -52,6 +52,8 @@ class QadGetDistClass(QadCommandClass):
       self.msg = QadMsg.translate("QAD", "Specify the distance: ")
       self.dist = None
       self.inputMode = QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE
+      self.ctrlKey = False
+
       # memorizzo last point perchè il/i punto/i indicato/i da questa questa funzione non devono
       # alterare lastpoint 
       self.__prevLastPoint = self.plugIn.lastPoint
@@ -95,6 +97,7 @@ class QadGetDistClass(QadCommandClass):
                   return False
                
             value = self.getPointMapTool().point
+            self.ctrlKey = self.getPointMapTool().ctrlKey
          else: # il punto o il numero reale arriva come parametro della funzione
             value = msg
 

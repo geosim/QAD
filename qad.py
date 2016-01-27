@@ -129,7 +129,7 @@ class Qad(QObject):
    isSaveControlledByQAD = False
 
    def version(self):
-      return "2.8.004"
+      return "2.8.005"
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
       # memorizzo il coeff angolare ultimo segmento e l'ultimo punto selezionato
@@ -437,6 +437,7 @@ class Qad(QObject):
 
 
    def unload(self):
+      self.abortCommand()
       # Disconnect to signals
       QObject.disconnect(self.canvas, SIGNAL("mapToolSet(QgsMapTool*)"), self.deactivate)            
       QObject.disconnect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)

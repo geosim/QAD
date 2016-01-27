@@ -49,6 +49,13 @@ from qad_entity import *
 
 # Modulo che gestisce varie funzionalità di Qad
 
+
+#===============================================================================
+# TOLERANCE = variabile globale
+#===============================================================================
+TOLERANCE = 1.e-7
+
+
 #===============================================================================
 # isNumericField
 #===============================================================================
@@ -2055,7 +2062,7 @@ def leftOfLine(pt, pt1, pt2):
 #===============================================================================
 # ptNear
 #===============================================================================
-def ptNear(pt1, pt2, tolerance = 1.e-9):
+def ptNear(pt1, pt2, tolerance = TOLERANCE):
    """
    la funzione compara 2 punti (ma permette una tolleranza)
    """
@@ -2065,7 +2072,7 @@ def ptNear(pt1, pt2, tolerance = 1.e-9):
 #===============================================================================
 # doubleNear
 #===============================================================================
-def doubleNear(a, b, tolerance = 1.e-9):
+def doubleNear(a, b, tolerance = TOLERANCE):
    """
    la funzione compara 2 float (ma permette una tolleranza)
    """
@@ -2076,7 +2083,7 @@ def doubleNear(a, b, tolerance = 1.e-9):
 #===============================================================================
 # doubleGreater
 #===============================================================================
-def doubleGreater(a, b, tolerance = 1.e-9):
+def doubleGreater(a, b, tolerance = TOLERANCE):
    """
    la funzione compara 2 float (ma permette una tolleranza)
    """
@@ -2086,7 +2093,7 @@ def doubleGreater(a, b, tolerance = 1.e-9):
 #===============================================================================
 # doubleSmaller
 #===============================================================================
-def doubleSmaller(a, b, tolerance = 1.e-9):
+def doubleSmaller(a, b, tolerance = TOLERANCE):
    """
    la funzione compara 2 float (ma permette una tolleranza)
    """
@@ -2096,7 +2103,7 @@ def doubleSmaller(a, b, tolerance = 1.e-9):
 #===============================================================================
 # TanDirectionNear
 #===============================================================================
-def TanDirectionNear(a, b, tolerance = 1.e-9):
+def TanDirectionNear(a, b, tolerance = TOLERANCE):
    """
    la funzione compara 2 direzioni di tangenti (ma permette una tolleranza)
    """
@@ -2620,11 +2627,11 @@ def moveQgsGeometry(geom, offSetX, offSetY):
 #===============================================================================
 # extendQgsGeometry
 #===============================================================================
-def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
+def extendQgsGeometry(geom_crs, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
    """
    la funzione estende la geometria (lineare) nella parte iniziale o finale fino ad
    incontrare l'oggetto più vicino nel gruppo <limitEntitySet> secondo la modalità <edgeMode>.
-   <layer> = layer della geometria da estendere
+   <geom_crs> = sistema di coordinate della geometria da estendere
    <geom> = geometria da estendere
    <pt> = punto che indica il sotto-oggetto grafico (se si tratta di WKBMultiLineString)
           e la parte di quell'oggetto che deve essere estesa
@@ -2682,8 +2689,8 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
    for limitLayerEntitySet in limitEntitySet.layerEntitySetList:
       limitLayer = limitLayerEntitySet.layer
       
-      if limitLayer.crs() != layer.crs():
-         coordTransform = QgsCoordinateTransform(limitLayer.crs(), layer.crs())          
+      if limitLayer.crs() != geom_crs:
+         coordTransform = QgsCoordinateTransform(limitLayer.crs(), geom_crs)
       ExtendedLinearObject.set(LinearObjectToExtend)
             
       # per ciascuna entità del layer
@@ -2694,7 +2701,7 @@ def extendQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2Appro
          
          # Trasformo la geometria limite nel sistema di coordinate del <layer>     
          gTransformed = f.geometry()
-         if limitLayer.crs() != layer.crs():
+         if limitLayer.crs() != geom_crs:
             gTransformed.transform(coordTransform)
          
          intPt = getIntersectionPtExtendQgsGeometry(LinearObjectToExtend, gTransformed, edgeMode)
@@ -2837,11 +2844,11 @@ def getIntersectionPtExtendQgsGeometry(linearObject, limitGeom, edgeMode):
 #===============================================================================
 # trimQgsGeometry
 #===============================================================================
-def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
+def trimQgsGeometry(geom_crs, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxCurve):
    """
    la funzione taglia la geometria (lineare) in una parte i cui limiti sono le intersezioni più
    vicine a pt con gli oggetti del gruppo <limitEntitySet> secondo la modalità <edgeMode>.
-   <layer> = layer della geometria da tagliare
+   <geom_crs> = sistema di coordinate della geometria da tagliare
    <geom> = geometria da tagliare
    <pt> = punto che indica il sotto-oggetto grafico (se si tratta di WKBMultiLineString)
           e la parte di quell'oggetto che deve essere tagliata
@@ -2886,13 +2893,13 @@ def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxC
    geom1 = None
    if partList1ToTrim is not None:
       partList1ToTrim.reverse()
-      newPt1, partNumberAtpartList1 = partList1ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
+      newPt1, partNumberAtpartList1 = partList1ToTrim.getIntPtNearestToStartPt(geom_crs, limitEntitySet, edgeMode)
       if newPt1 is None: # nessuna intersezione
          if LinearObjectListToCut.isClosed(): # se é chiusa
             if partList2ToTrim is None:
                return None               
             partList2ToTrim.reverse()
-            newPt, partNumberAtpartList = partList2ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
+            newPt, partNumberAtpartList = partList2ToTrim.getIntPtNearestToStartPt(geom_crs, limitEntitySet, edgeMode)
             if newPt is None:
                return None
             for i in xrange(0, partNumberAtpartList, 1):
@@ -2912,12 +2919,12 @@ def trimQgsGeometry(layer, geom, pt, limitEntitySet, edgeMode, tolerance2ApproxC
    # cerco intersezione più vicina a pt nella seconda parte
    newPt2 = None  
    if partList2ToTrim is not None:
-      newPt2, partNumberAtpartList2 = partList2ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
+      newPt2, partNumberAtpartList2 = partList2ToTrim.getIntPtNearestToStartPt(geom_crs, limitEntitySet, edgeMode)
       if newPt2 is None: # nessuna intersezione
          if LinearObjectListToCut.isClosed(): # se é chiusa
             if partList1ToTrim is None:
                return None               
-            newPt, partNumberAtpartList = partList1ToTrim.getIntPtNearestToStartPt(layer.crs(), limitEntitySet, edgeMode)
+            newPt, partNumberAtpartList = partList1ToTrim.getIntPtNearestToStartPt(geom_crs, limitEntitySet, edgeMode)
             if newPt is None:
                return None
             for i in xrange(0, partNumberAtpartList, 1):
@@ -3060,11 +3067,10 @@ def getIntersectionPtTrimQgsGeometry(linearObject, limitGeom, edgeMode):
 #===============================================================================
 # breakQgsGeometry
 #===============================================================================
-def breakQgsGeometry(layer, geom, firstPt, secondPt, tolerance2ApproxCurve):
+def breakQgsGeometry(geom, firstPt, secondPt, tolerance2ApproxCurve):
    """
    la funzione spezza la geometria in un punto (se <secondPt> = None) o in due punti 
    come fa il trim.
-   <layer> = layer della geometria da tagliare
    <geom> = geometria da tagliare
    <firstPt> = primo punto di divisione
    <secondPt> = secondo punto di divisione
@@ -3821,6 +3827,8 @@ def setSubGeom(geom, SubGeom, atSubGeom):
          if nLine < len(lines) and nLine >= -len(lines):
             del lines[nLine]
             lines.insert(nLine, SubGeom.asPolyline())
+            # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+            lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
             return QgsGeometry.fromPolygon(lines)
 
    if wkbType == QGis.WKBMultiPolygon:
@@ -3833,6 +3841,8 @@ def setSubGeom(geom, SubGeom, atSubGeom):
             if nLine < len(lines) and nLine >= -len(lines):
                del lines[nLine]
                lines.insert(nLine, SubGeom.asPolyline())
+               # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+               lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
                return QgsGeometry.fromMultiPolygon(polygons)
       elif subWkbType == QGis.WKBPolygon:
          nPolygon = atSubGeom[0]
@@ -7723,22 +7733,28 @@ class QadLinearObjectList():
          linearObject = self.getLinearObjectAt(partAt)
 
          if linearObject.isArc():
-            arc = QadArc()
-            if linearObject.isInverseArc():
-               if arc.fromStartEndPtsAngle(pt, linearObject.getArc().getEndPt(), \
-                                           linearObject.getArc().totalAngle()) == False:
+            arc1 = QadArc()
+            arc2 = QadArc()
+            totalAngle = linearObject.getArc().totalAngle()
+            inverseArc = linearObject.isInverseArc()
+            if inverseArc:
+               if arc1.fromStartEndPtsAngle(pt, linearObject.getArc().getEndPt(), totalAngle) == False:
+                  return
+               if arc2.fromStartEndPtsAngle(linearObject.getArc().getStartPt(), pt, totalAngle) == False:
                   return
             else:
-               if arc.fromStartEndPtsAngle(linearObject.getArc().getStartPt(), pt, \
-                                           linearObject.getArc().totalAngle()) == False:
+               if arc1.fromStartEndPtsAngle(linearObject.getArc().getStartPt(), pt, totalAngle) == False:
+                  return
+               if arc2.fromStartEndPtsAngle(pt, linearObject.getArc().getEndPt(), totalAngle) == False:
                   return
                
-            self.insert(partAt, [arc, linearObject.isInverseArc()])               
+            self.insert(partAt, [arc1, inverseArc])
+            linearObject = self.getLinearObjectAt(partAt + 1)
+            linearObject.setArc(arc2, inverseArc)
          else:
             self.insert(partAt, [linearObject.getStartPt(), pt])
-            
-         linearObject = self.getLinearObjectAt(partAt + 1)
-         linearObject.set([pt, linearObject.getEndPt()])
+            linearObject = self.getLinearObjectAt(partAt + 1)
+            linearObject.set([pt, linearObject.getEndPt()])
 
 
    #============================================================================
@@ -8523,7 +8539,7 @@ class QadLinearObjectList():
    #============================================================================
    # join
    #============================================================================
-   def join(self, linearObjectListToJoinTo, toleranceDist = 1.e-9, mode = 1):
+   def join(self, linearObjectListToJoinTo, toleranceDist = TOLERANCE, mode = 1):
       """
       la funzione unisce la polilinea con un'altra polilinea secondo la modalità <mode>.
       In caso di successo ritorna True altrimenti False.
@@ -8538,7 +8554,7 @@ class QadLinearObjectList():
                     In caso contrario, consente di unire polilinee selezionate aggiungendo 
                     un segmento retto tra i punti finali più vicini. 
       """
-      myToleranceDist = 1.e-9 if toleranceDist == 0 else toleranceDist
+      myToleranceDist = TOLERANCE if toleranceDist == 0 else toleranceDist
       # cerco il punto più vicino al punto iniziale della polilinea
       ptToJoin = self.getStartPt()
       isStartPt = True
@@ -8911,7 +8927,7 @@ class QadLinearObjectList():
 #============================================================================
 # joinFeatureInVectorLayer
 #============================================================================
-def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve, toleranceDist = 1.e-9, \
+def joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, tolerance2ApproxCurve, toleranceDist = TOLERANCE, \
                              mode = 2):
    """
    la funzione effettua il join (unione) di una polilinea con un gruppo di altre polilinee.

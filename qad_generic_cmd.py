@@ -206,8 +206,32 @@ class QadCommandClass():
             
          return True
 
-   def mapToLayerCoordinates(self, layer, point):
-      # transform point coordinates from output CRS to layer's CRS 
+   def mapToLayerCoordinates(self, layer, point_geom):
+      # transform point o geometry coordinates from output CRS to layer's CRS 
       if self.plugIn is None:
          return None
-      return self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point)
+      if type(point_geom) == QgsPoint:
+         return self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point_geom)
+      elif type(point_geom) == QgsGeometry:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         g = QgsGeometry(point_geom)
+         g.transform(coordTransform)
+         return g
+      else:
+         return None
+
+   def layerToMapCoordinates(self, layer, point_geom):
+      # transform point o geometry coordinates from layer's CRS to output CRS 
+      if self.plugIn is None:
+         return None
+      if type(point_geom) == QgsPoint:
+         return self.plugIn.canvas.mapRenderer().layerToMapCoordinates(layer, point_geom)
+      elif type(point_geom) == QgsGeometry:
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         coordTransform = QgsCoordinateTransform(layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         g = QgsGeometry(point_geom)
+         g.transform(coordTransform)
+         return g
+      else:
+         return None

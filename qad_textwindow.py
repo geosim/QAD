@@ -177,32 +177,6 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
          else:
             self.cmdSuggestWindow.show(False)
 
-
-   def showCmdAutoComplete(self, filter = ""):
-      # autocompletamento
-      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-      filterLen = len(filter)
-      if filterLen < 2:
-         return
-      # inputSearchOptions & 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke.
-      if inputSearchOptions & 2:
-         if filterLen >= 2:
-            cmdName, qty = self.plugin.getMoreUsedCmd(filter)
-         else:
-            cmdName = ""
-
-         cursor = self.edit.textCursor()
-         cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
-         self.edit.setTextCursor(cursor)
-         if filterLen < len(cmdName): # se c'è qualcosa da aggiungere
-            self.edit.insertPlainText(cmdName[filterLen:])
-         else:
-            self.edit.insertPlainText("")
-         #cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
-         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
-         cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
-         self.edit.setTextCursor(cursor)
-
   
    def showEvaluateMsg(self, msg = None):
       self.edit.showEvaluateMsg(msg)
@@ -375,8 +349,11 @@ class QadEdit(QTextEdit):
       self.setMouseTracking(True)
       QObject.connect(self, SIGNAL("textChanged()"), self.onTextChanged)
       
-      self.__stopTimer = True
-
+      self.timerForCmdSuggestWindow = QTimer()
+      self.timerForCmdSuggestWindow.setSingleShot(True)
+      self.timerForCmdAutoComplete = QTimer()
+      self.timerForCmdAutoComplete.setSingleShot(True)
+       
 
    def set_Colors(self, foregroundColor = Qt.black, backGroundColor = Qt.white, history_ForegroundColor = Qt.blue, \
                   history_BackGroundColor = Qt.gray):
@@ -465,12 +442,45 @@ class QadEdit(QTextEdit):
       self.parentWidget().showMsgOnChronologyEdit(msg)           
 
    def showCmdSuggestWindow(self, mode = True, filter = ""):
+      if mode == False: # se spengo la finestra
+         self.timerForCmdSuggestWindow.stop()
       self.parentWidget().showCmdSuggestWindow(mode, filter)
 
    def showCmdAutoComplete(self, filter = ""):
       # autocompletamento
-      if self.__stopTimer == False:
-         self.parentWidget().showCmdAutoComplete(filter)
+      self.timerForCmdAutoComplete.stop()
+      
+      # autocompletamento
+      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
+      filterLen = len(filter)
+      if filterLen < 2:
+         return
+      # inputSearchOptions & 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke.
+      if inputSearchOptions & 2:
+         if filterLen >= 2:
+            cmdName, qty = self.parentWidget().plugin.getMoreUsedCmd(filter)
+         else:
+            cmdName = ""
+
+         cursor = self.textCursor()
+         cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
+         self.setTextCursor(cursor)
+         if filterLen < len(cmdName): # se c'è qualcosa da aggiungere
+            self.insertPlainText(cmdName[filterLen:])
+         else:
+            self.insertPlainText("")
+         #cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
+         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+         cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
+         self.setTextCursor(cursor)
+      
+      
+      
+      
+      
+      
+      
+      
 
    def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
       if len(msg) > 0:
@@ -637,7 +647,6 @@ class QadEdit(QTextEdit):
 
 
    def keyPressEvent(self, e):
-      self.__stopTimer = True
       cursor = self.textCursor()
 
       if self.inputType & QadInputTypeEnum.COMMAND: # nascondo la finestra di suggerimento
@@ -734,13 +743,26 @@ class QadEdit(QTextEdit):
          if self.inputType & QadInputTypeEnum.COMMAND:
             # leggo il tempo di ritardo in msec
             inputSearchDelay = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHDELAY"))
-            self.__stopTimer = False
             
             # lista suggerimento dei comandi simili
-            QTimer.singleShot(inputSearchDelay, lambda: self.showCmdSuggestWindow(True, self.getCurrMsg()))
+            currMsg = self.getCurrMsg()
+            shot1 = lambda: self.showCmdSuggestWindow(True, currMsg)
+
+            del self.timerForCmdSuggestWindow
+            self.timerForCmdSuggestWindow = QTimer()
+            self.timerForCmdSuggestWindow.setSingleShot(True)
+            self.timerForCmdSuggestWindow.timeout.connect(shot1)
+            self.timerForCmdSuggestWindow.start(inputSearchDelay)
 
             if e.text().isalnum(): # autocompletamento se è stato premuto un tasto alfanumerico
-               QTimer.singleShot(inputSearchDelay, lambda: self.showCmdAutoComplete(self.getTextUntilPrompt()))
+               self.textUntilPrompt = self.getTextUntilPrompt()
+               shot2 = lambda: self.showCmdAutoComplete(self.textUntilPrompt)
+               del self.timerForCmdAutoComplete
+               self.timerForCmdAutoComplete = QTimer()
+               self.timerForCmdAutoComplete.setSingleShot(True)
+               
+               self.timerForCmdAutoComplete.timeout.connect(shot2)
+               self.timerForCmdAutoComplete.start(inputSearchDelay)
 
 
    def entered(self):
@@ -1035,7 +1057,7 @@ class QadEdit(QTextEdit):
       
    def onTextChanged(self):
       self.parentWidget().resizeEdits()
-      self.__stopTimer = True
+      self.timerForCmdAutoComplete.stop()
 
          
 #===============================================================================
