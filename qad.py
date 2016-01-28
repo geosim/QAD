@@ -1191,6 +1191,16 @@ class Qad(QObject):
    #============================================================================
    # INIZIO - funzioni per comandi 
    #============================================================================
+   
+   def clearCurrentObjsSelection(self):
+      # pulisco le entità selezionate e i grip points correnti
+      self.tool.clearEntitySet()
+      self.clearEntityGripPoints()
+
+   def clearEntityGripPoints(self):
+      # pulisco i grip points correnti
+      self.tool.clearEntityGripPoints()
+   
    def runCommand(self, command, param = None):
       self.QadCommands.run(command, param)
 

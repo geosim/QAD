@@ -1862,6 +1862,11 @@ Unknown variable. Enter {0} ? to list variable names.</source>
         <source>Window not correct.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>
+found {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Command_STRETCH</name>
@@ -3887,6 +3892,16 @@ The setting is stored as a bitcode using the sum of the following values:
     </message>
     <message>
         <source>Minimum number of segments to approximate a circle.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PICKFIRST</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether you can select objects before you start a command.
+0 = Off. You can select objects only after you start a command.
+1 = On. You can also select objects before you start a command.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
