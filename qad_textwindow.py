@@ -199,6 +199,9 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def abortCommand(self):
       self.plugin.abortCommand()      
 
+   def clearCurrentObjsSelection(self):
+      self.plugin.clearCurrentObjsSelection()
+
    def isValidCommand(self, cmd):
       return self.plugin.isValidCommand(cmd)
 
@@ -681,6 +684,7 @@ class QadEdit(QTextEdit):
       
       if e.key() == Qt.Key_Escape:
          self.parentWidget().abortCommand()
+         self.parentWidget().clearCurrentObjsSelection()
          return
       
       # if the cursor isn't in the edit zone, don't do anything except Ctrl+C

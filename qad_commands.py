@@ -258,8 +258,9 @@ class QadCommandsClass():
          msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return
-      
+
       self.usedCmdNames.setUsed(command)
+      self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
       if self.actualCommand.run() == True: # comando terminato
          self.clearCommand()
          
@@ -277,6 +278,8 @@ class QadCommandsClass():
          msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return
+
+      self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
       self.actualCommand.setCmdAndOptionsToRun(args)
       
       self.showMsg(args[0]) # visualizzo il nome del comando in macro
@@ -327,9 +330,8 @@ class QadCommandsClass():
       else:
          self.showMsg(QadMsg.translate("QAD", "*Canceled*"))
          self.clearCommand()
-      # pulisco le entità selezionate e i grip points correnti
-      self.plugIn.tool.clearEntitySet()
-      self.plugIn.tool.clearEntityGripPoints()
+         # pulisco le entità selezionate e i grip points correnti
+         self.plugIn.clearCurrentObjsSelection()
 
 
    #============================================================================

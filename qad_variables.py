@@ -433,6 +433,17 @@ class QadVariablesClass():
                                                             None, None, \
                                                             VariableDescr) # red 
 
+      # PICKFIRST (int): Controlla se è possibile selezionare gli oggetti prima di eseguire un comando.
+      VariableName = QadMsg.translate("Environment variables", "PICKFIRST") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls whether you can select objects before you start a command." + \
+                                       "\n0 = Off. You can select objects only after you start a command." + \
+                                       "\n1 = On. You can also select objects before you start a command") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(1), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 1, \
+                                                            VariableDescr)
+
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi)
       VariableName = QadMsg.translate("Environment variables", "POLARANG") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Sets the polar angle increment (degree).") # x lupdate

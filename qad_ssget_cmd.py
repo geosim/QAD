@@ -112,7 +112,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    # getLayersToCheck
    #============================================================================
-   def getLayersToCheck(self):     
+   def getLayersToCheck(self):
       layerList = []
       for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
          # considero solo i layer vettoriali che sono filtrati per tipo
@@ -290,6 +290,21 @@ class QadSSGetClass(QadCommandClass):
 
 
    #============================================================================
+   # AddCurrentQgsSelectedFeatures
+   #============================================================================
+   def AddCurrentQgsSelectedFeatures(self):
+      # verifico se ci sono entità correntemente selezionate
+      self.entitySet.initByCurrentQgsSelectedFeatures(self.getLayersToCheck())
+      found = self.entitySet.count()
+      if found > 0:
+         msg = QadMsg.translate("Command_SSGET", "\nfound {0}")
+         self.showMsg(msg.format(found), False) # non ripete il prompt
+         return True
+      else:
+         return False
+
+
+   #============================================================================
    # AddRemoveSelSet
    #============================================================================
    def AddRemoveSelSet(self, selSet, Add):
@@ -386,7 +401,7 @@ class QadSSGetClass(QadCommandClass):
          prompt = QadMsg.translate("Command_SSGET", "Remove objects")
                            
       if self.help == True:         
-         prompt = prompt + QadMsg.translate("Command_SSGET", " or [{0}]").format(keyWords)                        
+         prompt = prompt + QadMsg.translate("Command_SSGET", " or [{0}]").format(keyWords)
          
       prompt = prompt + QadMsg.translate("Command_SSGET", ": ")
             
@@ -417,6 +432,11 @@ class QadSSGetClass(QadCommandClass):
       #=========================================================================
       # RICHIESTA PRIMO PUNTO PER SELEZIONE OGGETTI
       if self.step == 0:
+         # if you can also select objects before you start a command
+         if QadVariables.get(QadMsg.translate("Environment variables", "PICKFIRST")) == 1:
+            if self.AddCurrentQgsSelectedFeatures() == True:
+               self.plugIn.setLastEntitySet(self.entitySet)
+               return True;
          self.WaitForFirstPoint()
          return False # continua
       
