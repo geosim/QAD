@@ -242,6 +242,8 @@ class QadARCCommandClass(QadCommandClass):
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
                   
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
+                  
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
       
@@ -348,6 +350,8 @@ class QadARCCommandClass(QadCommandClass):
                      self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                   else:
                      self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+                  self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                   
                   qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                   return True # fine comando
@@ -401,6 +405,8 @@ class QadARCCommandClass(QadCommandClass):
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
@@ -448,6 +454,8 @@ class QadARCCommandClass(QadCommandClass):
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
@@ -569,6 +577,8 @@ class QadARCCommandClass(QadCommandClass):
                      self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                   else:
                      self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+                  self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                   
                   qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                   return True # fine comando
@@ -624,6 +634,8 @@ class QadARCCommandClass(QadCommandClass):
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
@@ -671,6 +683,8 @@ class QadARCCommandClass(QadCommandClass):
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando
@@ -719,6 +733,8 @@ class QadARCCommandClass(QadCommandClass):
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnEndPt())
                else:
                   self.plugIn.setLastSegmentAng(arc.getTanDirectionOnStartPt() + math.pi)
+
+               self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
                
                qad_layer.addLineToLayer(self.plugIn, currLayer, points)               
                return True # fine comando

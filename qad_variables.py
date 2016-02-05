@@ -437,7 +437,7 @@ class QadVariablesClass():
       VariableName = QadMsg.translate("Environment variables", "PICKFIRST") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Controls whether you can select objects before you start a command." + \
                                        "\n0 = Off. You can select objects only after you start a command." + \
-                                       "\n1 = On. You can also select objects before you start a command") # x lupdate
+                                       "\n1 = On. You can also select objects before you start a command.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(1), \
                                                             QadVariableTypeEnum.INT, \
@@ -449,8 +449,27 @@ class QadVariablesClass():
       VariableDescr = QadMsg.translate("Environment variables", "Sets the polar angle increment (degree).") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type.")
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(90.0), \
-                                                            QadVariableTypeEnum.INT, \
+                                                            QadVariableTypeEnum.FLOAT, \
                                                             0.000001, 359.999999, \
+                                                            VariableDescr)
+
+      # POLARMODE (int): Controlla le impostazioni per il puntamento di tipo polare e con snap ad oggetto.
+      VariableName = QadMsg.translate("Environment variables", "POLARMODE") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls settings for polar and object snap tracking." + \
+                                       "\nThe setting is stored as a bitcode using the sum of the following values:" + \
+                                       "\nPolar angle measurements"
+                                       "\n0 = Measure polar angles based on current UCS (absolute)" + \
+                                       "\n1 = Measure polar angles from selected objects (relative)" + \
+                                       "\nObject snap tracking"
+                                       "\n0 = Track orthogonally only" + \
+                                       "\n2 = Use polar tracking settings in object snap tracking" + \
+                                       "\nAcquire object snap tracking points" + \
+                                       "\n0 = Acquire automatically" + \
+                                       "\n8 = Press Shift to acquire") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 15, \
                                                             VariableDescr)
       
       # SELECTIONAREA (int): Controlla gli effetti della visualizzazione della selezione di aree.

@@ -203,7 +203,7 @@ class QadLINECommandClass(QadCommandClass):
                else:
                   self.getPointMapTool().firstPt = self.vertices[-1]
                   self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)        
-            elif value == QadMsg.translate("Command_LINE", "Close") or VALUE == "Close":
+            elif value == QadMsg.translate("Command_LINE", "Close") or value == "Close":
                newPt = self.vertices[0]
                self.addVertex(newPt) # aggiungo un nuovo vertice
                if self.virtualCmd == False: # se si vuole veramente salvare in un layer   

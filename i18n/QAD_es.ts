@@ -2452,6 +2452,30 @@ p, li { white-space: pre-wrap; }
         <source>Object snap settings...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Object Snap Tracking Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track orthogonally only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track using polar angle settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polar Angle measurement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relative to last segment</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Details_Dialog</name>
@@ -3902,6 +3926,24 @@ The setting is stored as a bitcode using the sum of the following values:
         <source>Controls whether you can select objects before you start a command.
 0 = Off. You can select objects only after you start a command.
 1 = On. You can also select objects before you start a command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>POLARMODE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls settings for polar and object snap tracking.
+The setting is stored as a bitcode using the sum of the following values:
+Polar angle measurements
+0 = Measure polar angles based on current UCS (absolute)
+1 = Measure polar angles from selected objects (relative)
+Object snap tracking
+0 = Track orthogonally only
+2 = Use polar tracking settings in object snap tracking
+Acquire object snap tracking points
+0 = Acquire automatically
+8 = Press Shift to acquire</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

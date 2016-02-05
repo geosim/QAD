@@ -129,12 +129,15 @@ class QadPLINECommandClass(QadCommandClass):
       else:
          return None
 
+
    def addRealVertex(self, point):
       self.realVerticesIndexes.append(len(self.vertices))
       self.vertices.append(point)     
       self.addPointToRubberBand(point)            
       self.plugIn.setLastPoint(self.vertices[-1])            
       self.plugIn.setLastSegmentAng(self.getLastSegmentAng())
+      self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
+
 
    def delLastRealVertex(self):
       tot = len(self.realVerticesIndexes)
@@ -153,6 +156,8 @@ class QadPLINECommandClass(QadCommandClass):
 
          self.plugIn.setLastPoint(self.vertices[-1])            
          self.plugIn.setLastSegmentAng(self.getLastSegmentAng())
+         self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
+
 
    def addArcVertices(self, points, inverse):
       tot = len(points)
@@ -172,6 +177,7 @@ class QadPLINECommandClass(QadCommandClass):
       self.realVerticesIndexes.append(len(self.vertices) - 1)
       self.plugIn.setLastPoint(self.vertices[-1])            
       self.plugIn.setLastSegmentAng(self.getLastSegmentAng())
+      self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
 
 
    def getLastSegmentAng(self):

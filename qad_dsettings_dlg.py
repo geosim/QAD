@@ -101,6 +101,17 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
       self.checkBox_PolarPickPoint.setChecked(AutoSnap & 8)
 
+      PolarMode = QadVariables.get(QadMsg.translate("Environment variables", "POLARMODE"))
+      if PolarMode & 2:
+         self.radioButton_OsnapPolarAngle.setChecked(True)
+      else:
+         self.radioButton_OsnapOrtho.setChecked(True)
+
+      if PolarMode & 1:
+         self.radioButton_OsnapPolarRelative.setChecked(True)
+      else:
+         self.radioButton_OsnapPolarAbolute.setChecked(True)
+
 
    def eventFilter(self, obj, event):
       if event is not None:
@@ -189,6 +200,10 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       if self.checkBox_IsOsnapON.checkState() == Qt.Unchecked:
          newOSMODE = newOSMODE | QadSnapTypeEnum.DISABLE
       QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), newOSMODE)
+
+      SProgrDist = self.lineEdit_ProgrDistance.text()
+      ProgrDist = qad_utils.str2float(SProgrDist)
+      QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
       
       AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))         
       if self.checkBox_PolarPickPoint.checkState() == Qt.Checked:
@@ -197,17 +212,19 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          AutoSnap = AutoSnap - 8
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), AutoSnap)
       
-      # Memorizzo il valore di PolarANG
+      # Memorizzo il valore di POLARANG
       SUserAngle = self.comboBox_increment_angle.currentText()
       UserAngle = qad_utils.str2float(SUserAngle)
       QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
+
+      PolarMode = 0
+      if self.radioButton_OsnapPolarAngle.isChecked():
+         PolarMode = PolarMode | 2
+      if self.radioButton_OsnapPolarRelative.isChecked():
+         PolarMode = PolarMode | 1
+      QadVariables.set(QadMsg.translate("Environment variables", "POLARMODE"), PolarMode)
       
-      SProgrDist = self.lineEdit_ProgrDistance.text()
-      ProgrDist = qad_utils.str2float(SProgrDist)
-      QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
-
       QadVariables.save()
-
       
       self.close()
       return True

@@ -134,7 +134,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    def showMsgOnAddRemove(self, found):
       msg = QadMsg.translate("Command_SSGET", " found {0}, total {1}")
-      self.showMsg(msg.format(found, self.entitySet.count()), True) # ripete il prompt         
+      self.showMsg(msg.format(found, self.entitySet.count()), False) # non ripete il prompt 2016
 
 
    #============================================================================

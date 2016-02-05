@@ -104,8 +104,6 @@ class QadSnapper():
       self.__parLines = [] # lista delle linee per modo parallelo (ogni elemento é una lista di 2 punti = linea)
       self.__intExtLine = [] # linea per intersezione su estensione (lista di 2 punti = linea)      
       self.__intExtArc = [] # arco per intersezione su estensione
-      self.__oSnapPointsForPolar = dict() # dictionary di punti di osnap selezionati per l'opzione polare
-      self.__oSnapLinesForPolar = [] # lista delle linee per l'opzione polare
       self.__cacheSnapPoints = []      
       self.__progressDistance = 0.0 # distanza progressiva dall'inizio della linea
       self.__distToExcludeNea = 0.0 # distanza entro la quale se ci sono dei punti di snap
@@ -277,107 +275,9 @@ class QadSnapper():
 
 
    #===========================================================================
-   # getOsnapPtAndLinesForPolar
-   #===========================================================================
-   def getOsnapPtAndLinesForPolar(self, point, polarAng, polarAngOffset):
-      # calcola i punti polari per tutti i punti di osnap selezionati per l'opzione polare e per per il punto corrente
-      # i punti vanno in result, le linee vanno in self.__oSnapLinesForPolar
-       
-      result = []
-      del self.__oSnapLinesForPolar[:]
-      # per tutti i punti di osnap selezionati per l'opzione polare
-      for item in self.__oSnapPointsForPolar.items():
-         # salto il tipo POLAR
-         if item[0] != QadSnapTypeEnum.POLAR:
-            for startPoint in item[1]:
-               pts = self.getPolarCoord(startPoint, point, polarAng, polarAngOffset) # ritorna una lista con un solo punto
-               if len(pts) > 0:
-                  self.__appendUniquePoint(result, pts[0]) # senza duplicazione
-                  self.__oSnapLinesForPolar.append([startPoint, pts[0]])
-
-      # per il punto di partenza
-      if self.__startPoint is not None:
-         pts = self.getPolarCoord(self.__startPoint, point, polarAng, polarAngOffset) # ritorna una lista con un solo punto
-         if len(pts) > 0:
-            self.__appendUniquePoint(result, pts[0]) # senza duplicazione
-            self.__oSnapLinesForPolar.append([self.__startPoint, pts[0]])
-      
-      return result
-
-
-   #============================================================================
-   # getIntPtsBetweenOSnapLinesForPolar
-   #============================================================================      
-   def getIntPtsBetweenOSnapLinesForPolar(self):
-      # calcolo le intersezioni delle linee polari
-      result = []
-      i = 0
-      totLines = len(self.__oSnapLinesForPolar)
-      while i < totLines:
-         line1 = self.__oSnapLinesForPolar[i]
-         j = i + 1
-         while j < totLines:
-            line2 = self.__oSnapLinesForPolar[j]
-            point = qad_utils.getIntersectionPointOn2InfinityLines(line1[0], line1[1], line2[0], line2[1])
-            if point is not None:
-               self.__appendUniquePoint(result, point) # senza duplicazione
-            j = j + 1
-         i = i + 1
-         
-      return result
-   
-
-   #============================================================================
-   # OSnapPointsForPolar
-   #============================================================================      
-   def toggleOSnapPointsForPolar(self, oSnapPointsForPolar):
-      """
-      Aggiunge un punto di osnap usati per l'opzione polare
-      se non ancora inserito in lista altrimenti lo rimuove dalla lista
-      __oSnapPointsForPolar é un dizionario di liste di punti di snap
-      suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
-      """
-      del self.__oSnapLinesForPolar[:]
-      
-      for itemToToggle in oSnapPointsForPolar.items():
-         for ptToToggle in itemToToggle[1]: # per ogni punto
-            add = True
-            for item in self.__oSnapPointsForPolar.items():
-               i = 0
-               for pt in item[1]:
-                  if pt == ptToToggle:
-                     del item[1][i]
-                     add = False
-                     i = i + 1
-
-            if add:
-               key = itemToToggle[0]
-               if self.__oSnapPointsForPolar.has_key(key) == False:
-                  self.__oSnapPointsForPolar[key] = [ptToToggle]
-               else:
-                  self.__oSnapPointsForPolar[key].append(ptToToggle)
-
-
-   def removeOSnapPointsForPolar(self):
-      """
-      Elimina tutti punti di osnap usati per l'opzione polare
-      """
-      self.__oSnapPointsForPolar.clear() # svuoto il dizionario
-      del self.__oSnapLinesForPolar[:] # svuoto la lista
-
-   def getOSnapPointsForPolar(self):
-      return self.__oSnapPointsForPolar
-
-   def getOSnapLinesForPolar(self):
-      return self.__oSnapLinesForPolar
-
-   #===========================================================================
    # ReferenceLines
    #===========================================================================
-   def toggleReferenceLines(self, geom, point, CRS = None, oSnapPointsForPolar = None):
-      if oSnapPointsForPolar is not None:
-         self.toggleOSnapPointsForPolar(oSnapPointsForPolar)
-         
+   def toggleReferenceLines(self, geom, point, CRS = None):
       # usato solo per snap EXT o PAR
       if not(self.__snapType & QadSnapTypeEnum.EXT) and \
          not(self.__snapType & QadSnapTypeEnum.PAR):
@@ -427,15 +327,14 @@ class QadSnapper():
       self.removeParLines()
       self.removeIntExtLine()
       self.removeIntExtArc()
-      self.removeOSnapPointsForPolar()
-
+      
 
    #============================================================================
    # setToleranceExtParLines
    #============================================================================
    def setToleranceExtParLines(self, tolerance):
       self.__toleranceExtParlines = tolerance
-
+      
 
    #============================================================================
    # tmpGeometries
@@ -465,7 +364,7 @@ class QadSnapper():
    #===========================================================================
    # getSnapPoint
    #===========================================================================
-   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None, polarAngOffset = None, isTemporaryGeom = False):
+   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None, isTemporaryGeom = False):
       """
       Data una geometria ed un punto (posizione del cursore) nel sistema di coordinate CRS 
       ottiene i punti di snap (con esclusione dei punti in excludePoints).
@@ -498,18 +397,8 @@ class QadSnapper():
          
       # puntamento polare
       if (self.__startPoint is not None) and (polarAng is not None):
-         # per tutti i punti di osnap selezionati per l'opzione polare e per per il punto corrente
-         allSnapPoints[QadSnapTypeEnum.POLAR] = self.getOsnapPtAndLinesForPolar(point, polarAng, polarAngOffset)
-         # calcolo le intersezioni delle linee polari e le aggiungo in allSnapPoints[QadSnapTypeEnum.INT]
-         intPts = self.getIntPtsBetweenOSnapLinesForPolar()
-         if len(intPts) > 0:
-            if allSnapPoints.has_key(QadSnapTypeEnum.INT):
-               for intPt in intPts:
-                  self.__appendUniquePoint(allSnapPoints[QadSnapTypeEnum.INT], point) # senza duplicazione
-            else:
-               allSnapPoints[QadSnapTypeEnum.INT] = intPts
+         allSnapPoints[QadSnapTypeEnum.POLAR] = self.getPolarCoord(point, polarAng)
 
-               
       if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
          # Viene restituito solo il punto più vicino
          result = self.__getNearestPoints(p, allSnapPoints)
@@ -1618,8 +1507,8 @@ class QadSnapper():
       
       if tolerance == 0: # solo il punto più vicino
          for item in SnapPoints.items():
-            # escludo NEA e POLAR che tratto dopo
-            if (item[0] != QadSnapTypeEnum.NEA and item[0] != QadSnapTypeEnum.POLAR) and (item[1] is not None):
+            # escludo NEA che tratto dopo
+            if (item[0] != QadSnapTypeEnum.NEA) and (item[1] is not None):
                for pt in item[1]:
                   dist = qad_utils.getDistance(point, pt)
                   if dist < minDist:
@@ -1639,20 +1528,6 @@ class QadSnapper():
                      if dist < minDist:
                         minDist = dist
                         snapType = QadSnapTypeEnum.NEA
-                        NearestPoint = pt
-
-         # se il punto trovato é più distante di <__distToExcludeNea> allora considero anche
-         # eventuali punti POLAR
-         if minDist > self.__distToExcludeNea:            
-            # se é stato selezionato lo snap di tipo POLAR
-            if QadSnapTypeEnum.POLAR in SnapPoints.keys():
-               items = SnapPoints[QadSnapTypeEnum.POLAR]
-               if (items is not None):
-                  for pt in items:
-                     dist = qad_utils.getDistance(point, pt)
-                     if dist < minDist:
-                        minDist = dist
-                        snapType = QadSnapTypeEnum.POLAR
                         NearestPoint = pt
 
          if minDist != sys.float_info.max: # trovato
@@ -1769,22 +1644,20 @@ class QadSnapper():
    #============================================================================
    # getPolarCoord
    #============================================================================
-   def getPolarCoord(self, startPoint, point, polarAng, polarAngOffset):
+   def getPolarCoord(self, point, polarAng):
       result = []
 
-      angle = qad_utils.getAngleBy2Pts(startPoint, point)
-      offsetAngle = angle - polarAngOffset
-      value = math.modf(offsetAngle / polarAng) # ritorna una lista -> (<parte decimale> <parte intera>)
+      angle = qad_utils.getAngleBy2Pts(self.__startPoint, point)
+      value = math.modf(angle / polarAng) # ritorna una lista -> (<parte decimale> <parte intera>)
       if value[0] >= 0.5: # prendo intervallo successivo
-         offsetAngle = (value[1] + 1) * polarAng
+         angle = (value[1] + 1) * polarAng
       else:
-         offsetAngle = value[1] * polarAng
-      offsetAngle  = offsetAngle + polarAngOffset
+         angle = value[1] * polarAng
 
-      dist = qad_utils.getDistance(startPoint, point)
-      pt2 = qad_utils.getPolarPointByPtAngle(startPoint, offsetAngle, dist)
+      dist = qad_utils.getDistance(self.__startPoint, point)
+      pt2 = qad_utils.getPolarPointByPtAngle(self.__startPoint, angle, dist)
 
-      polarPt = qad_utils.getPerpendicularPointOnInfinityLine(startPoint, pt2, point)
+      polarPt = qad_utils.getPerpendicularPointOnInfinityLine(self.__startPoint, pt2, point)
       if qad_utils.getDistance(polarPt, point) <= self.__toleranceExtParlines:
          self.__appendUniquePoint(result, polarPt) # senza duplicazione
 

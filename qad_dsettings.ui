@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -531,13 +531,13 @@ p, li { white-space: pre-wrap; }
       <string>Polar Tracking (F10)</string>
      </property>
     </widget>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="groupBox_PolarAngleSettings">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>40</y>
        <width>151</width>
-       <height>81</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="title">
@@ -567,6 +567,84 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="editable">
        <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_OsnapPolarOrtho">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>40</y>
+       <width>211</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Object Snap Tracking Settings</string>
+     </property>
+     <widget class="QRadioButton" name="radioButton_OsnapOrtho">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>191</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Track orthogonally only</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_OsnapPolarAngle">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>191</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Track using polar angle settings</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_OsnapPolarMeasurement">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>130</y>
+       <width>211</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Polar Angle measurement</string>
+     </property>
+     <widget class="QRadioButton" name="radioButton_OsnapPolarAbolute">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>191</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Absolute</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_OsnapPolarRelative">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>191</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Relative to last segment</string>
       </property>
      </widget>
     </widget>
