@@ -128,8 +128,19 @@ class Qad(QObject):
    beforeCommitChangesDimLayer = None         # layer da cui é scaturito il salvataggio delle quotature
    isSaveControlledByQAD = False
 
+   # comando dsettings - ultimo tab utilizzato
+   dsettingsLastUsedTabIndex = -1 # -1 = non inizializzato
+   
+   # comando options - ultimo tab utilizzato
+   optionsLastUsedTabIndex = -1 # -1 = non inizializzato
+
+
+   #============================================================================
+   # version
+   #============================================================================
    def version(self):
-      return "2.8.005"
+      return "2.8.007"
+   
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
       # memorizzo il coeff angolare ultimo segmento e l'ultimo punto selezionato
@@ -323,12 +334,18 @@ class Qad(QObject):
       # Lista dei comandi
       self.QadCommands = QadCommandsClass(self)
       
+      self.TextWindow = None
+      
       # inizializzzione sul caricamento del progetto
       self.initOnProjectLoaded()
       
    def initOnProjectLoaded(self):
       # carico le variabili d'ambiente
       QadVariables.load()
+      
+      if self.TextWindow is not None:
+         self.TextWindow.refreshColors()
+         
       # carico gli stili di quotatura
       self.loadDimStyles()
       # Gestore di Undo/Redo
@@ -416,6 +433,7 @@ class Qad(QObject):
       self.toolBar.addAction(self.pedit_action)
       self.toolBar.addAction(self.fillet_action)
       self.toolBar.addAction(self.dsettings_action)
+      self.toolBar.addAction(self.options_action)
       self.enableUndoRedoButtons()
 
       # aggiunge la toolbar per la quotatura 
@@ -764,6 +782,12 @@ class Qad(QObject):
       self.help_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.help_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.help_action)
+      
+      # OPTIONS
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "OPTIONS"))
+      self.options_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.options_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.options_action)
 
 
    #============================================================================
@@ -861,6 +885,7 @@ class Qad(QObject):
       toolsMenu.addAction(self.setCurrLayerByGraph_action)
       toolsMenu.addAction(self.setCurrUpdateableLayerByGraph_action)      
       toolsMenu.addAction(self.dsettings_action)
+      toolsMenu.addAction(self.options_action)
       return toolsMenu
 
    def createDimMenu(self):
@@ -1259,8 +1284,8 @@ class Qad(QObject):
       if value == 0:
          value = 1
          autosnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
-         if (autosnap & 8) == True:
-            QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), autosnap - 8) # disattivo la modalità polare 
+         if (autosnap & QadAUTOSNAPEnum.POLAR_TRACKING) == True:
+            QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), autosnap - QadAUTOSNAPEnum.POLAR_TRACKING) # disattivo la modalità polare 
          msg = QadMsg.translate("QAD", "<Ortho on>")
       else:
          value = 0
@@ -1271,20 +1296,37 @@ class Qad(QObject):
       self.showMsg(msg, True)        
       self.QadCommands.refreshCommandMapToolOrthoMode()
 
+
    def togglePolarMode(self):
       value = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
-      if (value & 8) == False:
-         value = value + 8
+      if (value & QadAUTOSNAPEnum.POLAR_TRACKING) == False:
+         value = value + QadAUTOSNAPEnum.POLAR_TRACKING
          QadVariables.set(QadMsg.translate("Environment variables", "ORTHOMODE"), 0) # disattivo la modalità orto 
          msg = QadMsg.translate("QAD", "<Polar on>")
       else:
-         value = value - 8
+         value = value - QadAUTOSNAPEnum.POLAR_TRACKING
          msg = QadMsg.translate("QAD", "<Polar off>")
 
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
       self.showMsg(msg, True)        
       self.QadCommands.refreshCommandMapToolAutoSnap()
+
+
+   def toggleObjectSnapTracking(self):
+      value = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+      if (value & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING) == False:
+         value = value + QadAUTOSNAPEnum.OBJ_SNAP_TRACKING
+         msg = QadMsg.translate("QAD", "<Object Snap Tracking on>")
+      else:
+         value = value - QadAUTOSNAPEnum.OBJ_SNAP_TRACKING
+         msg = QadMsg.translate("QAD", "<Object Snap Tracking off>")
+
+      QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
+      QadVariables.save()
+      self.showMsg(msg, True)        
+      self.QadCommands.refreshCommandMapToolAutoSnap()
+
    
    def getCurrMsgFromTxtWindow(self):
       return self.TextWindow.getCurrMsg()
@@ -1297,6 +1339,7 @@ class Qad(QObject):
 
    def showEvaluateMsg(self, msg = None):
       self.TextWindow.showEvaluateMsg(msg)
+
       
    #============================================================================
    # funzioni per l'avvio di un comando
@@ -1549,3 +1592,6 @@ class Qad(QObject):
 
    def runLENGTHENCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "LENGTHEN"))
+
+   def runOPTIONSCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "OPTIONS"))

@@ -468,7 +468,7 @@ class QadFILLETCommandClass(QadCommandClass):
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
                                             layerList)
                if result is not None:
@@ -536,8 +536,9 @@ class QadFILLETCommandClass(QadCommandClass):
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
 
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point
@@ -677,8 +678,9 @@ class QadFILLETCommandClass(QadCommandClass):
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
 
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point

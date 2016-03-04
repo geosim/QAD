@@ -43,11 +43,12 @@ import qad_utils
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di creazione nuovo stile
 class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_DimStyle_Details_Dialog):
-   def __init__(self, plugIn, dimStyle):
+   def __init__(self, plugIn, parent, dimStyle):
       self.plugIn = plugIn
       self.dimStyle = QadDimStyle(dimStyle) # copio lo stile di quotatura
       self.iface = self.plugIn.iface.mainWindow()
-      QDialog.__init__(self, self.iface)
+
+      QDialog.__init__(self, parent)
 
       self.onInit = False # vero se si è in fase di inizializzazione
       
@@ -937,9 +938,12 @@ class QadPreviewDim(QgsMapCanvas):
       if dimStyle is None:
          return
 
-      self.dimStyle = dimStyle
       self.eraseDim()
-         
+
+      if dimStyle.getInValidErrMsg() is not None:
+         return
+      self.dimStyle = dimStyle
+
       if self.plugIn.insertBookmark() == True:
          self.bookmark = True
 

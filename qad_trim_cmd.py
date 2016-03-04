@@ -348,6 +348,7 @@ class QadTRIMCommandClass(QadCommandClass):
                
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   feature = result[0]

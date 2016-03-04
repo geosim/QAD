@@ -395,106 +395,6 @@ def strLatLon2QgsPoint(s):
 
 
 #===============================================================================
-# str2snapTypeEnum
-#===============================================================================
-def str2snapTypeEnum(s):
-   """
-   Ritorna la conversione di una stringa in una combinazione di tipi di snap
-   oppure -1 se non ci sono snap indicati.
-   """
-   snapType = QadSnapTypeEnum.NONE
-   snapTypeStrList = s.strip().split(",")
-   for snapTypeStr in snapTypeStrList:
-      snapTypeStr = snapTypeStr.strip().upper()
-      
-      # "NES" nessuno snap
-      if snapTypeStr == QadMsg.translate("Snap", "NONE") or snapTypeStr == "_NONE":
-         return QadSnapTypeEnum.NONE
-      # "FIN" punti finali di ogni segmento
-      elif snapTypeStr == QadMsg.translate("Snap", "END") or snapTypeStr == "_END":
-         snapType = snapType | QadSnapTypeEnum.END
-      # "FIN_PL" punti finali dell'intera polilinea
-      elif snapTypeStr == QadMsg.translate("Snap", "END_PL") or snapTypeStr == "_END_PL":
-         snapType = snapType | QadSnapTypeEnum.END_PLINE
-      # "MED" punto medio
-      elif snapTypeStr == QadMsg.translate("Snap", "MID") or snapTypeStr == "_MID":
-         snapType = snapType | QadSnapTypeEnum.MID
-      # "CEN" centro (centroide)
-      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":
-         snapType = snapType | QadSnapTypeEnum.CEN
-      # "NOD" oggetto punto
-      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD":
-         snapType = snapType | QadSnapTypeEnum.NOD
-      # "QUA" punto quadrante
-      elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
-         snapType = snapType | QadSnapTypeEnum.QUA
-      # "INT" intersezione
-      elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
-         snapType = snapType | QadSnapTypeEnum.INT
-      # "INS" punto di inserimento
-      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS":
-         snapType = snapType | QadSnapTypeEnum.INS
-      # "PER" punto perpendicolare
-      elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
-         snapType = snapType | QadSnapTypeEnum.PER
-      # "TAN" tangente
-      elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
-         snapType = snapType | QadSnapTypeEnum.TAN
-      # "VIC" punto più vicino
-      elif snapTypeStr == QadMsg.translate("Snap", "NEA") or snapTypeStr == "_NEA":
-         snapType = snapType | QadSnapTypeEnum.NEA
-      # "APP" intersezione apparente
-      elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
-         snapType = snapType | QadSnapTypeEnum.APP
-      # "EST" Estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EXT") or snapTypeStr == "_EXT":
-         snapType = snapType | QadSnapTypeEnum.EXT
-      # "PAR" Parallelo
-      elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
-         snapType = snapType | QadSnapTypeEnum.PAR         
-      # se inizia per "PR" distanza progressiva
-      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-           string.find(snapTypeStr, "_PR") == 0:
-         # la parte successiva PR può essere vuota o numerica
-         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
-            param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
-         else:
-            param = snapTypeStr[len("_PR"):]
-         if len(param) == 0 or str2float(param) is not None:
-            snapType = snapType | QadSnapTypeEnum.PR
-      # "EST_INT" intersezione su estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
-         snapType = snapType | QadSnapTypeEnum.EXT_INT
-   
-   return snapType if snapType != QadSnapTypeEnum.NONE else -1
-
-
-#===============================================================================
-# str2snapParam
-#===============================================================================
-def str2snapParams(s):
-   """
-   Ritorna la conversione di una stringa in una lista di parametri per i tipi di snap
-   """
-   params = []
-   snapTypeStrList = s.strip().split(",")
-   for snapTypeStr in snapTypeStrList:
-      snapTypeStr = snapTypeStr.strip().upper()
-      # se inizia per "PR" distanza progressiva
-      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-         string.find(snapTypeStr, "_PR") == 0:
-         # la parte successiva PR può essere vuota o numerica
-         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
-            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
-         else:
-            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
-         if param is not None:
-            params.append([QadSnapTypeEnum.PR, param])         
-
-   return params
-
-
-#===============================================================================
 # strip
 #===============================================================================
 def strip(s, stripList):
@@ -787,13 +687,13 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
 #===============================================================================
 # getEntSel
 #===============================================================================
-def getEntSel(point, mQgsMapTool, \
+def getEntSel(point, mQgsMapTool, boxSize, \
               layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
               onlyBoundary = True, onlyEditableLayers = False):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto <point>
+   di dimensioni <boxSize> (in pixel) centrato sul punto <point>
    layersToCheck = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
    checkLineLayer = opzionale, considera i layer di tipo linea
@@ -807,7 +707,6 @@ def getEntSel(point, mQgsMapTool, \
       return None
       
    feature = QgsFeature()
-   Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
    
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
@@ -826,7 +725,7 @@ def getEntSel(point, mQgsMapTool, \
            (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
            (onlyEditableLayers == False or layer.isEditable()):                      
          layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
-         ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
+         ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
                                                                 mQgsMapTool.canvas.mapRenderer(), \
                                                                 QgsTolerance.Pixels)
 
@@ -883,29 +782,27 @@ def getFeatureById(layer, id):
 
    
 #===============================================================================
-# isGeomInPickBox
+# isGeomInBox
 #===============================================================================
-def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
-                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-                    onlyBoundary = True):
+def isGeomInBox(point, mQgsMapTool, geom, boxSize, crs = None, \
+                checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                onlyBoundary = True):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione verifica se la geometria é dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto
+   di dimensioni boxSize (in pixel) centrato sul punto
    geom = geometria da verificare
    crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
    checkPointLayer = opzionale, considera la geometria di tipo punto
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce True se la geometria é nel quadrato di PickBox altrimenti False 
+   Restituisce True se la geometria é nel quadrato di dimensione boxSize in (pixel) altrimenti False 
    """   
    if geom is None:
       return False
    if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
       return False
-      
-   Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
    
    # considero solo la geometria filtrata per tipo
    if ((geom.type() == QGis.Point and checkPointLayer == True) or \
@@ -918,7 +815,7 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
          coordTransform = QgsCoordinateTransform(crs, mQgsMapTool.canvas.mapRenderer().destinationCrs())          
          mapGeom.transform(coordTransform)      
          
-      ToleranceInMapUnits = Tolerance * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()    
+      ToleranceInMapUnits = boxSize * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()
       selectRect = QgsRectangle(mapPoint.x() - ToleranceInMapUnits, mapPoint.y() - ToleranceInMapUnits, \
                                 mapPoint.x() + ToleranceInMapUnits, mapPoint.y() + ToleranceInMapUnits)
                                            
@@ -938,27 +835,27 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
 
    
 #===============================================================================
-# getGeomInPickBox
+# getGeomInBox
 #===============================================================================
-def getGeomInPickBox(point, mQgsMapTool, geoms, crs = None, \
-                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-                    onlyBoundary = True):
+def getGeomInBox(point, mQgsMapTool, geoms, boxSize, crs = None, \
+                 checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                 onlyBoundary = True):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima geometria dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto
+   di dimensioni boxSize (in pixel) centrato sul punto
    geoms = lista di geometrie da verificare
    crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
    checkPointLayer = opzionale, considera la geometria di tipo punto
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce la geometria che é nel quadrato di PickBox altrimenti None 
+   Restituisce la geometria che é nel quadrato di dimensini boxSize altrimenti None 
    """   
    if geoms is None:
       return False
    for geom in geoms:
-      if isGeomInPickBox(point, mQgsMapTool, geom, crs, checkPointLayer, checkLineLayer, checkPolygonLayer, onlyBoundary):
+      if isGeomInBox(point, mQgsMapTool, geom, boxSize, crs, checkPointLayer, checkLineLayer, checkPolygonLayer, onlyBoundary):
          return geom
    return None
 

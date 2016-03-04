@@ -178,6 +178,7 @@ class QadEntSelClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             self.getLayersToCheck())
                if result is not None:
                   feature = result[0]

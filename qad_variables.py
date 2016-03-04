@@ -45,11 +45,54 @@ class QadVariableTypeEnum():
 
 
 #===============================================================================
+# Qad AUTOSNAP class.
+#===============================================================================
+class QadAUTOSNAPEnum():
+   DISPLAY_MARK      = 1  # Turns on the AutoSnap mark
+   DISPLAY_TOOLTIPS  = 2  # Turns on the AutoSnap tooltips
+   MAGNET            = 4  # Turns on the AutoSnap magnet
+   POLAR_TRACKING    = 8  # Turns on polar tracking
+   OBJ_SNAP_TRACKING = 16 # Turns on object snap tracking
+   DISPLAY_TOOLTIPS_POLAR_OSNAP_TRACKING_ORTHO = 32 # Turns on tooltips for polar tracking, object snap tracking, and Ortho mode
+
+
+#===============================================================================
+# Qad INPUTSEARCHOPTIONS class.
+#===============================================================================
+class QadINPUTSEARCHOPTIONSEnum():
+   ON              = 1  # Turns off all automated keyboard features when typing at the Command prompt
+   AUTOCOMPLETE    = 2  # Automatically appends suggestions as each keystroke is entered after the second keystroke
+   DISPLAY_LIST    = 4  # Displays a list of suggestions as keystrokes are entered
+   DISPLAY_ICON    = 8  # Displays the icon of the command or system variable, if available
+   EXCLUDE_SYS_VAR = 16 # Excludes the display of system variables
+
+
+#===============================================================================
+# Qad POLARMODE class.
+#===============================================================================
+class QadPOLARMODEnum():
+   MEASURE_RELATIVE_ANGLE = 1 # if setted: Measure polar angles from selected objects (relative) 
+                              # if not setted: Measure polar angles based on current UCS (absolute)
+   POLAR_TRACKING   = 2       # if setted: Use polar tracking settings in object snap tracking
+                              # if not setted: Track orthogonally only
+   SHIFT_TO_ACQUIRE = 8       # if setted: Press Shift to acquire object snap tracking points, if not setted
+                              # if not setted: Acquire automatically object snap tracking points
+
+
+#===============================================================================
+# Qad GRIPMULTIFUNCTIONAL class.
+#===============================================================================
+class QadGRIPMULTIFUNCTIONALEnum():
+   ON_CTRL_CYCLE_AND_HOT_GRIPT   = 1 # Access multi-functional grips with Ctrl-cycling and the Hot Grip shortcut menu
+   ON_DYNAMIC_MENU_AND_HOT_GRIPT = 2 # Access multi-functional grips with the dynamic menu and the Hot Grip shortcut menu
+
+
+#===============================================================================
 # Qad variable class.
 #===============================================================================
 class QadVariable():
    """
-   Classe che gestisce le variabili di ambiente di Qad
+   Classe che gestisce le variabili di ambiente di QAD
    """
 
    def __init__(self, name, value, typeValue, minNum = None, maxNum = None, descr = ""):
@@ -75,6 +118,25 @@ class QadVariablesClass():
       Inizializza un dizionario con le variabili e i loro valori di default 
       """
       self.__VariableValuesDict = dict() # variabile privata <nome variabile>-<valore variabile>
+
+      # APBOX (int): visualizza casella di apertura AutoSnap
+      VariableName = QadMsg.translate("Environment variables", "APBOX") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Turns the display of the AutoSnap aperture box on or off." + \
+                                       "\nThe aperture box is displayed in the center of the crosshairs when you snap to an object.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 1, \
+                                                            VariableDescr)
+
+      # APERTURE (int): Determina la dimensione della casella di selezione dell'oggetto
+      VariableName = QadMsg.translate("Environment variables", "APERTURE") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the size of the object target box, in pixels.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            1, 50, \
+                                                            VariableDescr)
       
       # ARCMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un arco
       VariableName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY") # x lupdate
@@ -85,8 +147,7 @@ class QadVariablesClass():
                                                             4, 999, \
                                                             VariableDescr)
       
-      # AUTOSNAP (int): attiva il puntamento polare (somma di bit):
-      # 8 = Attiva il puntamento polare
+      # AUTOSNAP (int): controlla la visualizzazione dei marcatori di autosnap (somma di bit):
       VariableName = QadMsg.translate("Environment variables", "AUTOSNAP")
       VariableDescr = QadMsg.translate("Environment variables", "Controls the display of the AutoSnap marker, tooltip, and magnet." + \
                                        "\nAlso turns on polar and object snap tracking, and controls the display of polar tracking, object snap tracking, and Ortho mode tooltips." + \
@@ -103,7 +164,34 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             0, 64, \
                                                             VariableDescr)
-      
+
+      # AUTOSNAPCOLOR (str): Imposta il colore (RGB) dei marcatori autosnap
+      VariableName = QadMsg.translate("Environment variables", "AUTOSNAPCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the AutoSnap marker (RGB, #33A02C = green).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#33A02C"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr)
+
+      # AUTOSNAPSIZE (int): dimensione dei simboli di autosnap in pixel
+      VariableName = QadMsg.translate("Environment variables", "AUTOSNAPSIZE") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "AutoSnap marker size in pixel.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            1, 20, \
+                                                            VariableDescr)
+
+      # AUTOTRECKINGVECTORCOLOR (str): Imposta il colore (RGB) del vettore autotrack (linee polari, linee di estensione)
+      VariableName = QadMsg.translate("Environment variables", "AUTOTRECKINGVECTORCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Autotreck vector color (RGB, #33A02C = green).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#33A02C"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr)
+
       # CIRCLEMINSEGMENTQTY (int): numero minimo di segmenti perché venga riconosciuto un cerchio
       VariableName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Minimum number of segments to approximate a circle.") # x lupdate
@@ -112,7 +200,25 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             6, 999, \
                                                             VariableDescr)
-      
+
+      # CMDHISTORYBACKCOLOR (str): Imposta il colore (RGB) di sfondo della finestra di cronologia dei comandi
+      VariableName = QadMsg.translate("Environment variables", "CMDHISTORYBACKCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Command history background color (RGB, #C8C8C8 = grey).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#C8C8C8"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+
+      # CMDHISTORYFORECOLOR (str): Imposta il colore (RGB) del testo della finestra di cronologia dei comandi
+      VariableName = QadMsg.translate("Environment variables", "CMDHISTORYFORECOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Command history text color (RGB, #000000 = black).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#000000"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+
       # CMDINPUTHISTORYMAX (int): Imposta il numero massimo di comandi nella lista di storicizzazione
       VariableName = QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Sets the maximum number of previous input values that are stored for a prompt in a command.") # x lupdate
@@ -121,6 +227,51 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
                                                             VariableDescr)
+
+      # CMDLINEBACKCOLOR (str): Imposta il colore (RGB) di sfondo della finestra dei comandi
+      VariableName = QadMsg.translate("Environment variables", "CMDLINEBACKCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Active prompt background color (RGB, #FFFFFF = white).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FFFFFF"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+      
+      # CMDLINEFORECOLOR (str): Imposta il colore (RGB) del testo della finestra di cronologia dei comandi
+      VariableName = QadMsg.translate("Environment variables", "CMDLINEFORECOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Active prompt color (RGB, #000000 = black).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#000000"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+
+      # CMDLINEOPTBACKCOLOR (str): Imposta il colore (RGB) di sfondo della parola chiave opzione di comando
+      VariableName = QadMsg.translate("Environment variables", "CMDLINEOPTBACKCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Command option keyword background color (RGB, #D2D2D2 = grey).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#D2D2D2"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+      
+      # CMDLINEOPTCOLOR (str): Imposta il colore (RGB) della parola chiave opzione di comando
+      VariableName = QadMsg.translate("Environment variables", "CMDLINEOPTCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Command option keyword color (RGB, #0000FF = blue).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#0000FF"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
+      
+      # CMDLINEOPTHIGHLIGHTEDCOLOR (str): Imposta il colore (RGB) della opzione di comando evidenziata
+      VariableName = QadMsg.translate("Environment variables", "CMDLINEOPTHIGHLIGHTEDCOLOR") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Command option highlighted color (RGB, #B3B3B3 = grey).") # x lupdate                                       
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#B3B3B3"), \
+                                                            QadVariableTypeEnum.COLOR, \
+                                                            None, None, \
+                                                            VariableDescr) 
       
       # COPYMODE (int):
       # 0 = Imposta il comando COPIA in modo che venga ripetuto automaticamente
@@ -152,7 +303,7 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
-                                                            VariableDescr) # red 
+                                                            VariableDescr) 
       
       # CURSORSIZE (int): Imposta la dimensione in pixel del cursore (la croce)
       VariableName = QadMsg.translate("Environment variables", "CURSORSIZE") # x lupdate
@@ -229,6 +380,28 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
                                                             VariableDescr) # orange 
+
+      # GRIPMULTIFUNCTIONAL (int): Specifica i metodi di accesso per le opzioni dei grip multifunzionali.
+      VariableName = QadMsg.translate("Environment variables", "GRIPMULTIFUNCTIONAL") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Specifies the access methods to multi-functional grips." + \
+                                       "\n0 = Access to multi-functional grips is disabled." + \
+                                       "\n2 = Access multi-functional grips with the dynamic menu and the Hot Grip shortcut menu.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(3), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 3, \
+                                                            VariableDescr)
+
+      # GRIPOBJLIMIT (int): Controlla la visualizzazione dei grip in base al numero di oggetti selezionati
+      VariableName = QadMsg.translate("Environment variables", "GRIPOBJLIMIT") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Suppresses the display of grips when the selection set includes more than the specified number of objects." + \
+                                       "\nThe valid range is 0 to 32,767. For example, when set to 1, grips are suppressed when more than one object is selected." + \
+                                       "\nWhen set to 0, grips are always displayed.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(100), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 32767, \
+                                                            VariableDescr)
 
       # GRIPS (int): Controlla la visualizzazione dei grip sugli oggetti selezionati
       VariableName = QadMsg.translate("Environment variables", "GRIPS") # x lupdate
@@ -323,15 +496,6 @@ class QadVariablesClass():
                                                             0, 1, \
                                                             VariableDescr)     
       
-      # OSCOLOR (str): Imposta il colore (RGB) dei simboli di osnap
-      VariableName = QadMsg.translate("Environment variables", "OSCOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Osnap symbols color (RGB, #FF0000 = red).") # x lupdate                                       
-      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#FF0000"), \
-                                                            QadVariableTypeEnum.COLOR, \
-                                                            None, None, \
-                                                            VariableDescr) # red
-      
       # OSMODE (int): Imposta lo snap ad oggetto (somma di bit):
       # 0 = (NON) nessuno
       # 1 = (FIN) punti finali di ogni segmento
@@ -391,15 +555,6 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.0), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             None, None, \
-                                                            VariableDescr)
-      
-      # OSSIZE (int): Imposta la dimensione in pixel dei simboli di osnap
-      VariableName = QadMsg.translate("Environment variables", "OSSIZE") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Osnap symbol size in pixel.") # x lupdate
-      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(13), \
-                                                            QadVariableTypeEnum.INT, \
-                                                            1, 999, \
                                                             VariableDescr)
       
       # PICKADD (int): Controlla se le selezioni successive sostituiscono il gruppo di selezione corrente o vengono aggiunte ad esso.
@@ -535,14 +690,15 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
                                                             VariableDescr) # blue 
-      
+
 
    def getVarNames(self):
       """
       Ritorna la lista dei nomi delle variabili 
       """
       return self.__VariableValuesDict.keys()
-          
+
+
    def set(self, VarName, VarValue):
       """
       Modifica il valore di una variabile 
@@ -591,6 +747,7 @@ class QadVariablesClass():
       
       return result
 
+
    def getVariable(self, VarName):
       UpperVarName = VarName
       return self.__VariableValuesDict.get(UpperVarName.upper())
@@ -604,9 +761,11 @@ class QadVariablesClass():
       if len(path) == 0:
          # se non esiste un progetto caricato uso il percorso di installazione di qad
          path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
-      return path + "/" + "qad.ini"
-   
-            
+         return path + "/" + "qad.ini"
+      else:
+         return path + "/" + prjFileInfo.baseName() + "_qad.ini"
+
+
    def save(self, Path=""):
       """
       Salva il dizionario delle variabili su file 
@@ -685,6 +844,17 @@ class QadVariablesClass():
       file.close()
       
       return True
+
+
+   #============================================================================
+   # copyTo
+   #============================================================================
+   def copyTo(self, dest):
+      """
+      Copia il dizionario con le variabili in dest
+      """
+      for VarName in self.__VariableValuesDict.keys():
+         dest.set(VarName, self.get(VarName))
 
 
 #===============================================================================

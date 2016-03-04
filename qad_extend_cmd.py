@@ -349,8 +349,9 @@ class QadEXTENDCommandClass(QadCommandClass):
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   feature = result[0]

@@ -89,8 +89,8 @@ class QadPEDITCommandClass(QadCommandClass):
       self.secondVertexAt = 0
       self.after = True
       self.snapPointsDisplayManager = QadSnapPointsDisplayManager(self.plugIn.canvas)
-      self.snapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "OSSIZE")))
-      self.snapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "OSCOLOR"))))
+      self.snapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE")))
+      self.snapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPCOLOR"))))
    
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -990,6 +990,7 @@ class QadPEDITCommandClass(QadCommandClass):
                
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   # result[0] = feature, result[1] = layer, result[0] = point

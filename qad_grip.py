@@ -112,9 +112,6 @@ class QadGripMarker(QgsMapCanvasItem):
       """
       painter é un QPainter
       """
-
-      s = self.iconSize / 2
-
       pen = QPen(QColor(self.borderColor))
       pen.setWidth(1)
       painter.setPen(pen)
@@ -124,16 +121,16 @@ class QadGripMarker(QgsMapCanvasItem):
          pass
       elif self.__iconType == QadGripIconTypeEnum.BOX:
          # un quadrato
-         painter.fillRect(-s, -s, self.iconSize, self.iconSize, QBrush(QColor(self.fillColor)));
-         painter.drawRect(-s, -s, self.iconSize, self.iconSize)
+         painter.fillRect(-self.iconSize, -self.iconSize, self.iconSize * 2, self.iconSize * 2, QBrush(QColor(self.fillColor)));
+         painter.drawRect(-self.iconSize, -self.iconSize, self.iconSize * 2, self.iconSize * 2)
       elif self.__iconType == QadGripIconTypeEnum.CIRCLE:
          # cerchio
          painter.setBrush(QBrush(QColor(self.fillColor)))
-         painter.drawEllipse(QPointF(0, 0), s, s)
+         painter.drawEllipse(QPointF(0, 0), self.iconSize, self.iconSize)
       elif self.__iconType == QadGripIconTypeEnum.RECTANGLE:
          # un rettangolo
-         painter.fillRect(-s, -s / 2, self.iconSize, self.iconSize / 2, QBrush(QColor(self.fillColor)));
-         painter.drawRect(-s, -s / 2, self.iconSize, self.iconSize / 2)
+         painter.fillRect(-self.iconSize, -self.iconSize / 2, self.iconSize * 2, self.iconSize, QBrush(QColor(self.fillColor)));
+         painter.drawRect(-self.iconSize, -self.iconSize / 2, self.iconSize * 2, self.iconSize)
          
 
    def boundingRect(self):

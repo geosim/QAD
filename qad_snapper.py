@@ -330,7 +330,7 @@ class QadSnapper():
    #============================================================================
    # OSnapPointsForPolar
    #============================================================================      
-   def toggleOSnapPointsForPolar(self, oSnapPointsForPolar):
+   def __toggleOSnapPointsForPolar(self, point, oSnapPointsForPolar, snapMarkerSizeInMapUnits):
       """
       Aggiunge un punto di osnap usati per l'opzione polare
       se non ancora inserito in lista altrimenti lo rimuove dalla lista
@@ -339,23 +339,35 @@ class QadSnapper():
       """
       del self.__oSnapLinesForPolar[:]
       
+      autoSnapSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
+      
       for itemToToggle in oSnapPointsForPolar.items():
+         key = itemToToggle[0]
+         # non considero alcuni tipi di snap
+         if key == QadSnapTypeEnum.INT or key == QadSnapTypeEnum.PER or key == QadSnapTypeEnum.TAN or \
+            key == QadSnapTypeEnum.NEA or key == QadSnapTypeEnum.APP or key == QadSnapTypeEnum.EXT or \
+            key == QadSnapTypeEnum.PAR or key == QadSnapTypeEnum.PR or key == QadSnapTypeEnum.EXT_INT or \
+            key == QadSnapTypeEnum.PER_DEF or key == QadSnapTypeEnum.TAN_DEF or key == QadSnapTypeEnum.POLAR:
+            continue
+         
          for ptToToggle in itemToToggle[1]: # per ogni punto
-            add = True
-            for item in self.__oSnapPointsForPolar.items():
-               i = 0
-               for pt in item[1]:
-                  if pt == ptToToggle:
-                     del item[1][i]
-                     add = False
-                     i = i + 1
-
-            if add:
-               key = itemToToggle[0]
-               if self.__oSnapPointsForPolar.has_key(key) == False:
-                  self.__oSnapPointsForPolar[key] = [ptToToggle]
-               else:
-                  self.__oSnapPointsForPolar[key].append(ptToToggle)
+            # il punto <point> deve essere dentro il punto di snap che ha dimensioni snapMarkerSizeInMapUnits
+            if point.x() >= ptToToggle.x() - snapMarkerSizeInMapUnits and point.x() <= ptToToggle.x() + snapMarkerSizeInMapUnits and \
+               point.y() >= ptToToggle.y() - snapMarkerSizeInMapUnits and point.y() <= ptToToggle.y() + snapMarkerSizeInMapUnits: 
+               add = True
+               for item in self.__oSnapPointsForPolar.items():
+                  i = 0
+                  for pt in item[1]:
+                     if pt == ptToToggle:
+                        del item[1][i]
+                        add = False
+                        i = i + 1
+   
+               if add:
+                  if self.__oSnapPointsForPolar.has_key(key) == False:
+                     self.__oSnapPointsForPolar[key] = [ptToToggle]
+                  else:
+                     self.__oSnapPointsForPolar[key].append(ptToToggle)
 
 
    def removeOSnapPointsForPolar(self):
@@ -374,9 +386,9 @@ class QadSnapper():
    #===========================================================================
    # ReferenceLines
    #===========================================================================
-   def toggleReferenceLines(self, geom, point, CRS = None, oSnapPointsForPolar = None):
+   def toggleReferenceLines(self, geom, point, CRS = None, oSnapPointsForPolar = None, snapMarkerSizeInMapUnits = None):
       if oSnapPointsForPolar is not None:
-         self.toggleOSnapPointsForPolar(oSnapPointsForPolar)
+         self.__toggleOSnapPointsForPolar(point, oSnapPointsForPolar, snapMarkerSizeInMapUnits)
          
       # usato solo per snap EXT o PAR
       if not(self.__snapType & QadSnapTypeEnum.EXT) and \
@@ -512,10 +524,10 @@ class QadSnapper():
                
       if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
          # Viene restituito solo il punto più vicino
-         result = self.__getNearestPoints(p, allSnapPoints)
+         result = self.getNearestPoints(p, allSnapPoints)
       elif self.__snapMode == QadSnapModeEnum.RESULTS_FOR_SAME_POS:
          # take all snapping Results within a certain tolerance because rounding differences may occur     
-         result = self.__getNearestPoints(p, allSnapPoints, 0.000001)
+         result = self.getNearestPoints(p, allSnapPoints, 0.000001)
       else:
          result = allSnapPoints # Vengono restituiti tutti i punti
       
@@ -1581,6 +1593,7 @@ class QadSnapper():
       rect.setYMaximum(point.y())
       return rect
 
+
    def __transformPoint(self, point, sourceCRS, destCRS):
       """
       Trasforma un punto dal sistema di coordinate sorgente a quello di destinazione.
@@ -1591,6 +1604,7 @@ class QadSnapper():
          return coordTransform.transform(point)
       else:
          return point
+
 
    def __transformGeomToSnapPointCRS(self, geom, CRS = None):
       """
@@ -1605,8 +1619,9 @@ class QadSnapper():
          coordTransform = QgsCoordinateTransform(CRS, self.getSnapPointCRS()) # trasformo la geometria
          g.transform(coordTransform)
       return g
-      
-   def __getNearestPoints(self, point, SnapPoints, tolerance = 0):
+
+
+   def getNearestPoints(self, point, SnapPoints, tolerance = 0):
       """
       Ritorna una lista con il primo elemento che é il tipo di snap e 
       il secondo elemento é il punto più vicino a point.
@@ -1659,7 +1674,7 @@ class QadSnapper():
             result[snapType] = [NearestPoint]
 
       else:
-         nearest = self.__getNearestPoints(point, SnapPoints) # punto più vicino
+         nearest = self.getNearestPoints(point, SnapPoints) # punto più vicino
          dummy = nearest.items()
          dummy = dummy[0]
          NearestPoint = dummy[1]
@@ -1685,7 +1700,7 @@ class QadSnapper():
       """   
       for item in SnapPoints.items():
          i = 0
-         for pt in item[1]:            
+         for pt in item[1]:
             if pt == point:
                del item[1][i]
             i = i + 1
@@ -1736,7 +1751,8 @@ class QadSnapper():
          else:
             line = [__pt1, __pt2]
          lines.remove(line)     
-              
+
+
    def toggleArc(self, snapType, arc, CRS = None):
       """
       Aggiunge una linea per la ricerca di punti con modalità EXT p PAR
@@ -1789,3 +1805,167 @@ class QadSnapper():
          self.__appendUniquePoint(result, polarPt) # senza duplicazione
 
       return result
+
+
+#============================================================================
+# funzioni generiche
+#============================================================================
+
+
+#===============================================================================
+# str2snapTypeEnum
+#===============================================================================
+def str2snapTypeEnum(s):
+   """
+   Ritorna la conversione di una stringa in una combinazione di tipi di snap
+   oppure -1 se non ci sono snap indicati.
+   """
+   snapType = QadSnapTypeEnum.NONE
+   snapTypeStrList = s.strip().split(",")
+   for snapTypeStr in snapTypeStrList:
+      snapTypeStr = snapTypeStr.strip().upper()
+      
+      # "NES" nessuno snap
+      if snapTypeStr == QadMsg.translate("Snap", "NONE") or snapTypeStr == "_NONE":
+         return QadSnapTypeEnum.NONE
+      # "FIN" punti finali di ogni segmento
+      elif snapTypeStr == QadMsg.translate("Snap", "END") or snapTypeStr == "_END":
+         snapType = snapType | QadSnapTypeEnum.END
+      # "FIN_PL" punti finali dell'intera polilinea
+      elif snapTypeStr == QadMsg.translate("Snap", "END_PL") or snapTypeStr == "_END_PL":
+         snapType = snapType | QadSnapTypeEnum.END_PLINE
+      # "MED" punto medio
+      elif snapTypeStr == QadMsg.translate("Snap", "MID") or snapTypeStr == "_MID":
+         snapType = snapType | QadSnapTypeEnum.MID
+      # "CEN" centro (centroide)
+      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":
+         snapType = snapType | QadSnapTypeEnum.CEN
+      # "NOD" oggetto punto
+      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD":
+         snapType = snapType | QadSnapTypeEnum.NOD
+      # "QUA" punto quadrante
+      elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
+         snapType = snapType | QadSnapTypeEnum.QUA
+      # "INT" intersezione
+      elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
+         snapType = snapType | QadSnapTypeEnum.INT
+      # "INS" punto di inserimento
+      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS":
+         snapType = snapType | QadSnapTypeEnum.INS
+      # "PER" punto perpendicolare
+      elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
+         snapType = snapType | QadSnapTypeEnum.PER
+      # "TAN" tangente
+      elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
+         snapType = snapType | QadSnapTypeEnum.TAN
+      # "VIC" punto più vicino
+      elif snapTypeStr == QadMsg.translate("Snap", "NEA") or snapTypeStr == "_NEA":
+         snapType = snapType | QadSnapTypeEnum.NEA
+      # "APP" intersezione apparente
+      elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
+         snapType = snapType | QadSnapTypeEnum.APP
+      # "EST" Estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT") or snapTypeStr == "_EXT":
+         snapType = snapType | QadSnapTypeEnum.EXT
+      # "PAR" Parallelo
+      elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
+         snapType = snapType | QadSnapTypeEnum.PAR         
+      # se inizia per "PR" distanza progressiva
+      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+           string.find(snapTypeStr, "_PR") == 0:
+         # la parte successiva PR può essere vuota o numerica
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
+         else:
+            param = snapTypeStr[len("_PR"):]
+         if len(param) == 0 or str2float(param) is not None:
+            snapType = snapType | QadSnapTypeEnum.PR
+      # "EST_INT" intersezione su estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
+         snapType = snapType | QadSnapTypeEnum.EXT_INT
+   
+   return snapType if snapType != QadSnapTypeEnum.NONE else -1
+
+
+#===============================================================================
+# snapTypeEnum2str
+#===============================================================================
+def snapTypeEnum2str(snapType):
+   """
+   Ritorna la conversione di un tipo di snap in una stringa.
+   """
+   # "FIN" punti finali di ogni segmento
+   if snapType == QadSnapTypeEnum.END:
+      return QadMsg.translate("Snap", "Segment end point")
+   # "FIN_PL" punti finali dell'intera polilinea
+   elif snapType == QadSnapTypeEnum.END_PLINE:
+      return QadMsg.translate("Snap", "Polyline end point")
+   # "MED" punto medio
+   elif snapType == QadSnapTypeEnum.MID:
+      return QadMsg.translate("Snap", "Middle point")
+   # "CEN" centro (centroide)
+   elif snapType == QadSnapTypeEnum.CEN:
+      return QadMsg.translate("Snap", "Center point")
+   # "NOD" oggetto punto
+   elif snapType == QadSnapTypeEnum.NOD:
+      return QadMsg.translate("Snap", "Node")
+   # "QUA" punto quadrante
+   elif snapType == QadSnapTypeEnum.QUA:
+      return QadMsg.translate("Snap", "Quadrant")
+   # "INT" intersezione
+   elif snapType == QadSnapTypeEnum.INT:
+      return QadMsg.translate("Snap", "Intersection")
+   # "INS" punto di inserimento
+   elif snapType == QadSnapTypeEnum.INS:
+      return QadMsg.translate("Snap", "Insertion point")
+   # "PER" punto perpendicolare
+   elif snapType == QadSnapTypeEnum.PER:
+      return QadMsg.translate("Snap", "Perpendicular")
+   # "TAN" tangente
+   elif snapType == QadSnapTypeEnum.TAN:
+      return QadMsg.translate("Snap", "Tangent")
+   # "VIC" punto più vicino
+   elif snapType == QadSnapTypeEnum.NEA:
+      return QadMsg.translate("Snap", "Near")
+   # "APP" intersezione apparente
+   elif snapType == QadSnapTypeEnum.APP:
+      return QadMsg.translate("Snap", "Apparent intersection")
+   # "EST" Estensione
+   elif snapType == QadSnapTypeEnum.EXT:
+      return QadMsg.translate("Snap", "Extension")
+   # "PAR" Parallelo
+   elif snapType == QadSnapTypeEnum.PAR:
+      return QadMsg.translate("Snap", "Parallel")
+   # "PR" distanza progressiva
+   elif snapType == QadSnapTypeEnum.PR:
+      return QadMsg.translate("Snap", "Progressive distance")
+   # "EST_INT" intersezione su estensione
+   elif snapType == QadSnapTypeEnum.EXT_INT:
+      return QadMsg.translate("Snap", "Intersection on extension")
+   
+   return ""
+
+
+#===============================================================================
+# str2snapParam
+#===============================================================================
+def str2snapParams(s):
+   """
+   Ritorna la conversione di una stringa in una lista di parametri per i tipi di snap
+   """
+   params = []
+   snapTypeStrList = s.strip().split(",")
+   for snapTypeStr in snapTypeStrList:
+      snapTypeStr = snapTypeStr.strip().upper()
+      # se inizia per "PR" distanza progressiva
+      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+         string.find(snapTypeStr, "_PR") == 0:
+         # la parte successiva PR può essere vuota o numerica
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
+         else:
+            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
+         if param is not None:
+            params.append([QadSnapTypeEnum.PR, param])         
+
+   return params

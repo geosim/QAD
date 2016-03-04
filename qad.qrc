@@ -68,5 +68,6 @@
         <file>icons/help.png</file>
         <file>icons/lengthen.png</file>
         <file>icons/variable.png</file>
+        <file>icons/options.png</file>
     </qresource>    
 </RCC>

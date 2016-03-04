@@ -509,9 +509,10 @@ class QadDimStyle():
    # getLayer
    #============================================================================
    def getLayer(self, layerName):
-      layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr(layerName))
-      if len(layerList) == 1:
-         return layerList[0]
+      if layerName is not None:
+         layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+         if len(layerList) == 1:
+            return layerList[0]
       return None
 
 

@@ -47,7 +47,7 @@ class QadSnapPointsDisplayManager():
       self.__mapCanvas = mapCanvas
       self.__vertexMarkers = [] # lista dei marcatori puntuali visualizzati
       self.__startPoint = QgsPoint()  
-      self.__iconSize = 13 # size
+      self.__iconSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width 
       self.__lineMarkers = [] # lista dei RubberBand visualizzati
@@ -169,6 +169,10 @@ class QadSnapPointsDisplayManager():
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
       del self.__lineMarkers[:]
+
+      autoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+
+      self.__mapCanvas.setToolTip("")
       
       # punti di snap
       for snapPoint in SnapPoints.items():
@@ -176,8 +180,21 @@ class QadSnapPointsDisplayManager():
          i = -1
          for point in snapPoint[1]:
             i = i + 1
-            # disegno il marcatore di snap
-            self.__vertexMarkers.append(self.getVertexMarker(snapType, point))
+            
+            if autoSnap & QadAUTOSNAPEnum.DISPLAY_MARK: # Turns on the AutoSnap mark
+               # disegno il marcatore di snap
+               self.__vertexMarkers.append(self.getVertexMarker(snapType, point))
+
+            if autoSnap & QadAUTOSNAPEnum.DISPLAY_TOOLTIPS: # Turns on the AutoSnap tooltips
+               # lo tengo perchè mi può servire
+               # trasformo point da map coordinate in global coordinate
+               # item = QadVertexMarker(self.__mapCanvas)
+               # newPt = item.toCanvasCoordinates(point)
+               # item.removeItem()
+               # del item
+               # pt = self.__mapCanvas.mapToGlobal(QPoint(newPt.x(), newPt.y()))
+               # QToolTip.showText(pt, "testo di prova")
+               self.__mapCanvas.setToolTip(snapTypeEnum2str(snapType))
 
             # linee di estensione
             if snapType == QadSnapTypeEnum.EXT and (extLines is not None):
@@ -284,7 +301,7 @@ class QadSnapPointsDisplayManager():
       if extLines is not None:
          for extLine in extLines:
             point = qad_utils.getMiddlePoint(extLine[0], extLine[1])
-            # disegno il marcatore di estensione    
+            # disegno il marcatore di estensionel            
             self.__vertexMarkers.append(self.getVertexMarker(QadSnapTypeEnum.EXT, point))
 
       # punti medi degli archi marcati come da estendere
@@ -340,7 +357,7 @@ class QadSnapPointsDisplayManager():
       """
       lineMarker = createRubberBand(self.__mapCanvas, QGis.Line, True)
       lineMarker.setColor(self.__color)
-      lineMarker.setLineStyle(Qt.DotLine)
+      lineMarker.setLineStyle(Qt.DashLine)
       lineMarker.addPoint(pt1, False)
       lineMarker.addPoint(pt2, True)      
       return lineMarker

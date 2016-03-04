@@ -47,7 +47,10 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def __init__(self, plugIn):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
-      QDialog.__init__(self, self.iface)
+
+      QDialog.__init__(self)
+      # non passo il parent perchè altrimenti il font e la sua dimensione verrebbero ereditati dalla dialog scombinando tutto 
+      #QDialog.__init__(self, self.iface)
       
       self.selectedDimStyle = None
       
@@ -75,7 +78,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       self.currentDimStyle.setText("" if currDimStyleName is None else currDimStyleName)
       
       # Inizializzazione della lista degli stili
-      model = QStandardItemModel(self.dimStyleList)      
+      model = QStandardItemModel(self.dimStyleList)
       for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
          # Create an item with a caption
          item = QStandardItem(dimStyle.name)
@@ -95,10 +98,12 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       index = self.dimStyleList.model().index(0,0)
       if self.selectedDimStyle is not None:
          # seleziono l'elemento precedentemente selezionato
-         item = self.dimStyleList.model().findItems(self.selectedDimStyle.name)[0]
-         index = self.dimStyleList.model().indexFromItem(item)
+         items = self.dimStyleList.model().findItems(self.selectedDimStyle.name)
       elif len(currDimStyleName) > 0:
-         item = self.dimStyleList.model().findItems(currDimStyleName)[0]
+         items = self.dimStyleList.model().findItems(currDimStyleName)
+         
+      if len(items) > 0:
+         item = items[0]
          if item is not None:
             index = self.dimStyleList.model().indexFromItem(item)
          
@@ -124,6 +129,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       self.descriptionSelectedStyle.setText(self.selectedDimStyle.description)
       
       self.previewDim.drawDim(self.selectedDimStyle)
+
 
    def dimStyleListcloseEditor(self, editor, hint):
       self.renSelectedDimStyle(editor.text())
@@ -176,7 +182,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def createNewStyle(self):
       self.previewDim.eraseDim()
 
-      Form = QadDIMSTYLE_NEW_Dialog(self.plugIn, self.selectedDimStyle.name if self.selectedDimStyle is not None else None)
+      Form = QadDIMSTYLE_NEW_Dialog(self.plugIn, self, self.selectedDimStyle.name if self.selectedDimStyle is not None else None)
       if Form.exec_() == QDialog.Accepted:
          Form.dimStyle.path = ""
          QadDimStyles.addDimStyle(Form.dimStyle, True)
@@ -192,7 +198,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
          return
       self.previewDim.eraseDim()
       
-      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
+      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Modify dimension style: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
@@ -209,7 +215,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
          return
       self.previewDim.eraseDim()
 
-      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.selectedDimStyle)
+      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Set temporary overrides to dimension style: ") + self.selectedDimStyle.name
       Form.setWindowTitle(title)
       if Form.exec_() == QDialog.Accepted:
@@ -220,15 +226,26 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
 
 
    def showDiffBetweenStyles(self):
-      Form = QadDIMSTYLE_DIFF_Dialog(self.plugIn, self.selectedDimStyle.name)
+      if self.selectedDimStyle is None:
+         return
+      Form = QadDIMSTYLE_DIFF_Dialog(self.plugIn, self, self.selectedDimStyle.name)
       Form.exec_()
 
+
+   #============================================================================
+   # startEditingItem
+   #============================================================================
    def startEditingItem(self):
       if self.selectedDimStyle is None:
          return
-      item = self.dimStyleList.model().findItems(self.selectedDimStyle.name)[0]
-      index = self.dimStyleList.model().indexFromItem(item)
-      self.dimStyleList.edit(index)
+
+      items = self.dimStyleList.model().findItems(self.selectedDimStyle.name)
+      if len(items) > 0:
+         item = items[0]
+         if item is not None:
+            index = self.dimStyleList.model().indexFromItem(item)
+            self.dimStyleList.edit(index)
+
             
    def ButtonBOX_Accepted(self):     
       self.close()
@@ -237,6 +254,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
 
    def ButtonHELP_Pressed(self):
       qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
+
 
    #============================================================================
    # displayPopupMenu

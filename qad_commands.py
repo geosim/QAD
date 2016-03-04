@@ -70,6 +70,7 @@ from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
 from qad_dimstyle_cmd import QadDIMSTYLECommandClass
 from qad_lengthen_cmd import QadLENGTHENCommandClass
 from qad_help_cmd import QadHELPCommandClass
+from qad_options_cmd import QadOPTIONSCommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -119,6 +120,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
       self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
+      self.__cmdObjs.append(QadOPTIONSCommandClass(self.plugIn)) # OPTIONS
       
       self.actualCommand = None  # Comando in corso di esecuzione
    

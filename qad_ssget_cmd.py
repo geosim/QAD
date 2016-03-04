@@ -190,7 +190,7 @@ class QadSSGetClass(QadCommandClass):
          self.entitySet.unite(dimEntity.getEntitySet())
 
       self.showMsgOnAddRemove(self.entitySet.count())
-      self.entitySet.selectOnLayer(False) # incremental = False aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool
+      self.entitySet.selectOnLayer(False) # incremental = False aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool (se il layer non è in modifica)
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
 

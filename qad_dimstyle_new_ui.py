@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_new.ui'
 #
-# Created: Thu Feb 04 11:48:48 2016
+# Created: Mon Feb 22 16:27:04 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

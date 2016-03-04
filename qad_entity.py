@@ -377,7 +377,7 @@ class QadEntity():
          if incremental == False:
             self.layer.removeSelection()
 
-         self.layer.select(self.featureId)
+         self.layer.select(self.featureId) # aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool
 
 
    def deselectOnLayer(self):

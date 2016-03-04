@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dsettings.ui'
 #
-# Created: Thu Feb 04 11:48:46 2016
+# Created: Mon Feb 22 16:26:58 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -191,8 +191,11 @@ class Ui_DSettings_Dialog(object):
         self.checkBox_NEARP.setObjectName(_fromUtf8("checkBox_NEARP"))
         self.gridLayout_2.addWidget(self.checkBox_NEARP, 6, 1, 1, 1)
         self.checkBox_IsOsnapON = QtGui.QCheckBox(self.tab_1)
-        self.checkBox_IsOsnapON.setGeometry(QtCore.QRect(10, 10, 126, 17))
+        self.checkBox_IsOsnapON.setGeometry(QtCore.QRect(10, 10, 131, 17))
         self.checkBox_IsOsnapON.setObjectName(_fromUtf8("checkBox_IsOsnapON"))
+        self.checkBox_ObjectSnapTracking = QtGui.QCheckBox(self.tab_1)
+        self.checkBox_ObjectSnapTracking.setGeometry(QtCore.QRect(200, 10, 201, 20))
+        self.checkBox_ObjectSnapTracking.setObjectName(_fromUtf8("checkBox_ObjectSnapTracking"))
         self.tabWidget.addTab(self.tab_1, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -356,16 +359,24 @@ class Ui_DSettings_Dialog(object):
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Near OSnap: point of a segment close to the cursor position.</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/plugins/qad/icons/dsettings/OSNAP_ToolTIP_NEARP.png\" /></p></body></html>", None))
         self.checkBox_NEARP.setText(_translate("DSettings_Dialog", "Near", None))
+        self.checkBox_IsOsnapON.setToolTip(_translate("DSettings_Dialog", "<html><head/><body><p>Turns object snap on and off. The selected object snap modes are active when the object snap is activated (system variable OSMODE).</p></body></html>", None))
         self.checkBox_IsOsnapON.setText(_translate("DSettings_Dialog", "Object Snap (F3)", None))
+        self.checkBox_ObjectSnapTracking.setToolTip(_translate("DSettings_Dialog", "<html><head/><body><p>Turns object snap tracking on and off. Using the object snap tracking, the cursor can track along alignment paths that are based on object snap points. To use the object snap tracking, select one or more object snap (system variable AUTOSNAP).</p></body></html>", None))
+        self.checkBox_ObjectSnapTracking.setText(_translate("DSettings_Dialog", "Object Snap Tracking (F11)", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), _translate("DSettings_Dialog", "Object Snap", None))
+        self.checkBox_PolarPickPoint.setToolTip(_translate("DSettings_Dialog", "Turns polar tracking on and off (system variable AUTOSNAP).", None))
         self.checkBox_PolarPickPoint.setText(_translate("DSettings_Dialog", "Polar Tracking (F10)", None))
         self.groupBox_PolarAngleSettings.setTitle(_translate("DSettings_Dialog", "Polar angle settings", None))
         self.label_12.setText(_translate("DSettings_Dialog", "Increment angle:", None))
         self.groupBox_OsnapPolarOrtho.setTitle(_translate("DSettings_Dialog", "Object Snap Tracking Settings", None))
+        self.radioButton_OsnapOrtho.setToolTip(_translate("DSettings_Dialog", "Displays only orthogonal (horizontal/vertical) object snap tracking paths for acquired object snap points when object snap tracking is on (POLARMODE system variable).", None))
         self.radioButton_OsnapOrtho.setText(_translate("DSettings_Dialog", "Track orthogonally only", None))
+        self.radioButton_OsnapPolarAngle.setToolTip(_translate("DSettings_Dialog", "Applies polar tracking settings to object snap tracking. When you use object snap tracking, the cursor tracks along polar alignment angles from acquired object snap points (POLARMODE system variable).", None))
         self.radioButton_OsnapPolarAngle.setText(_translate("DSettings_Dialog", "Track using polar angle settings", None))
         self.groupBox_OsnapPolarMeasurement.setTitle(_translate("DSettings_Dialog", "Polar Angle measurement", None))
+        self.radioButton_OsnapPolarAbolute.setToolTip(_translate("DSettings_Dialog", "Bases polar tracking angles on the current user coordinate system.", None))
         self.radioButton_OsnapPolarAbolute.setText(_translate("DSettings_Dialog", "Absolute", None))
+        self.radioButton_OsnapPolarRelative.setToolTip(_translate("DSettings_Dialog", "Bases polar tracking angles on the last segment drawn.", None))
         self.radioButton_OsnapPolarRelative.setText(_translate("DSettings_Dialog", "Relative to last segment", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("DSettings_Dialog", "Polar Tracking", None))
         self.okButton.setText(_translate("DSettings_Dialog", "OK", None))
