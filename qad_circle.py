@@ -428,7 +428,7 @@ class QadCircle():
          _atLeastNSegment = atLeastNSegment
       
       totPoints = len(points)
-      # perchésia un cerchio ci vogliono almeno _atLeastNSegment segmenti
+      # perché sia un cerchio ci vogliono almeno _atLeastNSegment segmenti
       if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
          return None
 

@@ -356,7 +356,7 @@ class QadCommandsClass():
             qad_utils.deselectAll(self.plugIn.canvas.layers())
          
       del self.actualCommand
-      self.actualCommand = None    
+      self.actualCommand = None
       self.plugIn.setStandardMapTool()
       self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
 

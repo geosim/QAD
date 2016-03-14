@@ -526,7 +526,7 @@ class QadSnapper():
          # Viene restituito solo il punto più vicino
          result = self.getNearestPoints(p, allSnapPoints)
       elif self.__snapMode == QadSnapModeEnum.RESULTS_FOR_SAME_POS:
-         # take all snapping Results within a certain tolerance because rounding differences may occur     
+         # take all snapping Results within a certain tolerance because rounding differences may occur
          result = self.getNearestPoints(p, allSnapPoints, 0.000001)
       else:
          result = allSnapPoints # Vengono restituiti tutti i punti
@@ -875,22 +875,21 @@ class QadSnapper():
       
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
 
-      if wkbType == QGis.WKBLineString or wkbType == QGis.WKBMultiLineString:
-         # verifico se ci sono archi
-         arcList = QadArcList()
-         if arcList.fromGeom(g) > 0:
-            for arc in arcList.arcList:
-               points = arc.getQuadrantPoints()
-               for point in points:
-                  self.__appendUniquePoint(result, point) # senza duplicazione
-      else:
-         # verifico se ci sono cerchi
-         circleList = QadCircleList()
-         if circleList.fromGeom(g) > 0:                          
-            for circle in circleList.circleList:
-               points = circle.getQuadrantPoints()
-               for point in points:
-                  self.__appendUniquePoint(result, point) # senza duplicazione
+      # verifico se ci sono archi
+      arcList = QadArcList()
+      if arcList.fromGeom(g) > 0:
+         for arc in arcList.arcList:
+            points = arc.getQuadrantPoints()
+            for point in points:
+               self.__appendUniquePoint(result, point) # senza duplicazione
+               
+      # verifico se ci sono cerchi
+      circleList = QadCircleList()
+      if circleList.fromGeom(g) > 0:                          
+         for circle in circleList.circleList:
+            points = circle.getQuadrantPoints()
+            for point in points:
+               self.__appendUniquePoint(result, point) # senza duplicazione
       
       return result
 

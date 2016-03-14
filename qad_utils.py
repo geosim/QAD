@@ -689,7 +689,8 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
 #===============================================================================
 def getEntSel(point, mQgsMapTool, boxSize, \
               layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-              onlyBoundary = True, onlyEditableLayers = False):
+              onlyBoundary = True, onlyEditableLayers = False, \
+              layerCacheGeomsDict = None, firstLayerToCheck = None):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
@@ -699,6 +700,10 @@ def getEntSel(point, mQgsMapTool, boxSize, \
    checkLineLayer = opzionale, considera i layer di tipo linea
    checkPolygonLayer = opzionale, considera i layer di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   onlyEditableLayers = per cercare solo nei layer modificabili
+   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
+   firstLayerToCheck = per ottimizzare la ricerca, primo layer da controllare
+   
    Restituisce una lista composta da una QgsFeature e il suo layer e il punto di selezione 
    in caso di successo altrimenti None 
    """           
@@ -706,8 +711,6 @@ def getEntSel(point, mQgsMapTool, boxSize, \
    if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
       return None
       
-   feature = QgsFeature()
-   
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
@@ -716,54 +719,104 @@ def getEntSel(point, mQgsMapTool, boxSize, \
    else:
       # solo la lista passata come parametro
       _layers = layersToCheck
+
+   # se il processo può essere ottimizzato con il primo layer in cui cercare
+   if firstLayerToCheck is not None:
+      res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict)
+      if res is not None:
+         return res
       
    for layer in _layers: # ciclo sui layer
+      # se il processo può essere ottimizzato con il primo layer in cui cercare lo salto in questo ciclo
+      if (firstLayerToCheck is not None) and firstLayerToCheck.id() == layer.id():
+         continue;
+      
       # considero solo i layer vettoriali che sono filtrati per tipo
       if (layer.type() == QgsMapLayer.VectorLayer) and \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
            (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
-           (onlyEditableLayers == False or layer.isEditable()):                      
-         layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
-         ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
-                                                                mQgsMapTool.canvas.mapRenderer(), \
-                                                                QgsTolerance.Pixels)
-
-         selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
-                                   layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
+           (onlyEditableLayers == False or layer.isEditable()):
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary, layerCacheGeomsDict)         
          
-         featureIterator = layer.getFeatures(getFeatureRequest([], True,  selectRect, True))
+         if res is not None:
+            return res
 
+   #QApplication.restoreOverrideCursor()
+   return None
+
+
+#===============================================================================
+# getEntSelOnLayer
+#===============================================================================
+def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
+                     layerCacheGeomsDict = None):
+   """
+   dato un punto (in screen coordinates) e un QgsMapTool, 
+   la funzione cerca la prima entità del layer dentro il quadrato
+   di dimensioni <boxSize> (in pixel) centrato sul punto <point>
+   onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
+   
+   Restituisce una lista composta da una QgsFeature e il suo layer e il punto di selezione 
+   in caso di successo altrimenti None 
+   """           
+   layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
+   ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
+                                                          mQgsMapTool.canvas.mapRenderer(), \
+                                                          QgsTolerance.Pixels)
+
+   selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
+                             layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
+
+   # se il processo può essere ottimizzato con la cache
+   if layerCacheGeomsDict is not None:
+      cachedFeatures = layerCacheGeomsDict.getFeatures(layer, selectRect)
+      
+      featureRequest = QgsFeatureRequest()
+      featureRequest.setSubsetOfAttributes([])
+      
+      for cachedFeature in cachedFeatures:
          # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
-            for feature in featureIterator:
-               return feature, layer, point
+            if cachedFeature.geometry().intersects(selectRect):
+               # ottengo la feature del layer
+               featureRequest.setFilterFid(cachedFeature.attribute("index"))
+               featureIterator = layer.getFeatures(featureRequest)      
+               for feature in featureIterator:
+                  return feature, layer, point
          else:
             # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
-            for feature in featureIterator:
-               # Riduco le geometrie in point o polyline
-               geoms = asPointOrPolyline(feature.geometry())
-               for g in geoms:
-                  if g.intersects(selectRect):
+            # Riduco le geometrie in point o polyline
+            geoms = asPointOrPolyline(cachedFeature.geometry())
+            for g in geoms:
+               #start = time.time() # test
+               #for i in range(1, 10):
+               if g.intersects(selectRect):
+                  # ottengo la feature del layer
+                  featureRequest.setFilterFid(cachedFeature.attribute("index"))
+                  featureIterator = layer.getFeatures(featureRequest)      
+                  for feature in featureIterator:
                      return feature, layer, point
-
-#          # test per usare la cache (ancora più lento...)
-#          dummy, snappingResults = layer.snapWithContext(layerCoords, ToleranceInMapUnits,
-#                                                         QgsSnapper.SnapToVertex if layer.geometryType() == QGis.Point else QgsSnapper.SnapToSegment)
-#          if len(snappingResults) > 0:
-#             featureId = snappingResults[0][1].snappedAtGeometry()
-#             feature = getFeatureById(layer, featureId)
-#          
-#             # se é un layer contenente poligoni allora verifico se considerare solo i bordi
-#             if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
-#                return feature, layer, point
-#             else:
-#                geoms = asPointOrPolyline(feature.geometry())
-#                for g in geoms:
-#                   if g.intersects(selectRect):
-#                      return feature, layer, point
+               #tempo = ((time.time() - start) * 1000) # test
+               #tempo += 0 # test
+   else:
+      featureIterator = layer.getFeatures(getFeatureRequest([], True, selectRect, True))
+      feature = QgsFeature()
    
-   #QApplication.restoreOverrideCursor()
+      # se é un layer contenente poligoni allora verifico se considerare solo i bordi
+      if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
+         for feature in featureIterator:
+            return feature, layer, point
+      else:
+         # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
+         for feature in featureIterator:
+            # Riduco le geometrie in point o polyline
+            geoms = asPointOrPolyline(feature.geometry())
+            for g in geoms:
+               if g.intersects(selectRect):
+                  return feature, layer, point
+
    return None
 
 
@@ -8589,7 +8642,7 @@ class QadLinearObjectList():
       if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
          provider.createSpatialIndex()
       
-      vectorLayer.beginEditCommand("selfJoin")     
+      vectorLayer.beginEditCommand("selfJoin")
       
       for featureIdToJoin in idList:
          #                         featureIdToJoin, vectorLayer, tolerance2ApproxCurve, tomyToleranceDist   

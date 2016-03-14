@@ -356,7 +356,7 @@ class Qad(QObject):
       self.initActions()
 
       # Connect to signals
-      QObject.connect(self.canvas, SIGNAL("mapToolSet(QgsMapTool*)"), self.deactivate)            
+      QObject.connect(self.canvas, SIGNAL("mapToolSet(QgsMapTool*)"), self.deactivate)
       
       # Add menu    
       self.menu = QMenu(QadMsg.translate("QAD", "QAD"))
