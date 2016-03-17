@@ -433,9 +433,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
          return self.getGripPointsFromQadArc(arc, atGeom, atSubGeom, grips)
       else:
          circle = QadCircle()
-         startEndVertices = circle.fromPolyline(pointList, 0)
-         # se la polilinea è composta solo da un cerchio
-         if startEndVertices and startEndVertices[0] == 0 and startEndVertices[1] == len(pointList)-1:
+         if circle.fromPolyline(pointList): # se la polilinea è un cerchio
             return self.getGripPointsFromQadCircle(circle, atGeom, atSubGeom)
          else:
             linearObjectList = qad_utils.QadLinearObjectList()

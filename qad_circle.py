@@ -414,23 +414,25 @@ class QadCircle():
    #============================================================================
    # fromPolyline
    #============================================================================
-   def fromPolyline(self, points, startVertex, atLeastNSegment = None):
+   def fromPolyline(self, points, atLeastNSegment = None):
       """
-      setta le caratteristiche del primo cerchio incontrato nella lista di punti
-      partendo dalla posizione startVertex (0-indexed)
-      ritorna la posizione nella lista del punto iniziale e finale se é stato trovato un cerchio
-      altrimenti None.
+      setta le caratteristiche del cerchio incontrato nella lista di punti
+      ritorna True se é stato trovato un cerchio altrimenti False.
       N.B. in punti NON devono essere in coordinate geografiche
       """
+      totPoints = len(points)
+
+      # il primo e l'ultimo punto devono coincidere
+      if qad_utils.ptNear(points[0], points[totPoints-1]) == False: return False
+      
       if atLeastNSegment is None:
          _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
       else:
          _atLeastNSegment = atLeastNSegment
       
-      totPoints = len(points)
       # perché sia un cerchio ci vogliono almeno _atLeastNSegment segmenti
-      if (totPoints - 1) - startVertex < _atLeastNSegment or _atLeastNSegment < 2:
-         return None
+      if (totPoints - 1) < _atLeastNSegment or _atLeastNSegment < 2:
+         return False
 
       # per problemi di approssimazione dei calcoli
       epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di una distanza con il raggio
@@ -439,11 +441,10 @@ class QadCircle():
       InfinityLinePerpOnMiddle2 = None
                  
       nSegment = 0
-      i = startVertex
+      i = 0
       while i < totPoints - 1:
          if InfinityLinePerpOnMiddle1 is None:
             InfinityLinePerpOnMiddle1 = qad_utils.getInfinityLinePerpOnMiddle(points[i], points[i + 1])
-            nStartVertex = i
             nSegment = 1
             i = i + 1
             continue
@@ -461,50 +462,56 @@ class QadCircle():
                if center is None: # linee parallele
                   InfinityLinePerpOnMiddle1 = InfinityLinePerpOnMiddle2
                   InfinityLinePerpOnMiddle2 = None
-                  nStartVertex = i
                   nSegment = 1
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
-                  maxDifference = radius * epsilon
+                  tolerance = radius * epsilon
                   
                   # calcolo il verso dell'arco e l'angolo dell'arco
                   # se un punto intermedio dell'arco è a sinistra del
                   # segmento che unisce i due punti allora il verso è antiorario
                   startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
                   angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                                    
+                  prevInfinityLinePerpOnMiddle = InfinityLinePerpOnMiddle2
          else: # e sono già stati valutati almeno 2 segmenti
-            # calcolo la distanza del punto dal presunto centro
-            dist = qad_utils.getDistance(center, points[i + 1])
-            # calcolo il verso dell'arco e l'angolo                 
-            clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
-            angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise)
-             
-            # se la distanza è così vicina a quella del raggio
-            # il verso dell'arco deve essere quello iniziale
-            # l'angolo dell'arco non può essere > 360 gradi
-            if qad_utils.doubleNear(radius, dist, maxDifference) and \
-               startClockWise == clockWise and \
-               (angle < 2 * math.pi or qad_utils.doubleNear(angle, 2 * math.pi)):                              
-               nSegment = nSegment + 1 # anche questo segmento fa parte del cerchio
-            else: # questo segmento non fa parte del cerchio
-               nStartVertex = i
-               nSegment = 1               
-               InfinityLinePerpOnMiddle1 = qad_utils.getInfinityLinePerpOnMiddle(points[i], points[i + 1])
-               InfinityLinePerpOnMiddle2 = None
-               
+            notInCircle = False
+            currInfinityLinePerpOnMiddle = qad_utils.getInfinityLinePerpOnMiddle(points[i], points[i + 1])
+            if currInfinityLinePerpOnMiddle is None:
+               notInCircle = True
+            else:
+               # calcolo il presunto centro con 2 segmenti
+               currCenter = qad_utils.getIntersectionPointOn2InfinityLines(prevInfinityLinePerpOnMiddle[0], \
+                                                                           prevInfinityLinePerpOnMiddle[1], \
+                                                                           currInfinityLinePerpOnMiddle[0], \
+                                                                           currInfinityLinePerpOnMiddle[1])
+               if currCenter is None: # linee parallele
+                  return False
+               else:
+                  # calcolo il verso dell'arco e l'angolo                 
+                  clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
+                  angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
+                             
+                  # se la distanza è così vicina a quella del raggio
+                  # il verso dell'arco deve essere quello iniziale
+                  # l'angolo dell'arco non può essere >= 360 gradi
+                  if qad_utils.ptNear(center, currCenter, tolerance) and \
+                     startClockWise == clockWise and \
+                     (angle < 2 * math.pi or qad_utils.doubleNear(angle, 2 * math.pi)):
+                     nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
+                     prevInfinityLinePerpOnMiddle = currInfinityLinePerpOnMiddle
+                  else:
+                     return False
+
          i = i + 1
 
       # se sono stati trovati un numero sufficiente di segmenti successivi
       if nSegment >= _atLeastNSegment:
-         nEndVertex = nStartVertex + nSegment
-         # se il punto iniziale e quello finale coincidono é un cerchio
-         if points[nStartVertex] == points[nEndVertex]:
-            self.center = center
-            self.radius = radius               
-            return nStartVertex, nEndVertex
+         self.center = center
+         self.radius = radius               
+         return True
 
-      return None
+      return False
 
 
    #============================================================================
@@ -1847,38 +1854,13 @@ class QadCircle():
 class QadCircleList():
    def __init__(self):
       self.circleList = [] # lista dei cerchi
-      self.startEndVerticesList = [] # lista degli estremi (posizioni dei vertici iniziali e finali)
+      self.ndxGeomList = [] # lista degli indici delle geometrie cerchio
+                            # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
+
 
    def clear(self):
       del self.circleList[:] # svuoto la lista
-      del self.startEndVerticesList[:] # svuoto la lista
-
-
-   #============================================================================
-   # fromPoints
-   #============================================================================
-   def fromPoints(self, points, atLeastNSegment = None):
-      """
-      setta la lista deg cerchi e degli estremi leggendo una sequenza di punti
-      ritorna il numero dei cerchi trovati
-      """
-      if atLeastNSegment is None:
-         _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
-      else:
-         _atLeastNSegment = atLeastNSegment
-      
-      self.clear()
-      startVertex = 0
-      circle = QadCircle()
-      startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
-      while startEndVertices is not None:
-         _circle = QadCircle(circle) # ne faccio una copia
-         self.circleList.append(_circle)
-         self.startEndVerticesList.append(startEndVertices)
-         startVertex = startEndVertices[1] # l'ultimo punto del cerchio
-         startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)               
-
-      return len(self.circleList)
+      del self.ndxGeomList[:] # svuoto la lista 0-based
 
 
    #============================================================================
@@ -1896,37 +1878,64 @@ class QadCircleList():
       
       self.clear()
       circle = QadCircle()
-      incremental = 0 
+      ndxGeom = 0
       # riduco in polilinee
-      geoms = qad_utils.asPointOrPolyline(geom)
-      for g in geoms:
-         points = g.asPolyline() # vettore di punti
-         startVertex = 0
-         startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
-         while startEndVertices is not None:
-            _circle = QadCircle(circle) # ne faccio una copia
-            self.circleList.append(_circle)
-            self.startEndVerticesList.append([startEndVertices[0] + incremental, startEndVertices[1] + incremental])
-            startVertex = startEndVertices[1] # l'ultimo punto del cerchio
-            startEndVertices = circle.fromPolyline(points, startVertex, _atLeastNSegment)
-                           
-         incremental = len(points) - 1
+      wkbType = geom.wkbType()
+      if wkbType == QGis.WKBLineString:
+         points = geom.asPolyline() # vettore di punti
+         if circle.fromPolyline(points, _atLeastNSegment):
+            self.circleList.append(circle)
+            self.ndxGeomList.append([ndxGeom])
+            return 1
+      elif wkbType == QGis.WKBMultiLineString:
+         lineList = geom.asMultiPolyline() # vettore di linee
+         for points in lineList:
+            if circle.fromPolyline(points, _atLeastNSegment):
+               self.circleList.append(QadCircle(circle)) # ne faccio una copia
+               self.ndxGeomList.append([ndxGeom])
+            ndxGeom = ndxGeom + 1
+      elif wkbType == QGis.WKBPolygon:
+         ndxSubGeom = 0
+         lineList = geom.asPolygon() # vettore di linee
+         for points in lineList:
+            if circle.fromPolyline(points, _atLeastNSegment):
+               self.circleList.append(QadCircle(circle)) # ne faccio una copia
+               self.ndxGeomList.append([ndxGeom, ndxSubGeom])
+            ndxSubGeom = ndxSubGeom + 1
+      elif wkbType == QGis.WKBMultiPolygon:
+         polygonList = geom.asMultiPolygon() # vettore di poligoni
+         for polygon in polygonList:
+            ndxSubGeom = 0
+            for points in lineList:
+               if circle.fromPolyline(points, _atLeastNSegment):
+                  self.circleList.append(QadCircle(circle)) # ne faccio una copia
+                  self.ndxGeomList.append([ndxGeom, ndxSubGeom])
+               ndxSubGeom = ndxSubGeom + 1
+            ndxGeom = ndxGeom + 1
 
       return len(self.circleList)
 
+
    #============================================================================
-   # fromGeom
+   # circleAt
    #============================================================================
-   def circleAt(self, iVertex):
+   def circleAt(self, iGeomSubGeom):
       """
-      cerca se esiste un cerchio al vertice <iVertex>
-      restituisce una lista con <cerchio>, <lista con punto iniziale e finale>
-      oppure None se cerchio non trovato
+      cerca se esiste un cerchio alla geometria in posizione <iGeomSubGeom>.
+      La posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>]).
+      Restituisce il cerchio oppure None se cerchio non trovato
       """
+      if iGeomSubGeom is None: return None
+      iGeom = iGeomSubGeom[0]
+      iSubGeom = 0 if len(iGeomSubGeom) < 2 else iGeomSubGeom[1]
+      
       i = 0
-      for startEndVertices in self.startEndVerticesList:
-         if iVertex >= startEndVertices[0] and iVertex <= startEndVertices[1]:
-            return self.circleList[i], startEndVertices
+      for ndxGeom in self.ndxGeomList:
+         if ndxGeom[0] == iGeom:
+            if len(ndxGeom) > 1: # c'è anche la sottogeometria
+               if ndxGeom[1] == iSubGeom: return self.circleList[i]
+            else:
+               return self.circleList[i]
          i = i + 1
       
       return None

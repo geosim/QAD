@@ -92,13 +92,12 @@ class QadEntSelClass(QadCommandClass):
    #============================================================================
    def getLayersToCheck(self):      
       layerList = []
-      for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
+      for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
          # considero solo i layer vettoriali che sono filtrati per tipo
-         if (layer.type() == QgsMapLayer.VectorLayer) and \
-             ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
-              (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
-              (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
-              (self.onlyEditableLayers == False or layer.isEditable()):
+         if ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
+             (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
+             (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
+             (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
                len(QadDimStyles.getDimListByLayer(layer)) == 0:

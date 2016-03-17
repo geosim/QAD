@@ -90,9 +90,7 @@ class QadEntity():
          return QadEntityGeomTypeEnum.ARC, arc # oggetto arco
       else:
          circle = QadCircle()
-         startEndVertices = circle.fromPolyline(pointList, 0)
-         # se la polilinea è composta solo da un cerchio
-         if startEndVertices and startEndVertices[0] == 0 and startEndVertices[1] == len(pointList)-1:
+         if circle.fromPolyline(pointList): # se la polilinea è un cerchio
             return QadEntityGeomTypeEnum.CIRCLE, circle # oggetto cerchio
          else:
             linearObjectList = qad_utils.QadLinearObjectList() # oggetto QadLinearObjectList

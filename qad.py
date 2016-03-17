@@ -139,7 +139,7 @@ class Qad(QObject):
    # version
    #============================================================================
    def version(self):
-      return "2.8.007"
+      return "2.8.008"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):

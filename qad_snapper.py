@@ -28,6 +28,7 @@ import os.path
 from qgis.core import *
 import math
 import sys
+import bisect
 
 
 import qad_utils
@@ -124,7 +125,7 @@ class QadSnapper():
       if self.__snapType != snapType:
          self.__snapType = snapType
          self.clearCacheSnapPoints()
-         self.removeReferenceLines()         
+         self.removeReferenceLines()
    def getSnapType(self):
       """
       Restituisce il tipo di snapping
@@ -383,6 +384,7 @@ class QadSnapper():
    def getOSnapLinesForPolar(self):
       return self.__oSnapLinesForPolar
 
+
    #===========================================================================
    # ReferenceLines
    #===========================================================================
@@ -417,9 +419,8 @@ class QadSnapper():
       circle = None
       circleList = QadCircleList()
       if circleList.fromGeom(g) > 0:
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
+         subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+         circle = circleList.circleAt(ndxGeom)
 
       pt1 = g.vertexAt(afterVertex - 1)   
       pt2 = g.vertexAt(afterVertex)   
@@ -494,14 +495,16 @@ class QadSnapper():
 
       # cerca nella cache i punti di snap statici per una geometria
       if geom is not None:
-         staticSnapPoints = self.__getCacheSnapPoints(g)
-         if staticSnapPoints is None:
-            staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom)
-            self.__setCacheSnapPoints(g, staticSnapPoints)
+         staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom, p)
+         # non uso la cache perchè in caso di multistring o polygon o multipolygon viene usata solo la geometria più vicina a p
+         #staticSnapPoints = self.__getCacheSnapPoints(g)
+         #if staticSnapPoints is None:
+         #   staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom)
+         #   self.__setCacheSnapPoints(g, staticSnapPoints)
       else:
          staticSnapPoints = dict()
       
-      # snap dinamici  
+      # snap dinamici
       dynamicSnapPoints = self.getDynamicSnapPoints(g, p)
 
       allSnapPoints = staticSnapPoints
@@ -531,7 +534,7 @@ class QadSnapper():
       else:
          result = allSnapPoints # Vengono restituiti tutti i punti
       
-      if excludePoints is not None:         
+      if excludePoints is not None:
          for p in excludePoints:
             self.__delPoint(p, result)
             
@@ -556,40 +559,66 @@ class QadSnapper():
    #============================================================================
    # getStaticSnapPoints
    #============================================================================
-   def getStaticSnapPoints(self, geom, CRS = None, isTemporaryGeom = False):
+   def getStaticSnapPoints(self, geom, CRS = None, isTemporaryGeom = False, currentMousePt = None):
       """
       Data una geometria ottiene i punti di snap statici che non dipendono dalla 
       posizione del cursore.
-      Resituisce un dizionario di liste di punti di snap
+      Restituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       - CRS = sistema di coordinate in cui é espressa la geom  (QgsCoordinateReferenceSystem)
       - isTemporaryGeom flag che indica se geom é  un oggetto temporaneo che ancora non esiste      
+      - currentMousePt = posizione corrente del mouse (in map coordinate). Se viene passato questo parametro
+                         viene considerato solo la geometria più vicino a currentMousePt.
       """
      
       result = dict()
 
       if (self.__snapType & QadSnapTypeEnum.DISABLE):
          return result
+
+      if geom is None:
+         return result
+                  
+      g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+      wkbType = g.wkbType()
+      
+      storeInCachePts = False
+      if (currentMousePt is not None) and \
+         (wkbType == QGis.WKBMultiLineString or wkbType == QGis.WKBPolygon or wkbType == QGis.WKBMultiPolygon):
+         mousePt = self.__transformPoint(currentMousePt, CRS, self.getSnapPointCRS())         
+         dummy = qad_utils.closestSegmentWithContext(mousePt, g)
+         if dummy[2] is not None:
+            # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
+            g, atSubGeom1 = qad_utils.getSubGeomAtVertex(g, dummy[2])
+            
+            # uso la cache per la sottogeometria
+            staticSnapPoints = self.__getCacheSnapPoints(g)
+            if staticSnapPoints is not None:
+               return staticSnapPoints
+            storeInCachePts = True
       
       if self.__snapType & QadSnapTypeEnum.END:
-         result[QadSnapTypeEnum.END] = self.getEndPoints(geom, CRS)
+         result[QadSnapTypeEnum.END] = self.getEndPoints(g, None, QadVertexSearchModeEnum.ALL)
       if self.__snapType & QadSnapTypeEnum.END_PLINE:
-         result[QadSnapTypeEnum.END_PLINE] = self.getEndPoints(geom, CRS, QadVertexSearchModeEnum.ONLY_START_END)
+         result[QadSnapTypeEnum.END_PLINE] = self.getEndPoints(g, None, QadVertexSearchModeEnum.ONLY_START_END)
       if self.__snapType & QadSnapTypeEnum.MID:
-         result[QadSnapTypeEnum.MID] = self.getMidPoints(geom, CRS)
+         result[QadSnapTypeEnum.MID] = self.getMidPoints(g, None)
       if self.__snapType & QadSnapTypeEnum.NOD:
-         result[QadSnapTypeEnum.NOD] = self.getNodPoint(geom, CRS)      
+         result[QadSnapTypeEnum.NOD] = self.getNodPoint(g, None)
       if self.__snapType & QadSnapTypeEnum.QUA:
-         result[QadSnapTypeEnum.QUA] = self.getQuaPoints(geom, CRS)
+         result[QadSnapTypeEnum.QUA] = self.getQuaPoints(g, None)
       if self.__snapType & QadSnapTypeEnum.INT:
-         result[QadSnapTypeEnum.INT] = self.getIntPoints(geom, CRS, isTemporaryGeom)
+         result[QadSnapTypeEnum.INT] = self.getIntPoints(g, None, isTemporaryGeom)
       if self.__snapType & QadSnapTypeEnum.INS:
-         result[QadSnapTypeEnum.INS] = self.getNodPoint(geom, CRS)
+         result[QadSnapTypeEnum.INS] = self.getNodPoint(g, None)
       if self.__snapType & QadSnapTypeEnum.APP:
-         result[QadSnapTypeEnum.APP] = self.getIntPoints(geom, CRS, isTemporaryGeom)
+         result[QadSnapTypeEnum.APP] = self.getIntPoints(g, None, isTemporaryGeom)
       if self.__snapType & QadSnapTypeEnum.CEN:
-         result[QadSnapTypeEnum.CEN] = self.getCenPoint(geom, CRS)
-               
+         result[QadSnapTypeEnum.CEN] = self.getCenPoint(g, None)
+
+      if storeInCachePts: 
+         self.__setCacheSnapPoints(g, result)
+
       return result
  
  
@@ -643,33 +672,36 @@ class QadSnapper():
       """
       Cerca i punti iniziali e finali dei segmenti di una linea o di una multi-linea.
       - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
+      - VertexSearchMode = modalità di ricerca dei punti finali
       Ritorna una lista di punti QgsPoint
       """
       result = []
 
       if geom is None:
          return result
-      
+                  
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+      
+      circle  = QadCircle()
       
       geoms = qad_utils.asPointOrPolyline(g)
       for igeom in geoms:
          if (igeom.wkbType() == QGis.WKBLineString):
+            points = igeom.asPolyline() # vettore di punti
+            
+            # verifico se è un cerchio lo salto
+            if circle.fromPolyline(points): continue
+             
             # verifico se ci sono archi
             arcList = QadArcList()
             arcList.fromGeom(igeom)
-
-            # verifico se ci sono cerchi
-            circleList = QadCircleList()
-            circleList.fromGeom(igeom)                          
             
-            points = igeom.asPolyline() # vettore di punti
             i = 1
             vertexCount = len(points)
             for ipoint in points:
                _arc = arcList.arcAt(i - 1)
-               _circle = circleList.circleAt(i - 1)
                
+               inser = False
                if _arc is not None: # se questo punto appartiene ad un arco
                   startEnd = _arc[1]
                   # se il punto corrisponde al punto iniziale o finale dell'arco
@@ -678,9 +710,7 @@ class QadSnapper():
                      inser = True
                   else:
                      inser = False                                
-               elif _circle is not None: # se questo punto appartiene ad un cerchio
-                  inser = False
-               else: # se questo punto non appartiene né ad un arco ne ad un cerchio 
+               else: # se questo punto non appartiene né ad un arco nè ad un cerchio
                   inser = True
                
                if inser == True:
@@ -693,7 +723,7 @@ class QadSnapper():
                   else:
                      self.__appendUniquePoint(result, ipoint) # aggiungo senza duplicazione
                   
-               i = i + 1            
+               i = i + 1
       
       return result
 
@@ -714,28 +744,30 @@ class QadSnapper():
       
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
       
+      circle  = QadCircle()
+      
       geoms = qad_utils.asPointOrPolyline(g)
       for igeom in geoms:
          if (igeom.wkbType() == QGis.WKBLineString):
+            points = igeom.asPolyline() # vettore di punti
+            
+            # verifico se è un cerchio lo salto
+            if circle.fromPolyline(points): continue
+
             # verifico se ci sono archi
             arcList = QadArcList()
             if arcList.fromGeom(igeom) > 0:
                for arc in arcList.arcList:
                   self.__appendUniquePoint(result, arc.getMiddlePt()) # senza duplicazione                 
             
-            # verifico se ci sono cerchi
-            circleList = QadCircleList()
-            circleList.fromGeom(igeom)                          
-            
-            points = igeom.asPolyline() # vettore di punti
             first = True
             i = 0
             for ipoint in points:
                if first == True:
                   first = False
                else:
-                  # se questo punto non appartiene ad un arco né ad un cerchio
-                  if (arcList.arcAt(i) is None) and (circleList.circleAt(i) is None):                  
+                  # se questo punto non appartiene ad un arco
+                  if (arcList.arcAt(i) is None):
                      point = qad_utils.getMiddlePoint(prevPoint, ipoint)
                      self.__appendUniquePoint(result, point) # senza duplicazione
                prevPoint = ipoint
@@ -771,59 +803,25 @@ class QadSnapper():
          elif wkbType == QGis.WKBMultiPoint:
             for centroidPt in centroidGeom.asMultiPoint(): # vettore di punti
                self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione         
+      
+      circle  = QadCircle()
 
       # cerco i cerchi e gli archi presenti in geom
       geoms = qad_utils.asPointOrPolyline(g)
       for igeom in geoms:
          if (igeom.wkbType() == QGis.WKBLineString):
-            # verifico se ci sono archi
-            arcList = QadArcList()
-            if arcList.fromGeom(igeom) > 0:
-               for arc in arcList.arcList:
-                  self.__appendUniquePoint(result, arc.center) # senza duplicazione
+            points = igeom.asPolyline() # vettore di punti
             
-            # verifico se ci sono cerchi
-            circleList = QadCircleList()
-            if circleList.fromGeom(igeom) > 0:
-               for circle in circleList.circleList:
-                  self.__appendUniquePoint(result, circle.center) # senza duplicazione
+            # verifico se è un cerchio
+            if circle.fromPolyline(points):
+               self.__appendUniquePoint(result, circle.center) # senza duplicazione
+            else:
+               # verifico se ci sono archi
+               arcList = QadArcList()
+               if arcList.fromGeom(igeom) > 0:
+                  for arc in arcList.arcList:
+                     self.__appendUniquePoint(result, arc.center) # senza duplicazione
 
-      return result
-
-
-
-
-
-
-
-      wkbType = geom.wkbType()
-
-      # ritorna una tupla (<The squared cartesian distance>,
-      #                    <minDistPoint>
-      #                    <afterVertex>)
-      dummy = qad_utils.closestSegmentWithContext(point, geom)
-      afterVertex = dummy[2]
-      if afterVertex is None:
-         return result
-
-      g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
-      
-      # verifico se ci sono cerchi
-      circleList = QadCircleList()
-      if circleList.fromGeom(g) > 0:
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
-            self.__appendUniquePoint(result, circle.center) # senza duplicazione                 
-
-      # verifico se ci sono archi         
-      arcList = QadArcList()
-      if arcList.fromGeom(g) > 0:        
-         info = arcList.arcAt(afterVertex)
-         if info is not None:
-            arc = info[0]
-            self.__appendUniquePoint(result, arc.center) # senza duplicazione                 
-               
       return result
 
 
@@ -1003,9 +1001,9 @@ class QadSnapper():
       # verifico se ci sono cerchi
       circleList = QadCircleList()
       if circleList.fromGeom(g) > 0:                          
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
+         subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+         circle = circleList.circleAt(ndxGeom)
+         if circle is not None:
             PerpendicularPoints = circle.getPerpendicularPoints(startPointCRS)
             if PerpendicularPoints is not None:
                for PerpendicularPoint in PerpendicularPoints:
@@ -1515,9 +1513,8 @@ class QadSnapper():
          circle = None
          circleList = QadCircleList()
          if circleList.fromGeom(g) > 0:
-            info = circleList.circleAt(afterVertex)
-            if info is not None:
-               circle = info[0]
+            subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+            circle = circleList.circleAt(ndxGeom)
 
       if (arc is None) and (circle is None): # nessun arco e cerchio
          p1 = self.__transformPoint(g.vertexAt(afterVertex - 1), CRS, self.getSnapPointCRS()) # trasformo il punto
@@ -1565,9 +1562,40 @@ class QadSnapper():
       Resituisce True se l'inserimento é avvenuto False se il punto c'era già.
       """
       _point = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto
-      return qad_utils.appendUniquePointToList(pointList, _point)
+      
+      # Si assume che la lista sia ordinata, l'inserimento avverà mantenendo l'ordinamento
+      lo = 0
+      hi = len(pointList)
+      while lo < hi:
+         mid = (lo + hi) // 2 # digits after the decimal point are removed
+         
+         if self.__comparePts(pointList[mid], point) == -1: lo = mid+1
+         else: hi = mid
 
+      if lo != len(pointList) and self.__comparePts(pointList[lo], point) == 0: # il punto c'era già
+         return False
+      pointList.insert(lo, point)
+      return True
+      
+      #return qad_utils.appendUniquePointToList(pointList, _point)
 
+   
+   #============================================================================
+   # __comparePts
+   #============================================================================
+   def __comparePts(self, p1, p2):
+      # compara 2 punti, ritorna 0 se sono uguali, -1 se il primo < del secondo, 1 se il primo > del secondo 
+      if p1.x() > p2.x(): return 1
+      if p1.x() < p2.x(): return -1
+      # le x sono uguali quindi verifici le y
+      if p1.y() > p2.y(): return 1
+      if p1.y() < p2.y(): return -1
+      return 0 # numeri uguali
+   
+   
+   #============================================================================
+   # __layerToMapCoordinatesPointList
+   #============================================================================
    def __layerToMapCoordinatesPointList(self, pointList, layer, mQgsMapRenderer):
       """
       Trasforma una lista punti da coordinate layer a coordinate map.
@@ -1607,7 +1635,7 @@ class QadSnapper():
 
    def __transformGeomToSnapPointCRS(self, geom, CRS = None):
       """
-      Trasformala geometria nel sistema di coordinate dei punti di snap
+      Trasforma la geometria nel sistema di coordinate dei punti di snap
       CRS é QgsCoordinateReferenceSystem della geometria
       """
       if geom is None:
@@ -1643,7 +1671,7 @@ class QadSnapper():
 
          # se il punto trovato é più distante di <__distToExcludeNea> allora considero anche
          # eventuali punti NEA
-         if minDist > self.__distToExcludeNea:            
+         if minDist > self.__distToExcludeNea:
             # se é stato selezionato lo snap di tipo NEA
             if QadSnapTypeEnum.NEA in SnapPoints.keys():
                items = SnapPoints[QadSnapTypeEnum.NEA]

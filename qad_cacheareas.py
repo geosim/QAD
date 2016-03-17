@@ -322,7 +322,7 @@ class QadLayerCacheGeomsDict():
       boundBox = self.canvas.extent() # in map coordinate
 
       if layersToCheck is None:
-         # Tutti i layer visibili visibili
+         # Tutti i layer visibili
          _layers = self.canvas.layers()
       else:
          # solo la lista passata come parametro

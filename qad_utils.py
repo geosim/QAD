@@ -491,8 +491,6 @@ def getStrIntDecParts(n):
       return None
    
 
-
-
 #===============================================================================
 # distMapToLayerCoordinates
 #===============================================================================
@@ -683,7 +681,22 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
 
    return request
 
-   
+
+#===============================================================================
+# getVisibleVectorLayers
+#===============================================================================
+def getVisibleVectorLayers(canvas):
+   # Tutti i layer vettoriali visibili
+   layers = canvas.layers()
+   for i in xrange(len(layers) - 1, -1, -1):
+      # se il layer non è vettoriale o non è visibile a questa scala
+      if layers[i].type() != QgsMapLayer.VectorLayer or \
+         layers[i].hasScaleBasedVisibility() and \
+         (canvas.mapSettings().scale() < layers[i].minimumScale() or canvas.mapSettings().scale() > layers[i].maximumScale()):
+         del layers[i]
+   return layers
+
+
 #===============================================================================
 # getEntSel
 #===============================================================================
@@ -714,17 +727,25 @@ def getEntSel(point, mQgsMapTool, boxSize, \
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
-      # Tutti i layer visibili visibili
-      _layers = mQgsMapTool.canvas.layers()
+      # Tutti i layer vettoriali visibili
+      _layers = getVisibleVectorLayers(mQgsMapTool.canvas) # Tutti i layer vettoriali visibili
    else:
       # solo la lista passata come parametro
       _layers = layersToCheck
 
    # se il processo può essere ottimizzato con il primo layer in cui cercare
    if firstLayerToCheck is not None:
-      res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict)
-      if res is not None:
-         return res
+      # considero solo se layer vettoriale visibile che è filtrato per tipo
+      if firstLayerToCheck.type() == QgsMapLayer.VectorLayer and \
+         (onlyEditableLayers == False or firstLayerToCheck.isEditable()) and \
+         (firstLayerToCheck.hasScaleBasedVisibility() == False or \
+          (mQgsMapTool.canvas.mapSettings().scale() >= firstLayerToCheck.minimumScale() and mQgsMapTool.canvas.mapSettings().scale() <= firstLayerToCheck.maximumScale())) and \
+         ((firstLayerToCheck.geometryType() == QGis.Point and checkPointLayer == True) or \
+          (firstLayerToCheck.geometryType() == QGis.Line and checkLineLayer == True) or \
+          (firstLayerToCheck.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict)
+         if res is not None:
+            return res
       
    for layer in _layers: # ciclo sui layer
       # se il processo può essere ottimizzato con il primo layer in cui cercare lo salto in questo ciclo
@@ -732,11 +753,11 @@ def getEntSel(point, mQgsMapTool, boxSize, \
          continue;
       
       # considero solo i layer vettoriali che sono filtrati per tipo
-      if (layer.type() == QgsMapLayer.VectorLayer) and \
+      if layer.type() == QgsMapLayer.VectorLayer and \
+          (onlyEditableLayers == False or layer.isEditable()) and \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
-           (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
-           (onlyEditableLayers == False or layer.isEditable()):
+           (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
          res = getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary, layerCacheGeomsDict)         
          
          if res is not None:
@@ -983,8 +1004,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
-      # Tutti i layer visibili visibili
-      _layers = mQgsMapTool.canvas.layers()
+      # Tutti i layer visibili
+      _layers = qad_utils.getVisibleVectorLayers(mQgsMapTool.canvas) # Tutti i layer vettoriali visibili
    else:
       # solo la lista passata come parametro
       _layers = layersToCheck
@@ -2217,7 +2238,7 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
                distPoint = result[1] 
 
                if testdist < sqrDist:
-                  closestSegmentIndex = index
+                  closestSegmentIndex = pointindex
                   sqrDist = testdist
                   minDistPoint = distPoint
 
@@ -3637,7 +3658,7 @@ def getSubGeomAtVertex(geom, atVertex):
    
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
       if atVertex != 0:
-         return None
+         return None, None
       else:
          return QgsGeometry(geom), [0]
 
@@ -3664,7 +3685,7 @@ def getSubGeomAtVertex(geom, atVertex):
          lineLen = len(line)
          if atVertex >= i and atVertex < i + lineLen:
             return QgsGeometry.fromPolyline(line), [iLine]
-         i = lineLen 
+         i = i + lineLen 
          iLine = iLine + 1
       return None, None
    
@@ -3676,7 +3697,7 @@ def getSubGeomAtVertex(geom, atVertex):
          lineLen = len(line)
          if atVertex >= i and atVertex < i + lineLen:
             return QgsGeometry.fromPolyline(line), [iLine]
-         i = lineLen 
+         i = i + lineLen 
          iLine = iLine + 1
       return None, None
 
@@ -3690,15 +3711,15 @@ def getSubGeomAtVertex(geom, atVertex):
             lineLen = len(line)
             if atVertex >= i and atVertex < i + lineLen:
                return QgsGeometry.fromPolyline(line), [iPolygon, iLine]
-            i = lineLen 
+            i = i + lineLen 
             iLine = iLine + 1
          iPolygon = iPolygon + 1
    
-   return None
+   return None, None
 
 
 #===============================================================================
-# setSubGeomAt
+# getSubGeomAt
 #===============================================================================
 def getSubGeomAt(geom, atSubGeom):
    # ritorna la sotto-geometria la cui posizione
@@ -5999,9 +6020,7 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
 
    # verifico se é un cerchio
    circle = QadCircle()
-   startEndVertices = circle.fromPolyline(points, 0)
-   if startEndVertices is not None and \
-      startEndVertices[0] == 0 and startEndVertices[1] == (pointsLen - 1):
+   if circle.fromPolyline(points):
       # siccome i punti del cerchio sono disegnati in senso antiorario
       # se offSetSide = "right" significa verso l'esterno del cerchio
       # se offSetSide = "left" significa verso l'interno del cerchio
@@ -6120,19 +6139,11 @@ def ApproxCurvesOnGeom(geom, atLeastNSegmentForArc = None, atLeastNSegmentForCir
    # dall'ultimo cerchio al primo
    for i in xrange(len(circleList.circleList) - 1, -1, -1): 
       circle = circleList.circleList[i]
-      startVertex = circleList.startEndVerticesList[i][0]
-      endVertex = circleList.startEndVerticesList[i][1]
-      points = circle.asPolyline(tolerance)
-      # inserisco i nuovi vertici saltando il primo e l'ultimo
-      for i in xrange(len(points) - 2, 0, -1): 
-         if g.insertVertex(points[i].x(), points[i].y(), endVertex) == False:
-            return None
-      # cancello i vecchi vertici
-      for i in range(0, endVertex - startVertex - 1):
-         if g.deleteVertex(startVertex + 1) == False:
-            return None
+      ndxGeom = circleList.ndxGeomList[i] # (<index ogg. princ> [<index ogg. sec.>])
+      g = setSubGeom(g, ndxGeom[0], 0 if len(ndxGeom) == 1 else ndxGeom[1])
 
    return g
+
 
 #===============================================================================
 # whatGeomIs
@@ -6160,9 +6171,10 @@ def whatGeomIs(pt, geom):
       
    # verifico se pt si riferisce ad un cerchio
    if circleList.fromGeom(geom) > 0:
-      info = circleList.circleAt(afterVertex)
-      if info is not None:
-         return info[0]
+      subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+      circle = circleList.circleAt(ndxGeom)
+      if circle is not None:
+         return circle
       
    # se non é un cerchio é una linea
    pt1 = geom.vertexAt(afterVertex - 1)
@@ -8214,7 +8226,7 @@ class QadLinearObjectList():
       """
       points = self.asPolyline() # vettore di punti
       circle = QadCircle()
-      return circle if circle.fromPolyline(points, 0) is not None else None
+      return circle if circle.fromPolyline(points) else None
 
 
    #============================================================================

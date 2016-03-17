@@ -215,9 +215,8 @@ class Qad_lengthen_maptool(QadGetPoint):
 
          # solo layer di tipo lineari che non appartengano a quote o di tipo poligono 
          layerList = []
-         for layer in self.plugIn.canvas.layers():
-            if layer.type() == QgsMapLayer.VectorLayer and \
-               layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
+         for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+            if layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
                if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
@@ -237,9 +236,8 @@ class Qad_lengthen_maptool(QadGetPoint):
 
          # solo layer lineari editabili che non appartengano a quote
          layerList = []
-         for layer in self.plugIn.canvas.layers():
-            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and \
-               layer.isEditable():
+         for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+            if layer.geometryType() == QGis.Line and layer.isEditable():
                if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          

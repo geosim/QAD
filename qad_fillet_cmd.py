@@ -461,9 +461,8 @@ class QadFILLETCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and \
-                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                      layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
@@ -529,9 +528,8 @@ class QadFILLETCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and \
-                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                      layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
@@ -671,9 +669,8 @@ class QadFILLETCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari o poligono editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and \
-                     (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                      layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)

@@ -249,7 +249,7 @@ class QadMapTool(QgsMapTool):
       # posizione corrente del mouse
       self.__csrRubberBand.moveEvent(self.toMapCoordinates(self.canvas.mouseLastXY()))
       self.__csrRubberBand.show()
-      self.entitySet.initByCurrentQgsSelectedFeatures(self.canvas.layers())
+      self.entitySet.initByCurrentQgsSelectedFeatures(qad_utils.getVisibleVectorLayers(self.canvas)) # Tutti i layer vettoriali visibili
       self.refreshEntityGripPoints(self.entitySet)
 
       self.plugIn.QadCommands.continueCommandFromMapTool()

@@ -483,10 +483,10 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
 
       atPart = atPart + 1
    
-      pt = linearObjectListToStretch.getCentroid(tolerance2ApproxCurve) # verifico se polilinea ha un centroide
-      if pt is not None:
-         if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
-            linearObjectListToStretch.move(offSetX, offSetY)
+   pt = linearObjectListToStretch.getCentroid(tolerance2ApproxCurve) # verifico se polilinea ha un centroide
+   if pt is not None:
+      if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
+         linearObjectListToStretch.move(offSetX, offSetY)
    
    pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
    stretchedGeom = QgsGeometry.fromPolyline(pts)    
