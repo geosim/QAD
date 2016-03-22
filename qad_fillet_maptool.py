@@ -107,7 +107,7 @@ class Qad_fillet_maptool(QadGetPoint):
        
       # si richiede la selezione del secondo oggetto
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:
-         if self.tmpEntity.isInitialized():                                                         
+         if self.tmpEntity.isInitialized():
             # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
             geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
             

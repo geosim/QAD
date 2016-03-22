@@ -331,11 +331,12 @@ class QadSnapPointsDisplayManager():
          self.__vertexMarkers.append(self.getVertexMarker(QadSnapTypeEnum.EXT_INT, point))
       
       # punti di osnap usati per l'opzione polare
-      for snapPoint in oSnapPointsForPolar.items():
-         snapType = snapPoint[0]
-         for item in snapPoint[1]:
-            # disegno il marcatore di snap
-            self.__vertexMarkers.append(self.getVertexMarker(snapType, item))
+      if oSnapPointsForPolar is not None:
+         for snapPoint in oSnapPointsForPolar.items():
+            snapType = snapPoint[0]
+            for item in snapPoint[1]:
+               # disegno il marcatore di snap
+               self.__vertexMarkers.append(self.getVertexMarker(snapType, item))
 
             
    def getVertexMarker(self, snapType, point):

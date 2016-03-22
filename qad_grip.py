@@ -631,7 +631,7 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
       for entityGripPoint in self.entityGripPoints:
          res = entityGripPoint.isIntersecting(point)
          if res is not None:
-            return entityGripPoint 
+            return res 
       return None
 
       

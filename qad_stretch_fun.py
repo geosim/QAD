@@ -460,7 +460,7 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
    
    atPart = 0
    while atPart < linearObjectListToStretch.qty():
-      linearObject = linearObjectListToStretch.getLinearObjectAt(atPart)      
+      linearObject = linearObjectListToStretch.getLinearObjectAt(atPart)
       if linearObject.isSegment():
          pt = linearObject.getStartPt()
          if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch

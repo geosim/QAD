@@ -161,7 +161,7 @@ class QadLayerCacheGeoms():
          if self.cacheLayer.startEditing() == False:
             return False
          
-         if self.cacheLayer.updateFeature(fid):
+         if self.cacheLayer.updateFeature(feature):
             return self.cacheLayer.commitChanges()
          else:
             self.cacheLayer.rollBack()

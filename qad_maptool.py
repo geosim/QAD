@@ -152,7 +152,8 @@ class QadMapTool(QgsMapTool):
                      selectedEntityGripPoints = self.entitySetGripPoints.getSelectedEntityGripPoints()
 
                # lancio il comando
-               self.plugIn.runCommand("QadVirtualGripCommandsClass", [QadVirtualGripCommandsEnum.STRECTH, self.entitySetGripPoints, point])
+               self.plugIn.runCommand("QadVirtualGripCommandsClass", [QadVirtualGripCommandsEnum.STRECTH, \
+                                      self.entitySetGripPoints, entityGripPoint.getPoint()])
             else: # shift premuto
                # inverto lo stato ai grip che intersecano il punto 
                self.entitySetGripPoints.toggleSelectIntersectingGripPoints(point)
@@ -245,6 +246,7 @@ class QadMapTool(QgsMapTool):
 
    
    def activate(self):
+      self.canvas.setToolTip("")
       self.canvas.setCursor(self.cursor)
       # posizione corrente del mouse
       self.__csrRubberBand.moveEvent(self.toMapCoordinates(self.canvas.mouseLastXY()))

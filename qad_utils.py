@@ -703,7 +703,7 @@ def getVisibleVectorLayers(canvas):
 def getEntSel(point, mQgsMapTool, boxSize, \
               layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
               onlyBoundary = True, onlyEditableLayers = False, \
-              layerCacheGeomsDict = None, firstLayerToCheck = None):
+              firstLayerToCheck = None, layerCacheGeomsDict = None, returnFeatureCached = False):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
@@ -714,8 +714,9 @@ def getEntSel(point, mQgsMapTool, boxSize, \
    checkPolygonLayer = opzionale, considera i layer di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
    onlyEditableLayers = per cercare solo nei layer modificabili
-   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
    firstLayerToCheck = per ottimizzare la ricerca, primo layer da controllare
+   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
+   returnFeatureCached = per ottimizzare, ritorna la featura letta dalla cache (quando interessa solo la geometria)
    
    Restituisce una lista composta da una QgsFeature e il suo layer e il punto di selezione 
    in caso di successo altrimenti None 
@@ -743,9 +744,10 @@ def getEntSel(point, mQgsMapTool, boxSize, \
          ((firstLayerToCheck.geometryType() == QGis.Point and checkPointLayer == True) or \
           (firstLayerToCheck.geometryType() == QGis.Line and checkLineLayer == True) or \
           (firstLayerToCheck.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
-         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict)
+         # restituisce feature, point
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict, returnFeatureCached)
          if res is not None:
-            return res
+            return res[0], firstLayerToCheck, res[1]
       
    for layer in _layers: # ciclo sui layer
       # se il processo può essere ottimizzato con il primo layer in cui cercare lo salto in questo ciclo
@@ -758,10 +760,10 @@ def getEntSel(point, mQgsMapTool, boxSize, \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
            (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
-         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary, layerCacheGeomsDict)         
-         
+         # restituisce feature, point
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary, layerCacheGeomsDict, returnFeatureCached)
          if res is not None:
-            return res
+            return res[0], layer, res[1]
 
    #QApplication.restoreOverrideCursor()
    return None
@@ -771,15 +773,15 @@ def getEntSel(point, mQgsMapTool, boxSize, \
 # getEntSelOnLayer
 #===============================================================================
 def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
-                     layerCacheGeomsDict = None):
+                     layerCacheGeomsDict = None, returnFeatureCached = False):
    """
-   dato un punto (in screen coordinates) e un QgsMapTool, 
+   dato un punto (in screen coordinates) e un QgsMapTool,
    la funzione cerca la prima entità del layer dentro il quadrato
    di dimensioni <boxSize> (in pixel) centrato sul punto <point>
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
    layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
    
-   Restituisce una lista composta da una QgsFeature e il suo layer e il punto di selezione 
+   Restituisce una lista composta da una QgsFeature e il punto di selezione 
    in caso di successo altrimenti None 
    """           
    layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
@@ -801,11 +803,13 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
          # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
             if cachedFeature.geometry().intersects(selectRect):
+               if returnFeatureCached: # ritorna la feature della cache
+                  return cachedFeature, point
                # ottengo la feature del layer
                featureRequest.setFilterFid(cachedFeature.attribute("index"))
                featureIterator = layer.getFeatures(featureRequest)      
                for feature in featureIterator:
-                  return feature, layer, point
+                  return feature, point
          else:
             # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
             # Riduco le geometrie in point o polyline
@@ -814,11 +818,14 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
                #start = time.time() # test
                #for i in range(1, 10):
                if g.intersects(selectRect):
+                  if returnFeatureCached: # ritorna la feature della cache
+                     return cachedFeature, point
+                  
                   # ottengo la feature del layer
                   featureRequest.setFilterFid(cachedFeature.attribute("index"))
                   featureIterator = layer.getFeatures(featureRequest)      
                   for feature in featureIterator:
-                     return feature, layer, point
+                     return feature, point
                #tempo = ((time.time() - start) * 1000) # test
                #tempo += 0 # test
    else:
@@ -828,7 +835,7 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
       # se é un layer contenente poligoni allora verifico se considerare solo i bordi
       if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
          for feature in featureIterator:
-            return feature, layer, point
+            return feature, point
       else:
          # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
          for feature in featureIterator:
@@ -836,7 +843,7 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
             geoms = asPointOrPolyline(feature.geometry())
             for g in geoms:
                if g.intersects(selectRect):
-                  return feature, layer, point
+                  return feature, point
 
    return None
 
@@ -3707,7 +3714,7 @@ def getSubGeomAtVertex(geom, atVertex):
       polygons = geom.asMultiPolygon() # lista di poligoni
       for polygon in polygons:
          iLine = 0
-         for line in lines:
+         for line in polygon:
             lineLen = len(line)
             if atVertex >= i and atVertex < i + lineLen:
                return QgsGeometry.fromPolyline(line), [iPolygon, iLine]
