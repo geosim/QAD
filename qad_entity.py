@@ -253,7 +253,7 @@ class QadEntity():
       if self.isInitialized() == False or entity.isInitialized() == False :
          return False
 
-      if self.layerId() == entity.layerId() and self.featureId == entity.featureId:      
+      if self.layerId() == entity.layerId() and self.featureId == entity.featureId:
          return True
       else:
          return False    
@@ -276,10 +276,16 @@ class QadEntity():
       return self.layer.id()
 
 
-   def set(self, layer, featureId):
+   def set(self, layer_or_entity, featureId = None):
       self.clear()
-      self.layer = layer # il layer non si può copiare
-      self.featureId = featureId # copio l'identificativo di feature
+      if type(layer_or_entity) == QgsVectorLayer:
+         self.layer = layer_or_entity # il layer non si può copiare
+         self.featureId = featureId # copio l'identificativo di feature
+      else: # layer è una entità
+         if layer_or_entity is not None:
+            self.layer = layer_or_entity.layer
+            self.featureId = layer_or_entity.featureId
+
       return self
 
 

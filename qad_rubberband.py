@@ -38,6 +38,7 @@ from qad_variables import *
 # QadCursorTypeEnum class.
 #===============================================================================
 class QadCursorTypeEnum():
+   NONE     = 0   # nessun cursore
    BOX      = 1   # un quadratino usato per selezionare entità
    CROSS    = 2   # una croce usata per selezionare un punto
    APERTURE = 4   # un quadratino usato per selezionare i punti di snap

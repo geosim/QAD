@@ -13,7 +13,7 @@ name=QAD
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Quantum Aided Design: cad like commands in QGIS
-version=2.4
+version=2.8
 
 # end of mandatory metadata
 
@@ -23,11 +23,11 @@ version=2.4
 # changelog=
 
 # tags are comma separated with spaces allowed
-tags=cad,digitizing,vector
+tags=cad,circle,digitizing,dimensioning,polygon,polyline,rectangle,snap,vector
 
-homepage=iiiii
-tracker=xxxxx
-repository=yyyy
+homepage=
+tracker=https://github.com/geosim/QAD/issues
+repository=https://github.com/geosim/QAD
 icon=icons/qad.png
 # experimental flag
 experimental=True
@@ -36,5 +36,5 @@ experimental=True
 deprecated=False
 
 # Author contact information
-author=iiiii
-email=hhhhh
+author=
+email=

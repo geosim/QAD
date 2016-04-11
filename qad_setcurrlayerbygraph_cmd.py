@@ -111,7 +111,9 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
                self.EntSelClass = None
                return True
             else:               
-               self.showMsg(QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "No geometries in this position."))
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
          

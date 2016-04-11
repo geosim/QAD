@@ -44,10 +44,11 @@ from qad_cacheareas import QadLayerCacheGeomsDict
 # QadGetPointSelectionModeEnum class.
 #===============================================================================
 class QadGetPointSelectionModeEnum():
-   POINT_SELECTION          = 0  # selezione di un punto
-   ENTITY_SELECTION         = 1  # selezione di una entità in modo statico (cerca l'entità solo con l'evento click)
-   ENTITYSET_SELECTION      = 2  # selezione di un gruppo di entità  
-   ENTITY_SELECTION_DYNAMIC = 3  # selezione di una entità in modo dinamico (cerca l'entità con l'evento click e 
+   NONE                     = 0  # nessuna selezione (usato quando in un comando si chiede solo la scelta di opzioni)
+   POINT_SELECTION          = 1  # selezione di un punto
+   ENTITY_SELECTION         = 2  # selezione di una entità in modo statico (cerca l'entità solo con l'evento click)
+   ENTITYSET_SELECTION      = 3  # selezione di un gruppo di entità  
+   ENTITY_SELECTION_DYNAMIC = 4  # selezione di una entità in modo dinamico (cerca l'entità con l'evento click e 
                                  # con l'evento mouse move)
 
 
@@ -165,16 +166,19 @@ class QadGetPoint(QgsMapTool):
          self.canvas.scene().removeItem(self.__RubberBand) # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__RubberBand
          self.__RubberBand = None
+
+      if self.__QadSnapper is not None:
+         del self.__QadSnapper
+         self.__QadSnapper = None
+      
+      if self.__QadSnapPointsDisplayManager is not None:
+         self.__QadSnapPointsDisplayManager.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
+         del self.__QadSnapPointsDisplayManager
+         self.__QadSnapPointsDisplayManager = None
          
-      del self.__QadSnapper
-      self.__QadSnapper = None
-      
-      self.__QadSnapPointsDisplayManager.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
-      del self.__QadSnapPointsDisplayManager
-      self.__QadSnapPointsDisplayManager = None
-      
-      del self.layerCacheGeomsDict
-   
+      if self.layerCacheGeomsDict is not None: # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas (eventi)
+         del self.layerCacheGeomsDict
+         
    
    def setDrawMode(self, drawMode):
       self.__drawMode = drawMode
@@ -217,6 +221,8 @@ class QadGetPoint(QgsMapTool):
             self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
          else:
             self.setCursorType(QadCursorTypeEnum.CROSS | QadCursorTypeEnum.APERTURE) # una croce + un quadratino usati per selezionare un punto
+      elif selectionMode == QadGetPointSelectionModeEnum.NONE:
+         self.setCursorType(QadCursorTypeEnum.NONE) # nessun cursore
 
 
    def getSelectionMode(self):
@@ -224,7 +230,8 @@ class QadGetPoint(QgsMapTool):
 
 
    def hidePointMapToolMarkers(self):
-      self.__QadSnapPointsDisplayManager.hide()
+      if self.__QadSnapPointsDisplayManager is not None:
+         self.__QadSnapPointsDisplayManager.hide()
       if self.__RubberBand is not None:
          self.__RubberBand.hide()
 
@@ -279,7 +286,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # cache
    #============================================================================
-   def updateLayerCacheEmptyAreaOnMapCanvasExtent(self):
+   def updateLayerCacheOnMapCanvasExtent(self):
       if self.layerCacheGeomsDict is None:
          return
       # se l'obiettivo é selezionare un'entità in modo dinamico
@@ -339,7 +346,7 @@ class QadGetPoint(QgsMapTool):
          self.__QadSnapper.setSnapType(snapType)
          
       self.__geometryTypesAccordingToSnapType = self.__QadSnapper.getGeometryTypesAccordingToSnapType()
-      self.updateLayerCacheEmptyAreaOnMapCanvasExtent()
+      self.updateLayerCacheOnMapCanvasExtent()
       
 
    def getSnapType(self):
@@ -462,7 +469,11 @@ class QadGetPoint(QgsMapTool):
          self.__csrRubberBand.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__csrRubberBand
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, cursorType)
-      self.__cursor = QCursor(Qt.BlankCursor)     
+      
+      if cursorType == QadCursorTypeEnum.NONE:
+         self.__cursor = QCursor(Qt.ArrowCursor)
+      else:
+         self.__cursor = QCursor(Qt.BlankCursor)
       self.__cursorType = cursorType
       
    def getCursorType(self):
@@ -474,7 +485,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def moveElastic(self, point):
       numberOfVertices = self.__RubberBand.numberOfVertices()
-      if numberOfVertices > 0:         
+      if numberOfVertices > 0:
          if numberOfVertices == 2:
             # per un baco non ancora capito: se la linea ha solo 2 vertici e 
             # hanno la stessa x o y (linea orizzontale o verticale) 
@@ -498,6 +509,8 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # setStartPoint
    #============================================================================
+   def getStartPoint(self):
+      return None if self.__startPoint is None else QgsPoint(self.__startPoint) # alloca
    def setStartPoint(self, startPoint):
       self.__startPoint = startPoint
       self.__QadSnapper.setStartPoint(startPoint)
@@ -515,7 +528,7 @@ class QadGetPoint(QgsMapTool):
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y
-         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
+         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)
                 
          self.__RubberBand.addPoint(point, True)
       elif self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
@@ -528,7 +541,7 @@ class QadGetPoint(QgsMapTool):
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y
-         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
+         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)
                 
          self.__RubberBand.addPoint(QgsPoint(startPoint.x(), point.y()), False)
          self.__RubberBand.addPoint(point, False)
@@ -581,10 +594,21 @@ class QadGetPoint(QgsMapTool):
    # canvasMoveEvent
    #============================================================================
    def canvasMoveEvent(self, event):
+      self.tmpPoint = self.toMapCoordinates(event.pos())
+      self.__csrRubberBand.moveEvent(self.tmpPoint)
+
+      # tasto shift premuto durante il movimento del mouse
+      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
+      # tasto ctrl premuto durante il movimento del mouse
+      self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
+      
       # se l'obiettivo é selezionare un punto
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
          return self.canvasMoveEventOnPointSel(event)
-      else:
+      elif self.getSelectionMode() == QadGetPointSelectionModeEnum.NONE:
+         pass
+      # se l'obiettivo é selezionare una o più entità
+      else: 
          return self.canvasMoveEventOnEntitySel(event)
 
 
@@ -593,17 +617,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def canvasMoveEventOnEntitySel(self, event):
       # start = time.time() # test
-      
-      self.tmpPoint = self.toMapCoordinates(event.pos())
       self.tmpEntity.clear()
-      
-      self.__csrRubberBand.moveEvent(self.tmpPoint)
-
-      # tasto shift premuto durante il movimento del mouse
-      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-
-      # tasto ctrl premuto durante il movimento del mouse
-      self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
 
       # start1 = time.time() # test
       
@@ -640,20 +654,7 @@ class QadGetPoint(QgsMapTool):
    # canvasMoveEventOnPointSel
    #============================================================================
    def canvasMoveEventOnPointSel(self, event):
-      # start = time.time() # test
-      
-      self.tmpPoint = self.toMapCoordinates(event.pos())
-      
-      self.__csrRubberBand.moveEvent(self.tmpPoint)
-
-      # tasto shift premuto durante il movimento del mouse
-      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-
-      # tasto ctrl premuto durante il movimento del mouse
-      self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
-
-      # start1 = time.time() # test
-      
+      # start = time.time() # test     
       result = qad_utils.getEntSel(event.pos(), self, \
                                    QadVariables.get(QadMsg.translate("Environment variables", "APERTURE")), \
                                    None, \
@@ -664,7 +665,7 @@ class QadGetPoint(QgsMapTool):
                                    self.lastLayerFound, self.layerCacheGeomsDict, True)
          
       #self.tempo1 += ((time.time() - start1) * 1000) # test
-              
+
       # se è stata trovata una geometria
       if result is not None:
          feature = result[0]
@@ -807,7 +808,7 @@ class QadGetPoint(QgsMapTool):
                                          self.checkLineLayer, \
                                          self.checkPolygonLayer, \
                                          True, self.onlyEditableLayers, \
-                                         self.lastLayerFound, self.layerCacheGeomsDict)
+                                         self.lastLayerFound) # non uso self.layerCacheGeomsDict perchè se ho gli snap disattivati self.layerCacheGeomsDict è vuota
             if result is not None:
                feature = result[0]
                layer = result[1]
@@ -871,7 +872,7 @@ class QadGetPoint(QgsMapTool):
       self.entity.set(self.tmpEntity.layer, self.tmpEntity.featureId)
     
    def keyPressEvent(self, event):
-      self.plugIn.keyPressEvent(event)    
+      self.plugIn.keyPressEvent(event)
     
    def activate(self):
       self.canvas.setToolTip("")

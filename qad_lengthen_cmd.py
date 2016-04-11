@@ -234,8 +234,9 @@ class QadLENGTHENCommandClass(QadCommandClass):
    def showLength(self, entity, pt):
       # visualizza la lunghezza dell'entità in unità di mappa
       geom = entity.getGeometry()
-      if geom is None:
-         self.showErr(QadMsg.translate("QAD", "\nInvalid object."))
+      if geom is None:         
+         errMsg = QadMsg.translate("QAD", "Invalid object.")
+         self.showErr("\n" + errMsg)
          return None
    
       # Trasformo il punto nel sistema di coordinate del layer
@@ -247,7 +248,8 @@ class QadLENGTHENCommandClass(QadCommandClass):
       #                    <leftOf>)
       dummy = qad_utils.closestSegmentWithContext(pt, geom)
       if dummy[2] is None:
-         self.showErr(QadMsg.translate("QAD", "\nInvalid object."))
+         errMsg = QadMsg.translate("QAD", "Invalid object.")
+         self.showErr("\n" + errMsg)
          return None
       # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
       subGeom, atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])

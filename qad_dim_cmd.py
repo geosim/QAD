@@ -305,8 +305,10 @@ class QadDIMLINEARCommandClass(QadCommandClass):
                   
                self.waitForDimensionLinePos()
                return False
-            else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
+            else:
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 
@@ -674,8 +676,10 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
                   
                self.waitForDimensionLinePos()
                return False
-            else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
+            else:
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 
@@ -941,7 +945,9 @@ class QadDIMARCCommandClass(QadCommandClass):
                self.showMsg(QadMsg.translate("Command_DIM", "Select an arc."))
                self.waitForEntsel(msgMapTool, msg)        
             else:               
-               self.showMsg(QadMsg.translate("Command_DIM", "No geometries in this position."))
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 

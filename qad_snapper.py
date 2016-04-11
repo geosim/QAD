@@ -816,11 +816,16 @@ class QadSnapper():
             if circle.fromPolyline(points):
                self.__appendUniquePoint(result, circle.center) # senza duplicazione
             else:
-               # verifico se ci sono archi
-               arcList = QadArcList()
-               if arcList.fromGeom(igeom) > 0:
-                  for arc in arcList.arcList:
-                     self.__appendUniquePoint(result, arc.center) # senza duplicazione
+               if points[0] == points[-1]: # polilinea chiusa
+                  # leggo il/i centroidi
+                  centroidGeom = igeom.centroid()
+                  self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione
+               else:
+                  # verifico se ci sono archi
+                  arcList = QadArcList()
+                  if arcList.fromGeom(igeom) > 0:
+                     for arc in arcList.arcList:
+                        self.__appendUniquePoint(result, arc.center) # senza duplicazione
 
       return result
 

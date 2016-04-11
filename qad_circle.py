@@ -1895,22 +1895,28 @@ class QadCircleList():
                self.ndxGeomList.append([ndxGeom])
             ndxGeom = ndxGeom + 1
       elif wkbType == QGis.WKBPolygon:
-         ndxSubGeom = 0
+         iRing = -1
          lineList = geom.asPolygon() # vettore di linee
          for points in lineList:
             if circle.fromPolyline(points, _atLeastNSegment):
                self.circleList.append(QadCircle(circle)) # ne faccio una copia
-               self.ndxGeomList.append([ndxGeom, ndxSubGeom])
-            ndxSubGeom = ndxSubGeom + 1
+               if iRing == -1: # si tratta della parte più esterna
+                  self.ndxGeomList.append([ndxGeom])
+               else:
+                  self.ndxGeomList.append([ndxGeom, iRing])
+            iRing = iRing + 1
       elif wkbType == QGis.WKBMultiPolygon:
          polygonList = geom.asMultiPolygon() # vettore di poligoni
          for polygon in polygonList:
-            ndxSubGeom = 0
+            iRing = -1
             for points in lineList:
                if circle.fromPolyline(points, _atLeastNSegment):
                   self.circleList.append(QadCircle(circle)) # ne faccio una copia
-                  self.ndxGeomList.append([ndxGeom, ndxSubGeom])
-               ndxSubGeom = ndxSubGeom + 1
+                  if iRing == -1: # si tratta della parte più esterna
+                     self.ndxGeomList.append([ndxGeom])
+                  else:
+                     self.ndxGeomList.append([ndxGeom, iRing])
+               iRing = iRing + 1
             ndxGeom = ndxGeom + 1
 
       return len(self.circleList)

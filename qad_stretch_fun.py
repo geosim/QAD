@@ -121,23 +121,32 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
    if wkbType == QGis.WKBPolygon:
       stretchedGeom = QgsGeometry(geom)
       lines = stretchedGeom.asPolygon() # lista di linee
-      atSubGeom = 0
+      iRing = -1
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
+         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         if iRing == -1: # si tratta della parte più esterna
+            stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0])
+         else:
+            stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0, iRing])
+         iRing = iRing + 1
       return stretchedGeom
-      
+
    if wkbType == QGis.WKBMultiPolygon:
       stretchedGeom = QgsGeometry(geom)
       polygons = geom.asMultiPolygon() # vettore di poligoni
-      atSubGeom = 0
+      iPart = 0
       for polygon in polygons:
-         subGeom = QgsGeometry.fromPolygon(polygon)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
+         iRing = -1
+         for line in polygon:
+            subGeom = QgsGeometry.fromPolyline(line)
+            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+            if iRing == -1: # si tratta della parte più esterna
+               stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart])
+            else:
+               stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart, iRing])
+            iRing = iRing + 1
+         iPart = iPart + 1
       return stretchedGeom
    
    return None
@@ -292,23 +301,32 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
    if wkbType == QGis.WKBPolygon:
       stretchedGeom = QgsGeometry(geom)
       lines = stretchedGeom.asPolygon() # lista di linee
-      atSubGeom = 0
+      iRing = -1
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
          stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
+         if iRing == -1: # si tratta della parte più esterna
+            stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0])
+         else:
+            stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0, iRing])
+         iRing = iRing + 1
       return stretchedGeom
       
    if wkbType == QGis.WKBMultiPolygon:
       stretchedGeom = QgsGeometry(geom)
       polygons = geom.asMultiPolygon() # vettore di poligoni
-      atSubGeom = 0
+      iPart = 0
       for polygon in polygons:
-         subGeom = QgsGeometry.fromPolygon(polygon)
-         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
-         stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
-         atSubGeom = atSubGeom + 1
+         iRing = -1
+         for line in polygon:
+            subGeom = QgsGeometry.fromPolyline(line)
+            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+            if iRing == -1: # si tratta della parte più esterna
+               stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart])
+            else:
+               stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart, iRing])
+            iRing = iRing + 1
+         iPart = iPart + 1
       return stretchedGeom
    
    return None

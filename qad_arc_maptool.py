@@ -95,7 +95,7 @@ class Qad_arc_maptool_ModeEnum():
 #===============================================================================
 class Qad_arc_maptool(QadGetPoint):
     
-   def __init__(self, plugIn):
+   def __init__(self, plugIn, asToolForMPolygon = False):
       QadGetPoint.__init__(self, plugIn)
                         
       self.arcStartPt = None
@@ -108,18 +108,26 @@ class Qad_arc_maptool(QadGetPoint):
       self.arcRadius = None
       self.__rubberBand = QadRubberBand(self.canvas)
 
+      self.asToolForMPolygon = asToolForMPolygon # se True significa che è usato per disegnare un poligono
+      if self.asToolForMPolygon:
+         self.__polygonRubberBand = QadRubberBand(self.plugIn.canvas, True)
+         self.endVertex = None # punta al vertice iniziale e finale del poligono di QadPLINECommandClass
+
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
       self.__rubberBand.hide()
+      if self.asToolForMPolygon: self.__polygonRubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
       self.__rubberBand.show()
-                             
+      if self.asToolForMPolygon: self.__polygonRubberBand.show()
+                                   
    def clear(self):
       QadGetPoint.clear(self)
       self.__rubberBand.reset()
+      if self.asToolForMPolygon: self.__polygonRubberBand.reset()
       self.mode = None
       
       
@@ -127,7 +135,8 @@ class Qad_arc_maptool(QadGetPoint):
       QadGetPoint.canvasMoveEvent(self, event)
       
       self.__rubberBand.reset()
-         
+      if self.asToolForMPolygon: self.__polygonRubberBand.reset()
+      
       result = False
       arc = QadArc()    
        
@@ -183,16 +192,22 @@ class Qad_arc_maptool(QadGetPoint):
       
          if points is not None:
             self.__rubberBand.setLine(points)
-      
+            if self.asToolForMPolygon == True: # se True significa che è usato per disegnare un poligono
+               if self.endVertex is not None:
+                  points.insert(0, self.endVertex)
+                  self.__polygonRubberBand.setPolygon(points)
+
     
    def activate(self):
       QadGetPoint.activate(self)            
       self.__rubberBand.show()
-
+      if self.asToolForMPolygon: self.__polygonRubberBand.show()
+      
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
          self.__rubberBand.hide()
+         if self.asToolForMPolygon: self.__polygonRubberBand.hide()
       except:
          pass
 

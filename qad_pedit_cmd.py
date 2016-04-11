@@ -30,6 +30,7 @@ from qgis.gui import *
 
 
 from qad_generic_cmd import QadCommandClass
+from qad_getdist_cmd import QadGetDistClass
 from qad_snapper import *
 from qad_pedit_maptool import *
 from qad_ssget_cmd import QadSSGetClass
@@ -91,6 +92,9 @@ class QadPEDITCommandClass(QadCommandClass):
       self.snapPointsDisplayManager = QadSnapPointsDisplayManager(self.plugIn.canvas)
       self.snapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE")))
       self.snapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPCOLOR"))))
+
+      self.GetDistClass = None
+      self.simplifyTolerance = None
    
    def __del__(self):
       QadCommandClass.__del__(self)
@@ -98,10 +102,14 @@ class QadPEDITCommandClass(QadCommandClass):
       self.entity.deselectOnLayer()
       self.entitySet.deselectOnLayer()
       del self.snapPointsDisplayManager
+      if self.GetDistClass is not None: del self.GetDistClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 2: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()           
+      # quando si é in fase di richiesta distanza
+      elif self.step == 12:
+         return self.GetDistClass.getPointMapTool()
       else:
          if (self.plugIn is not None):
             if self.PointMapTool is None:
@@ -520,6 +528,54 @@ class QadPEDITCommandClass(QadCommandClass):
 
 
    #============================================================================
+   # simplify
+   #============================================================================
+   def simplify(self):
+      tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+                             
+      if self.entity.isInitialized(): # selezionato solo un oggetto
+         layer = self.entity.layer
+         self.plugIn.beginEditCommand("Feature edited", layer)
+         
+         f = self.entity.getFeature()
+         # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+         geom = self.layerToMapCoordinates(layer, f.geometry())
+
+         updSubGeom = QgsGeometry.fromPolyline(self.linearObjectList.asPolyline(tolerance2ApproxCurve)).simplify(self.simplifyTolerance)        
+         updGeom = qad_utils.setSubGeom(geom, updSubGeom, self.atSubGeom)
+         if updGeom is not None:
+            # trasformo la geometria nel crs del layer
+            f.setGeometry(self.mapToLayerCoordinates(layer, updGeom))
+            # plugIn, layer, feature, refresh, check_validity
+            if qad_layer.updateFeatureToLayer(self.plugIn, self.entity.layer, f, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
+      else:
+         self.plugIn.beginEditCommand("Feature edited", self.entitySet.getLayerList())
+
+         for layerEntitySet in self.entitySet.layerEntitySetList:
+            updObjects = []
+            for featureId in layerEntitySet.featureIds:
+               f = layerEntitySet.getFeature(featureId)
+               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+               geom = self.layerToMapCoordinates(layerEntitySet.layer, f.geometry())               
+               updGeom = geom.simplify(self.simplifyTolerance)
+               if updGeom is not None:
+                  updFeature = QgsFeature(f)
+                  # trasformo la geometria nel crs del layer
+                  updFeature.setGeometry(self.mapToLayerCoordinates(layerEntitySet.layer, updGeom))
+                  updObjects.append(updFeature)      
+         
+            # plugIn, layer, features, refresh, check_validity
+            if qad_layer.updateFeaturesToLayer(self.plugIn, layerEntitySet.layer, updObjects, False, False) == False:
+               self.plugIn.destroyEditCommand()
+               return
+   
+      self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+
+
+   #============================================================================
    # insertVertexAt
    #============================================================================
    def insertVertexAt(self, pt):         
@@ -759,8 +815,9 @@ class QadPEDITCommandClass(QadCommandClass):
       keyWords = keyWords + QadMsg.translate("Command_PEDIT", "Fit") + "/" + \
                             QadMsg.translate("Command_PEDIT", "Decurve") + "/" + \
                             QadMsg.translate("Command_PEDIT", "Reverse") + "/" + \
+                            QadMsg.translate("Command_PEDIT", "Simplify") + "/" + \
                             QadMsg.translate("Command_PEDIT", "Undo")      
-      englishKeyWords = englishKeyWords + "Fit" + "/" + "Decurve" + "/" + "Reverse" + "/" + "Undo"
+      englishKeyWords = englishKeyWords + "Fit" + "/" + "Decurve" + "/" + "Reverse" + "/" + "Simplify" + "/" + "Undo"
       prompt = QadMsg.translate("Command_PEDIT", "Enter an option [{0}]: ").format(keyWords)
       
       self.step = 3
@@ -933,7 +990,25 @@ class QadPEDITCommandClass(QadCommandClass):
       
       return False
 
-        
+
+   #============================================================================
+   # WaitForSimplifyTolerance
+   #============================================================================
+   def WaitForSimplifyTolerance(self, msgMapTool, msg):
+      if self.GetDistClass is not None:
+         del self.GetDistClass
+      self.GetDistClass = QadGetDistClass(self.plugIn)
+      if self.simplifyTolerance is None:
+         prompt = QadMsg.translate("Command_PEDIT", "Specify tolerance: ")
+      else:
+         prompt = QadMsg.translate("Command_PEDIT", "Specify tolerance <{0}>: ")
+         self.GetDistClass.msg = prompt.format(str(self.simplifyTolerance))
+         self.GetDistClass.dist = self.simplifyTolerance
+      self.GetDistClass.inputMode = QadInputModeEnum.NOT_NEGATIVE
+      self.step = 12
+      self.GetDistClass.run(msgMapTool, msg)
+
+
    def run(self, msgMapTool = False, msg = None):
       if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
@@ -1060,6 +1135,9 @@ class QadPEDITCommandClass(QadCommandClass):
             self.curve(False)
          elif value == QadMsg.translate("Command_PEDIT", "Reverse") or value == "Reverse":
             self.reverse()
+         elif value == QadMsg.translate("Command_PEDIT", "Simplify") or value == "Simplify":
+            self.WaitForSimplifyTolerance(msgMapTool, msg)
+            return False
          elif value == QadMsg.translate("Command_PEDIT", "Undo") or value == "Undo":
             if self.nOperationsToUndo > 0: 
                self.nOperationsToUndo = self.nOperationsToUndo - 1           
@@ -1363,6 +1441,18 @@ class QadPEDITCommandClass(QadCommandClass):
             self.WaitForSecondVertex()
                                  
          return False 
+      
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA DELLA TOLLERANZE PER SEMPLIFICAZIONE (da step = 3)
+      elif self.step == 12:
+         if self.GetDistClass.run(msgMapTool, msg) == True:
+            if self.GetDistClass.dist is not None:
+               self.simplifyTolerance = self.GetDistClass.dist
+               self.simplify()
+               self.entity.deselectOnLayer()
+               self.entitySet.deselectOnLayer()
+               self.WaitForMainMenu()
+         return False # fine comando
 
 
 #============================================================================

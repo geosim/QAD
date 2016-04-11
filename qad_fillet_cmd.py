@@ -235,12 +235,14 @@ class QadFILLETCommandClass(QadCommandClass):
          if qad_layer.updateFeatureToLayer(self.plugIn, self.entity1.layer, f, False, False) == False:
             self.plugIn.destroyEditCommand()
             return False
-      elif whatToDoPoly1 == 2: # 2=cancellare 
-         # plugIn, layer, featureId, refresh
-         if qad_layer.deleteFeatureToLayer(self.plugIn, self.entity1.layer, \
-                                           self.entity1.featureId, False) == False:
-            self.plugIn.destroyEditCommand()
-            return False
+      elif whatToDoPoly1 == 2: # 2=cancellare
+         # se non si tratta della stessa entità
+         if self.entity1 != self.entity2:
+            # plugIn, layer, featureId, refresh
+            if qad_layer.deleteFeatureToLayer(self.plugIn, self.entity1.layer, \
+                                              self.entity1.featureId, False) == False:
+               self.plugIn.destroyEditCommand()
+               return False
 
       if whatToDoPoly2 == 1: # 1=modificare
          tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
@@ -261,11 +263,13 @@ class QadFILLETCommandClass(QadCommandClass):
             self.plugIn.destroyEditCommand()
             return False
       elif whatToDoPoly2 == 2: # 2=cancellare 
-         # plugIn, layer, featureId, refresh
-         if qad_layer.deleteFeatureToLayer(self.plugIn, self.entity2.layer, \
-                                           self.entity2.featureId, False) == False:
-            self.plugIn.destroyEditCommand()
-            return False
+         # se non si tratta della stessa entità
+         if self.entity1 != self.entity2:
+            # plugIn, layer, featureId, refresh
+            if qad_layer.deleteFeatureToLayer(self.plugIn, self.entity2.layer, \
+                                              self.entity2.featureId, False) == False:
+               self.plugIn.destroyEditCommand()
+               return False
 
       if whatToDoPoly1 == 0 and whatToDoPoly2 == 0: # 0=niente      
          geom = QgsGeometry.fromPolyline(filletLinearObjectList.asPolyline(tolerance2ApproxCurve))

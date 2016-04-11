@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_windowcolor.ui'
 #
-# Created: Tue Mar 01 09:42:51 2016
+# Created: Tue Mar 22 15:37:10 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -81,7 +81,7 @@ class Ui_WindowColor_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(WindowColor_Dialog)
 
     def retranslateUi(self, WindowColor_Dialog):
-        WindowColor_Dialog.setWindowTitle(_translate("WindowColor_Dialog", "QAD - Drawing window Colors", None))
+        WindowColor_Dialog.setWindowTitle(_translate("WindowColor_Dialog", "Drawing window Colors", None))
         self.Button_Cancel.setText(_translate("WindowColor_Dialog", "Cancel", None))
         self.Button_Help.setText(_translate("WindowColor_Dialog", "Help", None))
         self.Button_ApplyClose.setText(_translate("WindowColor_Dialog", "Apply && Close", None))

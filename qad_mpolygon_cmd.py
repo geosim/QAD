@@ -73,12 +73,12 @@ class QadMPOLYGONCommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      del self.SSGetClass
+      if self.PLINECommand is not None:
+         del self.PLINECommand
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.PLINECommand is not None:
-         self.PointMapTool = self.PLINECommand.getPointMapTool(drawMode)
-         return self.PointMapTool
+         return self.PLINECommand.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
 

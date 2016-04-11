@@ -71,6 +71,8 @@ from qad_dimstyle_cmd import QadDIMSTYLECommandClass
 from qad_lengthen_cmd import QadLENGTHENCommandClass
 from qad_help_cmd import QadHELPCommandClass
 from qad_options_cmd import QadOPTIONSCommandClass
+from qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
+from qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -121,6 +123,9 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
       self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
       self.__cmdObjs.append(QadOPTIONSCommandClass(self.plugIn)) # OPTIONS
+      self.__cmdObjs.append(QadMAPMPEDITCommandClass(self.plugIn)) # MAPMEDIT
+      self.__cmdObjs.append(QadJOINCommandClass(self.plugIn)) # JOIN
+      self.__cmdObjs.append(QadDISJOINCommandClass(self.plugIn)) # DISJOIN      
       
       self.actualCommand = None  # Comando in corso di esecuzione
    

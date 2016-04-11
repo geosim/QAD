@@ -29,8 +29,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 
-from qad_entsel_cmd import QadEntSelClass
-from qad_getpoint import *
+from qad_pline_maptool import *
 from qad_arc_maptool import *
 from qad_arc import *
 from qad_generic_cmd import QadCommandClass
@@ -39,6 +38,7 @@ from qad_textwindow import *
 import qad_utils
 import qad_layer
 from qad_rubberband import createRubberBand
+from qad_dim import QadDimStyles
 
 
 # Classe che gestisce il comando PLINE
@@ -73,13 +73,12 @@ class QadPLINECommandClass(QadCommandClass):
       
       self.asToolForMPolygon = asToolForMPolygon
       if self.asToolForMPolygon:
-         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Polygon, True)
+         self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Polygon, False)
       else:
          self.rubberBand = createRubberBand(self.plugIn.canvas, QGis.Line)
          
       self.ArcPointMapTool = None
       self.mode = "LINE"
-      self.EntSelClass = None
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
       # che non verrà salvata su un layer
       self.virtualCmd = False
@@ -87,17 +86,25 @@ class QadPLINECommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
+      if self.ArcPointMapTool is not None:
+         del self.ArcPointMapTool
+
       self.rubberBand.hide()
       self.plugIn.canvas.scene().removeItem(self.rubberBand)
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.step == 3: # quando si é in fase di selezione entità
-         return self.EntSelClass.getPointMapTool(drawMode)
+      if (self.plugIn is not None):
+         if self.mode == "ARC":
+            if self.ArcPointMapTool is None:
+               self.ArcPointMapTool = Qad_arc_maptool(self.plugIn, True) # se True significa che è usato per disegnare un poligono
+            return self.ArcPointMapTool
+         else:
+            if self.PointMapTool is None:
+               self.PointMapTool = Qad_pline_maptool(self.plugIn, True) # se True significa che è usato per disegnare un poligono
+            return self.PointMapTool
       else:
-         if self.mode == "LINE":
-            return QadCommandClass.getPointMapTool(self, drawMode)
-         elif self.mode == "ARC":
-            return self.getArcPointMapTool()
+         return None
 
    
    def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):
@@ -107,33 +114,10 @@ class QadPLINECommandClass(QadCommandClass):
          self.rubberBand.setFillColor(rubberBandFillColor)
 
 
-   def waitForEntsel(self, msgMapTool, msg):
-      if self.EntSelClass is not None:
-         del self.EntSelClass            
-      self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_PLINE", "Select the object in the trace end point: ")
-      # scarto la selezione di punti
-      self.EntSelClass.checkPointLayer = False
-      self.EntSelClass.checkLineLayer = True
-      self.EntSelClass.checkPolygonLayer = True
-      self.EntSelClass.onlyEditableLayers = False         
-      
-      self.EntSelClass.getPointMapTool().setSnapType(QadSnapTypeEnum.END)
-      self.EntSelClass.run(msgMapTool, msg)
-         
-   def getArcPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if (self.plugIn is not None):
-         if self.ArcPointMapTool is None:
-            self.ArcPointMapTool = Qad_arc_maptool(self.plugIn)
-         return self.ArcPointMapTool
-      else:
-         return None
-
-
    def addRealVertex(self, point):
       self.realVerticesIndexes.append(len(self.vertices))
       self.vertices.append(point)     
-      self.addPointToRubberBand(point)            
+      self.addPointToRubberBand(point)
       self.plugIn.setLastPoint(self.vertices[-1])            
       self.plugIn.setLastSegmentAng(self.getLastSegmentAng())
       self.getPointMapTool().setPolarAngOffset(self.plugIn.lastSegmentAng)
@@ -234,6 +218,8 @@ class QadPLINECommandClass(QadCommandClass):
       self.getPointMapTool().arcStartPt = self.arcStartPt
       self.getPointMapTool().arcTanOnStartPt = self.arcTanOnStartPt
       self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_TAN_KNOWN_ASK_FOR_END_PT)
+      if self.asToolForMPolygon:
+         self.getPointMapTool().endVertex = self.vertices[0]
       
       keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto o enter o una parola chiave         
@@ -275,6 +261,19 @@ class QadPLINECommandClass(QadCommandClass):
                    None, \
                    keyWords, QadInputModeEnum.NONE)
 
+
+   #============================================================================
+   # waitForTracePt
+   #============================================================================
+   def waitForTracePt(self, msgMapTool, msg):
+      self.step = 3
+      # imposto il map tool
+      self.getPointMapTool().setMode(Qad_pline_maptool_ModeEnum.ASK_FOR_TRACE_PT)
+      self.getPointMapTool().firstPt = self.vertices[-1]
+      # si appresta ad attendere un punto
+      self.waitForPoint(QadMsg.translate("Command_PLINE", "Select the object in the trace end point: "))
+
+
    #============================================================================
    # addPointToRubberBand
    #============================================================================
@@ -310,13 +309,11 @@ class QadPLINECommandClass(QadCommandClass):
             return True # fine comando
       
       # RICHIESTA PRIMO PUNTO 
-      if self.step == 0: # inizio del comando
-         # imposto la linea elastica
-         self.getPointMapTool(QadGetPointDrawModeEnum.ELASTIC_LINE)
+      if self.step == 0: # inizio del comando        
+         self.getPointMapTool().setMode(Qad_pline_maptool_ModeEnum.DRAW_LINE) # imposto la linea elastica
          # si appresta ad attendere un punto o enter
          #                        msg, inputType,              default, keyWords, nessun controllo
-         self.waitFor(QadMsg.translate("Command_PLINE", "Specify start point: "), \
-                      QadInputTypeEnum.POINT2D, None, "", QadInputModeEnum.NONE)
+         self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify start point: "))
          self.step = 1
          return False
       
@@ -375,6 +372,8 @@ class QadPLINECommandClass(QadCommandClass):
                   self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
                   self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   self.getPointMapTool().setStartPoint(self.vertices[-1])
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                                    
             elif value == QadMsg.translate("Command_PLINE", "Close") or value == "Close":
                newPt = self.vertices[0]
                self.addRealVertex(newPt) # aggiungo un nuovo vertice reale
@@ -382,14 +381,15 @@ class QadPLINECommandClass(QadCommandClass):
                   qad_layer.addLineToLayer(self.plugIn, currLayer, self.vertices)
                return True # fine comando
             elif value == QadMsg.translate("Command_PLINE", "Trace") or value == "Trace":
-               self.step = 3
-               self.waitForEntsel(msgMapTool, msg)
+               self.waitForTracePt(msgMapTool, msg)
                return False # continua
 
          elif type(value) == QgsPoint:
             self.addRealVertex(value) # aggiungo un nuovo vertice reale
             self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
             self.getPointMapTool().setStartPoint(value)
+            if self.asToolForMPolygon:
+               self.getPointMapTool().endVertex = self.vertices[0]
          
          self.WaitForLineMenu()        
          if self.firstVertex:
@@ -437,33 +437,63 @@ class QadPLINECommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA "Selezionare l'oggetto nel punto finale di ricalco: " (da step = 1)
       elif self.step == 3:
-         entSelected = False
-         if self.EntSelClass.run(msgMapTool, msg) == True:
-            if self.EntSelClass.entity.isInitialized() and self.EntSelClass.point is not None:
+         if msgMapTool == True: # il punto arriva da una selezione grafica
+            # la condizione seguente si verifica se durante la selezione di un punto
+            # é stato attivato un altro plugin che ha disattivato Qad
+            # quindi stato riattivato il comando che torna qui senza che il maptool
+            # abbia selezionato un punto            
+            if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  return True # fine comando
+               else:
+                  self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+                  return False
+
+            value = self.getPointMapTool().point
+         else: # il punto arriva come parametro della funzione
+            value = msg
+
+         if type(value) == QgsPoint:
+            geom = None
+            layer = None
+            if self.getPointMapTool().entity.isInitialized(): # il punto arriva dal mouse
                entSelected = True
-               layer = self.EntSelClass.entity.layer
-               geom = self.EntSelClass.entity.getGeometry()
-               ptEnd = qad_utils.closestVertexPtWithContext(self.mapToLayerCoordinates(layer, self.EntSelClass.point), \
+               layer = self.getPointMapTool().entity.layer
+               geom = self.getPointMapTool().entity.getGeometry()
+            else: # il punto arriva da tastiera
+               # cerco se ci sono entità nel punto indicato considerando
+               # solo layer lineari o poligono che non appartengano a quote
+               layerList = []
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
+                     if len(QadDimStyles.getDimListByLayer(layer)) == 0:
+                        layerList.append(layer)
+                                     
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+                                            self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
+                                            layerList)
+               if result is not None:
+                  feature = result[0]
+                  layer = result[1]
+                  geom = feature.getGeometry()
+
+            if geom is not None and layer is not None:
+               ptEnd = qad_utils.closestVertexPtWithContext(self.mapToLayerCoordinates(layer, value), \
                                                             geom)
                transformedPt1 = self.mapToLayerCoordinates(layer, self.vertices[-1])
                # leggo la parte di linea tra transformedPt1 e transformedPt2
-               points = qad_utils.getLinePart(geom, transformedPt1, ptEnd)                     
+               points = qad_utils.getLinePart(geom, transformedPt1, ptEnd)
                if points is not None:
-                  mapRenderer = self.EntSelClass.getPointMapTool().canvas.mapRenderer()
                   # converto i punti della linea in map coordinates
                   transformedPoints = []
                   for point in points:
-                     transformedPoints.append(mapRenderer.layerToMapCoordinates(layer, point))
+                     transformedPoints.append(self.layerToMapCoordinates(layer, point))
                          
                   self.addArcVertices(transformedPoints, False) # aggiungo i punti in ordine
 
-               del self.EntSelClass
-               self.EntSelClass = None
-
          self.WaitForLineMenu()
-         if entSelected:
-            self.getPointMapTool().refreshSnapType() # aggiorno lo snapType che può essere variato dal maptool di selezione entità                             
-         self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
+         self.getPointMapTool().setMode(Qad_pline_maptool_ModeEnum.DRAW_LINE)
          self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
          self.getPointMapTool().setStartPoint(self.vertices[-1])
          
@@ -578,7 +608,9 @@ class QadPLINECommandClass(QadCommandClass):
                   self.getPointMapTool().clear()
                   self.getPointMapTool().setTmpGeometry(QgsGeometry.fromPolyline(self.vertices)) # per lo snap aggiungo questa geometria temporanea
                   self.getPointMapTool().setDrawMode(QadGetPointDrawModeEnum.ELASTIC_LINE)
-                  self.WaitForArcMenu()
+               else:
+                  self.showMsg(QadMsg.translate("QAD", "\nThe command has been canceled."))                                                      
+               self.WaitForArcMenu()
          elif type(value) == QgsPoint: # é stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsTan(self.arcStartPt, value, self.arcTanOnStartPt) == True:

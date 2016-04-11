@@ -139,7 +139,7 @@ class Qad(QObject):
    # version
    #============================================================================
    def version(self):
-      return "2.8.008"
+      return "2.8.009"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -431,7 +431,10 @@ class Qad(QObject):
       self.toolBar.addAction(self.lengthen_action)
       self.toolBar.addAction(self.break_action)
       self.toolBar.addAction(self.pedit_action)
+      self.toolBar.addAction(self.mapmpedit_action)
       self.toolBar.addAction(self.fillet_action)
+      self.toolBar.addAction(self.join_action)
+      self.toolBar.addAction(self.disjoin_action)
       self.toolBar.addAction(self.dsettings_action)
       self.toolBar.addAction(self.options_action)
       self.enableUndoRedoButtons()
@@ -755,11 +758,29 @@ class Qad(QObject):
       self.pedit_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.pedit_action)
       
+      # MAPMPEDIT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MAPMPEDIT"))
+      self.mapmpedit_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.mapmpedit_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.mapmpedit_action)
+      
       # FILLET
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "FILLET"))
       self.fillet_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.fillet_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.fillet_action)
+      
+      # JOIN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "JOIN"))
+      self.join_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.join_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.join_action)
+      
+      # DISJOIN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DISJOIN"))
+      self.disjoin_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.disjoin_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.disjoin_action)
       
       # DIMLINEAR
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMLINEAR"))
@@ -876,7 +897,10 @@ class Qad(QObject):
       editMenu.addAction(self.lengthen_action)
       editMenu.addAction(self.break_action)
       editMenu.addAction(self.pedit_action)
+      editMenu.addAction(self.mapmpedit_action)
       editMenu.addAction(self.fillet_action)
+      editMenu.addAction(self.join_action)
+      editMenu.addAction(self.disjoin_action)
       return editMenu
    
    def createToolsMenu(self):
@@ -1571,9 +1595,18 @@ class Qad(QObject):
             
    def runPEDITCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "PEDIT"))
+            
+   def runMAPMPEDITCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "MAPMPEDIT"))
 
    def runFILLETCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "FILLET"))
+      
+   def runJOINCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "JOIN"))
+      
+   def runDISJOINCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DISJOIN"))
       
    def runPOLYGONCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "POLYGON"))

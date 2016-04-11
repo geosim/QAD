@@ -120,10 +120,6 @@
 <context>
     <name>Command_BREAK</name>
     <message>
-        <source>Non ci sono geometrie in questa posizione.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Breaks an object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -390,10 +386,6 @@ The value must be between 2 and 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No geometries in this position.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enter dimension text &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -442,6 +434,17 @@ The value must be between 2 and 32767.</source>
     <name>Command_DIMSTYLE</name>
     <message>
         <source>Creates new styles, sets the current style, modifies styles, sets overrides on the current style, and compares styles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_DISJOIN</name>
+    <message>
+        <source>Disjoin existing geometries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object to disjoin: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -890,6 +893,22 @@ The points must be different.</source>
     </message>
 </context>
 <context>
+    <name>Command_JOIN</name>
+    <message>
+        <source>Join existing geometries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object to join to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Select objects to join: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_LENGTHEN</name>
     <message>
         <source>Lengthen an object.</source>
@@ -999,6 +1018,61 @@ No perpendicular possible</source>
     </message>
     <message>
         <source>Specify next point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_MAPMPEDIT</name>
+    <message>
+        <source>Modifies existing polygon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The boundary doesn&apos;t belong to the selected polygon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select polygon: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Substract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>include Objs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter an option [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select boundary: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1309,6 +1383,18 @@ Polygon not valid.
     </message>
     <message>
         <source>Specify second point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify tolerance: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify tolerance &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1690,10 +1776,6 @@ Scale of a copy of the selected objects.</source>
     <message>
         <source>
 The current layer is {0}.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No geometries in this position.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2206,6 +2288,18 @@ A mark can&apos;t be inserted into a group.</source>
     </message>
     <message>
         <source>OPTIONS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAPMPEDIT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>JOIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DISJOIN</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4798,11 +4892,6 @@ The geometry type of the current layer is {0} and it is not valid.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Invalid object.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;Object Snap Tracking on&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4832,6 +4921,14 @@ Invalid object.</source>
     </message>
     <message>
         <source> &lt; {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No geometries in this position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid object.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

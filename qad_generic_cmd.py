@@ -170,6 +170,7 @@ class QadCommandClass():
       if self.PointMapTool:
          self.PointMapTool.removeItems()
          del self.PointMapTool
+         self.PointMapTool = None
 
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """

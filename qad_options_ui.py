@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_options.ui'
 #
-# Created: Tue Mar 01 09:42:49 2016
+# Created: Tue Mar 22 15:37:10 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -266,7 +266,7 @@ class Ui_Options_Dialog(object):
         self.horizontalSlider_CURSORSIZE.setToolTip(_translate("Options_Dialog", "Determines the size of the crosshair as a percentage of the screen size (system variable CURSORSIZE).", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.DisplayTab), _translate("Options_Dialog", "Display", None))
         self.groupBox_4.setTitle(_translate("Options_Dialog", "AutoSnap Settings", None))
-        self.checkBox_AUTOSNAP_DISPLAY_MARK.setToolTip(_translate("Options_Dialog", "Controls the display of the AutoSnap marker. The marker is a geometric symbol that is displayed when the crosshairs move over a snap point (AUTOSNAP system variable).", None))
+        self.checkBox_AUTOSNAP_DISPLAY_MARK.setToolTip(_translate("Options_Dialog", "Controls the display of the AutoSnap marker. The marker is a geometric symbol that is displayed when the crosshairs move over a snap point ( AUTOSNAP system variable).", None))
         self.checkBox_AUTOSNAP_DISPLAY_MARK.setText(_translate("Options_Dialog", "Marker", None))
         self.pushButton_AutoSnapColor.setToolTip(_translate("Options_Dialog", "Displays the Drawing Window Colors dialog box. ", None))
         self.pushButton_AutoSnapColor.setText(_translate("Options_Dialog", "Colors", None))
@@ -290,7 +290,7 @@ class Ui_Options_Dialog(object):
         self.groupBox_8.setTitle(_translate("Options_Dialog", "Pickbox size", None))
         self.horizontalSlider_PICKBOX.setToolTip(_translate("Options_Dialog", "Sets the object selection target height, in pixels (PICKBOX system variable).", None))
         self.groupBox_9.setTitle(_translate("Options_Dialog", "Grip size", None))
-        self.horizontalSlider_GRIPSIZE.setToolTip(_translate("Options_Dialog", "Sets the size of the grip box in pixels (GRIPSIZE system variable).", None))
+        self.horizontalSlider_GRIPSIZE.setToolTip(_translate("Options_Dialog", "Sets the size of the grip box in pixels ( GRIPSIZE system variable).", None))
         self.groupBox_10.setTitle(_translate("Options_Dialog", "Selection modes", None))
         self.checkBox_PICKFIRST.setToolTip(_translate("Options_Dialog", "Controls whether you select objects before (noun-verb selection) or after you issue a command (PICKFIRST system variable).", None))
         self.checkBox_PICKFIRST.setText(_translate("Options_Dialog", "Noun/verb selection", None))
@@ -299,7 +299,7 @@ class Ui_Options_Dialog(object):
         self.groupBox_11.setTitle(_translate("Options_Dialog", "Grips", None))
         self.button_GripColor.setToolTip(_translate("Options_Dialog", "Displays the Grip Colors dialog box where you can specify the colors for different grip status and elements.", None))
         self.button_GripColor.setText(_translate("Options_Dialog", "Grip Colors...", None))
-        self.checkBox_GRIPS.setToolTip(_translate("Options_Dialog", "Controls the display of grips on selected objects. Displaying grips in a drawing significantly affects performance. Clear this option to optimize performance (GRIPS system variable).", None))
+        self.checkBox_GRIPS.setToolTip(_translate("Options_Dialog", "Controls the display of grips on selected objects. Displaying grips in a drawing significantly affects performance. Clear this option to optimize performance ( GRIPS system variable).", None))
         self.checkBox_GRIPS.setText(_translate("Options_Dialog", "Shows grips", None))
         self.checkBox_GRIPMULTIFUNCTIONAL_ON_DYNAMIC_MENU_AND_HOT_GRIPT.setToolTip(_translate("Options_Dialog", "Controls the display of dynamic menu when pausing over a multi-functional grip (GRIPMULTIFUNCTIONAL system variable).", None))
         self.checkBox_GRIPMULTIFUNCTIONAL_ON_DYNAMIC_MENU_AND_HOT_GRIPT.setText(_translate("Options_Dialog", "Shows dynamic grip menu", None))
