@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>Options_Dialog</class>
  <widget class="QDialog" name="Options_Dialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,8 +13,26 @@
     <height>386</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>591</width>
+    <height>386</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>591</width>
+    <height>386</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>QAD - Options</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -38,8 +59,14 @@
      <height>331</height>
     </rect>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="DisplayTab">
     <attribute name="title">
@@ -62,7 +89,7 @@
        <rect>
         <x>20</x>
         <y>260</y>
-        <width>75</width>
+        <width>91</width>
         <height>23</height>
        </rect>
       </property>
@@ -94,7 +121,7 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>221</width>
+        <width>231</width>
         <height>20</height>
        </rect>
       </property>
@@ -168,7 +195,7 @@
        <rect>
         <x>10</x>
         <y>80</y>
-        <width>221</width>
+        <width>231</width>
         <height>17</height>
        </rect>
       </property>
@@ -234,7 +261,7 @@
        <x>270</x>
        <y>10</y>
        <width>281</width>
-       <height>171</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -258,7 +285,7 @@
        <rect>
         <x>50</x>
         <y>30</y>
-        <width>211</width>
+        <width>221</width>
         <height>21</height>
        </rect>
       </property>
@@ -274,7 +301,7 @@
        <rect>
         <x>50</x>
         <y>60</y>
-        <width>211</width>
+        <width>221</width>
         <height>21</height>
        </rect>
       </property>
@@ -335,7 +362,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>190</y>
+       <y>140</y>
        <width>281</width>
        <height>61</height>
       </rect>
@@ -395,7 +422,7 @@
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>70</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -411,7 +438,7 @@
        <rect>
         <x>10</x>
         <y>110</y>
-        <width>75</width>
+        <width>81</width>
         <height>23</height>
        </rect>
       </property>
@@ -427,7 +454,7 @@
        <rect>
         <x>10</x>
         <y>80</y>
-        <width>231</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -444,7 +471,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>60</y>
-        <width>231</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -460,7 +487,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>70</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -489,7 +516,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>221</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -505,7 +532,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>201</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -695,7 +722,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>221</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -711,7 +738,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>221</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -740,7 +767,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>80</x>
         <y>20</y>
-        <width>91</width>
+        <width>101</width>
         <height>23</height>
        </rect>
       </property>
@@ -756,7 +783,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>10</x>
         <y>50</y>
-        <width>221</width>
+        <width>251</width>
         <height>17</height>
        </rect>
       </property>
@@ -772,7 +799,7 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>20</x>
         <y>70</y>
-        <width>211</width>
+        <width>241</width>
         <height>17</height>
        </rect>
       </property>
@@ -801,8 +828,8 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        <rect>
         <x>60</x>
         <y>100</y>
-        <width>191</width>
-        <height>21</height>
+        <width>201</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="toolTip">
@@ -810,6 +837,9 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
       </property>
       <property name="text">
        <string>Object selection limit for display of grips</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>

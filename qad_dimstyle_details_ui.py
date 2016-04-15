@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_details.ui'
 #
-# Created: Mon Feb 22 16:27:02 2016
+# Created: Fri Apr 15 15:01:16 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,8 @@ class Ui_DimStyle_Details_Dialog(object):
     def setupUi(self, DimStyle_Details_Dialog):
         DimStyle_Details_Dialog.setObjectName(_fromUtf8("DimStyle_Details_Dialog"))
         DimStyle_Details_Dialog.resize(568, 446)
+        DimStyle_Details_Dialog.setMinimumSize(QtCore.QSize(568, 446))
+        DimStyle_Details_Dialog.setMaximumSize(QtCore.QSize(568, 446))
         self.tabWidget = QtGui.QTabWidget(DimStyle_Details_Dialog)
         self.tabWidget.setGeometry(QtCore.QRect(10, 10, 551, 391))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))

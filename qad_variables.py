@@ -178,7 +178,7 @@ class QadVariablesClass():
       VariableName = QadMsg.translate("Environment variables", "AUTOSNAPSIZE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "AutoSnap marker size in pixel.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 20, \
                                                             VariableDescr)
@@ -419,7 +419,7 @@ class QadVariablesClass():
       VariableName = QadMsg.translate("Environment variables", "GRIPSIZE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Grip symbol size in pixel.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(10), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(5), \
                                                             QadVariableTypeEnum.INT, \
                                                             1, 999, \
                                                             VariableDescr)

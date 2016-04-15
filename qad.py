@@ -7,7 +7,7 @@
  
                               -------------------
         begin                : 2014-11-03
-        copyright            : iiiii
+        copyright            : 2013-2016
         email                : hhhhh
         developers           : bbbbb aaaaa ggggg
  ***************************************************************************/

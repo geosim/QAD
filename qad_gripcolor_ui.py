@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_gripcolor.ui'
 #
-# Created: Mon Feb 22 16:27:10 2016
+# Created: Fri Apr 15 15:01:18 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,8 @@ class Ui_GripColor_Dialog(object):
     def setupUi(self, GripColor_Dialog):
         GripColor_Dialog.setObjectName(_fromUtf8("GripColor_Dialog"))
         GripColor_Dialog.resize(351, 208)
+        GripColor_Dialog.setMinimumSize(QtCore.QSize(351, 208))
+        GripColor_Dialog.setMaximumSize(QtCore.QSize(351, 208))
         self.buttonBox = QtGui.QDialogButtonBox(GripColor_Dialog)
         self.buttonBox.setGeometry(QtCore.QRect(10, 170, 331, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -36,16 +38,16 @@ class Ui_GripColor_Dialog(object):
         self.groupBox.setGeometry(QtCore.QRect(10, 10, 331, 141))
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.label = QtGui.QLabel(self.groupBox)
-        self.label.setGeometry(QtCore.QRect(10, 30, 121, 21))
+        self.label.setGeometry(QtCore.QRect(10, 30, 151, 21))
         self.label.setObjectName(_fromUtf8("label"))
         self.label_2 = QtGui.QLabel(self.groupBox)
-        self.label_2.setGeometry(QtCore.QRect(180, 30, 121, 21))
+        self.label_2.setGeometry(QtCore.QRect(180, 30, 151, 21))
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.label_3 = QtGui.QLabel(self.groupBox)
-        self.label_3.setGeometry(QtCore.QRect(10, 80, 121, 21))
+        self.label_3.setGeometry(QtCore.QRect(10, 80, 151, 21))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.label_4 = QtGui.QLabel(self.groupBox)
-        self.label_4.setGeometry(QtCore.QRect(180, 80, 121, 21))
+        self.label_4.setGeometry(QtCore.QRect(180, 80, 151, 21))
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.unselectedGripColorDummy = QtGui.QPushButton(self.groupBox)
         self.unselectedGripColorDummy.setGeometry(QtCore.QRect(10, 50, 141, 23))

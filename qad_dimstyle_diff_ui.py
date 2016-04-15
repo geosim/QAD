@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_diff.ui'
 #
-# Created: Mon Feb 22 16:27:06 2016
+# Created: Fri Apr 15 15:01:17 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,17 +27,19 @@ class Ui_DimStyle_Diff_Dialog(object):
     def setupUi(self, DimStyle_Diff_Dialog):
         DimStyle_Diff_Dialog.setObjectName(_fromUtf8("DimStyle_Diff_Dialog"))
         DimStyle_Diff_Dialog.resize(443, 526)
+        DimStyle_Diff_Dialog.setMinimumSize(QtCore.QSize(443, 526))
+        DimStyle_Diff_Dialog.setMaximumSize(QtCore.QSize(443, 526))
         self.label = QtGui.QLabel(DimStyle_Diff_Dialog)
-        self.label.setGeometry(QtCore.QRect(10, 10, 71, 21))
+        self.label.setGeometry(QtCore.QRect(10, 10, 81, 21))
         self.label.setObjectName(_fromUtf8("label"))
         self.label_2 = QtGui.QLabel(DimStyle_Diff_Dialog)
-        self.label_2.setGeometry(QtCore.QRect(10, 40, 71, 21))
+        self.label_2.setGeometry(QtCore.QRect(10, 40, 81, 21))
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.dimStyle1 = QtGui.QComboBox(DimStyle_Diff_Dialog)
-        self.dimStyle1.setGeometry(QtCore.QRect(80, 10, 211, 22))
+        self.dimStyle1.setGeometry(QtCore.QRect(100, 10, 211, 22))
         self.dimStyle1.setObjectName(_fromUtf8("dimStyle1"))
         self.dimStyle2 = QtGui.QComboBox(DimStyle_Diff_Dialog)
-        self.dimStyle2.setGeometry(QtCore.QRect(80, 40, 211, 22))
+        self.dimStyle2.setGeometry(QtCore.QRect(100, 40, 211, 22))
         self.dimStyle2.setObjectName(_fromUtf8("dimStyle2"))
         self.line = QtGui.QFrame(DimStyle_Diff_Dialog)
         self.line.setGeometry(QtCore.QRect(10, 70, 421, 16))
@@ -45,7 +47,7 @@ class Ui_DimStyle_Diff_Dialog(object):
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
         self.msg = QtGui.QLabel(DimStyle_Diff_Dialog)
-        self.msg.setGeometry(QtCore.QRect(10, 80, 321, 21))
+        self.msg.setGeometry(QtCore.QRect(10, 80, 381, 21))
         self.msg.setObjectName(_fromUtf8("msg"))
         self.layoutWidget = QtGui.QWidget(DimStyle_Diff_Dialog)
         self.layoutWidget.setGeometry(QtCore.QRect(277, 490, 158, 25))

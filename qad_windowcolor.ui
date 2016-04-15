@@ -10,6 +10,18 @@
     <height>424</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>592</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>592</width>
+    <height>424</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Drawing window Colors</string>
   </property>
@@ -42,9 +54,9 @@
   <widget class="QPushButton" name="Button_ApplyClose">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>334</x>
      <y>390</y>
-     <width>75</width>
+     <width>91</width>
      <height>23</height>
     </rect>
    </property>

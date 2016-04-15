@@ -14,3 +14,6 @@ qad_debug.*
 
 Thumbs.db
 *.psproj
+
+# word documents
+*.docx

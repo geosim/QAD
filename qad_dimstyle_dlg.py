@@ -96,13 +96,14 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       
       # seleziono il primo elemento della lista
       index = self.dimStyleList.model().index(0,0)
+      items = None
       if self.selectedDimStyle is not None:
          # seleziono l'elemento precedentemente selezionato
          items = self.dimStyleList.model().findItems(self.selectedDimStyle.name)
       elif len(currDimStyleName) > 0:
          items = self.dimStyleList.model().findItems(currDimStyleName)
          
-      if len(items) > 0:
+      if (items is not None) and len(items) > 0:
          item = items[0]
          if item is not None:
             index = self.dimStyleList.model().indexFromItem(item)

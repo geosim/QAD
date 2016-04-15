@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_new.ui'
 #
-# Created: Mon Feb 22 16:27:04 2016
+# Created: Fri Apr 15 15:01:16 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,8 @@ class Ui_DimStyle_New_Dialog(object):
     def setupUi(self, DimStyle_New_Dialog):
         DimStyle_New_Dialog.setObjectName(_fromUtf8("DimStyle_New_Dialog"))
         DimStyle_New_Dialog.resize(372, 142)
+        DimStyle_New_Dialog.setMinimumSize(QtCore.QSize(372, 142))
+        DimStyle_New_Dialog.setMaximumSize(QtCore.QSize(372, 142))
         self.label = QtGui.QLabel(DimStyle_New_Dialog)
         self.label.setGeometry(QtCore.QRect(10, 10, 221, 16))
         self.label.setObjectName(_fromUtf8("label"))
@@ -40,13 +42,13 @@ class Ui_DimStyle_New_Dialog(object):
         self.DimStyleNameFrom.setGeometry(QtCore.QRect(10, 110, 221, 22))
         self.DimStyleNameFrom.setObjectName(_fromUtf8("DimStyleNameFrom"))
         self.continueButton = QtGui.QPushButton(DimStyle_New_Dialog)
-        self.continueButton.setGeometry(QtCore.QRect(290, 50, 75, 23))
+        self.continueButton.setGeometry(QtCore.QRect(284, 50, 81, 23))
         self.continueButton.setObjectName(_fromUtf8("continueButton"))
         self.cancelButton = QtGui.QPushButton(DimStyle_New_Dialog)
-        self.cancelButton.setGeometry(QtCore.QRect(290, 80, 75, 23))
+        self.cancelButton.setGeometry(QtCore.QRect(284, 80, 81, 23))
         self.cancelButton.setObjectName(_fromUtf8("cancelButton"))
         self.helpButton = QtGui.QPushButton(DimStyle_New_Dialog)
-        self.helpButton.setGeometry(QtCore.QRect(290, 110, 75, 23))
+        self.helpButton.setGeometry(QtCore.QRect(284, 110, 81, 23))
         self.helpButton.setObjectName(_fromUtf8("helpButton"))
         self.label_3 = QtGui.QLabel(DimStyle_New_Dialog)
         self.label_3.setGeometry(QtCore.QRect(10, 50, 221, 16))

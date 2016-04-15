@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_windowcolor.ui'
 #
-# Created: Tue Mar 22 15:37:10 2016
+# Created: Fri Apr 15 15:01:18 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,8 @@ class Ui_WindowColor_Dialog(object):
     def setupUi(self, WindowColor_Dialog):
         WindowColor_Dialog.setObjectName(_fromUtf8("WindowColor_Dialog"))
         WindowColor_Dialog.resize(592, 424)
+        WindowColor_Dialog.setMinimumSize(QtCore.QSize(592, 424))
+        WindowColor_Dialog.setMaximumSize(QtCore.QSize(592, 424))
         self.Button_Cancel = QtGui.QPushButton(WindowColor_Dialog)
         self.Button_Cancel.setGeometry(QtCore.QRect(430, 390, 75, 23))
         self.Button_Cancel.setObjectName(_fromUtf8("Button_Cancel"))
@@ -34,7 +36,7 @@ class Ui_WindowColor_Dialog(object):
         self.Button_Help.setGeometry(QtCore.QRect(510, 390, 75, 23))
         self.Button_Help.setObjectName(_fromUtf8("Button_Help"))
         self.Button_ApplyClose = QtGui.QPushButton(WindowColor_Dialog)
-        self.Button_ApplyClose.setGeometry(QtCore.QRect(350, 390, 75, 23))
+        self.Button_ApplyClose.setGeometry(QtCore.QRect(334, 390, 91, 23))
         self.Button_ApplyClose.setObjectName(_fromUtf8("Button_ApplyClose"))
         self.label = QtGui.QLabel(WindowColor_Dialog)
         self.label.setGeometry(QtCore.QRect(10, 10, 161, 16))
