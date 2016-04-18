@@ -341,7 +341,7 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
                   elif opType == QadMAPMPEDITCommandOpTypeEnum.INTERSECTION: geom = geom.intersection(geomToAdd)
                   elif opType == QadMAPMPEDITCommandOpTypeEnum.DIFFERENCE: geom = geom.difference(geomToAdd)
                   
-                  if geom is None:
+                  if geom is None or geom.type() != QGis.Polygon:
                      self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                      return False
                   
