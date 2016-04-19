@@ -68,6 +68,8 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
+      if self.EntSelClass is not None:
+         del self.EntSelClass            
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0 or self.step == 1: # quando si é in fase di selezione entità
@@ -77,7 +79,8 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
    
    def waitForEntsel(self, msgMapTool, msg):
       if self.EntSelClass is not None:
-         del self.EntSelClass            
+         del self.EntSelClass
+         self.EntSelClass = None
       self.EntSelClass = QadEntSelClass(self.plugIn)
       self.EntSelClass.msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Select object whose layer will be the current layer: ")
       self.getPointMapTool().setSnapType(QadSnapTypeEnum.DISABLE)
@@ -105,9 +108,12 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
                   msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "\nThe current layer is {0}.")
                   self.showMsg(msg.format(layer.name()))
                del self.EntSelClass
+               self.EntSelClass = None
                return True
             else:               
-               self.showMsg(QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "No geometries in this position."))
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
          

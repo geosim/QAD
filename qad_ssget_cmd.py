@@ -114,13 +114,12 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    def getLayersToCheck(self):
       layerList = []
-      for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
+      for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
          # considero solo i layer vettoriali che sono filtrati per tipo
-         if (layer.type() == QgsMapLayer.VectorLayer) and \
-             ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
-              (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
-              (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
-              (self.onlyEditableLayers == False or layer.isEditable()):
+         if ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
+             (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
+             (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
+             (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
                len(QadDimStyles.getDimListByLayer(layer)) == 0:
@@ -134,7 +133,7 @@ class QadSSGetClass(QadCommandClass):
    #============================================================================
    def showMsgOnAddRemove(self, found):
       msg = QadMsg.translate("Command_SSGET", " found {0}, total {1}")
-      self.showMsg(msg.format(found, self.entitySet.count()), True) # ripete il prompt         
+      self.showMsg(msg.format(found, self.entitySet.count()), False) # non ripete il prompt 2016
 
 
    #============================================================================
@@ -190,7 +189,7 @@ class QadSSGetClass(QadCommandClass):
          self.entitySet.unite(dimEntity.getEntitySet())
 
       self.showMsgOnAddRemove(self.entitySet.count())
-      self.entitySet.selectOnLayer(False) # incremental = False aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool
+      self.entitySet.selectOnLayer(False) # incremental = False aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool (se il layer non è in modifica)
       self.lastEntitySet.clear()
       self.lastEntitySet.addEntity(entity)
 

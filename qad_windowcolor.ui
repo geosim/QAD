@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WindowColor_Dialog</class>
+ <widget class="QDialog" name="WindowColor_Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>592</width>
+    <height>424</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>592</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>592</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Drawing window Colors</string>
+  </property>
+  <widget class="QPushButton" name="Button_Cancel">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_Help">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_ApplyClose">
+   <property name="geometry">
+    <rect>
+     <x>334</x>
+     <y>390</y>
+     <width>91</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply &amp;&amp; Close</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>161</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Context:</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="listView_Context">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>161</width>
+     <height>81</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QListView" name="listView_Element">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>30</y>
+     <width>231</width>
+     <height>171</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>10</y>
+     <width>161</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Interface element:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_ColorDummy">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>30</y>
+     <width>161</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_RestoreCurrElement">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>120</y>
+     <width>161</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Restore current element</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_RestoreCurrContext">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>150</y>
+     <width>161</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Restore current context</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_RestoreAllContext">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>180</y>
+     <width>161</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Restore all context</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="widget_Preview" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>401</width>
+     <height>171</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>161</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Preview:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>10</y>
+     <width>161</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Color:</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>Button_ApplyClose</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>Button_ApplyClose_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>314</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_Cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>Button_Cancel_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>72</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_Help</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>ButtonHELP_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>464</x>
+     <y>404</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>131</x>
+     <y>409</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_RestoreCurrElement</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>Button_RestoreCurrElement_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>482</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>550</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_RestoreCurrContext</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>Button_RestoreCurrContext_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>465</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>549</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_RestoreAllContext</sender>
+   <signal>clicked()</signal>
+   <receiver>WindowColor_Dialog</receiver>
+   <slot>Button_RestoreAllContext_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>447</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>547</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>Button_ApplyClose_Pressed()</slot>
+  <slot>Button_Cancel_Pressed()</slot>
+  <slot>ButtonHELP_Pressed()</slot>
+  <slot>Button_RestoreCurrElement_clicked()</slot>
+  <slot>Button_RestoreCurrContext_clicked()</slot>
+  <slot>Button_RestoreAllContext_clicked()</slot>
+ </slots>
+</ui>

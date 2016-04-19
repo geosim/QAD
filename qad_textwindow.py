@@ -36,7 +36,7 @@ from qad_ui_textwindow import Ui_QadTextWindow, Ui_QadCmdSuggestWindow
 from qad_msg import QadMsg
 import qad_utils
 from qad_snapper import *
-from qad_variables import QadVariables
+from qad_variables import QadVariables, QadINPUTSEARCHOPTIONSEnum
 
 
 #===============================================================================
@@ -99,14 +99,15 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
 
       title = self.windowTitle()
       self.setWindowTitle(title + " - " + plugin.version())
-                
+
+
    def initGui(self):
       self.chronologyEdit = QadChronologyEdit(self)
       self.chronologyEdit.setObjectName("QadChronologyEdit")
      
       self.edit = QadEdit(self, self.chronologyEdit)
       self.edit.setObjectName("QadTextEdit")
- 
+
       self.edit.displayPrompt(QadMsg.translate("QAD", "Command: "))
       
       # Creo la finestra per il suggerimento dei comandi
@@ -131,6 +132,26 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       self.cmdSuggestWindow.initGui()
       self.cmdSuggestWindow.show(False)
 
+      self.refreshColors()
+
+
+   #============================================================================
+   # refreshColors
+   #============================================================================
+   def refreshColors(self):
+      history_ForegroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDHISTORYFORECOLOR")))
+      history_BackGroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDHISTORYBACKCOLOR")))
+      self.chronologyEdit.set_Colors(history_ForegroundColor, history_BackGroundColor)
+
+      foregroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEFORECOLOR")))
+      backGroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEBACKCOLOR")))
+      self.edit.set_Colors(foregroundColor, backGroundColor)
+
+      upperKeyWord_ForegroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEOPTCOLOR")))
+      KeyWord_BackgroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEOPTBACKCOLOR")))
+      highlightKeyWord_BackGroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEOPTHIGHLIGHTEDCOLOR")))
+      self.edit.set_keyWordColors(KeyWord_BackgroundColor, upperKeyWord_ForegroundColor, highlightKeyWord_BackGroundColor)
+
 
    def getDockWidgetArea(self):
       return self.parentWidget().dockWidgetArea(self)
@@ -150,6 +171,10 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
          self.hide()
       else:
          self.show()
+   
+   def showEvent(self, e):
+      QDockWidget.showEvent(self, e)
+      self.refreshColors()
          
    def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
       self.edit.showMsg(msg, displayPromptAfterMsg, append)
@@ -170,9 +195,9 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def showCmdSuggestWindow(self, mode = True, filter = ""):
       if self.cmdSuggestWindow is not None:
          inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-         # inputSearchOptions & 1 = Turns on all automated keyboard features when typing at the Command prompt
-         # inputSearchOptions & 4 = Displays a list of suggestions as keystrokes are entered
-         if inputSearchOptions & 1 and inputSearchOptions & 4:
+         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST = Displays a list of suggestions as keystrokes are entered
+         if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST:
             self.cmdSuggestWindow.show(mode, filter)
          else:
             self.cmdSuggestWindow.show(False)
@@ -224,7 +249,10 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       return self.plugin.toggleOrthoMode()      
 
    def togglePolarMode(self):
-      return self.plugin.togglePolarMode()      
+      return self.plugin.togglePolarMode()
+
+   def toggleObjectSnapTracking(self):
+      return self.plugin.toggleObjectSnapTracking()
 
    def getLastPoint(self):
       return self.plugin.lastPoint
@@ -282,13 +310,28 @@ class QadChronologyEdit(QTextEdit):
       self.setReadOnly(True)
       self.setMinimumSize(0, 1)
    
+   
+   #============================================================================
+   # set_Colors
+   #============================================================================
    def set_Colors(self, foregroundColor = Qt.black, backGroundColor = Qt.lightGray):
-      p = self.palette()
-      p.setColor(QPalette.Base, backGroundColor)
-      self.setPalette(p)
-      self.setTextColor(foregroundColor)
-      self.setTextBackgroundColor(backGroundColor) 
+      f = QColor(foregroundColor)
+      b = QColor(backGroundColor)
+      rgbStrForeColor = "rgb({0},{1},{2})"
+      rgbStrForeColor = rgbStrForeColor.format(str(f.red()), str(f.green()), str(f.blue()))
+      rgbStrBackColor = "rgb({0},{1},{2})"
+      rgbStrBackColor = rgbStrBackColor.format(str(b.red()), str(b.green()), str(b.blue()))
+      
+      fmt = "color: " + rgbStrForeColor + ";" + \
+            "background-color: " + rgbStrBackColor + ";" + \
+            "selection-color: " + rgbStrBackColor + ";" + \
+            "selection-background-color: " + rgbStrForeColor + ";"
+      self.setStyleSheet(fmt)
 
+
+   #============================================================================
+   # insertText
+   #============================================================================
    def insertText(self, txt):
       cursor = self.textCursor()
       for line in txt.split('\n'):
@@ -341,11 +384,11 @@ class QadEdit(QTextEdit):
       self.keyWordHighlightBackGroundColor = Qt.gray
       
       self.tcf_normal = QTextCharFormat()
-      self.tcf_history = QTextCharFormat()
       self.tcf_keyWord = QTextCharFormat()
       self.tcf_upperKeyWord = QTextCharFormat()
       self.tcf_highlightKeyWord = QTextCharFormat()
       self.tcf_highlightUpperKeyWord = QTextCharFormat()
+      
       self.set_Colors()
       self.set_keyWordColors()
 
@@ -358,16 +401,31 @@ class QadEdit(QTextEdit):
       self.timerForCmdAutoComplete.setSingleShot(True)
        
 
-   def set_Colors(self, foregroundColor = Qt.black, backGroundColor = Qt.white, history_ForegroundColor = Qt.blue, \
-                  history_BackGroundColor = Qt.gray):
+   #============================================================================
+   # set_Colors
+   #============================================================================
+   def set_Colors(self, foregroundColor = Qt.black, backGroundColor = Qt.white):
+      f = QColor(foregroundColor)
+      b = QColor(backGroundColor)
+      rgbStrForeColor = "rgb({0},{1},{2})"
+      rgbStrForeColor = rgbStrForeColor.format(str(f.red()), str(f.green()), str(f.blue()))
+      rgbStrBackColor = "rgb({0},{1},{2})"
+      rgbStrBackColor = rgbStrBackColor.format(str(b.red()), str(b.green()), str(b.blue()))
+
+      fmt = "color: " + rgbStrForeColor + ";" + \
+            "background-color: " + rgbStrBackColor + ";" + \
+            "selection-color: " + rgbStrBackColor + ";" + \
+            "selection-background-color: " + rgbStrForeColor + ";"
+      self.setStyleSheet(fmt)
+      
       self.tcf_normal.setForeground(foregroundColor)     
       self.tcf_normal.setBackground(backGroundColor)
       self.tcf_normal.setFontWeight(QFont.Normal)
-      
-      self.tcf_history.setForeground(history_ForegroundColor)     
-      self.tcf_history.setBackground(history_BackGroundColor)
-      self.tcf_history.setFontWeight(QFont.Normal)
 
+
+   #============================================================================
+   # set_keyWordColors
+   #============================================================================
    def set_keyWordColors(self, backGroundColor = QColor(210, 210, 210), upperKeyWord_ForegroundColor = Qt.blue, \
                          highlightKeyWord_BackGroundColor = Qt.gray):
       self.tcf_keyWord.setBackground(backGroundColor)
@@ -379,7 +437,8 @@ class QadEdit(QTextEdit):
       self.tcf_highlightUpperKeyWord.setForeground(upperKeyWord_ForegroundColor)
       self.tcf_highlightUpperKeyWord.setBackground(highlightKeyWord_BackGroundColor)
       self.tcf_highlightUpperKeyWord.setFontWeight(QFont.Bold)
-   
+
+ 
    def setFormat(self, start, count, fmt): # 1-indexed
       if count == 0:
          return
@@ -389,7 +448,8 @@ class QadEdit(QTextEdit):
       cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, count)
       cursor.setCharFormat(fmt);
       self.setCurrentCharFormat(self.tcf_normal)
-      
+
+
    def highlightKeyWords(self):
       lastBlock = self.document().lastBlock()
       txt = lastBlock.text()
@@ -418,8 +478,8 @@ class QadEdit(QTextEdit):
                      self.setFormat(pos, 1, self.tcf_keyWord)            
             i = i + 1
             pos = pos + 1
-   
-   
+
+
    def isCursorInEditionZone(self, newPos = None):
       cursor = self.textCursor()
       if newPos is None:
@@ -429,6 +489,7 @@ class QadEdit(QTextEdit):
       block = self.document().lastBlock()
       last = block.position() + self.currentPromptLength
       return pos >= last
+
 
    def currentCommand(self):
       block = self.textCursor().block()
@@ -440,14 +501,17 @@ class QadEdit(QTextEdit):
       cursor = self.textCursor()
       text = cursor.block().text()
       return text[self.currentPromptLength : cursor.position()]
-      
+
+
    def showMsgOnChronologyEdit(self, msg):
       self.parentWidget().showMsgOnChronologyEdit(msg)           
+
 
    def showCmdSuggestWindow(self, mode = True, filter = ""):
       if mode == False: # se spengo la finestra
          self.timerForCmdSuggestWindow.stop()
       self.parentWidget().showCmdSuggestWindow(mode, filter)
+
 
    def showCmdAutoComplete(self, filter = ""):
       # autocompletamento
@@ -458,8 +522,10 @@ class QadEdit(QTextEdit):
       filterLen = len(filter)
       if filterLen < 2:
          return
-      # inputSearchOptions & 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke.
-      if inputSearchOptions & 2:
+      
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.AUTOCOMPLETE = Automatically appends suggestions as each keystroke is entered after the second keystroke.
+      if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.AUTOCOMPLETE:
          if filterLen >= 2:
             cmdName, qty = self.parentWidget().plugin.getMoreUsedCmd(filter)
          else:
@@ -476,13 +542,6 @@ class QadEdit(QTextEdit):
          cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
          cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
          self.setTextCursor(cursor)
-      
-      
-      
-      
-      
-      
-      
       
 
    def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
@@ -525,11 +584,13 @@ class QadEdit(QTextEdit):
       self.currentPromptLength = len(self.currentPrompt)     
       self.showMsg("\n" + self.currentPrompt)
 
+
    def displayKeyWordsPrompt(self, prompt = None):
       if prompt is not None:
          self.currentPrompt = prompt
       self.currentPromptLength = len(self.currentPrompt)
       self.showMsg("\n" + self.currentPrompt)
+
       
    def showNext(self):
       if self.historyIndex < len(self.history) and len(self.history) > 0:
@@ -537,6 +598,7 @@ class QadEdit(QTextEdit):
          if self.historyIndex < len(self.history):
             # displayPromptAfterMsg = False, append = True
             self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
+
                          
    def showPrevious(self):
       if self.historyIndex > 0 and len(self.history) > 0:
@@ -544,6 +606,7 @@ class QadEdit(QTextEdit):
          if self.historyIndex < len(self.history):
             # displayPromptAfterMsg = False, append = True
             self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
+
                
    def showLast(self):
       if len(self.history) > 0:
@@ -551,6 +614,7 @@ class QadEdit(QTextEdit):
          return self.history[len(self.history) - 1]
       else:
          return ""
+
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
                     default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):      
@@ -579,6 +643,7 @@ class QadEdit(QTextEdit):
                   
       return
 
+
    def setCmdOptionPosList(self):
       del self.cmdOptionPosList[:] # svuoto la lista
       lenKeyWords = len(self.keyWords)
@@ -603,6 +668,7 @@ class QadEdit(QTextEdit):
          
          i = i + 1
 
+
    def getCmdOptionPosUnderMouse(self, pos):
       cursor = self.cursorForPosition(pos)
       pos = cursor.position()
@@ -611,31 +677,42 @@ class QadEdit(QTextEdit):
             return cmdOptionPos
       return None
 
+
    def mouseMoveEvent(self, event):
+      cursor = self.cursorForPosition(event.pos())
+      pos = cursor.position()
+      if self.isCursorInEditionZone(pos):
+         QTextEdit.mouseMoveEvent(self, event)
+         
       self.currentCmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
       self.highlightKeyWords()
       self.currentCmdOptionPos = None
+
    
    def mouseDoubleClickEvent(self, event):
       cursor = self.cursorForPosition(event.pos())
       pos = cursor.position()
       if self.isCursorInEditionZone(pos):
          QTextEdit.mouseDoubleClickEvent(self, event)
+
       
    def mousePressEvent(self, event):
       cursor = self.cursorForPosition(event.pos())
       pos = cursor.position()
       if self.isCursorInEditionZone(pos):
          QTextEdit.mousePressEvent(self, event)
-   
+
+
    def mouseReleaseEvent(self, event):
+      QTextEdit.mouseReleaseEvent(self, event)
       # se sono sull'ultima riga     
       if self.textCursor().position() >= self.document().lastBlock().position():
          if event.button() == Qt.LeftButton:
             cmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
             if cmdOptionPos is not None:
                self.showEvaluateMsg(cmdOptionPos.name, False)
-                           
+
+
    def updateHistory(self, command):
       # Se command é una lista di comandi
       if isinstance(command, list):
@@ -664,12 +741,6 @@ class QadEdit(QTextEdit):
          self.parentWidget().toggleShow()
          return
 
-      # Se é stato premuto il tasto F10
-      if e.key() == Qt.Key_F10:
-         # Attivo o disattivo il modo polare
-         self.parentWidget().togglePolarMode()
-         return
-
       # Se é stato premuto il tasto F3
       if e.key() == Qt.Key_F3:
          # Attivo o disattivo lo snap
@@ -685,6 +756,18 @@ class QadEdit(QTextEdit):
       if e.key() == Qt.Key_Escape:
          self.parentWidget().abortCommand()
          self.parentWidget().clearCurrentObjsSelection()
+         return
+
+      # Se é stato premuto il tasto F10
+      if e.key() == Qt.Key_F10:
+         # Attivo o disattivo il modo polare
+         self.parentWidget().togglePolarMode()
+         return
+
+      # Se é stato premuto il tasto F11
+      if e.key() == Qt.Key_F11:
+         # Attivo o disattivo il puntamento snap ad oggetto
+         self.parentWidget().toggleObjectSnapTracking()
          return
       
       # if the cursor isn't in the edit zone, don't do anything except Ctrl+C
@@ -907,6 +990,8 @@ class QadEdit(QTextEdit):
       if self.inputType & QadInputTypeEnum.COMMAND:
          if cmd == "":
             cmd = unicode(self.showLast()) # ripeto ultimo comando
+            if cmd == "":
+               return
          
          if self.parentWidget().isValidCommand(cmd) or self.parentWidget().isValidEnvVariable(cmd):
             self.updateHistory(cmd)
@@ -932,10 +1017,10 @@ class QadEdit(QTextEdit):
       # punto 2D
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.POINT2D:
-         snapType = qad_utils.str2snapTypeEnum(cmd)
+         snapType = str2snapTypeEnum(cmd)
          if snapType != -1:
             # se é stato forzato uno snap
-            snapParams = qad_utils.str2snapParams(cmd)
+            snapParams = str2snapParams(cmd)
             self.parentWidget().forceCommandMapToolSnapTypeOnce(snapType, snapParams)
             self.showMsg(QadMsg.translate("QAD", "\n(temporary snap)\n"), True) # ripeti il prompt
             return
@@ -1099,9 +1184,9 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
 
    def getFilteredInfoList(self, infoList, filter = ""):
       inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-      # inputSearchOptions & 1 = Turns on all automated keyboard features when typing at the Command prompt
-      # inputSearchOptions & 8 = Displays the icon of the command or system variable, if available.
-      dispIcons = inputSearchOptions & 1 and inputSearchOptions & 8
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_ICON = Displays the icon of the command or system variable, if available.
+      dispIcons = inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_ICON
 
       filteredInfoList = []
       upperFilter = filter.strip().upper()
@@ -1142,9 +1227,9 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
          itemList.extend(self.infoCmds)
          
          inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-         # inputSearchOptions & 1 = Turns on all automated keyboard features when typing at the Command prompt
-         # inputSearchOptions & 16 = Excludes the display of system variables
-         if inputSearchOptions & 1 and (not inputSearchOptions & 16):
+         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR = Excludes the display of system variables
+         if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and (not inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR):
             itemList.extend(self.infoVars)
 
          # filtro i nomi
@@ -1267,14 +1352,6 @@ class QadCmdSuggestListView(QListView):
       self.model.sort(0)
 
 
-#    def selectionChanged(self, i1, i2):
-#       inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-#       # inputSearchOptions & 2 = Automatically appends suggestions as each keystroke is entered after the second keystroke.
-#       if inputSearchOptions & 2:
-#          cmd = self.selectionModel().currentIndex().data()
-#          self.parentWidget().showMsg(cmd)
-
-                     
    def keyPressEvent(self, e):
       if e.key() == Qt.Key_Up or e.key() == Qt.Key_Down or \
          e.key() == Qt.Key_PageUp or e.key() == Qt.Key_PageDown or \

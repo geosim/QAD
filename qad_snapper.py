@@ -28,6 +28,7 @@ import os.path
 from qgis.core import *
 import math
 import sys
+import bisect
 
 
 import qad_utils
@@ -95,7 +96,7 @@ class QadSnapper():
    def __init__(self):
       self.__snapType = QadSnapTypeEnum.NONE
       self.__snapLayers = None      
-      self.__snapMode = QadSnapModeEnum.ONE_RESULT      
+      self.__snapMode = QadSnapModeEnum.ONE_RESULT
       self.__snapPointCRS = None # sistema di coordinate in cui memorizzare i punti di snap      
       self.__startPoint = None
       self.__toleranceExtParlines = 0
@@ -104,6 +105,8 @@ class QadSnapper():
       self.__parLines = [] # lista delle linee per modo parallelo (ogni elemento é una lista di 2 punti = linea)
       self.__intExtLine = [] # linea per intersezione su estensione (lista di 2 punti = linea)      
       self.__intExtArc = [] # arco per intersezione su estensione
+      self.__oSnapPointsForPolar = dict() # dictionary di punti di osnap selezionati per l'opzione polare
+      self.__oSnapLinesForPolar = [] # lista delle linee per l'opzione polare
       self.__cacheSnapPoints = []      
       self.__progressDistance = 0.0 # distanza progressiva dall'inizio della linea
       self.__distToExcludeNea = 0.0 # distanza entro la quale se ci sono dei punti di snap
@@ -122,7 +125,7 @@ class QadSnapper():
       if self.__snapType != snapType:
          self.__snapType = snapType
          self.clearCacheSnapPoints()
-         self.removeReferenceLines()         
+         self.removeReferenceLines()
    def getSnapType(self):
       """
       Restituisce il tipo di snapping
@@ -275,9 +278,120 @@ class QadSnapper():
 
 
    #===========================================================================
+   # getOsnapPtAndLinesForPolar
+   #===========================================================================
+   def getOsnapPtAndLinesForPolar(self, point, polarAng, polarAngOffset):
+      # calcola i punti polari per tutti i punti di osnap selezionati per l'opzione polare e per per il punto corrente
+      # i punti vanno in result, le linee vanno in self.__oSnapLinesForPolar
+       
+      result = []
+      del self.__oSnapLinesForPolar[:]
+      # per tutti i punti di osnap selezionati per l'opzione polare
+      for item in self.__oSnapPointsForPolar.items():
+         # salto il tipo POLAR
+         if item[0] != QadSnapTypeEnum.POLAR:
+            for startPoint in item[1]:
+               pts = self.getPolarCoord(startPoint, point, polarAng, polarAngOffset) # ritorna una lista con un solo punto
+               if len(pts) > 0:
+                  self.__appendUniquePoint(result, pts[0]) # senza duplicazione
+                  self.__oSnapLinesForPolar.append([startPoint, pts[0]])
+
+      # per il punto di partenza
+      if self.__startPoint is not None:
+         pts = self.getPolarCoord(self.__startPoint, point, polarAng, polarAngOffset) # ritorna una lista con un solo punto
+         if len(pts) > 0:
+            self.__appendUniquePoint(result, pts[0]) # senza duplicazione
+            self.__oSnapLinesForPolar.append([self.__startPoint, pts[0]])
+      
+      return result
+
+
+   #============================================================================
+   # getIntPtsBetweenOSnapLinesForPolar
+   #============================================================================      
+   def getIntPtsBetweenOSnapLinesForPolar(self):
+      # calcolo le intersezioni delle linee polari
+      result = []
+      i = 0
+      totLines = len(self.__oSnapLinesForPolar)
+      while i < totLines:
+         line1 = self.__oSnapLinesForPolar[i]
+         j = i + 1
+         while j < totLines:
+            line2 = self.__oSnapLinesForPolar[j]
+            point = qad_utils.getIntersectionPointOn2InfinityLines(line1[0], line1[1], line2[0], line2[1])
+            if point is not None:
+               self.__appendUniquePoint(result, point) # senza duplicazione
+            j = j + 1
+         i = i + 1
+         
+      return result
+   
+
+   #============================================================================
+   # OSnapPointsForPolar
+   #============================================================================      
+   def __toggleOSnapPointsForPolar(self, point, oSnapPointsForPolar, snapMarkerSizeInMapUnits):
+      """
+      Aggiunge un punto di osnap usati per l'opzione polare
+      se non ancora inserito in lista altrimenti lo rimuove dalla lista
+      __oSnapPointsForPolar é un dizionario di liste di punti di snap
+      suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
+      """
+      del self.__oSnapLinesForPolar[:]
+      
+      autoSnapSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
+      
+      for itemToToggle in oSnapPointsForPolar.items():
+         key = itemToToggle[0]
+         # non considero alcuni tipi di snap
+         if key == QadSnapTypeEnum.INT or key == QadSnapTypeEnum.PER or key == QadSnapTypeEnum.TAN or \
+            key == QadSnapTypeEnum.NEA or key == QadSnapTypeEnum.APP or key == QadSnapTypeEnum.EXT or \
+            key == QadSnapTypeEnum.PAR or key == QadSnapTypeEnum.PR or key == QadSnapTypeEnum.EXT_INT or \
+            key == QadSnapTypeEnum.PER_DEF or key == QadSnapTypeEnum.TAN_DEF or key == QadSnapTypeEnum.POLAR:
+            continue
+         
+         for ptToToggle in itemToToggle[1]: # per ogni punto
+            # il punto <point> deve essere dentro il punto di snap che ha dimensioni snapMarkerSizeInMapUnits
+            if point.x() >= ptToToggle.x() - snapMarkerSizeInMapUnits and point.x() <= ptToToggle.x() + snapMarkerSizeInMapUnits and \
+               point.y() >= ptToToggle.y() - snapMarkerSizeInMapUnits and point.y() <= ptToToggle.y() + snapMarkerSizeInMapUnits: 
+               add = True
+               for item in self.__oSnapPointsForPolar.items():
+                  i = 0
+                  for pt in item[1]:
+                     if pt == ptToToggle:
+                        del item[1][i]
+                        add = False
+                        i = i + 1
+   
+               if add:
+                  if self.__oSnapPointsForPolar.has_key(key) == False:
+                     self.__oSnapPointsForPolar[key] = [ptToToggle]
+                  else:
+                     self.__oSnapPointsForPolar[key].append(ptToToggle)
+
+
+   def removeOSnapPointsForPolar(self):
+      """
+      Elimina tutti punti di osnap usati per l'opzione polare
+      """
+      self.__oSnapPointsForPolar.clear() # svuoto il dizionario
+      del self.__oSnapLinesForPolar[:] # svuoto la lista
+
+   def getOSnapPointsForPolar(self):
+      return self.__oSnapPointsForPolar
+
+   def getOSnapLinesForPolar(self):
+      return self.__oSnapLinesForPolar
+
+
+   #===========================================================================
    # ReferenceLines
    #===========================================================================
-   def toggleReferenceLines(self, geom, point, CRS = None):
+   def toggleReferenceLines(self, geom, point, CRS = None, oSnapPointsForPolar = None, snapMarkerSizeInMapUnits = None):
+      if oSnapPointsForPolar is not None:
+         self.__toggleOSnapPointsForPolar(point, oSnapPointsForPolar, snapMarkerSizeInMapUnits)
+         
       # usato solo per snap EXT o PAR
       if not(self.__snapType & QadSnapTypeEnum.EXT) and \
          not(self.__snapType & QadSnapTypeEnum.PAR):
@@ -305,9 +419,8 @@ class QadSnapper():
       circle = None
       circleList = QadCircleList()
       if circleList.fromGeom(g) > 0:
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
+         subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+         circle = circleList.circleAt(ndxGeom)
 
       pt1 = g.vertexAt(afterVertex - 1)   
       pt2 = g.vertexAt(afterVertex)   
@@ -327,14 +440,15 @@ class QadSnapper():
       self.removeParLines()
       self.removeIntExtLine()
       self.removeIntExtArc()
-      
+      self.removeOSnapPointsForPolar()
+
 
    #============================================================================
    # setToleranceExtParLines
    #============================================================================
    def setToleranceExtParLines(self, tolerance):
       self.__toleranceExtParlines = tolerance
-      
+
 
    #============================================================================
    # tmpGeometries
@@ -364,7 +478,7 @@ class QadSnapper():
    #===========================================================================
    # getSnapPoint
    #===========================================================================
-   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None, isTemporaryGeom = False):
+   def getSnapPoint(self, geom, point, CRS, excludePoints = None, polarAng = None, polarAngOffset = None, isTemporaryGeom = False):
       """
       Data una geometria ed un punto (posizione del cursore) nel sistema di coordinate CRS 
       ottiene i punti di snap (con esclusione dei punti in excludePoints).
@@ -381,14 +495,16 @@ class QadSnapper():
 
       # cerca nella cache i punti di snap statici per una geometria
       if geom is not None:
-         staticSnapPoints = self.__getCacheSnapPoints(g)
-         if staticSnapPoints is None:
-            staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom)
-            self.__setCacheSnapPoints(g, staticSnapPoints)
+         staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom, p)
+         # non uso la cache perchè in caso di multistring o polygon o multipolygon viene usata solo la geometria più vicina a p
+         #staticSnapPoints = self.__getCacheSnapPoints(g)
+         #if staticSnapPoints is None:
+         #   staticSnapPoints = self.getStaticSnapPoints(g, None, isTemporaryGeom)
+         #   self.__setCacheSnapPoints(g, staticSnapPoints)
       else:
          staticSnapPoints = dict()
       
-      # snap dinamici  
+      # snap dinamici
       dynamicSnapPoints = self.getDynamicSnapPoints(g, p)
 
       allSnapPoints = staticSnapPoints
@@ -397,18 +513,28 @@ class QadSnapper():
          
       # puntamento polare
       if (self.__startPoint is not None) and (polarAng is not None):
-         allSnapPoints[QadSnapTypeEnum.POLAR] = self.getPolarCoord(point, polarAng)
+         # per tutti i punti di osnap selezionati per l'opzione polare e per per il punto corrente
+         allSnapPoints[QadSnapTypeEnum.POLAR] = self.getOsnapPtAndLinesForPolar(point, polarAng, polarAngOffset)
+         # calcolo le intersezioni delle linee polari e le aggiungo in allSnapPoints[QadSnapTypeEnum.INT]
+         intPts = self.getIntPtsBetweenOSnapLinesForPolar()
+         if len(intPts) > 0:
+            if allSnapPoints.has_key(QadSnapTypeEnum.INT):
+               for intPt in intPts:
+                  self.__appendUniquePoint(allSnapPoints[QadSnapTypeEnum.INT], point) # senza duplicazione
+            else:
+               allSnapPoints[QadSnapTypeEnum.INT] = intPts
 
+               
       if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
          # Viene restituito solo il punto più vicino
-         result = self.__getNearestPoints(p, allSnapPoints)
+         result = self.getNearestPoints(p, allSnapPoints)
       elif self.__snapMode == QadSnapModeEnum.RESULTS_FOR_SAME_POS:
-         # take all snapping Results within a certain tolerance because rounding differences may occur     
-         result = self.__getNearestPoints(p, allSnapPoints, 0.000001)
+         # take all snapping Results within a certain tolerance because rounding differences may occur
+         result = self.getNearestPoints(p, allSnapPoints, 0.000001)
       else:
          result = allSnapPoints # Vengono restituiti tutti i punti
       
-      if excludePoints is not None:         
+      if excludePoints is not None:
          for p in excludePoints:
             self.__delPoint(p, result)
             
@@ -433,38 +559,66 @@ class QadSnapper():
    #============================================================================
    # getStaticSnapPoints
    #============================================================================
-   def getStaticSnapPoints(self, geom, CRS = None, isTemporaryGeom = False):
+   def getStaticSnapPoints(self, geom, CRS = None, isTemporaryGeom = False, currentMousePt = None):
       """
       Data una geometria ottiene i punti di snap statici che non dipendono dalla 
       posizione del cursore.
-      Resituisce un dizionario di liste di punti di snap
+      Restituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       - CRS = sistema di coordinate in cui é espressa la geom  (QgsCoordinateReferenceSystem)
       - isTemporaryGeom flag che indica se geom é  un oggetto temporaneo che ancora non esiste      
+      - currentMousePt = posizione corrente del mouse (in map coordinate). Se viene passato questo parametro
+                         viene considerato solo la geometria più vicino a currentMousePt.
       """
      
       result = dict()
 
       if (self.__snapType & QadSnapTypeEnum.DISABLE):
          return result
+
+      if geom is None:
+         return result
+                  
+      g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+      wkbType = g.wkbType()
+      
+      storeInCachePts = False
+      if (currentMousePt is not None) and \
+         (wkbType == QGis.WKBMultiLineString or wkbType == QGis.WKBPolygon or wkbType == QGis.WKBMultiPolygon):
+         mousePt = self.__transformPoint(currentMousePt, CRS, self.getSnapPointCRS())         
+         dummy = qad_utils.closestSegmentWithContext(mousePt, g)
+         if dummy[2] is not None:
+            # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
+            g, atSubGeom1 = qad_utils.getSubGeomAtVertex(g, dummy[2])
+            
+            # uso la cache per la sottogeometria
+            staticSnapPoints = self.__getCacheSnapPoints(g)
+            if staticSnapPoints is not None:
+               return staticSnapPoints
+            storeInCachePts = True
       
       if self.__snapType & QadSnapTypeEnum.END:
-         result[QadSnapTypeEnum.END] = self.getEndPoints(geom, CRS)
+         result[QadSnapTypeEnum.END] = self.getEndPoints(g, None, QadVertexSearchModeEnum.ALL)
       if self.__snapType & QadSnapTypeEnum.END_PLINE:
-         result[QadSnapTypeEnum.END_PLINE] = self.getEndPoints(geom, CRS, QadVertexSearchModeEnum.ONLY_START_END)
+         result[QadSnapTypeEnum.END_PLINE] = self.getEndPoints(g, None, QadVertexSearchModeEnum.ONLY_START_END)
       if self.__snapType & QadSnapTypeEnum.MID:
-         result[QadSnapTypeEnum.MID] = self.getMidPoints(geom, CRS)
+         result[QadSnapTypeEnum.MID] = self.getMidPoints(g, None)
       if self.__snapType & QadSnapTypeEnum.NOD:
-         result[QadSnapTypeEnum.NOD] = self.getNodPoint(geom, CRS)      
+         result[QadSnapTypeEnum.NOD] = self.getNodPoint(g, None)
       if self.__snapType & QadSnapTypeEnum.QUA:
-         result[QadSnapTypeEnum.QUA] = self.getQuaPoints(geom, CRS)
+         result[QadSnapTypeEnum.QUA] = self.getQuaPoints(g, None)
       if self.__snapType & QadSnapTypeEnum.INT:
-         result[QadSnapTypeEnum.INT] = self.getIntPoints(geom, CRS, isTemporaryGeom)
+         result[QadSnapTypeEnum.INT] = self.getIntPoints(g, None, isTemporaryGeom)
       if self.__snapType & QadSnapTypeEnum.INS:
-         result[QadSnapTypeEnum.INS] = self.getNodPoint(geom, CRS)
+         result[QadSnapTypeEnum.INS] = self.getNodPoint(g, None)
       if self.__snapType & QadSnapTypeEnum.APP:
-         result[QadSnapTypeEnum.APP] = self.getIntPoints(geom, CRS, isTemporaryGeom)
-               
+         result[QadSnapTypeEnum.APP] = self.getIntPoints(g, None, isTemporaryGeom)
+      if self.__snapType & QadSnapTypeEnum.CEN:
+         result[QadSnapTypeEnum.CEN] = self.getCenPoint(g, None)
+
+      if storeInCachePts: 
+         self.__setCacheSnapPoints(g, result)
+
       return result
  
  
@@ -475,7 +629,7 @@ class QadSnapper():
       """
       Data una geometria ottiene i punti di snap dinamici che dipendono dalla 
       posizione del cursore (nel sistema di coordinate di geomLayer) o
-      o da __startPoint (nel sistema di coordinate __snapPointCRS).
+      da __startPoint (nel sistema di coordinate __snapPointCRS).
       Resituisce un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
       - CRS = sistema di coordinate in cui sono espressi geom e point (QgsCoordinateReferenceSystem)
@@ -486,8 +640,6 @@ class QadSnapper():
       if (self.__snapType & QadSnapTypeEnum.DISABLE):
          return result
       
-      if self.__snapType & QadSnapTypeEnum.CEN:
-         result[QadSnapTypeEnum.CEN] = self.getCenPoint(geom, point, CRS)      
       if self.__snapType & QadSnapTypeEnum.PER:
          result[QadSnapTypeEnum.PER] = self.getPerPoints(geom, point, CRS)
       if self.__snapType & QadSnapTypeEnum.TAN:
@@ -520,33 +672,36 @@ class QadSnapper():
       """
       Cerca i punti iniziali e finali dei segmenti di una linea o di una multi-linea.
       - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
+      - VertexSearchMode = modalità di ricerca dei punti finali
       Ritorna una lista di punti QgsPoint
       """
       result = []
 
       if geom is None:
          return result
-      
+                  
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+      
+      circle  = QadCircle()
       
       geoms = qad_utils.asPointOrPolyline(g)
       for igeom in geoms:
          if (igeom.wkbType() == QGis.WKBLineString):
+            points = igeom.asPolyline() # vettore di punti
+            
+            # verifico se è un cerchio lo salto
+            if circle.fromPolyline(points): continue
+             
             # verifico se ci sono archi
             arcList = QadArcList()
-            arcList.fromGeom(igeom)                          
-
-            # verifico se ci sono cerchi
-            circleList = QadCircleList()
-            circleList.fromGeom(igeom)                          
+            arcList.fromGeom(igeom)
             
-            points = igeom.asPolyline() # vettore di punti
             i = 1
             vertexCount = len(points)
             for ipoint in points:
                _arc = arcList.arcAt(i - 1)
-               _circle = circleList.circleAt(i - 1)
                
+               inser = False
                if _arc is not None: # se questo punto appartiene ad un arco
                   startEnd = _arc[1]
                   # se il punto corrisponde al punto iniziale o finale dell'arco
@@ -555,9 +710,7 @@ class QadSnapper():
                      inser = True
                   else:
                      inser = False                                
-               elif _circle is not None: # se questo punto appartiene ad un cerchio
-                  inser = False
-               else: # se questo punto non appartiene né ad un arco ne ad un cerchio 
+               else: # se questo punto non appartiene né ad un arco nè ad un cerchio
                   inser = True
                
                if inser == True:
@@ -570,7 +723,7 @@ class QadSnapper():
                   else:
                      self.__appendUniquePoint(result, ipoint) # aggiungo senza duplicazione
                   
-               i = i + 1            
+               i = i + 1
       
       return result
 
@@ -591,33 +744,89 @@ class QadSnapper():
       
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
       
+      circle  = QadCircle()
+      
       geoms = qad_utils.asPointOrPolyline(g)
       for igeom in geoms:
          if (igeom.wkbType() == QGis.WKBLineString):
+            points = igeom.asPolyline() # vettore di punti
+            
+            # verifico se è un cerchio lo salto
+            if circle.fromPolyline(points): continue
+
             # verifico se ci sono archi
             arcList = QadArcList()
             if arcList.fromGeom(igeom) > 0:
                for arc in arcList.arcList:
                   self.__appendUniquePoint(result, arc.getMiddlePt()) # senza duplicazione                 
             
-            # verifico se ci sono cerchi
-            circleList = QadCircleList()
-            circleList.fromGeom(igeom)                          
-            
-            points = igeom.asPolyline() # vettore di punti
             first = True
             i = 0
             for ipoint in points:
                if first == True:
                   first = False
                else:
-                  # se questo punto non appartiene ad un arco né ad un cerchio
-                  if (arcList.arcAt(i) is None) and (circleList.circleAt(i) is None):                  
+                  # se questo punto non appartiene ad un arco
+                  if (arcList.arcAt(i) is None):
                      point = qad_utils.getMiddlePoint(prevPoint, ipoint)
                      self.__appendUniquePoint(result, point) # senza duplicazione
                prevPoint = ipoint
                i = i + 1
                
+      return result
+
+
+   #============================================================================
+   # getCenPoint
+   #============================================================================
+   def getCenPoint(self, geom, CRS = None):
+      """
+      Cerca i punti centrali di archi, cerchi e centroidi presenti nella geometria.
+      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
+      Ritorna una lista di punti QgsPoint
+      """
+      result = []
+
+      if geom is None:
+         return result
+
+      wkbType = geom.wkbType()
+      g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
+
+      # se si tratta di poligono o multipoligono
+      if wkbType == QGis.WKBPolygon or wkbType == QGis.WKBMultiPolygon:
+         # leggo il/i centroidi
+         centroidGeom = g.centroid()
+         wkbType = centroidGeom.wkbType()
+         if wkbType == QGis.WKBPoint:
+            self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione
+         elif wkbType == QGis.WKBMultiPoint:
+            for centroidPt in centroidGeom.asMultiPoint(): # vettore di punti
+               self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione         
+      
+      circle  = QadCircle()
+
+      # cerco i cerchi e gli archi presenti in geom
+      geoms = qad_utils.asPointOrPolyline(g)
+      for igeom in geoms:
+         if (igeom.wkbType() == QGis.WKBLineString):
+            points = igeom.asPolyline() # vettore di punti
+            
+            # verifico se è un cerchio
+            if circle.fromPolyline(points):
+               self.__appendUniquePoint(result, circle.center) # senza duplicazione
+            else:
+               if points[0] == points[-1]: # polilinea chiusa
+                  # leggo il/i centroidi
+                  centroidGeom = igeom.centroid()
+                  self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione
+               else:
+                  # verifico se ci sono archi
+                  arcList = QadArcList()
+                  if arcList.fromGeom(igeom) > 0:
+                     for arc in arcList.arcList:
+                        self.__appendUniquePoint(result, arc.center) # senza duplicazione
+
       return result
 
 
@@ -669,22 +878,21 @@ class QadSnapper():
       
       g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
 
-      if wkbType == QGis.WKBLineString or wkbType == QGis.WKBMultiLineString:
-         # verifico se ci sono archi
-         arcList = QadArcList()
-         if arcList.fromGeom(g) > 0:
-            for arc in arcList.arcList:
-               points = arc.getQuadrantPoints()
-               for point in points:
-                  self.__appendUniquePoint(result, point) # senza duplicazione
-      else:
-         # verifico se ci sono cerchi
-         circleList = QadCircleList()
-         if circleList.fromGeom(g) > 0:                          
-            for circle in circleList.circleList:
-               points = circle.getQuadrantPoints()
-               for point in points:
-                  self.__appendUniquePoint(result, point) # senza duplicazione
+      # verifico se ci sono archi
+      arcList = QadArcList()
+      if arcList.fromGeom(g) > 0:
+         for arc in arcList.arcList:
+            points = arc.getQuadrantPoints()
+            for point in points:
+               self.__appendUniquePoint(result, point) # senza duplicazione
+               
+      # verifico se ci sono cerchi
+      circleList = QadCircleList()
+      if circleList.fromGeom(g) > 0:                          
+         for circle in circleList.circleList:
+            points = circle.getQuadrantPoints()
+            for point in points:
+               self.__appendUniquePoint(result, point) # senza duplicazione
       
       return result
 
@@ -750,61 +958,6 @@ class QadSnapper():
    # Inizio punti dinamici
    #============================================================================
 
-
-   #============================================================================
-   # getCenPoint
-   #============================================================================
-   def getCenPoint(self, geom, point, CRS = None):
-      """
-      Cerca il punto centro di un arco o di un cerchio o il centroide di un poligono.
-      - CRS = sistema di coordinate in cui é espressa la geom (QgsCoordinateReferenceSystem)
-      Ritorna una lista di punti QgsPoint
-      """
-      result = []
-
-      if geom is None:
-         return result
-
-      wkbType = geom.wkbType()
-      if wkbType == QGis.WKBPoint or wkbType == QGis.WKBMultiPoint:
-         return result
-      elif wkbType == QGis.WKBPolygon or wkbType == QGis.WKBMultiPolygon:
-         centroidGeom = geom.centroid()
-         wkbType = centroidGeom.wkbType()
-         if wkbType == QGis.WKBPoint:
-            self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione
-         elif wkbType == QGis.WKBMultiPoint:
-            for centroidPt in centroidGeom.asMultiPoint(): # vettore di punti
-               self.__appendUniquePoint(result, centroidGeom.asPoint()) # senza duplicazione         
-
-      # ritorna una tupla (<The squared cartesian distance>,
-      #                    <minDistPoint>
-      #                    <afterVertex>)
-      dummy = qad_utils.closestSegmentWithContext(point, geom)
-      afterVertex = dummy[2]
-      if afterVertex is None:
-         return result
-
-      g = self.__transformGeomToSnapPointCRS(geom, CRS) # trasformo la geometria in coord dei punti di snap
-      
-      # verifico se ci sono cerchi
-      circleList = QadCircleList()
-      if circleList.fromGeom(g) > 0:
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
-            self.__appendUniquePoint(result, circle.center) # senza duplicazione                 
-
-      # verifico se ci sono archi         
-      arcList = QadArcList()
-      if arcList.fromGeom(g) > 0:        
-         info = arcList.arcAt(afterVertex)
-         if info is not None:
-            arc = info[0]
-            self.__appendUniquePoint(result, arc.center) # senza duplicazione                 
-               
-      return result
-
             
    #============================================================================
    # getPerPoints
@@ -853,9 +1006,9 @@ class QadSnapper():
       # verifico se ci sono cerchi
       circleList = QadCircleList()
       if circleList.fromGeom(g) > 0:                          
-         info = circleList.circleAt(afterVertex)
-         if info is not None:
-            circle = info[0]
+         subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+         circle = circleList.circleAt(ndxGeom)
+         if circle is not None:
             PerpendicularPoints = circle.getPerpendicularPoints(startPointCRS)
             if PerpendicularPoints is not None:
                for PerpendicularPoint in PerpendicularPoints:
@@ -956,7 +1109,7 @@ class QadSnapper():
 
 
    #============================================================================
-   # getExtPoints
+   # toggleExtLine
    #============================================================================
    def toggleExtLine(self, pt1, pt2, CRS = None):
       """
@@ -1365,9 +1518,8 @@ class QadSnapper():
          circle = None
          circleList = QadCircleList()
          if circleList.fromGeom(g) > 0:
-            info = circleList.circleAt(afterVertex)
-            if info is not None:
-               circle = info[0]
+            subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+            circle = circleList.circleAt(ndxGeom)
 
       if (arc is None) and (circle is None): # nessun arco e cerchio
          p1 = self.__transformPoint(g.vertexAt(afterVertex - 1), CRS, self.getSnapPointCRS()) # trasformo il punto
@@ -1415,9 +1567,40 @@ class QadSnapper():
       Resituisce True se l'inserimento é avvenuto False se il punto c'era già.
       """
       _point = self.__transformPoint(point, CRS, self.getSnapPointCRS()) # trasformo il punto
-      return qad_utils.appendUniquePointToList(pointList, _point)
+      
+      # Si assume che la lista sia ordinata, l'inserimento avverà mantenendo l'ordinamento
+      lo = 0
+      hi = len(pointList)
+      while lo < hi:
+         mid = (lo + hi) // 2 # digits after the decimal point are removed
+         
+         if self.__comparePts(pointList[mid], point) == -1: lo = mid+1
+         else: hi = mid
 
+      if lo != len(pointList) and self.__comparePts(pointList[lo], point) == 0: # il punto c'era già
+         return False
+      pointList.insert(lo, point)
+      return True
+      
+      #return qad_utils.appendUniquePointToList(pointList, _point)
 
+   
+   #============================================================================
+   # __comparePts
+   #============================================================================
+   def __comparePts(self, p1, p2):
+      # compara 2 punti, ritorna 0 se sono uguali, -1 se il primo < del secondo, 1 se il primo > del secondo 
+      if p1.x() > p2.x(): return 1
+      if p1.x() < p2.x(): return -1
+      # le x sono uguali quindi verifici le y
+      if p1.y() > p2.y(): return 1
+      if p1.y() < p2.y(): return -1
+      return 0 # numeri uguali
+   
+   
+   #============================================================================
+   # __layerToMapCoordinatesPointList
+   #============================================================================
    def __layerToMapCoordinatesPointList(self, pointList, layer, mQgsMapRenderer):
       """
       Trasforma una lista punti da coordinate layer a coordinate map.
@@ -1442,6 +1625,7 @@ class QadSnapper():
       rect.setYMaximum(point.y())
       return rect
 
+
    def __transformPoint(self, point, sourceCRS, destCRS):
       """
       Trasforma un punto dal sistema di coordinate sorgente a quello di destinazione.
@@ -1453,9 +1637,10 @@ class QadSnapper():
       else:
          return point
 
+
    def __transformGeomToSnapPointCRS(self, geom, CRS = None):
       """
-      Trasformala geometria nel sistema di coordinate dei punti di snap
+      Trasforma la geometria nel sistema di coordinate dei punti di snap
       CRS é QgsCoordinateReferenceSystem della geometria
       """
       if geom is None:
@@ -1466,8 +1651,9 @@ class QadSnapper():
          coordTransform = QgsCoordinateTransform(CRS, self.getSnapPointCRS()) # trasformo la geometria
          g.transform(coordTransform)
       return g
-      
-   def __getNearestPoints(self, point, SnapPoints, tolerance = 0):
+
+
+   def getNearestPoints(self, point, SnapPoints, tolerance = 0):
       """
       Ritorna una lista con il primo elemento che é il tipo di snap e 
       il secondo elemento é il punto più vicino a point.
@@ -1479,8 +1665,8 @@ class QadSnapper():
       
       if tolerance == 0: # solo il punto più vicino
          for item in SnapPoints.items():
-            # escludo NEA che tratto dopo
-            if (item[0] != QadSnapTypeEnum.NEA) and (item[1] is not None):
+            # escludo NEA e POLAR che tratto dopo
+            if (item[0] != QadSnapTypeEnum.NEA and item[0] != QadSnapTypeEnum.POLAR) and (item[1] is not None):
                for pt in item[1]:
                   dist = qad_utils.getDistance(point, pt)
                   if dist < minDist:
@@ -1490,7 +1676,7 @@ class QadSnapper():
 
          # se il punto trovato é più distante di <__distToExcludeNea> allora considero anche
          # eventuali punti NEA
-         if minDist > self.__distToExcludeNea:            
+         if minDist > self.__distToExcludeNea:
             # se é stato selezionato lo snap di tipo NEA
             if QadSnapTypeEnum.NEA in SnapPoints.keys():
                items = SnapPoints[QadSnapTypeEnum.NEA]
@@ -1502,11 +1688,25 @@ class QadSnapper():
                         snapType = QadSnapTypeEnum.NEA
                         NearestPoint = pt
 
+         # se il punto trovato é più distante di <__distToExcludeNea> allora considero anche
+         # eventuali punti POLAR
+         if minDist > self.__distToExcludeNea:            
+            # se é stato selezionato lo snap di tipo POLAR
+            if QadSnapTypeEnum.POLAR in SnapPoints.keys():
+               items = SnapPoints[QadSnapTypeEnum.POLAR]
+               if (items is not None):
+                  for pt in items:
+                     dist = qad_utils.getDistance(point, pt)
+                     if dist < minDist:
+                        minDist = dist
+                        snapType = QadSnapTypeEnum.POLAR
+                        NearestPoint = pt
+
          if minDist != sys.float_info.max: # trovato
             result[snapType] = [NearestPoint]
 
       else:
-         nearest = self.__getNearestPoints(point, SnapPoints) # punto più vicino
+         nearest = self.getNearestPoints(point, SnapPoints) # punto più vicino
          dummy = nearest.items()
          dummy = dummy[0]
          NearestPoint = dummy[1]
@@ -1532,7 +1732,7 @@ class QadSnapper():
       """   
       for item in SnapPoints.items():
          i = 0
-         for pt in item[1]:            
+         for pt in item[1]:
             if pt == point:
                del item[1][i]
             i = i + 1
@@ -1583,7 +1783,8 @@ class QadSnapper():
          else:
             line = [__pt1, __pt2]
          lines.remove(line)     
-              
+
+
    def toggleArc(self, snapType, arc, CRS = None):
       """
       Aggiunge una linea per la ricerca di punti con modalità EXT p PAR
@@ -1616,21 +1817,187 @@ class QadSnapper():
    #============================================================================
    # getPolarCoord
    #============================================================================
-   def getPolarCoord(self, point, polarAng):
+   def getPolarCoord(self, startPoint, point, polarAng, polarAngOffset):
       result = []
 
-      angle = qad_utils.getAngleBy2Pts(self.__startPoint, point)
-      value = math.modf(angle / polarAng) # ritorna una lista -> (<parte decimale> <parte intera>)
+      angle = qad_utils.getAngleBy2Pts(startPoint, point)
+      offsetAngle = angle - polarAngOffset
+      value = math.modf(offsetAngle / polarAng) # ritorna una lista -> (<parte decimale> <parte intera>)
       if value[0] >= 0.5: # prendo intervallo successivo
-         angle = (value[1] + 1) * polarAng
+         offsetAngle = (value[1] + 1) * polarAng
       else:
-         angle = value[1] * polarAng
+         offsetAngle = value[1] * polarAng
+      offsetAngle  = offsetAngle + polarAngOffset
 
-      dist = qad_utils.getDistance(self.__startPoint, point)
-      pt2 = qad_utils.getPolarPointByPtAngle(self.__startPoint, angle, dist)
+      dist = qad_utils.getDistance(startPoint, point)
+      pt2 = qad_utils.getPolarPointByPtAngle(startPoint, offsetAngle, dist)
 
-      polarPt = qad_utils.getPerpendicularPointOnInfinityLine(self.__startPoint, pt2, point)
+      polarPt = qad_utils.getPerpendicularPointOnInfinityLine(startPoint, pt2, point)
       if qad_utils.getDistance(polarPt, point) <= self.__toleranceExtParlines:
          self.__appendUniquePoint(result, polarPt) # senza duplicazione
 
       return result
+
+
+#============================================================================
+# funzioni generiche
+#============================================================================
+
+
+#===============================================================================
+# str2snapTypeEnum
+#===============================================================================
+def str2snapTypeEnum(s):
+   """
+   Ritorna la conversione di una stringa in una combinazione di tipi di snap
+   oppure -1 se non ci sono snap indicati.
+   """
+   snapType = QadSnapTypeEnum.NONE
+   snapTypeStrList = s.strip().split(",")
+   for snapTypeStr in snapTypeStrList:
+      snapTypeStr = snapTypeStr.strip().upper()
+      
+      # "NES" nessuno snap
+      if snapTypeStr == QadMsg.translate("Snap", "NONE") or snapTypeStr == "_NONE":
+         return QadSnapTypeEnum.NONE
+      # "FIN" punti finali di ogni segmento
+      elif snapTypeStr == QadMsg.translate("Snap", "END") or snapTypeStr == "_END":
+         snapType = snapType | QadSnapTypeEnum.END
+      # "FIN_PL" punti finali dell'intera polilinea
+      elif snapTypeStr == QadMsg.translate("Snap", "END_PL") or snapTypeStr == "_END_PL":
+         snapType = snapType | QadSnapTypeEnum.END_PLINE
+      # "MED" punto medio
+      elif snapTypeStr == QadMsg.translate("Snap", "MID") or snapTypeStr == "_MID":
+         snapType = snapType | QadSnapTypeEnum.MID
+      # "CEN" centro (centroide)
+      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":
+         snapType = snapType | QadSnapTypeEnum.CEN
+      # "NOD" oggetto punto
+      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD":
+         snapType = snapType | QadSnapTypeEnum.NOD
+      # "QUA" punto quadrante
+      elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
+         snapType = snapType | QadSnapTypeEnum.QUA
+      # "INT" intersezione
+      elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
+         snapType = snapType | QadSnapTypeEnum.INT
+      # "INS" punto di inserimento
+      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS":
+         snapType = snapType | QadSnapTypeEnum.INS
+      # "PER" punto perpendicolare
+      elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
+         snapType = snapType | QadSnapTypeEnum.PER
+      # "TAN" tangente
+      elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
+         snapType = snapType | QadSnapTypeEnum.TAN
+      # "VIC" punto più vicino
+      elif snapTypeStr == QadMsg.translate("Snap", "NEA") or snapTypeStr == "_NEA":
+         snapType = snapType | QadSnapTypeEnum.NEA
+      # "APP" intersezione apparente
+      elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
+         snapType = snapType | QadSnapTypeEnum.APP
+      # "EST" Estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT") or snapTypeStr == "_EXT":
+         snapType = snapType | QadSnapTypeEnum.EXT
+      # "PAR" Parallelo
+      elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
+         snapType = snapType | QadSnapTypeEnum.PAR         
+      # se inizia per "PR" distanza progressiva
+      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+           string.find(snapTypeStr, "_PR") == 0:
+         # la parte successiva PR può essere vuota o numerica
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
+         else:
+            param = snapTypeStr[len("_PR"):]
+         if len(param) == 0 or str2float(param) is not None:
+            snapType = snapType | QadSnapTypeEnum.PR
+      # "EST_INT" intersezione su estensione
+      elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
+         snapType = snapType | QadSnapTypeEnum.EXT_INT
+   
+   return snapType if snapType != QadSnapTypeEnum.NONE else -1
+
+
+#===============================================================================
+# snapTypeEnum2str
+#===============================================================================
+def snapTypeEnum2str(snapType):
+   """
+   Ritorna la conversione di un tipo di snap in una stringa.
+   """
+   # "FIN" punti finali di ogni segmento
+   if snapType == QadSnapTypeEnum.END:
+      return QadMsg.translate("Snap", "Segment end point")
+   # "FIN_PL" punti finali dell'intera polilinea
+   elif snapType == QadSnapTypeEnum.END_PLINE:
+      return QadMsg.translate("Snap", "Polyline end point")
+   # "MED" punto medio
+   elif snapType == QadSnapTypeEnum.MID:
+      return QadMsg.translate("Snap", "Middle point")
+   # "CEN" centro (centroide)
+   elif snapType == QadSnapTypeEnum.CEN:
+      return QadMsg.translate("Snap", "Center point")
+   # "NOD" oggetto punto
+   elif snapType == QadSnapTypeEnum.NOD:
+      return QadMsg.translate("Snap", "Node")
+   # "QUA" punto quadrante
+   elif snapType == QadSnapTypeEnum.QUA:
+      return QadMsg.translate("Snap", "Quadrant")
+   # "INT" intersezione
+   elif snapType == QadSnapTypeEnum.INT:
+      return QadMsg.translate("Snap", "Intersection")
+   # "INS" punto di inserimento
+   elif snapType == QadSnapTypeEnum.INS:
+      return QadMsg.translate("Snap", "Insertion point")
+   # "PER" punto perpendicolare
+   elif snapType == QadSnapTypeEnum.PER:
+      return QadMsg.translate("Snap", "Perpendicular")
+   # "TAN" tangente
+   elif snapType == QadSnapTypeEnum.TAN:
+      return QadMsg.translate("Snap", "Tangent")
+   # "VIC" punto più vicino
+   elif snapType == QadSnapTypeEnum.NEA:
+      return QadMsg.translate("Snap", "Near")
+   # "APP" intersezione apparente
+   elif snapType == QadSnapTypeEnum.APP:
+      return QadMsg.translate("Snap", "Apparent intersection")
+   # "EST" Estensione
+   elif snapType == QadSnapTypeEnum.EXT:
+      return QadMsg.translate("Snap", "Extension")
+   # "PAR" Parallelo
+   elif snapType == QadSnapTypeEnum.PAR:
+      return QadMsg.translate("Snap", "Parallel")
+   # "PR" distanza progressiva
+   elif snapType == QadSnapTypeEnum.PR:
+      return QadMsg.translate("Snap", "Progressive distance")
+   # "EST_INT" intersezione su estensione
+   elif snapType == QadSnapTypeEnum.EXT_INT:
+      return QadMsg.translate("Snap", "Intersection on extension")
+   
+   return ""
+
+
+#===============================================================================
+# str2snapParam
+#===============================================================================
+def str2snapParams(s):
+   """
+   Ritorna la conversione di una stringa in una lista di parametri per i tipi di snap
+   """
+   params = []
+   snapTypeStrList = s.strip().split(",")
+   for snapTypeStr in snapTypeStrList:
+      snapTypeStr = snapTypeStr.strip().upper()
+      # se inizia per "PR" distanza progressiva
+      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
+         string.find(snapTypeStr, "_PR") == 0:
+         # la parte successiva PR può essere vuota o numerica
+         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
+            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
+         else:
+            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
+         if param is not None:
+            params.append([QadSnapTypeEnum.PR, param])         
+
+   return params

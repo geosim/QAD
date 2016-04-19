@@ -29,6 +29,10 @@ from qgis.core import *
 from qgis.gui import *
 
 
+from qad_msg import QadMsg
+from qad_variables import QadVariables
+
+
 #===============================================================================
 # QadVertexmarkerIconTypeEnum class.
 #===============================================================================
@@ -67,7 +71,7 @@ class QadVertexMarker(QgsMapCanvasItem):
       QgsMapCanvasItem.__init__(self, mapCanvas)
       self.__canvas = mapCanvas
       self.__iconType = QadVertexmarkerIconTypeEnum.X # icon to be shown
-      self.__iconSize = 13 # size
+      self.__iconSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
       self.__center = QgsPoint(0, 0) #  coordinates of the point in the center
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width
@@ -108,7 +112,7 @@ class QadVertexMarker(QgsMapCanvasItem):
       p é un QPainter
       """
 
-      s = (self.__iconSize - 1) / 2
+      s = self.__iconSize
 
       pen = QPen(self.__color)
       pen.setWidth(self.__penWidth)

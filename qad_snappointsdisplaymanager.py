@@ -47,7 +47,7 @@ class QadSnapPointsDisplayManager():
       self.__mapCanvas = mapCanvas
       self.__vertexMarkers = [] # lista dei marcatori puntuali visualizzati
       self.__startPoint = QgsPoint()  
-      self.__iconSize = 13 # size
+      self.__iconSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width 
       self.__lineMarkers = [] # lista dei RubberBand visualizzati
@@ -145,7 +145,9 @@ class QadSnapPointsDisplayManager():
    def show(self, SnapPoints, \
             extLines = None, extArcs = None, \
             parLines = None, \
-            intExtLine = None, intExtArc = None):
+            intExtLine = None, intExtArc = None, \
+            oSnapPointsForPolar = None, \
+            oSnapLinesForPolar = None):
       """
       Visualizza i punti di snap, riceve un dizionario di liste di punti di snap
       suddivisi per tipi di snap (es. {END : [pt1 .. ptn] MID : [pt1 .. ptn]})
@@ -167,13 +169,32 @@ class QadSnapPointsDisplayManager():
       for lineMarker in self.__lineMarkers:
          self.__mapCanvas.scene().removeItem(lineMarker)
       del self.__lineMarkers[:]
+
+      autoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+
+      self.__mapCanvas.setToolTip("")
       
       # punti di snap
       for snapPoint in SnapPoints.items():
          snapType = snapPoint[0]
+         i = -1
          for point in snapPoint[1]:
-            # disegno il marcatore di snap
-            self.__vertexMarkers.append(self.getVertexMarker(snapType, point))
+            i = i + 1
+            
+            if autoSnap & QadAUTOSNAPEnum.DISPLAY_MARK: # Turns on the AutoSnap mark
+               # disegno il marcatore di snap
+               self.__vertexMarkers.append(self.getVertexMarker(snapType, point))
+
+            if autoSnap & QadAUTOSNAPEnum.DISPLAY_TOOLTIPS: # Turns on the AutoSnap tooltips
+               # lo tengo perchè mi può servire
+               # trasformo point da map coordinate in global coordinate
+               # item = QadVertexMarker(self.__mapCanvas)
+               # newPt = item.toCanvasCoordinates(point)
+               # item.removeItem()
+               # del item
+               # pt = self.__mapCanvas.mapToGlobal(QPoint(newPt.x(), newPt.y()))
+               # QToolTip.showText(pt, "testo di prova")
+               self.__mapCanvas.setToolTip(snapTypeEnum2str(snapType))
 
             # linee di estensione
             if snapType == QadSnapTypeEnum.EXT and (extLines is not None):
@@ -268,65 +289,19 @@ class QadSnapPointsDisplayManager():
                   # disegno la linea parallela
                   self.__lineMarkers.append(self.getLineMarker(p1, p2))                  
 
-            # linea per il puntamento polare
-            if snapType == QadSnapTypeEnum.POLAR and (self.__startPoint is not None):
-               boundBox = self.__mapCanvas.extent()
-               xMin = boundBox.xMinimum()
-               yMin = boundBox.yMinimum()
-               xMax = boundBox.xMaximum()
-               yMax = boundBox.yMaximum()
+      # linee per il puntamento polare
+      if oSnapLinesForPolar is not None:
+         for line in oSnapLinesForPolar:
+            lineMarker = self.getLineMarkerForPolar(line[0], line[1])
+            if lineMarker is not None:
+               # disegno la linea
+               self.__lineMarkers.append(lineMarker)
 
-               p1 = self.__startPoint
-               p2 = point
-               
-               x2 = None
-               if p2.y() > p1.y(): # semiretta che va verso l'alto
-                  x2 = qad_utils.getXOnInfinityLine(p1, p2, yMax)
-               elif p2.y() < p1.y(): # semiretta che va verso il basso
-                  x2 = qad_utils.getXOnInfinityLine(p1, p2, yMin)                  
-               else: # semiretta retta orizzontale
-                  if p2.x() > p1.x(): # semiretta che va verso destra
-                     x2 = xMax
-                  elif p2.x() < p1.x(): # semiretta che va verso sinistra
-                     x2 = xMin
-
-               y2 = None
-               if p2.x() > p1.x(): # semiretta che va verso destra
-                  y2 = qad_utils.getYOnInfinityLine(p1, p2, xMax)
-               elif p2.x() < p1.x(): # semiretta che va verso sinistra
-                  y2 = qad_utils.getYOnInfinityLine(p1, p2, xMin)                  
-               else: # semiretta retta verticale
-                  if p2.y() > p1.y(): # semiretta che va verso l'alto
-                     y2 = yMax
-                  elif p2.y() < p1.y(): # semiretta che va verso il basso
-                     y2 = yMin
-
-               if x2 is not None:
-                  if x2 > xMax:
-                     x2 = xMax
-                  elif x2 < xMin:
-                     x2 = xMin
-               
-               if y2 is not None:
-                  if y2 > yMax:
-                     y2 = yMax
-                  elif y2 < yMin:
-                     y2 = yMin
-                                                                             
-               if (x2 is not None) and (y2 is not None):
-                  p2 = QgsPoint(x2, y2)                     
-                  # per un baco non ancora capito: se la linea ha solo 2 vertici e 
-                  # hanno la stessa x o y (linea orizzontale o verticale) 
-                  # la linea non viene disegnata perciò sposto un pochino la x o la y         
-                  p2 = qad_utils.getAdjustedRubberBandVertex(p1, p2)                                          
-                  # disegno la linea
-                  self.__lineMarkers.append(self.getLineMarker(p1, p2))                  
-            
       # punti medi delle linee marcate come da estendere
       if extLines is not None:
          for extLine in extLines:
             point = qad_utils.getMiddlePoint(extLine[0], extLine[1])
-            # disegno il marcatore di estensione    
+            # disegno il marcatore di estensionel            
             self.__vertexMarkers.append(self.getVertexMarker(QadSnapTypeEnum.EXT, point))
 
       # punti medi degli archi marcati come da estendere
@@ -355,6 +330,14 @@ class QadSnapPointsDisplayManager():
          # disegno il marcatore
          self.__vertexMarkers.append(self.getVertexMarker(QadSnapTypeEnum.EXT_INT, point))
       
+      # punti di osnap usati per l'opzione polare
+      if oSnapPointsForPolar is not None:
+         for snapPoint in oSnapPointsForPolar.items():
+            snapType = snapPoint[0]
+            for item in snapPoint[1]:
+               # disegno il marcatore di snap
+               self.__vertexMarkers.append(self.getVertexMarker(snapType, item))
+
             
    def getVertexMarker(self, snapType, point):
       """
@@ -375,10 +358,69 @@ class QadSnapPointsDisplayManager():
       """
       lineMarker = createRubberBand(self.__mapCanvas, QGis.Line, True)
       lineMarker.setColor(self.__color)
-      lineMarker.setLineStyle(Qt.DotLine)
+      lineMarker.setLineStyle(Qt.DashLine)
       lineMarker.addPoint(pt1, False)
       lineMarker.addPoint(pt2, True)      
       return lineMarker
+
+
+   def getLineMarkerForPolar(self, startPoint, point):
+      """
+      Crea un marcatore lineare per il puntamento polare
+      """
+      boundBox = self.__mapCanvas.extent()
+      xMin = boundBox.xMinimum()
+      yMin = boundBox.yMinimum()
+      xMax = boundBox.xMaximum()
+      yMax = boundBox.yMaximum()
+
+      p1 = startPoint
+      p2 = point
+               
+      x2 = None
+      if p2.y() > p1.y(): # semiretta che va verso l'alto
+         x2 = qad_utils.getXOnInfinityLine(p1, p2, yMax)
+      elif p2.y() < p1.y(): # semiretta che va verso il basso
+         x2 = qad_utils.getXOnInfinityLine(p1, p2, yMin)                  
+      else: # semiretta retta orizzontale
+         if p2.x() > p1.x(): # semiretta che va verso destra
+            x2 = xMax
+         elif p2.x() < p1.x(): # semiretta che va verso sinistra
+            x2 = xMin
+
+      y2 = None
+      if p2.x() > p1.x(): # semiretta che va verso destra
+         y2 = qad_utils.getYOnInfinityLine(p1, p2, xMax)
+      elif p2.x() < p1.x(): # semiretta che va verso sinistra
+         y2 = qad_utils.getYOnInfinityLine(p1, p2, xMin)                  
+      else: # semiretta retta verticale
+         if p2.y() > p1.y(): # semiretta che va verso l'alto
+            y2 = yMax
+         elif p2.y() < p1.y(): # semiretta che va verso il basso
+            y2 = yMin
+
+      if x2 is not None:
+         if x2 > xMax:
+            x2 = xMax
+         elif x2 < xMin:
+            x2 = xMin
+      
+      if y2 is not None:
+         if y2 > yMax:
+            y2 = yMax
+         elif y2 < yMin:
+            y2 = yMin
+                                                                             
+      if (x2 is not None) and (y2 is not None):
+         p2 = QgsPoint(x2, y2)                     
+         # per un baco non ancora capito: se la linea ha solo 2 vertici e 
+         # hanno la stessa x o y (linea orizzontale o verticale) 
+         # la linea non viene disegnata perciò sposto un pochino la x o la y         
+         p2 = qad_utils.getAdjustedRubberBandVertex(p1, p2)                                          
+         # disegno la linea
+         return self.getLineMarker(p1, p2)
+      else:
+         return None
 
 
    def getArcMarker(self, arc):

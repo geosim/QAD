@@ -395,106 +395,6 @@ def strLatLon2QgsPoint(s):
 
 
 #===============================================================================
-# str2snapTypeEnum
-#===============================================================================
-def str2snapTypeEnum(s):
-   """
-   Ritorna la conversione di una stringa in una combinazione di tipi di snap
-   oppure -1 se non ci sono snap indicati.
-   """
-   snapType = QadSnapTypeEnum.NONE
-   snapTypeStrList = s.strip().split(",")
-   for snapTypeStr in snapTypeStrList:
-      snapTypeStr = snapTypeStr.strip().upper()
-      
-      # "NES" nessuno snap
-      if snapTypeStr == QadMsg.translate("Snap", "NONE") or snapTypeStr == "_NONE":
-         return QadSnapTypeEnum.NONE
-      # "FIN" punti finali di ogni segmento
-      elif snapTypeStr == QadMsg.translate("Snap", "END") or snapTypeStr == "_END":
-         snapType = snapType | QadSnapTypeEnum.END
-      # "FIN_PL" punti finali dell'intera polilinea
-      elif snapTypeStr == QadMsg.translate("Snap", "END_PL") or snapTypeStr == "_END_PL":
-         snapType = snapType | QadSnapTypeEnum.END_PLINE
-      # "MED" punto medio
-      elif snapTypeStr == QadMsg.translate("Snap", "MID") or snapTypeStr == "_MID":
-         snapType = snapType | QadSnapTypeEnum.MID
-      # "CEN" centro (centroide)
-      elif snapTypeStr == QadMsg.translate("Snap", "CEN") or snapTypeStr == "_CEN":
-         snapType = snapType | QadSnapTypeEnum.CEN
-      # "NOD" oggetto punto
-      elif snapTypeStr == QadMsg.translate("Snap", "NOD") or snapTypeStr == "_NOD":
-         snapType = snapType | QadSnapTypeEnum.NOD
-      # "QUA" punto quadrante
-      elif snapTypeStr == QadMsg.translate("Snap", "QUA") or snapTypeStr == "_QUA":
-         snapType = snapType | QadSnapTypeEnum.QUA
-      # "INT" intersezione
-      elif snapTypeStr == QadMsg.translate("Snap", "INT") or snapTypeStr == "_INT":
-         snapType = snapType | QadSnapTypeEnum.INT
-      # "INS" punto di inserimento
-      elif snapTypeStr == QadMsg.translate("Snap", "INS") or snapTypeStr == "_INS":
-         snapType = snapType | QadSnapTypeEnum.INS
-      # "PER" punto perpendicolare
-      elif snapTypeStr == QadMsg.translate("Snap", "PER") or snapTypeStr == "_PER":
-         snapType = snapType | QadSnapTypeEnum.PER
-      # "TAN" tangente
-      elif snapTypeStr == QadMsg.translate("Snap", "TAN") or snapTypeStr == "_TAN":
-         snapType = snapType | QadSnapTypeEnum.TAN
-      # "VIC" punto più vicino
-      elif snapTypeStr == QadMsg.translate("Snap", "NEA") or snapTypeStr == "_NEA":
-         snapType = snapType | QadSnapTypeEnum.NEA
-      # "APP" intersezione apparente
-      elif snapTypeStr == QadMsg.translate("Snap", "APP") or snapTypeStr == "_APP":
-         snapType = snapType | QadSnapTypeEnum.APP
-      # "EST" Estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EXT") or snapTypeStr == "_EXT":
-         snapType = snapType | QadSnapTypeEnum.EXT
-      # "PAR" Parallelo
-      elif snapTypeStr == QadMsg.translate("Snap", "PAR") or snapTypeStr == "_PAR":
-         snapType = snapType | QadSnapTypeEnum.PAR         
-      # se inizia per "PR" distanza progressiva
-      elif string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-           string.find(snapTypeStr, "_PR") == 0:
-         # la parte successiva PR può essere vuota o numerica
-         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
-            param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
-         else:
-            param = snapTypeStr[len("_PR"):]
-         if len(param) == 0 or str2float(param) is not None:
-            snapType = snapType | QadSnapTypeEnum.PR
-      # "EST_INT" intersezione su estensione
-      elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
-         snapType = snapType | QadSnapTypeEnum.EXT_INT
-   
-   return snapType if snapType != QadSnapTypeEnum.NONE else -1
-
-
-#===============================================================================
-# str2snapParam
-#===============================================================================
-def str2snapParams(s):
-   """
-   Ritorna la conversione di una stringa in una lista di parametri per i tipi di snap
-   """
-   params = []
-   snapTypeStrList = s.strip().split(",")
-   for snapTypeStr in snapTypeStrList:
-      snapTypeStr = snapTypeStr.strip().upper()
-      # se inizia per "PR" distanza progressiva
-      if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0 or \
-         string.find(snapTypeStr, "_PR") == 0:
-         # la parte successiva PR può essere vuota o numerica
-         if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
-            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
-         else:
-            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
-         if param is not None:
-            params.append([QadSnapTypeEnum.PR, param])         
-
-   return params
-
-
-#===============================================================================
 # strip
 #===============================================================================
 def strip(s, stripList):
@@ -590,8 +490,6 @@ def getStrIntDecParts(n):
    else:
       return None
    
-
-
 
 #===============================================================================
 # distMapToLayerCoordinates
@@ -783,22 +681,43 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
 
    return request
 
-   
+
+#===============================================================================
+# getVisibleVectorLayers
+#===============================================================================
+def getVisibleVectorLayers(canvas):
+   # Tutti i layer vettoriali visibili
+   layers = canvas.layers()
+   for i in xrange(len(layers) - 1, -1, -1):
+      # se il layer non è vettoriale o non è visibile a questa scala
+      if layers[i].type() != QgsMapLayer.VectorLayer or \
+         layers[i].hasScaleBasedVisibility() and \
+         (canvas.mapSettings().scale() < layers[i].minimumScale() or canvas.mapSettings().scale() > layers[i].maximumScale()):
+         del layers[i]
+   return layers
+
+
 #===============================================================================
 # getEntSel
 #===============================================================================
-def getEntSel(point, mQgsMapTool, \
+def getEntSel(point, mQgsMapTool, boxSize, \
               layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-              onlyBoundary = True, onlyEditableLayers = False):
+              onlyBoundary = True, onlyEditableLayers = False, \
+              firstLayerToCheck = None, layerCacheGeomsDict = None, returnFeatureCached = False):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima entità dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto <point>
+   di dimensioni <boxSize> (in pixel) centrato sul punto <point>
    layersToCheck = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
    checkLineLayer = opzionale, considera i layer di tipo linea
    checkPolygonLayer = opzionale, considera i layer di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   onlyEditableLayers = per cercare solo nei layer modificabili
+   firstLayerToCheck = per ottimizzare la ricerca, primo layer da controllare
+   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
+   returnFeatureCached = per ottimizzare, ritorna la featura letta dalla cache (quando interessa solo la geometria)
+   
    Restituisce una lista composta da una QgsFeature e il suo layer e il punto di selezione 
    in caso di successo altrimenti None 
    """           
@@ -806,65 +725,126 @@ def getEntSel(point, mQgsMapTool, \
    if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
       return None
       
-   feature = QgsFeature()
-   Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
-   
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
-      # Tutti i layer visibili visibili
-      _layers = mQgsMapTool.canvas.layers()
+      # Tutti i layer vettoriali visibili
+      _layers = getVisibleVectorLayers(mQgsMapTool.canvas) # Tutti i layer vettoriali visibili
    else:
       # solo la lista passata come parametro
       _layers = layersToCheck
+
+   # se il processo può essere ottimizzato con il primo layer in cui cercare
+   if firstLayerToCheck is not None:
+      # considero solo se layer vettoriale visibile che è filtrato per tipo
+      if firstLayerToCheck.type() == QgsMapLayer.VectorLayer and \
+         (onlyEditableLayers == False or firstLayerToCheck.isEditable()) and \
+         (firstLayerToCheck.hasScaleBasedVisibility() == False or \
+          (mQgsMapTool.canvas.mapSettings().scale() >= firstLayerToCheck.minimumScale() and mQgsMapTool.canvas.mapSettings().scale() <= firstLayerToCheck.maximumScale())) and \
+         ((firstLayerToCheck.geometryType() == QGis.Point and checkPointLayer == True) or \
+          (firstLayerToCheck.geometryType() == QGis.Line and checkLineLayer == True) or \
+          (firstLayerToCheck.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
+         # restituisce feature, point
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, firstLayerToCheck, onlyBoundary, layerCacheGeomsDict, returnFeatureCached)
+         if res is not None:
+            return res[0], firstLayerToCheck, res[1]
       
    for layer in _layers: # ciclo sui layer
+      # se il processo può essere ottimizzato con il primo layer in cui cercare lo salto in questo ciclo
+      if (firstLayerToCheck is not None) and firstLayerToCheck.id() == layer.id():
+         continue;
+      
       # considero solo i layer vettoriali che sono filtrati per tipo
-      if (layer.type() == QgsMapLayer.VectorLayer) and \
+      if layer.type() == QgsMapLayer.VectorLayer and \
+          (onlyEditableLayers == False or layer.isEditable()) and \
           ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
            (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
-           (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
-           (onlyEditableLayers == False or layer.isEditable()):                      
-         layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
-         ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
-                                                                mQgsMapTool.canvas.mapRenderer(), \
-                                                                QgsTolerance.Pixels)
+           (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)):
+         # restituisce feature, point
+         res = getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary, layerCacheGeomsDict, returnFeatureCached)
+         if res is not None:
+            return res[0], layer, res[1]
 
-         selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
-                                   layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
-         
-         featureIterator = layer.getFeatures(getFeatureRequest([], True,  selectRect, True))
+   #QApplication.restoreOverrideCursor()
+   return None
 
+
+#===============================================================================
+# getEntSelOnLayer
+#===============================================================================
+def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
+                     layerCacheGeomsDict = None, returnFeatureCached = False):
+   """
+   dato un punto (in screen coordinates) e un QgsMapTool,
+   la funzione cerca la prima entità del layer dentro il quadrato
+   di dimensioni <boxSize> (in pixel) centrato sul punto <point>
+   onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
+   layerCacheGeomsDict = per ottimizzare la ricerca, è una chache delle geometrie dei layer
+   
+   Restituisce una lista composta da una QgsFeature e il punto di selezione 
+   in caso di successo altrimenti None 
+   """           
+   layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
+   ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
+                                                          mQgsMapTool.canvas.mapRenderer(), \
+                                                          QgsTolerance.Pixels)
+
+   selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
+                             layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
+
+   # se il processo può essere ottimizzato con la cache
+   if layerCacheGeomsDict is not None:
+      cachedFeatures = layerCacheGeomsDict.getFeatures(layer, selectRect)
+      
+      featureRequest = QgsFeatureRequest()
+      featureRequest.setSubsetOfAttributes([])
+      
+      for cachedFeature in cachedFeatures:
          # se é un layer contenente poligoni allora verifico se considerare solo i bordi
          if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
-            for feature in featureIterator:
-               return feature, layer, point
+            if cachedFeature.geometry().intersects(selectRect):
+               if returnFeatureCached: # ritorna la feature della cache
+                  return cachedFeature, point
+               # ottengo la feature del layer
+               featureRequest.setFilterFid(cachedFeature.attribute("index"))
+               featureIterator = layer.getFeatures(featureRequest)      
+               for feature in featureIterator:
+                  return feature, point
          else:
             # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
-            for feature in featureIterator:
-               # Riduco le geometrie in point o polyline
-               geoms = asPointOrPolyline(feature.geometry())
-               for g in geoms:
-                  if g.intersects(selectRect):
-                     return feature, layer, point
-
-#          # test per usare la cache (ancora più lento...)
-#          dummy, snappingResults = layer.snapWithContext(layerCoords, ToleranceInMapUnits,
-#                                                         QgsSnapper.SnapToVertex if layer.geometryType() == QGis.Point else QgsSnapper.SnapToSegment)
-#          if len(snappingResults) > 0:
-#             featureId = snappingResults[0][1].snappedAtGeometry()
-#             feature = getFeatureById(layer, featureId)
-#          
-#             # se é un layer contenente poligoni allora verifico se considerare solo i bordi
-#             if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
-#                return feature, layer, point
-#             else:
-#                geoms = asPointOrPolyline(feature.geometry())
-#                for g in geoms:
-#                   if g.intersects(selectRect):
-#                      return feature, layer, point
+            # Riduco le geometrie in point o polyline
+            geoms = asPointOrPolyline(cachedFeature.geometry())
+            for g in geoms:
+               #start = time.time() # test
+               #for i in range(1, 10):
+               if g.intersects(selectRect):
+                  if returnFeatureCached: # ritorna la feature della cache
+                     return cachedFeature, point
+                  
+                  # ottengo la feature del layer
+                  featureRequest.setFilterFid(cachedFeature.attribute("index"))
+                  featureIterator = layer.getFeatures(featureRequest)      
+                  for feature in featureIterator:
+                     return feature, point
+               #tempo = ((time.time() - start) * 1000) # test
+               #tempo += 0 # test
+   else:
+      featureIterator = layer.getFeatures(getFeatureRequest([], True, selectRect, True))
+      feature = QgsFeature()
    
-   #QApplication.restoreOverrideCursor()
+      # se é un layer contenente poligoni allora verifico se considerare solo i bordi
+      if onlyBoundary == False or layer.geometryType() != QGis.Polygon:
+         for feature in featureIterator:
+            return feature, point
+      else:
+         # considero solo i bordi delle geometrie e non lo spazio interno dei poligoni
+         for feature in featureIterator:
+            # Riduco le geometrie in point o polyline
+            geoms = asPointOrPolyline(feature.geometry())
+            for g in geoms:
+               if g.intersects(selectRect):
+                  return feature, point
+
    return None
 
 
@@ -883,29 +863,27 @@ def getFeatureById(layer, id):
 
    
 #===============================================================================
-# isGeomInPickBox
+# isGeomInBox
 #===============================================================================
-def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
-                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-                    onlyBoundary = True):
+def isGeomInBox(point, mQgsMapTool, geom, boxSize, crs = None, \
+                checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                onlyBoundary = True):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione verifica se la geometria é dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto
+   di dimensioni boxSize (in pixel) centrato sul punto
    geom = geometria da verificare
    crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
    checkPointLayer = opzionale, considera la geometria di tipo punto
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce True se la geometria é nel quadrato di PickBox altrimenti False 
+   Restituisce True se la geometria é nel quadrato di dimensione boxSize in (pixel) altrimenti False 
    """   
    if geom is None:
       return False
    if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
       return False
-      
-   Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
    
    # considero solo la geometria filtrata per tipo
    if ((geom.type() == QGis.Point and checkPointLayer == True) or \
@@ -918,7 +896,7 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
          coordTransform = QgsCoordinateTransform(crs, mQgsMapTool.canvas.mapRenderer().destinationCrs())          
          mapGeom.transform(coordTransform)      
          
-      ToleranceInMapUnits = Tolerance * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()    
+      ToleranceInMapUnits = boxSize * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()
       selectRect = QgsRectangle(mapPoint.x() - ToleranceInMapUnits, mapPoint.y() - ToleranceInMapUnits, \
                                 mapPoint.x() + ToleranceInMapUnits, mapPoint.y() + ToleranceInMapUnits)
                                            
@@ -938,27 +916,27 @@ def isGeomInPickBox(point, mQgsMapTool, geom, crs = None, \
 
    
 #===============================================================================
-# getGeomInPickBox
+# getGeomInBox
 #===============================================================================
-def getGeomInPickBox(point, mQgsMapTool, geoms, crs = None, \
-                    checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
-                    onlyBoundary = True):
+def getGeomInBox(point, mQgsMapTool, geoms, boxSize, crs = None, \
+                 checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+                 onlyBoundary = True):
    """
    dato un punto (in screen coordinates) e un QgsMapTool, 
    la funzione cerca la prima geometria dentro il quadrato
-   di dimensioni PICKBOX centrato sul punto
+   di dimensioni boxSize (in pixel) centrato sul punto
    geoms = lista di geometrie da verificare
    crs = sistema di coordinate della geometria (se = NON significa in map coordinates)
    checkPointLayer = opzionale, considera la geometria di tipo punto
    checkLineLayer = opzionale, considera la geometria di tipo linea
    checkPolygonLayer = opzionale, considera la geometria di tipo poligono
    onlyBoundary = serve per considerare solo il bordo dei poligoni o anche il loro interno
-   Restituisce la geometria che é nel quadrato di PickBox altrimenti None 
+   Restituisce la geometria che é nel quadrato di dimensini boxSize altrimenti None 
    """   
    if geoms is None:
       return False
    for geom in geoms:
-      if isGeomInPickBox(point, mQgsMapTool, geom, crs, checkPointLayer, checkLineLayer, checkPolygonLayer, onlyBoundary):
+      if isGeomInBox(point, mQgsMapTool, geom, boxSize, crs, checkPointLayer, checkLineLayer, checkPolygonLayer, onlyBoundary):
          return geom
    return None
 
@@ -1033,8 +1011,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
    #QApplication.setOverrideCursor(Qt.WaitCursor)
    
    if layersToCheck is None:
-      # Tutti i layer visibili visibili
-      _layers = mQgsMapTool.canvas.layers()
+      # Tutti i layer visibili
+      _layers = qad_utils.getVisibleVectorLayers(mQgsMapTool.canvas) # Tutti i layer vettoriali visibili
    else:
       # solo la lista passata come parametro
       _layers = layersToCheck
@@ -1167,7 +1145,6 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             for point in points:
                polyline.append(mQgsMapTool.toLayerCoordinates(layer, point))
                
-            g = QgsGeometry()
             g = QgsGeometry.fromPolyline(polyline)
             # Select features in the polyline bounding box
             # fetchAttributes, fetchGeometry, rectangle, useIntersect             
@@ -2267,7 +2244,7 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
                distPoint = result[1] 
 
                if testdist < sqrDist:
-                  closestSegmentIndex = index
+                  closestSegmentIndex = pointindex
                   sqrDist = testdist
                   minDistPoint = distPoint
 
@@ -2724,7 +2701,7 @@ def extendQgsGeometry(geom_crs, geom, pt, limitEntitySet, edgeMode, tolerance2Ap
    
    pts = LinearObjectListToExtend.asPolyline(tolerance2ApproxCurve)
    
-   return setSubGeom(geom, QgsGeometry.fromPolyline(pts), atSubGeom)    
+   return setSubGeom(geom, QgsGeometry.fromPolyline(pts), atSubGeom)
 
 
 #===============================================================================
@@ -2945,7 +2922,7 @@ def trimQgsGeometry(geom_crs, geom, pt, limitEntitySet, edgeMode, tolerance2Appr
       partList2ToTrim.getLinearObjectAt(0).setStartPt(newPt2)
       geom2 = QgsGeometry.fromPolyline(partList2ToTrim.asPolyline(tolerance2ApproxCurve))
       if geom1 is None:
-         return [geom2, None, atSubGeom]    
+         return [geom2, None, atSubGeom]
    else:
       geom2 = None
       
@@ -3686,69 +3663,75 @@ def getSubGeomAtVertex(geom, atVertex):
    wkbType = geom.wkbType()
    
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
-      if atVertex != 0:
-         return None
-      else:
+      if atVertex == 0:
          return QgsGeometry(geom), [0]
 
-   if wkbType == QGis.WKBMultiPoint:
+   elif wkbType == QGis.WKBMultiPoint:
       pts = geom.asMultiPoint() # lista di punti
       if atVertex > len(pts) - 1:
          return None, None
       else:
          return QgsGeometry.fromPoint(pts[atVertex]), [atVertex]
 
-   if wkbType == QGis.WKBLineString:
+   elif wkbType == QGis.WKBLineString:
       pts = geom.asPolyline() # lista di punti
       if atVertex > len(pts) - 1:
          return None, None
       else:
          return QgsGeometry(geom), [0]
          
-   if wkbType == QGis.WKBMultiLineString:
+   elif wkbType == QGis.WKBMultiLineString:
       # cerco in quale linea é il vertice <atVertex>
       i = 0
       iLine = 0
-      lines = geom.asMultiPolyline() # lista di linee   
+      lines = geom.asMultiPolyline() # lista di linee
       for line in lines:
          lineLen = len(line)
          if atVertex >= i and atVertex < i + lineLen:
             return QgsGeometry.fromPolyline(line), [iLine]
-         i = lineLen 
+         i = i + lineLen 
          iLine = iLine + 1
       return None, None
    
-   if wkbType == QGis.WKBPolygon:
-      i = 0
-      iLine = 0
-      lines = geom.asPolygon() # lista di linee    
-      for line in lines:
-         lineLen = len(line)
-         if atVertex >= i and atVertex < i + lineLen:
-            return QgsGeometry.fromPolyline(line), [iLine]
-         i = lineLen 
-         iLine = iLine + 1
+   elif wkbType == QGis.WKBPolygon:
+      lines = geom.asPolygon() # lista di linee
+      if len(lines) > 0:
+         i = 0
+         iRing = -1
+         for line in lines:
+            lineLen = len(line)
+            if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
+               if iRing == -1: # si tratta della parte più esterna
+                  return QgsGeometry.fromPolyline(line), [0] # parte <0>, ring <0>
+               else:
+                  return QgsGeometry.fromPolyline(line), [0, iRing] # parte <0>, ring <iRing>
+            i = i + lineLen 
+            iRing = iRing + 1
       return None, None
 
-   if wkbType == QGis.WKBMultiPolygon:
+   elif wkbType == QGis.WKBMultiPolygon:
       i = 0
       iPolygon = 0
       polygons = geom.asMultiPolygon() # lista di poligoni
       for polygon in polygons:
-         iLine = 0
-         for line in lines:
+         iRing = -1
+         for line in polygon:
             lineLen = len(line)
-            if atVertex >= i and atVertex < i + lineLen:
-               return QgsGeometry.fromPolyline(line), [iPolygon, iLine]
-            i = lineLen 
-            iLine = iLine + 1
+            if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
+               if iRing == -1: # si tratta della parte più esterna
+                  return QgsGeometry.fromPolyline(line), [iPolygon] # parte <iPolygon>
+               else:
+                  return QgsGeometry.fromPolyline(line), [iPolygon, iRing] # parte <iPolygon>, ring <iRing>
+            
+            i = i + lineLen 
+            iRing = iRing + 1
          iPolygon = iPolygon + 1
-   
-   return None
+
+   return None, None
 
 
 #===============================================================================
-# setSubGeomAt
+# getSubGeomAt
 #===============================================================================
 def getSubGeomAt(geom, atSubGeom):
    # ritorna la sotto-geometria la cui posizione
@@ -3767,23 +3750,30 @@ def getSubGeomAt(geom, atSubGeom):
    if wkbType == QGis.WKBMultiLineString:
       nLine = atSubGeom[0]
       lines = geom.asMultiPolyline() # lista di linee
-      if nLine < len(lines) and nLine >= -len(lines):
+      if nLine < len(lines):
          return QgsGeometry.fromPolyline(lines[nLine])
    
    if wkbType == QGis.WKBPolygon:
-      nLine = atSubGeom[0]
-      lines = geom.asPolygon() # lista di linee
-      if nLine < len(lines) and nLine >= -len(lines):
-         return QgsGeometry.fromPolyline(lines[nLine])
-
+      if atSubGeom[0] == 0:
+         lines = geom.asPolygon() # lista di linee
+         if len(atSubGeom) == 1: # si tratta della parte più esterna
+            return QgsGeometry.fromPolyline(lines[0])
+         else:
+            iRing = atSubGeom[1]
+            if iRing + 1 < len(lines):
+               return QgsGeometry.fromPolyline(lines[iRing + 1])
+   
    if wkbType == QGis.WKBMultiPolygon:
       nPolygon = atSubGeom[0]
-      nLine = atSubGeom[1]
       polygons = geom.asMultiPolygon() # lista di poligoni
-      if nPolygon < len(polygons) and nPolygon >= -len(polygons):
-         lines = polygons[nPolygon]            
-         if nLine < len(lines) and nLine >= -len(lines):
-            return QgsGeometry.fromPolyline(lines[nLine])
+      if nPolygon < len(polygons):
+         lines = polygons[nPolygon]
+         if len(atSubGeom) == 1: # si tratta della parte più esterna
+            return QgsGeometry.fromPolyline(lines[0])
+         else:
+            iRing = atSubGeom[1]
+            if iRing + 1 < len(lines):
+               return QgsGeometry.fromPolyline(lines[iRing + 1])
          
    return None
 
@@ -3819,35 +3809,50 @@ def setSubGeom(geom, SubGeom, atSubGeom):
             del lines[nLine]
             lines.insert(nLine, SubGeom.asPolyline())
             return QgsGeometry.fromMultiPolyline(lines)
-   
+
    if wkbType == QGis.WKBPolygon:
       if subWkbType == QGis.WKBLineString:
-         nLine = atSubGeom[0]
-         lines = geom.asPolygon() # lista di linee
-         if nLine < len(lines) and nLine >= -len(lines):
-            del lines[nLine]
-            lines.insert(nLine, SubGeom.asPolyline())
-            # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
-            lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
-            return QgsGeometry.fromPolygon(lines)
+         if atSubGeom[0] == 0:
+            lines = geom.asPolygon() # lista di linee
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               del lines[0]
+               lines.insert(0, SubGeom.asPolyline())
+               # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+               lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
+               return QgsGeometry.fromPolygon(lines)
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  del lines[iRing + 1]
+                  lines.insert(iRing + 1, SubGeom.asPolyline())
+                  # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+                  lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                  return QgsGeometry.fromPolygon(lines)
 
    if wkbType == QGis.WKBMultiPolygon:
       if subWkbType == QGis.WKBLineString:
          nPolygon = atSubGeom[0]
-         nLine = atSubGeom[1]
          polygons = geom.asMultiPolygon() # lista di poligoni
-         if nPolygon < len(polygons) and nPolygon >= -len(polygons):
-            lines = polygons[nPolygon]            
-            if nLine < len(lines) and nLine >= -len(lines):
-               del lines[nLine]
-               lines.insert(nLine, SubGeom.asPolyline())
+         if nPolygon < len(polygons):
+            lines = polygons[nPolygon]
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               del lines[0]
+               lines.insert(0, SubGeom.asPolyline())
                # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
                lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
                return QgsGeometry.fromMultiPolygon(polygons)
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  del lines[iRing + 1]
+                  lines.insert(iRing + 1, SubGeom.asPolyline())
+                  # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+                  lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                  return QgsGeometry.fromMultiPolygon(polygons)
       elif subWkbType == QGis.WKBPolygon:
          nPolygon = atSubGeom[0]
          polygons = geom.asMultiPolygon() # lista di poligoni
-         if nPolygon < len(polygons) and nPolygon >= -len(polygons):
+         if nPolygon < len(polygons):
             del polygons[nPolygon]
             polygons.insert(nPolygon, SubGeom.asPolygon())
             return QgsGeometry.fromMultiPolygon(polygons)
@@ -3882,26 +3887,31 @@ def delSubGeom(geom, atSubGeom):
          return QgsGeometry.fromMultiPolyline(lines)
    
    if wkbType == QGis.WKBPolygon:
-      nLine = atSubGeom[0]
-      lines = geom.asPolygon() # lista di linee
-      if nLine < len(lines) and nLine >= -len(lines):
-         del lines[nLine]
-         return QgsGeometry.fromPolygon(lines)
+      if atSubGeom[0] == 0:
+         lines = geom.asPolygon() # lista di linee
+         if len(atSubGeom) == 1: # si tratta della parte più esterna
+            del lines[0]
+            return QgsGeometry() # geometria vuota perchè il poligono è stato cancellato
+         else:
+            iRing = atSubGeom[1]
+            if iRing + 1 < len(lines):
+               del lines[iRing + 1]
+               return QgsGeometry.fromPolygon(lines)
 
    if wkbType == QGis.WKBMultiPolygon:
       nPolygon = atSubGeom[0]
-      nLine = atSubGeom[1] if len(atSubGeom) > 1 else None
       polygons = geom.asMultiPolygon() # lista di poligoni
-      if nPolygon < len(polygons) and nPolygon >= -len(polygons):
-         if nLine is not None:
-            lines = polygons[nPolygon]            
-            if nLine < len(lines) and nLine >= -len(lines):
-               del lines[nLine]
-               return QgsGeometry.fromMultiPolygon(polygons)
-         else:
+      if nPolygon < len(polygons):
+         lines = polygons[nPolygon]
+         if len(atSubGeom) == 1: # si tratta della parte più esterna
             del polygons[nPolygon]
-            return QgsGeometry.fromMultiPolygon(polygons)            
-         
+            return QgsGeometry.fromMultiPolygon(polygons)
+         else:
+            iRing = atSubGeom[1]
+            if iRing + 1 < len(lines):
+               del lines[iRing + 1]
+               return QgsGeometry.fromMultiPolygon(polygons)
+
    return None
 
 
@@ -6049,9 +6059,7 @@ def offSetPolyline(points, epsg, offSetDist, offSetSide, gapType, tolerance2Appr
 
    # verifico se é un cerchio
    circle = QadCircle()
-   startEndVertices = circle.fromPolyline(points, 0)
-   if startEndVertices is not None and \
-      startEndVertices[0] == 0 and startEndVertices[1] == (pointsLen - 1):
+   if circle.fromPolyline(points):
       # siccome i punti del cerchio sono disegnati in senso antiorario
       # se offSetSide = "right" significa verso l'esterno del cerchio
       # se offSetSide = "left" significa verso l'interno del cerchio
@@ -6170,19 +6178,11 @@ def ApproxCurvesOnGeom(geom, atLeastNSegmentForArc = None, atLeastNSegmentForCir
    # dall'ultimo cerchio al primo
    for i in xrange(len(circleList.circleList) - 1, -1, -1): 
       circle = circleList.circleList[i]
-      startVertex = circleList.startEndVerticesList[i][0]
-      endVertex = circleList.startEndVerticesList[i][1]
-      points = circle.asPolyline(tolerance)
-      # inserisco i nuovi vertici saltando il primo e l'ultimo
-      for i in xrange(len(points) - 2, 0, -1): 
-         if g.insertVertex(points[i].x(), points[i].y(), endVertex) == False:
-            return None
-      # cancello i vecchi vertici
-      for i in range(0, endVertex - startVertex - 1):
-         if g.deleteVertex(startVertex + 1) == False:
-            return None
+      ndxGeom = circleList.ndxGeomList[i] # (<index ogg. princ> [<index ogg. sec.>])
+      g = setSubGeom(g, ndxGeom[0], 0 if len(ndxGeom) == 1 else ndxGeom[1])
 
    return g
+
 
 #===============================================================================
 # whatGeomIs
@@ -6210,9 +6210,10 @@ def whatGeomIs(pt, geom):
       
    # verifico se pt si riferisce ad un cerchio
    if circleList.fromGeom(geom) > 0:
-      info = circleList.circleAt(afterVertex)
-      if info is not None:
-         return info[0]
+      subG, ndxGeom = qad_utils.getSubGeomAtVertex(g, afterVertex)
+      circle = circleList.circleAt(ndxGeom)
+      if circle is not None:
+         return circle
       
    # se non é un cerchio é una linea
    pt1 = geom.vertexAt(afterVertex - 1)
@@ -8264,7 +8265,7 @@ class QadLinearObjectList():
       """
       points = self.asPolyline() # vettore di punti
       circle = QadCircle()
-      return circle if circle.fromPolyline(points, 0) is not None else None
+      return circle if circle.fromPolyline(points) else None
 
 
    #============================================================================
@@ -8692,7 +8693,7 @@ class QadLinearObjectList():
       if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
          provider.createSpatialIndex()
       
-      vectorLayer.beginEditCommand("selfJoin")     
+      vectorLayer.beginEditCommand("selfJoin")
       
       for featureIdToJoin in idList:
          #                         featureIdToJoin, vectorLayer, tolerance2ApproxCurve, tomyToleranceDist   
