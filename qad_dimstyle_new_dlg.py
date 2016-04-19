@@ -42,10 +42,11 @@ import qad_utils
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di creazione nuovo stile
 class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_New_Dialog):
-   def __init__(self, plugIn, fromDimStyleName = None):
+   def __init__(self, plugIn, parent, fromDimStyleName = None):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
-      QDialog.__init__(self, self.iface)
+
+      QDialog.__init__(self, parent)
       
       self.newDimStyle = QadDimStyle()
       self.newDimStyleNameChanged = False
@@ -86,7 +87,7 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
          return False
       self.newDimStyle.name = self.newDimStyleName.text()
       self.newDimStyle.description = self.newDimStyleDescr.text()
-      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self.newDimStyle)
+      Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.newDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "New dimension style: ") + self.newDimStyle.name
       Form.setWindowTitle(title)
       

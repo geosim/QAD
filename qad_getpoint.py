@@ -28,6 +28,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 import math
+import time # profiling
 
 
 import qad_utils
@@ -36,16 +37,18 @@ from qad_snappointsdisplaymanager import *
 from qad_entity import *
 from qad_variables import *
 from qad_rubberband import *
+from qad_cacheareas import QadLayerCacheGeomsDict
 
 
 #===============================================================================
 # QadGetPointSelectionModeEnum class.
 #===============================================================================
 class QadGetPointSelectionModeEnum():
-   POINT_SELECTION          = 0  # selezione di un punto
-   ENTITY_SELECTION         = 1  # selezione di una entità in modo statico (cerca l'entità solo con l'evento click)
-   ENTITYSET_SELECTION      = 2  # selezione di un gruppo di entità  
-   ENTITY_SELECTION_DYNAMIC = 3  # selezione di una entità in modo dinamico (cerca l'entità con l'evento click e 
+   NONE                     = 0  # nessuna selezione (usato quando in un comando si chiede solo la scelta di opzioni)
+   POINT_SELECTION          = 1  # selezione di un punto
+   ENTITY_SELECTION         = 2  # selezione di una entità in modo statico (cerca l'entità solo con l'evento click)
+   ENTITYSET_SELECTION      = 3  # selezione di un gruppo di entità  
+   ENTITY_SELECTION_DYNAMIC = 4  # selezione di una entità in modo dinamico (cerca l'entità con l'evento click e 
                                  # con l'evento mouse move)
 
 
@@ -93,6 +96,11 @@ class QadGetPoint(QgsMapTool):
       self.__prevGeom = None
       
       self.__stopTimer = True
+
+      # ottimizzazione per la ricerca degli oggetti
+      # cache per selezione oggetti
+      self.layerCacheGeomsDict = QadLayerCacheGeomsDict(self.canvas)
+      self.lastLayerFound = None # layer ultimo oggetto trovato
       
       # setto la modalità di selezione
       self.setSelectionMode(QadGetPointSelectionModeEnum.POINT_SELECTION)
@@ -100,8 +108,9 @@ class QadGetPoint(QgsMapTool):
       self.setDrawMode(drawMode)
 
       self.__QadSnapper = QadSnapper()
+      self.__QadSnapper.setSnapMode(QadSnapModeEnum.ONE_RESULT) # Viene restituito solo il punto più vicino
       self.__QadSnapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
-      self.__QadSnapper.setSnapLayers(self.canvas.layers())
+      self.__QadSnapper.setSnapLayers(qad_utils.getVisibleVectorLayers(self.canvas)) # Tutti i layer vettoriali visibili
       self.__QadSnapper.setProgressDistance(QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE")))
       self.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
             
@@ -114,8 +123,8 @@ class QadGetPoint(QgsMapTool):
       self.__QadSnapper.setToleranceExtParLines(ToleranceInMapUnits)
 
       self.__QadSnapPointsDisplayManager = QadSnapPointsDisplayManager(self.canvas)
-      self.__QadSnapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "OSSIZE")))
-      self.__QadSnapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "OSCOLOR"))))
+      self.__QadSnapPointsDisplayManager.setIconSize(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE")))
+      self.__QadSnapPointsDisplayManager.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPCOLOR"))))
       
       # output
       self.rightButton = False
@@ -133,10 +142,19 @@ class QadGetPoint(QgsMapTool):
       self.tmpEntity = QadEntity() # entità selezionata dal movimento del mouse
       
       self.snapTypeOnSelection = None # snap attivo al momento del click
+      
+      # profiling
+      self.tempo_tot = 0
+      self.tempo1 = 0
+      self.tempo2 = 0
+      self.tempo3 = 0
+      self.tempo4 = 0
+      self.tempo5 = 0
+      
 
    def __del__(self):
       self.removeItems()
- 
+
  
    def removeItems(self):
       if self.__csrRubberBand is not None:
@@ -148,14 +166,19 @@ class QadGetPoint(QgsMapTool):
          self.canvas.scene().removeItem(self.__RubberBand) # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__RubberBand
          self.__RubberBand = None
-         
-      del self.__QadSnapper
-      self.__QadSnapper = None
+
+      if self.__QadSnapper is not None:
+         del self.__QadSnapper
+         self.__QadSnapper = None
       
-      self.__QadSnapPointsDisplayManager.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
-      del self.__QadSnapPointsDisplayManager
-      self.__QadSnapPointsDisplayManager = None
-   
+      if self.__QadSnapPointsDisplayManager is not None:
+         self.__QadSnapPointsDisplayManager.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
+         del self.__QadSnapPointsDisplayManager
+         self.__QadSnapPointsDisplayManager = None
+         
+      if self.layerCacheGeomsDict is not None: # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas (eventi)
+         del self.layerCacheGeomsDict
+         
    
    def setDrawMode(self, drawMode):
       self.__drawMode = drawMode
@@ -185,20 +208,30 @@ class QadGetPoint(QgsMapTool):
       self.__selectionMode = selectionMode
       # setto il tipo di cursore
       if selectionMode == QadGetPointSelectionModeEnum.POINT_SELECTION:
-         self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
+         if QadVariables.get(QadMsg.translate("Environment variables", "APBOX")) == 0:
+            self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
+         else:
+            self.setCursorType(QadCursorTypeEnum.CROSS | QadCursorTypeEnum.APERTURE) # una croce + un quadratino usati per selezionare un punto
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITY_SELECTION or \
            selectionMode == QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC:
          self.entity.clear() # entità selezionata 
          self.setCursorType(QadCursorTypeEnum.BOX) # un quadratino usato per selezionare entità
       elif selectionMode == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
-         self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
+         if QadVariables.get(QadMsg.translate("Environment variables", "APBOX")) == 0:
+            self.setCursorType(QadCursorTypeEnum.CROSS) # una croce usata per selezionare un punto
+         else:
+            self.setCursorType(QadCursorTypeEnum.CROSS | QadCursorTypeEnum.APERTURE) # una croce + un quadratino usati per selezionare un punto
+      elif selectionMode == QadGetPointSelectionModeEnum.NONE:
+         self.setCursorType(QadCursorTypeEnum.NONE) # nessun cursore
+
 
    def getSelectionMode(self):
       return self.__selectionMode
 
 
    def hidePointMapToolMarkers(self):
-      self.__QadSnapPointsDisplayManager.hide()
+      if self.__QadSnapPointsDisplayManager is not None:
+         self.__QadSnapPointsDisplayManager.hide()
       if self.__RubberBand is not None:
          self.__RubberBand.hide()
 
@@ -251,6 +284,28 @@ class QadGetPoint(QgsMapTool):
 
 
    #============================================================================
+   # cache
+   #============================================================================
+   def updateLayerCacheOnMapCanvasExtent(self):
+      if self.layerCacheGeomsDict is None:
+         return
+      # se l'obiettivo é selezionare un'entità in modo dinamico
+      if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC:
+         self.layerCacheGeomsDict.refreshOnMapCanvasExtent(self.layersToCheck, \
+                                                           self.checkPointLayer, \
+                                                           self.checkLineLayer, \
+                                                           self.checkPolygonLayer, \
+                                                           self.onlyEditableLayers)
+      # se l'obiettivo é selezionare un punto
+      elif self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+         self.layerCacheGeomsDict.refreshOnMapCanvasExtent(None, \
+                                                           self.__geometryTypesAccordingToSnapType[0], \
+                                                           self.__geometryTypesAccordingToSnapType[1], \
+                                                           self.__geometryTypesAccordingToSnapType[2], \
+                                                           False)
+
+
+   #============================================================================
    # tmpGeometries
    #============================================================================
    def clearTmpGeometries(self):
@@ -291,6 +346,8 @@ class QadGetPoint(QgsMapTool):
          self.__QadSnapper.setSnapType(snapType)
          
       self.__geometryTypesAccordingToSnapType = self.__QadSnapper.getGeometryTypesAccordingToSnapType()
+      self.updateLayerCacheOnMapCanvasExtent()
+      
 
    def getSnapType(self):
       return self.__QadSnapper.getSnapType()
@@ -351,18 +408,58 @@ class QadGetPoint(QgsMapTool):
    # AutoSnap
    #============================================================================
    def setAutoSnap(self, autoSnap = None):
+      # setta le variabili:
+      # self.__AutoSnap, self.__PolarAng, self.__PolarMode, self.__PolarAngOffset, self.__snapMarkerSizeInMapUnits
+      # self.__QadSnapper viene svuotato dai punti polari se "Object Snap Tracking off"
+      
       if autoSnap is None:      
          self.__AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
-         self.__PolarAng = math.radians(QadVariables.get(QadMsg.translate("Environment variables", "POLARANG")))
       else:
          self.__AutoSnap = autoSnap
          
-      if (self.__AutoSnap & 8) == False: # puntamento polare non attivato
+      if (self.__AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING) == False: # puntamento polare non attivato
          self.__PolarAng = None
+         self.__PolarMode = None
+         self.__PolarAngOffset = None
+      else:
+         self.__PolarAng = math.radians(QadVariables.get(QadMsg.translate("Environment variables", "POLARANG")))
+         self.__PolarMode = QadVariables.get(QadMsg.translate("Environment variables", "POLARMODE"))
+         self.__PolarAngOffset = 0
+         
+      if (self.__AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING) == False: # Object Snap Tracking off
+         if self.__QadSnapper is not None:
+            self.__QadSnapper.removeOSnapPointsForPolar()
+
+      # calcolo la dimensione dei simboli di snap in map unit
+      self.__snapMarkerSizeInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE")) * \
+                                        self.canvas.mapRenderer().mapUnitsPerPixel()
+
 
    def refreshAutoSnap(self):
       self.setAutoSnap()
 
+
+   #============================================================================
+   # AutoSnap
+   #============================================================================
+   def setPolarAngOffset(self, polarAngOffset):
+      self.__PolarAngOffset = polarAngOffset
+      
+      
+   def getRealPolarAng(self):
+      # ritorna l'angolo polare che veramente deve essere usato tenendo conto delle variabili di sistema
+      if (self.__PolarMode & QadPOLARMODEnum.POLAR_TRACKING): # usa POLARANG
+         return self.__PolarAng
+      else:
+         return math.pi / 2 # 90 gradi (ortogonale)
+      
+   def getRealPolarAngOffset(self):
+      # ritorna l'angolo polare di offset che veramente deve essere usato tenendo conto delle variabili di sistema
+      if (self.__PolarMode & QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE): # (relativo al coeff angolare dell'ultimo segmento)
+         return self.__PolarAngOffset 
+      else:
+         return 0 # 0 gradi (assoluto)
+      
 
    #============================================================================
    # CursorType
@@ -372,7 +469,11 @@ class QadGetPoint(QgsMapTool):
          self.__csrRubberBand.removeItems() # prima lo stacco dal canvas altrimenti non si rimuove perchè usato da canvas
          del self.__csrRubberBand
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, cursorType)
-      self.__cursor = QCursor(Qt.BlankCursor)     
+      
+      if cursorType == QadCursorTypeEnum.NONE:
+         self.__cursor = QCursor(Qt.ArrowCursor)
+      else:
+         self.__cursor = QCursor(Qt.BlankCursor)
       self.__cursorType = cursorType
       
    def getCursorType(self):
@@ -384,7 +485,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def moveElastic(self, point):
       numberOfVertices = self.__RubberBand.numberOfVertices()
-      if numberOfVertices > 0:         
+      if numberOfVertices > 0:
          if numberOfVertices == 2:
             # per un baco non ancora capito: se la linea ha solo 2 vertici e 
             # hanno la stessa x o y (linea orizzontale o verticale) 
@@ -408,6 +509,8 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # setStartPoint
    #============================================================================
+   def getStartPoint(self):
+      return None if self.__startPoint is None else QgsPoint(self.__startPoint) # alloca
    def setStartPoint(self, startPoint):
       self.__startPoint = startPoint
       self.__QadSnapper.setStartPoint(startPoint)
@@ -425,7 +528,7 @@ class QadGetPoint(QgsMapTool):
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y
-         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
+         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)
                 
          self.__RubberBand.addPoint(point, True)
       elif self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:
@@ -438,7 +541,7 @@ class QadGetPoint(QgsMapTool):
          # per un baco non ancora capito: se la linea ha solo 2 vertici e 
          # hanno la stessa x o y (linea orizzontale o verticale) 
          # la linea non viene disegnata perciò sposto un pochino la x o la y
-         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)                                          
+         point = qad_utils.getAdjustedRubberBandVertex(startPoint, point)
                 
          self.__RubberBand.addPoint(QgsPoint(startPoint.x(), point.y()), False)
          self.__RubberBand.addPoint(point, False)
@@ -447,138 +550,241 @@ class QadGetPoint(QgsMapTool):
       self.__QadSnapPointsDisplayManager.setStartPoint(startPoint)
 
 
-   def toggleReferenceLines(self, geom, point, crs):
-      if self.__stopTimer == False and (geom is not None) and (point is not None):
+   #============================================================================
+   # toggleReferenceLines
+   #============================================================================
+   def toggleReferenceLines(self, geom, crs, oSnapPointsForPolar = None, shiftKey = None):
+      if self.__stopTimer == False and (geom is not None):
          if self.__QadSnapper is not None:
-            self.__QadSnapper.toggleReferenceLines(geom, point, crs)
+            if self.__AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING: # se abilitato l'utilizzo del modo i punti di snap per l'uso polare
+               if self.__PolarMode & QadPOLARMODEnum.SHIFT_TO_ACQUIRE: # acquisisce i punti di snap per l'uso polare solo se premuto shift
+                  useOSnapPointsForPolar = True if shiftKey else False
+               else: # acquisisce i punti di snap per l'uso polare automaticamente               
+                  useOSnapPointsForPolar = True
+            else: # se NON abilitato l'utilizzo del modo i punti di snap per l'uso polare
+               useOSnapPointsForPolar = False
+            
+            # prendo la posizione attuale del mouse perchè per attivare o disattivare i punti di snap per l'uso polare
+            # devo essere dentro il simbolo di snap invece questa funzione viene attivata non appena sono in prossimità della geometria
+            # (vedi variabile di sistema APERTURE) e quindi quando il mouse può essere ancora lontano dal punto di snap
+            point = self.toMapCoordinates(self.canvas.mouseLastXY())
+            if useOSnapPointsForPolar:
+               self.__QadSnapper.toggleReferenceLines(geom, point, crs, oSnapPointsForPolar, self.__snapMarkerSizeInMapUnits)
+            else:
+               self.__QadSnapper.toggleReferenceLines(geom, point, crs)
+               
             self.__QadSnapper.toggleIntExtLine(geom, point, crs)
       
-      
+
+   #============================================================================
+   # magneticCursor
+   #============================================================================
+   def magneticCursor(self, oSnapPoints):
+      if len(oSnapPoints) > 0:               
+         for item in oSnapPoints.items():
+            for pt in item[1]:
+               # il punto <point> deve essere dentro il punto di snap che ha dimensioni snapMarkerSizeInMapUnits
+               if self.tmpPoint.x() >= pt.x() - self.__snapMarkerSizeInMapUnits and self.tmpPoint.x() <= pt.x() + self.__snapMarkerSizeInMapUnits and \
+                  self.tmpPoint.y() >= pt.y() - self.__snapMarkerSizeInMapUnits and self.tmpPoint.y() <= pt.y() + self.__snapMarkerSizeInMapUnits:
+                     self.tmpPoint.set(pt.x(), pt.y()) 
+                     self.__csrRubberBand.moveEvent(self.tmpPoint)
+
+
+   #============================================================================
+   # canvasMoveEvent
+   #============================================================================
    def canvasMoveEvent(self, event):
       self.tmpPoint = self.toMapCoordinates(event.pos())
-      self.tmpEntity.clear()
-      
       self.__csrRubberBand.moveEvent(self.tmpPoint)
+
+      # tasto shift premuto durante il movimento del mouse
+      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
+      # tasto ctrl premuto durante il movimento del mouse
+      self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
+      
+      # se l'obiettivo é selezionare un punto
+      if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+         return self.canvasMoveEventOnPointSel(event)
+      elif self.getSelectionMode() == QadGetPointSelectionModeEnum.NONE:
+         pass
+      # se l'obiettivo é selezionare una o più entità
+      else: 
+         return self.canvasMoveEventOnEntitySel(event)
+
+
+   #============================================================================
+   # canvasMoveEventOnEntitySel
+   #============================================================================
+   def canvasMoveEventOnEntitySel(self, event):
+      # start = time.time() # test
+      self.tmpEntity.clear()
+
+      # start1 = time.time() # test
       
       # se l'obiettivo é selezionare un'entità in modo dinamico
       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC:
          result = qad_utils.getEntSel(event.pos(), self, \
+                                      QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                       self.layersToCheck, \
                                       self.checkPointLayer, \
                                       self.checkLineLayer, \
                                       self.checkPolygonLayer, \
-                                      True, self.onlyEditableLayers)
-      # se l'obiettivo é selezionare un punto
-      elif self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
-         result = qad_utils.getEntSel(event.pos(), self, \
-                                      None, \
-                                      self.__geometryTypesAccordingToSnapType[0], \
-                                      self.__geometryTypesAccordingToSnapType[1], \
-                                      self.__geometryTypesAccordingToSnapType[2], \
-                                      True, \
-                                      self.onlyEditableLayers)
+                                      True, self.onlyEditableLayers, \
+                                      self.lastLayerFound, self.layerCacheGeomsDict)
       else:
          result = None
-      
+         
+      #self.tempo1 += ((time.time() - start1) * 1000) # test
+              
+      # se è stata trovata una geometria
+      if result is not None:         
+         feature = result[0]
+         layer = result[1]
+         self.lastLayerFound = layer
+         self.tmpEntity.set(layer, feature.id())
+                  
+      if self.getDrawMode() != QadGetPointDrawModeEnum.NONE:
+         # previsto uso della linea elastica o rettangolo elastico
+         self.moveElastic(self.tmpPoint)
+
+      # self.tempo_tot += ((time.time() - start) * 1000) # test
+
+
+   #============================================================================
+   # canvasMoveEventOnPointSel
+   #============================================================================
+   def canvasMoveEventOnPointSel(self, event):
+      # start = time.time() # test     
+      result = qad_utils.getEntSel(event.pos(), self, \
+                                   QadVariables.get(QadMsg.translate("Environment variables", "APERTURE")), \
+                                   None, \
+                                   self.__geometryTypesAccordingToSnapType[0], \
+                                   self.__geometryTypesAccordingToSnapType[1], \
+                                   self.__geometryTypesAccordingToSnapType[2], \
+                                   True, False, \
+                                   self.lastLayerFound, self.layerCacheGeomsDict, True)
+         
+      #self.tempo1 += ((time.time() - start1) * 1000) # test
+
+      # se è stata trovata una geometria
       if result is not None:
          feature = result[0]
          layer = result[1]
-         self.tmpEntity.set(layer, feature.id())
+         self.lastLayerFound = layer
          geometry = feature.geometry()
          point = self.toLayerCoordinates(layer, event.pos())
+         
+         allSnapPoints = self.__QadSnapper.getSnapPoint(geometry, point, \
+                                                        layer.crs(), \
+                                                        None, \
+                                                        self.getRealPolarAng(), \
+                                                        self.getRealPolarAngOffset())
+         # Cerco solo il punto più vicino
+         oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
 
+         if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+            self.magneticCursor(oSnapPoints)
+         
          # se é stata selezionata una geometria diversa da quella selezionata precedentemente
          if (self.__prevGeom is None) or not self.__prevGeom.equals(geometry):
             self.__prevGeom = QgsGeometry(geometry)
-            runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, point, layer.crs())
+            runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, layer.crs(), allSnapPoints, self.tmpShiftKey)
             self.__stopTimer = False
             QTimer.singleShot(500, runToggleReferenceLines)
+      # se NON è stata trovata una geometria
+      else:        
+         # start1 = time.time() # test
          
-         oSnapPoints = self.__QadSnapper.getSnapPoint(geometry, point, \
-                                                      layer.crs(), \
-                                                      None, \
-                                                      self.__PolarAng)
-
-      # se l'obiettivo é selezionare un punto
-      elif self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
-         # se non é stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nel pickbox
-         tmpGeometry = qad_utils.getGeomInPickBox(event.pos(),
-                                                  self, \
-                                                  self.tmpGeometries, \
-                                                  None, \
-                                                  self.__geometryTypesAccordingToSnapType[0], \
-                                                  self.__geometryTypesAccordingToSnapType[1], \
-                                                  self.__geometryTypesAccordingToSnapType[2], \
-                                                  True)
+         # se non é stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nella casella aperture
+         boxSize = QadVariables.get(QadMsg.translate("Environment variables", "APERTURE")) # leggo la dimensione del quadrato (in pixel)
+         tmpGeometry = qad_utils.getGeomInBox(event.pos(),
+                                              self, \
+                                              self.tmpGeometries, \
+                                              boxSize, \
+                                              None, \
+                                              self.__geometryTypesAccordingToSnapType[0], \
+                                              self.__geometryTypesAccordingToSnapType[1], \
+                                              self.__geometryTypesAccordingToSnapType[2], \
+                                              True)
+         
+         #self.tempo2 += ((time.time() - start1) * 1000) # test
+         
          if tmpGeometry is not None:
+            self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perché tmpGeometry può essere variato
+            allSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, self.tmpPoint, \
+                                                         self.canvas.mapRenderer().destinationCrs(), \
+                                                         None, \
+                                                         self.getRealPolarAng(), \
+                                                         self.getRealPolarAngOffset(), \
+                                                         True)            
+            # Cerco solo il punto più vicino
+            oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
+
+            if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+               self.magneticCursor(oSnapPoints)
+
             # se é stata selezionata una geometria diversa da quella selezionata precedentemente
             if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
                self.__prevGeom = QgsGeometry(tmpGeometry)
-               runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, self.tmpPoint, \
-                                                                           self.canvas.mapRenderer().destinationCrs())
+               runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, \
+                                                                           self.canvas.mapRenderer().destinationCrs(), \
+                                                                           allSnapPoints, self.tmpShiftKey)
                self.__stopTimer = False
                QTimer.singleShot(500, runToggleReferenceLines)
+         else:
+            allSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
+                                                           self.canvas.mapRenderer().destinationCrs(), \
+                                                           None, \
+                                                           self.getRealPolarAng(), \
+                                                           self.getRealPolarAngOffset())
+            # Cerco solo il punto più vicino
+            oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
 
-            self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perché tmpGeometry può essere variato
-            oSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, self.tmpPoint, \
-                                                         self.canvas.mapRenderer().destinationCrs(), \
-                                                         None, \
-                                                         self.__PolarAng,
-                                                         True)            
-         else:         
-            oSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
-                                                         self.canvas.mapRenderer().destinationCrs(), \
-                                                         None, \
-                                                         self.__PolarAng)
-                                       
+            if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+               self.magneticCursor(oSnapPoints)
+
             self.__prevGeom = None
             self.__stopTimer = True
 
       oSnapPoint = None
 
-      # se l'obiettivo é selezionare un punto
-      if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
-         # visualizzo il punto di snap
-         self.__QadSnapPointsDisplayManager.show(oSnapPoints, \
-                                                 self.__QadSnapper.getExtLines(), \
-                                                 self.__QadSnapper.getExtArcs(), \
-                                                 self.__QadSnapper.getParLines(), \
-                                                 self.__QadSnapper.getIntExtLine(), \
-                                                 self.__QadSnapper.getIntExtArc())
-         
-         self.point = None
-         self.tmpPoint = None
-         # memorizzo il punto di snap in point (prendo il primo valido)
-         for item in oSnapPoints.items():
-            points = item[1]
-            if points is not None:
-               self.tmpPoint = points[0]
-               oSnapPoint = points[0]
-               break
-         
-         if self.tmpPoint is None:
-            self.tmpPoint = self.toMapCoordinates(event.pos())
+      # visualizzo il punto di snap
+      self.__QadSnapPointsDisplayManager.show(oSnapPoints, \
+                                              self.__QadSnapper.getExtLines(), \
+                                              self.__QadSnapper.getExtArcs(), \
+                                              self.__QadSnapper.getParLines(), \
+                                              self.__QadSnapper.getIntExtLine(), \
+                                              self.__QadSnapper.getIntExtArc(), \
+                                              self.__QadSnapper.getOSnapPointsForPolar(), \
+                                              self.__QadSnapper.getOSnapLinesForPolar())
+      
+      self.point = None
+      self.tmpPoint = None
+      # memorizzo il punto di snap in point (prendo il primo valido)
+      for item in oSnapPoints.items():
+         points = item[1]
+         if points is not None:
+            self.tmpPoint = points[0]
+            oSnapPoint = points[0]
+            break
+      
+      if self.tmpPoint is None:
+         self.tmpPoint = self.toMapCoordinates(event.pos())
 
-      # tasto shift premuto durante il movimento del mouse
-      self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
-
-      # tasto ctrl premuto durante il movimento del mouse
-      self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
-
-      # se l'obiettivo é selezionare un punto
-      if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
-         if oSnapPoint is None:
-            if self.__startPoint is not None: # c'é un punto di partenza
-               if self.tmpShiftKey == False: # se non è premuto shift
-                  if self.__OrthoMode == 1: # orto attivato
-                     self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
-               else: # se non è premuto shift devo fare il toggle di ortho
-                  if self.__OrthoMode == 0: # se orto disattivato lo attivo temporaneamente
-                     self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+      if oSnapPoint is None: # se non c'è un punto di osnap
+         if self.__startPoint is not None: # se c'é un punto di partenza
+            if self.tmpShiftKey == False: # se non è premuto shift
+               if self.__OrthoMode == 1: # orto attivato
+                  self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+            else: # se non è premuto shift devo fare il toggle di ortho
+               if self.__OrthoMode == 0: # se orto disattivato lo attivo temporaneamente
+                  self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
                   
       if self.getDrawMode() != QadGetPointDrawModeEnum.NONE:
          # previsto uso della linea elastica o rettangolo elastico
          self.moveElastic(self.tmpPoint)
+
+      # self.tempo_tot += ((time.time() - start) * 1000) # test
 
 
    def canvasPressEvent(self, event):
@@ -596,11 +802,13 @@ class QadGetPoint(QgsMapTool):
             self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION:
             self.tmpPoint = self.toMapCoordinates(event.pos())
             result = qad_utils.getEntSel(event.pos(), self, \
+                                         QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                          self.layersToCheck, \
                                          self.checkPointLayer, \
                                          self.checkLineLayer, \
                                          self.checkPolygonLayer, \
-                                         True, self.onlyEditableLayers)
+                                         True, self.onlyEditableLayers, \
+                                         self.lastLayerFound) # non uso self.layerCacheGeomsDict perchè se ho gli snap disattivati self.layerCacheGeomsDict è vuota
             if result is not None:
                feature = result[0]
                layer = result[1]
@@ -615,7 +823,7 @@ class QadGetPoint(QgsMapTool):
               
          if self.__oldSnapType is not None:
             self.setSnapType(self.__oldSnapType) # riporto il valore precedente
-            self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)            
+            self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)
             
       # tasto shift premuto durante il click del mouse
       self.shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
@@ -664,9 +872,11 @@ class QadGetPoint(QgsMapTool):
       self.entity.set(self.tmpEntity.layer, self.tmpEntity.featureId)
     
    def keyPressEvent(self, event):
-      self.plugIn.keyPressEvent(event)    
+      self.plugIn.keyPressEvent(event)
     
    def activate(self):
+      self.canvas.setToolTip("")
+
       if self.__csrRubberBand is not None:
          # posizione corrente del mouse
          self.__csrRubberBand.moveEvent(self.toMapCoordinates(self.canvas.mouseLastXY()))
@@ -702,7 +912,12 @@ class QadGetPoint(QgsMapTool):
       return False
 
    def isEditTool(self):
-      return True
+      # benchè questo tool faccia editing ritorno False perchè ogni volta che seleziono una feature
+      # con la funzione QgsVectorLayer::select(QgsFeatureId featureId)
+      # parte in sequenza la chiamata a isEditTool del tool corrente che se ritorna true viene disattivato
+      # e poi riattivato QadMapTool che riprende il comando interrotto creando casino
+      #return True 2016
+      return False
       
 
    #============================================================================
@@ -914,6 +1129,8 @@ class QadGetPoint(QgsMapTool):
       d = QadDSETTINGSDialog(self.plugIn)
       d.exec_()
       self.refreshSnapType()
+      self.refreshAutoSnap()
+      self.setPolarAngOffset(self.plugIn.lastSegmentAng)
 
 
    def mapToLayerCoordinates(self, layer, point_geom):
@@ -945,3 +1162,184 @@ class QadGetPoint(QgsMapTool):
          return g
       else:
          return None
+
+
+
+
+
+#    #============================================================================
+#    # canvasMoveEvent
+#    #============================================================================
+#    def canvasMoveEvent(self, event):
+#       # se l'obiettivo é selezionare un punto
+#       if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#          return self.canvasMoveEventOnPointSel(event)
+#       
+#       # start = time.time() # test
+#       
+#       self.tmpPoint = self.toMapCoordinates(event.pos())
+#       self.tmpEntity.clear()
+#       
+#       self.__csrRubberBand.moveEvent(self.tmpPoint)
+# 
+#       # tasto shift premuto durante il movimento del mouse
+#       self.tmpShiftKey = True if event.modifiers() & Qt.ShiftModifier else False
+# 
+#       # tasto ctrl premuto durante il movimento del mouse
+#       self.tmpCtrlKey = True if event.modifiers() & Qt.ControlModifier else False
+# 
+#       # start1 = time.time() # test
+#       
+#       # se l'obiettivo é selezionare un'entità in modo dinamico
+#       if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC:
+#          result = qad_utils.getEntSel(event.pos(), self, \
+#                                       QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
+#                                       self.layersToCheck, \
+#                                       self.checkPointLayer, \
+#                                       self.checkLineLayer, \
+#                                       self.checkPolygonLayer, \
+#                                       True, self.onlyEditableLayers, \
+#                                       self.lastLayerFound, self.layerCacheGeomsDict)
+#       # se l'obiettivo é selezionare un punto
+#       elif self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#          result = qad_utils.getEntSel(event.pos(), self, \
+#                                       QadVariables.get(QadMsg.translate("Environment variables", "APERTURE")), \
+#                                       None, \
+#                                       self.__geometryTypesAccordingToSnapType[0], \
+#                                       self.__geometryTypesAccordingToSnapType[1], \
+#                                       self.__geometryTypesAccordingToSnapType[2], \
+#                                       True, False, \
+#                                       self.lastLayerFound, self.layerCacheGeomsDict)
+#       else:
+#          result = None
+#          
+#       #self.tempo1 += ((time.time() - start1) * 1000) # test
+#               
+#       # se è stata trovata una geometria
+#       if result is not None:         
+#          feature = result[0]
+#          layer = result[1]
+#          self.lastLayerFound = layer
+#          self.tmpEntity.set(layer, feature.id())
+#          geometry = feature.geometry()
+#          point = self.toLayerCoordinates(layer, event.pos())
+#          
+#          allSnapPoints = self.__QadSnapper.getSnapPoint(geometry, point, \
+#                                                         layer.crs(), \
+#                                                         None, \
+#                                                         self.getRealPolarAng(), \
+#                                                         self.getRealPolarAngOffset())
+#          # Cerco solo il punto più vicino
+#          oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
+# 
+#          # se l'obiettivo é selezionare un punto
+#          if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#             if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+#                self.magneticCursor(oSnapPoints)
+#             
+#             # se é stata selezionata una geometria diversa da quella selezionata precedentemente
+#             if (self.__prevGeom is None) or not self.__prevGeom.equals(geometry):
+#                self.__prevGeom = QgsGeometry(geometry)
+#                runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, layer.crs(), allSnapPoints, self.tmpShiftKey)
+#                self.__stopTimer = False
+#                QTimer.singleShot(500, runToggleReferenceLines)
+#       # se NON è stata trovata una geometria
+#       # se l'obiettivo é selezionare un punto
+#       elif self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#          
+#          # start1 = time.time() # test
+#          
+#          # se non é stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nella casella aperture
+#          boxSize = QadVariables.get(QadMsg.translate("Environment variables", "APERTURE")) # leggo la dimensione del quadrato (in pixel)
+#          tmpGeometry = qad_utils.getGeomInBox(event.pos(),
+#                                               self, \
+#                                               self.tmpGeometries, \
+#                                               boxSize, \
+#                                               None, \
+#                                               self.__geometryTypesAccordingToSnapType[0], \
+#                                               self.__geometryTypesAccordingToSnapType[1], \
+#                                               self.__geometryTypesAccordingToSnapType[2], \
+#                                               True)
+#          
+#          #self.tempo2 += ((time.time() - start1) * 1000) # test
+#          
+#          if tmpGeometry is not None:
+#             self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perché tmpGeometry può essere variato
+#             allSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, self.tmpPoint, \
+#                                                          self.canvas.mapRenderer().destinationCrs(), \
+#                                                          None, \
+#                                                          self.getRealPolarAng(), \
+#                                                          self.getRealPolarAngOffset(), \
+#                                                          True)            
+#             # Cerco solo il punto più vicino
+#             oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
+# 
+#             if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+#                self.magneticCursor(oSnapPoints)
+# 
+#             # se é stata selezionata una geometria diversa da quella selezionata precedentemente
+#             if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
+#                self.__prevGeom = QgsGeometry(tmpGeometry)
+#                runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, \
+#                                                                            self.canvas.mapRenderer().destinationCrs(), \
+#                                                                            allSnapPoints, self.tmpShiftKey)
+#                self.__stopTimer = False
+#                QTimer.singleShot(500, runToggleReferenceLines)
+#          else:
+#             allSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
+#                                                            self.canvas.mapRenderer().destinationCrs(), \
+#                                                            None, \
+#                                                            self.getRealPolarAng(), \
+#                                                            self.getRealPolarAngOffset())
+#             # Cerco solo il punto più vicino
+#             oSnapPoints = self.__QadSnapper.getNearestPoints(self.tmpPoint, allSnapPoints)
+# 
+#             if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
+#                self.magneticCursor(oSnapPoints)
+# 
+#             self.__prevGeom = None
+#             self.__stopTimer = True
+# 
+#       oSnapPoint = None
+# 
+#       # se l'obiettivo é selezionare un punto
+#       if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#          # visualizzo il punto di snap
+#          self.__QadSnapPointsDisplayManager.show(oSnapPoints, \
+#                                                  self.__QadSnapper.getExtLines(), \
+#                                                  self.__QadSnapper.getExtArcs(), \
+#                                                  self.__QadSnapper.getParLines(), \
+#                                                  self.__QadSnapper.getIntExtLine(), \
+#                                                  self.__QadSnapper.getIntExtArc(), \
+#                                                  self.__QadSnapper.getOSnapPointsForPolar(), \
+#                                                  self.__QadSnapper.getOSnapLinesForPolar())
+#          
+#          self.point = None
+#          self.tmpPoint = None
+#          # memorizzo il punto di snap in point (prendo il primo valido)
+#          for item in oSnapPoints.items():
+#             points = item[1]
+#             if points is not None:
+#                self.tmpPoint = points[0]
+#                oSnapPoint = points[0]
+#                break
+#          
+#          if self.tmpPoint is None:
+#             self.tmpPoint = self.toMapCoordinates(event.pos())
+# 
+#       # se l'obiettivo é selezionare un punto
+#       if self.getSelectionMode() == QadGetPointSelectionModeEnum.POINT_SELECTION:
+#          if oSnapPoint is None: # se non c'è un punto di osnap
+#             if self.__startPoint is not None: # se c'é un punto di partenza
+#                if self.tmpShiftKey == False: # se non è premuto shift
+#                   if self.__OrthoMode == 1: # orto attivato
+#                      self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+#                else: # se non è premuto shift devo fare il toggle di ortho
+#                   if self.__OrthoMode == 0: # se orto disattivato lo attivo temporaneamente
+#                      self.tmpPoint = self.getOrthoCoord(self.tmpPoint)
+#                   
+#       if self.getDrawMode() != QadGetPointDrawModeEnum.NONE:
+#          # previsto uso della linea elastica o rettangolo elastico
+#          self.moveElastic(self.tmpPoint)
+# 
+#       # self.tempo_tot += ((time.time() - start) * 1000) # test

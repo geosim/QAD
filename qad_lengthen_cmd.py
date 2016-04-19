@@ -234,8 +234,9 @@ class QadLENGTHENCommandClass(QadCommandClass):
    def showLength(self, entity, pt):
       # visualizza la lunghezza dell'entità in unità di mappa
       geom = entity.getGeometry()
-      if geom is None:
-         self.showErr(QadMsg.translate("QAD", "\nInvalid object."))
+      if geom is None:         
+         errMsg = QadMsg.translate("QAD", "Invalid object.")
+         self.showErr("\n" + errMsg)
          return None
    
       # Trasformo il punto nel sistema di coordinate del layer
@@ -247,7 +248,8 @@ class QadLENGTHENCommandClass(QadCommandClass):
       #                    <leftOf>)
       dummy = qad_utils.closestSegmentWithContext(pt, geom)
       if dummy[2] is None:
-         self.showErr(QadMsg.translate("QAD", "\nInvalid object."))
+         errMsg = QadMsg.translate("QAD", "Invalid object.")
+         self.showErr("\n" + errMsg)
          return None
       # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
       subGeom, atSubGeom = qad_utils.getSubGeomAtVertex(geom, dummy[2])
@@ -517,14 +519,14 @@ class QadLENGTHENCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer di tipo lineari che non appartengano a quote o di tipo poligono 
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and \
-                     layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon:
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   feature = result[0]
@@ -634,14 +636,14 @@ class QadLENGTHENCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and \
-                     layer.isEditable():
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line and layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   feature = result[0]

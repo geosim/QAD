@@ -107,7 +107,7 @@ class Qad_fillet_maptool(QadGetPoint):
        
       # si richiede la selezione del secondo oggetto
       if self.mode == Qad_fillet_maptool_ModeEnum.ASK_FOR_SECOND_LINESTRING:
-         if self.tmpEntity.isInitialized():                                                         
+         if self.tmpEntity.isInitialized():
             # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
             geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
             
@@ -208,8 +208,8 @@ class Qad_fillet_maptool(QadGetPoint):
 
          # solo layer lineari editabili che non appartengano a quote
          layerList = []
-         for layer in self.plugIn.canvas.layers():
-            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+         for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+            if layer.geometryType() == QGis.Line and layer.isEditable():
                if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)
          
@@ -225,9 +225,8 @@ class Qad_fillet_maptool(QadGetPoint):
 
          # solo layer lineari o poligono editabili che non appartengano a quote
          layerList = []
-         for layer in self.plugIn.canvas.layers():
-            if layer.type() == QgsMapLayer.VectorLayer and \
-               (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
+         for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+            if (layer.geometryType() == QGis.Line or layer.geometryType() == QGis.Polygon) and \
                layer.isEditable():
                if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                   layerList.append(layer)

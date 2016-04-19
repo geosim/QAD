@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Options_Dialog</class>
+ <widget class="QDialog" name="Options_Dialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>591</width>
+    <height>386</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>591</width>
+    <height>386</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>591</width>
+    <height>386</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>QAD - Options</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>350</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>571</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="currentIndex">
+    <number>2</number>
+   </property>
+   <widget class="QWidget" name="DisplayTab">
+    <attribute name="title">
+     <string>Display</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>251</width>
+       <height>291</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Window Elements</string>
+     </property>
+     <widget class="QPushButton" name="Button_TextWindowColor">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>260</y>
+        <width>91</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Drawing Window Colors dialog box. </string>
+      </property>
+      <property name="text">
+       <string>Colors</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_INPUTSEARCHOPTIONS_AUTOCOMPLETE">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>100</y>
+        <width>211</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Automatically appends suggestions as each keystroke is entered after the second keystroke (system variable INPUTSEARCHOPTIONS).</string>
+      </property>
+      <property name="text">
+       <string>AutoComplete</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_SHOWTEXTWINDOW">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>231</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Show the text window at startup (system variable SHOWTEXTWINDOW).</string>
+      </property>
+      <property name="text">
+       <string>Show the text window at startup</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>50</y>
+        <width>191</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Maximun command history length</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_CMDINPUTHISTORYMAX">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Sets the maximum number of previous input values that are stored for a prompt in a command (system variable CMDINPUTHISTORYMAX).</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_INPUTSEARCHDELAY">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>180</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Controls the amount of time that elapses before automated keyboard features display at the Command prompt.&lt;/p&gt;&lt;p&gt;Valid values are real numbers from 100 to 10,000, which represent milliseconds.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_INPUTSEARCHDELAY">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>180</y>
+        <width>171</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delay time (msec)</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_INPUTSEARCHOPTIONS_ON">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>231</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Turns on/off all automated keyboard features when typing at the Command prompt (system variable INPUTSEARCHOPTIONS).</string>
+      </property>
+      <property name="text">
+       <string>Automated keyboard features</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_INPUTSEARCHOPTIONS_DISPLAY_LIST">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>120</y>
+        <width>211</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays a list of suggestions as keystrokes are entered (system variable INPUTSEARCHOPTIONS).</string>
+      </property>
+      <property name="text">
+       <string>Displays a list of suggestions</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_INPUTSEARCHOPTIONS_DISPLAY_ICON">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>140</y>
+        <width>211</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the icon of the command or system variable, if available (system variable INPUTSEARCHOPTIONS).</string>
+      </property>
+      <property name="text">
+       <string>Displays the icon of the command</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_INPUTSEARCHOPTIONS_EXCLUDE_SYS_VAR">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>160</y>
+        <width>211</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Excludes the display of system variables (system variable INPUTSEARCHOPTIONS).</string>
+      </property>
+      <property name="text">
+       <string>Excludes system variables</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>10</y>
+       <width>281</width>
+       <height>121</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Resolution</string>
+     </property>
+     <widget class="QLineEdit" name="lineEdit_ARCMINSEGMENTQTY">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate an arc (system variable ARCMINSEGMENTQTY).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>30</y>
+        <width>221</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Minimum number of segments in an arc</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>60</y>
+        <width>221</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate a circle (system variable CIRCLEMINSEGMENTQTY).</string>
+      </property>
+      <property name="text">
+       <string>Minimum number of segments in a circle</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_CIRCLEMINSEGMENTQTY">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate a circle (system variable CIRCLEMINSEGMENTQTY).</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_TOLERANCE2APPROXCURVE">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Maximum error approximating a curve to segments (system variable TOLERANCE2APPROXCURVE).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>80</y>
+        <width>221</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Maximun admitted error between a real curve and the aproximated, segmented curve</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>140</y>
+       <width>281</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Crosshair size</string>
+     </property>
+     <widget class="QLineEdit" name="lineEdit_CURSORSIZE">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Determines the size of the crosshair as a percentage of the screen size (system variable CURSORSIZE).</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider_CURSORSIZE">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>20</y>
+        <width>221</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Determines the size of the crosshair as a percentage of the screen size (system variable CURSORSIZE).</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="DraftingTab">
+    <attribute name="title">
+     <string>Drafting</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>261</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>AutoSnap Settings</string>
+     </property>
+     <widget class="QCheckBox" name="checkBox_AUTOSNAP_DISPLAY_MARK">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls the display of the AutoSnap marker. The marker is a geometric symbol that is displayed when the crosshairs move over a snap point ( AUTOSNAP system variable).</string>
+      </property>
+      <property name="text">
+       <string>Marker</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_AutoSnapColor">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Drawing Window Colors dialog box. </string>
+      </property>
+      <property name="text">
+       <string>Colors</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_APBOX">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Turns the display of the AutoSnap aperture box on or off.
+The aperture box is a box that appears inside the crosshairs when you snap to an object (APBOX system variable).</string>
+      </property>
+      <property name="text">
+       <string>Display AutoSnap aperture box</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_AUTOSNAP_DISPLAY_TOOLTIPS">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls the display of the AutoSnap tooltip. The tooltip is a label that describes which part of the object you are snapping to (AUTOSNAP system variable).</string>
+      </property>
+      <property name="text">
+       <string>Display AutoSnap tooltip</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_AUTOSNAP_MAGNET">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Turns the AutoSnap magnet on or off. The magnet is an automatic movement of the crosshairs that locks the crosshairs onto the nearest snap point (AUTOSNAP system variable).</string>
+      </property>
+      <property name="text">
+       <string>Magnet</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>10</y>
+       <width>261</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Alignment Point Acquisition</string>
+     </property>
+     <widget class="QRadioButton" name="radioButton_POLARMODE_AUTO_ACQUIRE">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays tracking vectors automatically when the aperture moves over an object snap.</string>
+      </property>
+      <property name="text">
+       <string>Automatic</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_POLARMODE_SHIFT_TO_ACQUIRE">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays tracking vectors when you press Shift and move the aperture over an object snap.</string>
+      </property>
+      <property name="text">
+       <string>Shift to acquire</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>261</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>AutoSnap Marker Size</string>
+     </property>
+     <widget class="QSlider" name="horizontalSlider_AUTOSNAPSIZE">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>30</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Sets the display size for the AutoSnap marker.</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_AUTOSNAPSIZE" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_7">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>160</y>
+       <width>261</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Aperture Size</string>
+     </property>
+     <widget class="QSlider" name="horizontalSlider_APERTURE">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>30</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Sets the display size for the object snap target box, in pixels (APERTURE system variable).</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_APERTURESIZE" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="SelectionTab">
+    <attribute name="title">
+     <string>Selection</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>261</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Pickbox size</string>
+     </property>
+     <widget class="QSlider" name="horizontalSlider_PICKBOX">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>30</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Sets the object selection target height, in pixels (PICKBOX system variable).</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_PICKBOX" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_9">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>271</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Grip size</string>
+     </property>
+     <widget class="QSlider" name="horizontalSlider_GRIPSIZE">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>30</y>
+        <width>191</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Sets the size of the grip box in pixels ( GRIPSIZE system variable).</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget_GRIPSIZE" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_10">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>261</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Selection modes</string>
+     </property>
+     <widget class="QCheckBox" name="checkBox_PICKFIRST">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls whether you select objects before (noun-verb selection) or after you issue a command (PICKFIRST system variable).</string>
+      </property>
+      <property name="text">
+       <string>Noun/verb selection</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_PICKADD">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls whether subsequent selections replace the current selection set or add to it (PICKADD system variable).</string>
+      </property>
+      <property name="text">
+       <string>Use Shift to add to selection</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_11">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>100</y>
+       <width>271</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Grips</string>
+     </property>
+     <widget class="QPushButton" name="button_GripColor">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>20</y>
+        <width>101</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Grip Colors dialog box where you can specify the colors for different grip status and elements.</string>
+      </property>
+      <property name="text">
+       <string>Grip Colors...</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_GRIPS">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>251</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls the display of grips on selected objects. Displaying grips in a drawing significantly affects performance. Clear this option to optimize performance ( GRIPS system variable).</string>
+      </property>
+      <property name="text">
+       <string>Shows grips</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_GRIPMULTIFUNCTIONAL_ON_DYNAMIC_MENU_AND_HOT_GRIPT">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>241</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls the display of dynamic menu when pausing over a multi-functional grip (GRIPMULTIFUNCTIONAL system variable).</string>
+      </property>
+      <property name="text">
+       <string>Shows dynamic grip menu</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_GRIPOBJLIMIT">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>100</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Suppresses the display of grips when the selection set includes more than the specified number of objects (GRIPOBJLIMIT system variable).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_GRIPOBJLIMIT">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>100</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Object selection limit for display of grips</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>ButtonBOX_Accepted()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>357</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>ButtonBOX_Apply()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>463</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>221</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>helpRequested()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>ButtonHELP_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>480</x>
+     <y>364</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>235</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_INPUTSEARCHOPTIONS_ON</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>checkBox_INPUTSEARCHOPTIONS_ON_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>14</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_CURSORSIZE</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_CURSORSIZE_moved()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_CURSORSIZE</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>lineEdit_CURSORSIZE_textChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>587</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_CURSORSIZE</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_CURSORSIZE_moved()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>485</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>587</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_AUTOSNAPSIZE</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_AUTOSNAPSIZE_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>50</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_APERTURE</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_APERTURE_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>499</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>584</x>
+     <y>264</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_PICKBOX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_PICKBOX_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>113</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_GRIPSIZE</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>horizontalSlider_GRIPSIZE_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>401</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_GRIPS</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>checkBox_GRIPS_ON_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>583</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_GripColor</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>button_GripColor_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>413</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>172</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_TextWindowColor</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>Button_TextWindowColor_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>127</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_AutoSnapColor</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>Button_AutoSnapWindowColor_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>67</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>78</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>ButtonBOX_Accepted()</slot>
+  <slot>ButtonBOX_Apply()</slot>
+  <slot>ButtonHELP_Pressed()</slot>
+  <slot>checkBox_INPUTSEARCHOPTIONS_ON_clicked()</slot>
+  <slot>horizontalSlider_CURSORSIZE_moved()</slot>
+  <slot>lineEdit_CURSORSIZE_textChanged()</slot>
+  <slot>horizontalSlider_AUTOSNAPSIZE_changed()</slot>
+  <slot>horizontalSlider_APERTURE_changed()</slot>
+  <slot>horizontalSlider_PICKBOX_changed()</slot>
+  <slot>horizontalSlider_GRIPSIZE_changed()</slot>
+  <slot>checkBox_GRIPS_ON_clicked()</slot>
+  <slot>button_GripColor_clicked()</slot>
+  <slot>Button_TextWindowColor_clicked()</slot>
+  <slot>Button_AutoSnapWindowColor_clicked()</slot>
+ </slots>
+</ui>

@@ -207,8 +207,10 @@ class QadBREAKCommandClass(QadCommandClass):
                             None, \
                             keyWords, QadInputModeEnum.NONE)      
                return False
-            else:               
-               self.showMsg(QadMsg.translate("Command_BREAK", "Non ci sono geometrie in questa posizione."))
+            else:
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
                self.waitForEntsel(msgMapTool, msg)
          return False # continua
 

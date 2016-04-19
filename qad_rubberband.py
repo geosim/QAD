@@ -38,8 +38,10 @@ from qad_variables import *
 # QadCursorTypeEnum class.
 #===============================================================================
 class QadCursorTypeEnum():
-   BOX   = 1     # un quadratino usato per selezionare entità
-   CROSS = 2     # una croce usata per selezionare un punto
+   NONE     = 0   # nessun cursore
+   BOX      = 1   # un quadratino usato per selezionare entità
+   CROSS    = 2   # una croce usata per selezionare un punto
+   APERTURE = 4   # un quadratino usato per selezionare i punti di snap
 
 
 #===============================================================================
@@ -80,6 +82,14 @@ class QadCursorRubberBand():
          self.__crosshairRubberBandDw = None
          self.__crosshairRubberBandUp = None
 
+      if cursorType & QadCursorTypeEnum.APERTURE:
+         self.__apertureRubberBand = QgsRubberBand(mapCanvas, QGis.Line)
+         self.__apertureRubberBand.setColor(QColor(QadVariables.get(QadMsg.translate("Environment variables", "PICKBOXCOLOR"))))
+         self.__apertureRubberBand.setLineStyle(Qt.DotLine)
+         self.__apertureSize = QadVariables.get(QadMsg.translate("Environment variables", "APERTURE"))
+      else:
+         self.__apertureRubberBand = None
+
    def __del__(self):
       self.removeItems()
       
@@ -103,6 +113,12 @@ class QadCursorRubberBand():
          del self.__crosshairRubberBandUp
          self.__crosshairRubberBandUp = None
 
+      if self.__apertureRubberBand is not None:
+         self.mapCanvas.scene().removeItem(self.__apertureRubberBand)
+         del self.__apertureRubberBand
+         self.__apertureRubberBand = None
+
+
    def moveEvent(self, point):
       # point è risultato di toMapCoordinates      
       if self.cursorType & QadCursorTypeEnum.BOX:
@@ -110,15 +126,16 @@ class QadCursorRubberBand():
 
          self.__boxRubberBand.reset(QGis.Line)
          
-         point1 = QgsPoint(point.x() - pickSize / 2, point.y() - pickSize / 2)
+         point1 = QgsPoint(point.x() - pickSize, point.y() - pickSize)
+         dblPickSize = pickSize * 2
          self.__boxRubberBand.addPoint(point1, False)
-         point1.setX(point1.x() + pickSize)
+         point1.setX(point1.x() + dblPickSize)
          self.__boxRubberBand.addPoint(point1, False)
-         point1.setY(point1.y() + pickSize)
+         point1.setY(point1.y() + dblPickSize)
          self.__boxRubberBand.addPoint(point1, False)
-         point1.setX(point1.x() - pickSize)
+         point1.setX(point1.x() - dblPickSize)
          self.__boxRubberBand.addPoint(point1, False)
-         point1.setY(point1.y() - pickSize)
+         point1.setY(point1.y() - dblPickSize)
          self.__boxRubberBand.addPoint(point1, True)
 
       if self.cursorType & QadCursorTypeEnum.CROSS:
@@ -130,24 +147,23 @@ class QadCursorRubberBand():
          self.__crosshairRubberBandUp.reset(QGis.Line)
          
          if self.cursorType & QadCursorTypeEnum.BOX:
-            halfPickSize = pickSize / 2
             point1 = QgsPoint(point.x() - halfScreenSize, point.y())
-            point2 = QgsPoint(point.x() - halfPickSize, point.y())
+            point2 = QgsPoint(point.x() - pickSize, point.y())
             self.__crosshairRubberBandSx.addPoint(point1, False)
             self.__crosshairRubberBandSx.addPoint(point2, True)
 
             point1.setX(point.x() + halfScreenSize)
-            point2.setX(point.x() + halfPickSize)
+            point2.setX(point.x() + pickSize)
             self.__crosshairRubberBandDx.addPoint(point1, False)
             self.__crosshairRubberBandDx.addPoint(point2, True)
             
             point1.set(point.x(), point.y() - halfScreenSize)
-            point2.set(point.x(), point.y() - halfPickSize)
+            point2.set(point.x(), point.y() - pickSize)
             self.__crosshairRubberBandDw.addPoint(point1, False)
             self.__crosshairRubberBandDw.addPoint(point2, True)
             
             point1.setY(point.y() + halfScreenSize)
-            point2.setY(point.y() + halfPickSize)           
+            point2.setY(point.y() + pickSize)           
             self.__crosshairRubberBandUp.addPoint(point1, False)
             self.__crosshairRubberBandUp.addPoint(point2, True)            
          else:
@@ -167,6 +183,24 @@ class QadCursorRubberBand():
             self.__crosshairRubberBandUp.addPoint(point, False)
             self.__crosshairRubberBandUp.addPoint(point1, True)
 
+      if self.cursorType & QadCursorTypeEnum.APERTURE:
+         apertureSize = self.__apertureSize * self.mapCanvas.mapUnitsPerPixel()
+
+         self.__apertureRubberBand.reset(QGis.Line)
+         
+         point1 = QgsPoint(point.x() - apertureSize, point.y() - apertureSize)
+         dblApertureSize = apertureSize * 2
+         self.__apertureRubberBand.addPoint(point1, False)
+         point1.setX(point1.x() + dblApertureSize)
+         self.__apertureRubberBand.addPoint(point1, False)
+         point1.setY(point1.y() + dblApertureSize)
+         self.__apertureRubberBand.addPoint(point1, False)
+         point1.setX(point1.x() - dblApertureSize)
+         self.__apertureRubberBand.addPoint(point1, False)
+         point1.setY(point1.y() - dblApertureSize)
+         self.__apertureRubberBand.addPoint(point1, True)
+
+
    def hide(self):
       if self.__boxRubberBand is not None:
          self.__boxRubberBand.hide()
@@ -176,6 +210,10 @@ class QadCursorRubberBand():
          self.__crosshairRubberBandDx.hide()
          self.__crosshairRubberBandDw.hide()
          self.__crosshairRubberBandUp.hide()
+
+      if self.__apertureRubberBand is not None:
+         self.__apertureRubberBand.hide()
+
       
    def show(self):
       if self.__boxRubberBand is not None:
@@ -186,6 +224,9 @@ class QadCursorRubberBand():
          self.__crosshairRubberBandDx.show()
          self.__crosshairRubberBandDw.show()
          self.__crosshairRubberBandUp.show()
+
+      if self.__apertureRubberBand is not None:
+         self.__apertureRubberBand.show()
 
 
 #===============================================================================

@@ -63,7 +63,7 @@ class QadDSETTINGSCommandClass(QadCommandClass):
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
             
-   def run(self, msgMapTool = False, msg = None):    
+   def run(self, msgMapTool = False, msg = None):
       Form = QadDSETTINGSDialog(self.plugIn)
       Form.exec_()
       return True

@@ -112,9 +112,6 @@ class QadGripMarker(QgsMapCanvasItem):
       """
       painter é un QPainter
       """
-
-      s = self.iconSize / 2
-
       pen = QPen(QColor(self.borderColor))
       pen.setWidth(1)
       painter.setPen(pen)
@@ -124,16 +121,16 @@ class QadGripMarker(QgsMapCanvasItem):
          pass
       elif self.__iconType == QadGripIconTypeEnum.BOX:
          # un quadrato
-         painter.fillRect(-s, -s, self.iconSize, self.iconSize, QBrush(QColor(self.fillColor)));
-         painter.drawRect(-s, -s, self.iconSize, self.iconSize)
+         painter.fillRect(-self.iconSize, -self.iconSize, self.iconSize * 2, self.iconSize * 2, QBrush(QColor(self.fillColor)));
+         painter.drawRect(-self.iconSize, -self.iconSize, self.iconSize * 2, self.iconSize * 2)
       elif self.__iconType == QadGripIconTypeEnum.CIRCLE:
          # cerchio
          painter.setBrush(QBrush(QColor(self.fillColor)))
-         painter.drawEllipse(QPointF(0, 0), s, s)
+         painter.drawEllipse(QPointF(0, 0), self.iconSize, self.iconSize)
       elif self.__iconType == QadGripIconTypeEnum.RECTANGLE:
          # un rettangolo
-         painter.fillRect(-s, -s / 2, self.iconSize, self.iconSize / 2, QBrush(QColor(self.fillColor)));
-         painter.drawRect(-s, -s / 2, self.iconSize, self.iconSize / 2)
+         painter.fillRect(-self.iconSize, -self.iconSize / 2, self.iconSize * 2, self.iconSize, QBrush(QColor(self.fillColor)));
+         painter.drawRect(-self.iconSize, -self.iconSize / 2, self.iconSize * 2, self.iconSize)
          
 
    def boundingRect(self):
@@ -436,9 +433,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
          return self.getGripPointsFromQadArc(arc, atGeom, atSubGeom, grips)
       else:
          circle = QadCircle()
-         startEndVertices = circle.fromPolyline(pointList, 0)
-         # se la polilinea è composta solo da un cerchio
-         if startEndVertices and startEndVertices[0] == 0 and startEndVertices[1] == len(pointList)-1:
+         if circle.fromPolyline(pointList): # se la polilinea è un cerchio
             return self.getGripPointsFromQadCircle(circle, atGeom, atSubGeom)
          else:
             linearObjectList = qad_utils.QadLinearObjectList()
@@ -636,7 +631,7 @@ class QadEntitySetGripPoints(QgsMapCanvasItem):
       for entityGripPoint in self.entityGripPoints:
          res = entityGripPoint.isIntersecting(point)
          if res is not None:
-            return entityGripPoint 
+            return res 
       return None
 
       

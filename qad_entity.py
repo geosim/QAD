@@ -90,9 +90,7 @@ class QadEntity():
          return QadEntityGeomTypeEnum.ARC, arc # oggetto arco
       else:
          circle = QadCircle()
-         startEndVertices = circle.fromPolyline(pointList, 0)
-         # se la polilinea è composta solo da un cerchio
-         if startEndVertices and startEndVertices[0] == 0 and startEndVertices[1] == len(pointList)-1:
+         if circle.fromPolyline(pointList): # se la polilinea è un cerchio
             return QadEntityGeomTypeEnum.CIRCLE, circle # oggetto cerchio
          else:
             linearObjectList = qad_utils.QadLinearObjectList() # oggetto QadLinearObjectList
@@ -255,7 +253,7 @@ class QadEntity():
       if self.isInitialized() == False or entity.isInitialized() == False :
          return False
 
-      if self.layerId() == entity.layerId() and self.featureId == entity.featureId:      
+      if self.layerId() == entity.layerId() and self.featureId == entity.featureId:
          return True
       else:
          return False    
@@ -278,10 +276,16 @@ class QadEntity():
       return self.layer.id()
 
 
-   def set(self, layer, featureId):
+   def set(self, layer_or_entity, featureId = None):
       self.clear()
-      self.layer = layer # il layer non si può copiare
-      self.featureId = featureId # copio l'identificativo di feature
+      if type(layer_or_entity) == QgsVectorLayer:
+         self.layer = layer_or_entity # il layer non si può copiare
+         self.featureId = featureId # copio l'identificativo di feature
+      else: # layer è una entità
+         if layer_or_entity is not None:
+            self.layer = layer_or_entity.layer
+            self.featureId = layer_or_entity.featureId
+
       return self
 
 
@@ -377,7 +381,7 @@ class QadEntity():
          if incremental == False:
             self.layer.removeSelection()
 
-         self.layer.select(self.featureId)
+         self.layer.select(self.featureId) # aaaaaaaaaaaaaaaaaaaaaaaaaa qui parte l'evento activate di qad_maptool
 
 
    def deselectOnLayer(self):

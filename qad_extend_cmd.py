@@ -205,9 +205,8 @@ class QadEXTENDCommandClass(QadCommandClass):
       self.getPointMapTool().setSelectionMode(QadGetPointSelectionModeEnum.ENTITY_SELECTION_DYNAMIC)
       # solo layer lineari editabili che non appartengano a quote
       layerList = []
-      for layer in self.plugIn.canvas.layers():
-         if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and \
-            layer.isEditable():
+      for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+         if layer.geometryType() == QGis.Line and layer.isEditable():
             if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                layerList.append(layer)
       
@@ -344,13 +343,14 @@ class QadEXTENDCommandClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato considerando
                # solo layer lineari editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line and layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                                      
-               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
+               result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value), \
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             layerList)
                if result is not None:
                   feature = result[0]
@@ -379,8 +379,8 @@ class QadEXTENDCommandClass(QadCommandClass):
                # cerco tutte le geometrie passanti per la polilinea considerando
                # solo layer lineari editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line and layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                
@@ -408,8 +408,8 @@ class QadEXTENDCommandClass(QadCommandClass):
                # cerco tutte le geometrie passanti per il rettangolo considerando
                # solo layer lineari editabili che non appartengano a quote
                layerList = []
-               for layer in self.plugIn.canvas.layers():
-                  if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QGis.Line and layer.isEditable():
+               for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
+                  if layer.geometryType() == QGis.Line and layer.isEditable():
                      if len(QadDimStyles.getDimListByLayer(layer)) == 0:
                         layerList.append(layer)
                         

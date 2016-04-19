@@ -586,7 +586,7 @@ class QadArc():
             continue
          elif InfinityLinePerpOnMiddle2 is None:     
             InfinityLinePerpOnMiddle2 = qad_utils.getInfinityLinePerpOnMiddle(points[i], points[i + 1])
-            if InfinityLinePerpOnMiddle2 is None:       
+            if InfinityLinePerpOnMiddle2 is None:
                InfinityLinePerpOnMiddle1 = None
                nSegment = 0
             else:
@@ -603,28 +603,45 @@ class QadArc():
                else:
                   nSegment = nSegment + 1
                   radius = qad_utils.getDistance(center, points[i + 1]) # calcolo il presunto raggio
-                  maxDifference = radius * epsilon
+                  tolerance = radius * epsilon
                   
                   # calcolo il verso dell'arco e l'angolo dell'arco                 
                   # se un punto intermedio dell'arco è a sinistra del
                   # segmento che unisce i due punti allora il verso è antiorario
                   startClockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False
-                  angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)                  
+                  angle = qad_utils.getAngleBy3Pts(points[i - 1], center, points[i + 1], startClockWise)
+                  prevInfinityLinePerpOnMiddle = InfinityLinePerpOnMiddle2
          else: # e sono già stati valutati almeno 2 segmenti
-            # calcolo la distanza del punto dal presunto centro
-            dist = qad_utils.getDistance(center, points[i + 1])
-            # calcolo il verso dell'arco e l'angolo                 
-            clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
-            angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
-                       
-            # se la distanza è così vicina a quella del raggio
-            # il verso dell'arco deve essere quello iniziale
-            # l'angolo dell'arco non può essere >= 360 gradi
-            if qad_utils.doubleNear(radius, dist, maxDifference) and \
-               startClockWise == clockWise and \
-               angle < 2 * math.pi:                              
-               nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
-            else: # questo segmento non fa parte del cerchio
+            notInArc = False
+            currInfinityLinePerpOnMiddle = qad_utils.getInfinityLinePerpOnMiddle(points[i], points[i + 1])
+            if currInfinityLinePerpOnMiddle is None:
+               notInArc = True
+            else:
+               # calcolo il presunto centro con 2 segmenti
+               currCenter = qad_utils.getIntersectionPointOn2InfinityLines(prevInfinityLinePerpOnMiddle[0], \
+                                                                           prevInfinityLinePerpOnMiddle[1], \
+                                                                           currInfinityLinePerpOnMiddle[0], \
+                                                                           currInfinityLinePerpOnMiddle[1])
+               if currCenter is None: # linee parallele
+                  notInArc = True
+               else:
+                  # calcolo il verso dell'arco e l'angolo                 
+                  clockWise = True if qad_utils.leftOfLine(points[i], points[i - 1], points[i + 1]) < 0 else False           
+                  angle = angle + qad_utils.getAngleBy3Pts(points[i], center, points[i + 1], startClockWise) 
+                             
+                  # se la distanza è così vicina a quella del raggio
+                  # il verso dell'arco deve essere quello iniziale
+                  # l'angolo dell'arco non può essere >= 360 gradi
+                  if qad_utils.ptNear(center, currCenter, tolerance) and \
+                     startClockWise == clockWise and \
+                     angle < 2 * math.pi:                              
+                     nSegment = nSegment + 1 # anche questo segmento fa parte dell'arco
+                     prevInfinityLinePerpOnMiddle = currInfinityLinePerpOnMiddle
+                  else:
+                     notInArc = True
+
+            # questo segmento non fa parte del cerchio
+            if notInArc:
                # se sono stati trovati un numero sufficiente di segmenti successivi
                if nSegment >= _atLeastNSegment:
                   # se é un angolo giro e il primo punto = ultimo punto allora points é un cerchio
@@ -635,7 +652,7 @@ class QadArc():
                   i = i - 2
                   InfinityLinePerpOnMiddle1 = None
                   InfinityLinePerpOnMiddle2 = None
-               
+
          i = i + 1
                         
       # se sono stati trovati un numero sufficiente di segmenti successivi

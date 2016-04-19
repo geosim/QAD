@@ -40,13 +40,25 @@ from qad_msg import QadMsg, qadShowPluginHelp
 import qad_utils
 
 
+#===============================================================================
+# QadDSETTINGSTabIndexEnum class.
+#===============================================================================
+class QadDSETTINGSTabIndexEnum():
+   OBJECT_SNAP    = 0
+   POLAR_TRACKING = 1
+
+
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando DSETTINGS
 class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog):
-   def __init__(self, plugIn):
+   def __init__(self, plugIn, dsettingsTabIndex = None):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
-      QDialog.__init__(self, self.iface)
+
+      QDialog.__init__(self)
+      # non passo il parent perchè altrimenti il font e la sua dimensione verrebbero ereditati dalla dialog scombinando tutto 
+      #QDialog.__init__(self, self.iface)
+
       self.setupUi(self)
       
       # Inizializzazione del TAB che riguarda gli SNAP ad oggetto
@@ -55,9 +67,16 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       # Inizializzazione del TAB che riguarda il puntamento polare
       self.init_polar_tab()
       
-      self.tabWidget.setCurrentIndex(0)
+      if dsettingsTabIndex is not None:
+         self.tabWidget.setCurrentIndex(dsettingsTabIndex)
+      else:
+         if self.plugIn.dsettingsLastUsedTabIndex == -1: # non inizializzato
+            self.plugIn.dsettingsLastUsedTabIndex = QadDSETTINGSTabIndexEnum.OBJECT_SNAP
+         self.tabWidget.setCurrentIndex(self.plugIn.dsettingsLastUsedTabIndex)
             
 
+   ######################################
+   # TAB che riguarda gli SNAP ad oggetto
    def init_osnap_tab(self):
       # Inizializzazione del TAB che riguarda gli SNAP ad oggetto
       
@@ -80,7 +99,11 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.checkBox_TANP.setChecked(OsMode & QadSnapTypeEnum.TAN)
       self.checkBox_EXT_INT.setChecked(OsMode & QadSnapTypeEnum.EXT_INT)
       self.checkBox_TANP.setChecked(OsMode & QadSnapTypeEnum.TAN)
+      
       self.checkBox_IsOsnapON.setChecked(not(OsMode & QadSnapTypeEnum.DISABLE))
+
+      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+      self.checkBox_ObjectSnapTracking.setChecked(AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING)
 
       ProgrDistance = QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"))
       stringA = str(ProgrDistance)
@@ -89,29 +112,58 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.lineEdit_ProgrDistance.installEventFilter(self)
       
 
-   def init_polar_tab(self):
-      # Inizializzazione del TAB che riguarda il puntamento polare
-      UserAngle = QadVariables.get(QadMsg.translate("Environment variables", "POLARANG"))
-      angoliDef = ["90", "45", "30", "22.5", "18", "15", "10", "5"]
-      self.comboBox_increment_angle.addItems(angoliDef)
-      stringA = str(UserAngle)
-      self.comboBox_increment_angle.lineEdit().setText(stringA)
-      self.comboBox_increment_angle.installEventFilter(self)
+   def accept_osnap_tab(self):
+      # Memorizzo il valore di OSMODE
+      newOSMODE = 0
+      if self.checkBox_CENP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.CEN
+      if self.checkBox_ENDP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.END
+      if self.checkBox_END_PLINE.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.END_PLINE
+      if self.checkBox_EXTP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.EXT
+      if self.checkBox_INTP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.INT
+      if self.checkBox_MIDP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.MID
+      if self.checkBox_NODP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.NOD
+      if self.checkBox_QUADP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.QUA
+      #if self.checkBox_INSP.checkState() == Qt.Checked:
+      #   newOSMODE = newOSMODE | QadSnapTypeEnum.INS
+      #if self.checkBox_INTAPP.checkState() == Qt.Checked:
+      #   newOSMODE = newOSMODE | QadSnapTypeEnum.APP
+      if self.checkBox_NEARP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.NEA
+      if self.checkBox_PARALP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.PAR
+      if self.checkBox_PERP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.PER
+      if self.checkBox_PROGRESP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.PR
+      if self.checkBox_TANP.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.TAN
+      if self.checkBox_EXT_INT.checkState() == Qt.Checked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.EXT_INT
+      if self.checkBox_IsOsnapON.checkState() == Qt.Unchecked:
+         newOSMODE = newOSMODE | QadSnapTypeEnum.DISABLE
+      QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), newOSMODE)
+
+      # Memorizzo il valore di OSPROGRDISTANCE
+      SProgrDist = self.lineEdit_ProgrDistance.text()
+      ProgrDist = qad_utils.str2float(SProgrDist)
+      QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
       
-      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
-      self.checkBox_PolarPickPoint.setChecked(AutoSnap & 8)
+      # Memorizzo il valore di AUTOSNAP
+      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))      
+      if self.checkBox_ObjectSnapTracking.checkState() == Qt.Checked:
+         AutoSnap = AutoSnap | QadAUTOSNAPEnum.OBJ_SNAP_TRACKING
+      elif AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING:
+         AutoSnap = AutoSnap - QadAUTOSNAPEnum.OBJ_SNAP_TRACKING
+      QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), AutoSnap)
 
-
-   def eventFilter(self, obj, event):
-      if event is not None:
-         if event.type() == QEvent.FocusOut:
-            if obj == self.lineEdit_ProgrDistance:
-               return not self.lineEdit_ProgrDistance_Validation()
-            elif obj == self.comboBox_increment_angle:
-               return not self.comboBox_increment_angle_Validation()            
-
-      # standard event processing
-      return QObject.eventFilter(self, obj, event);
 
    def ButtonSelectALL_Pressed(self):
       self.checkBox_CENP.setChecked(True)
@@ -151,66 +203,6 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       self.checkBox_TANP.setChecked(False)
       self.checkBox_EXT_INT.setChecked(False)
       return True
-      
-   def ButtonBOX_Accepted(self):
-      newOSMODE = 0
-      if self.checkBox_CENP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.CEN
-      if self.checkBox_ENDP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.END
-      if self.checkBox_END_PLINE.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.END_PLINE
-      if self.checkBox_EXTP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.EXT
-      if self.checkBox_INTP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.INT
-      if self.checkBox_MIDP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.MID
-      if self.checkBox_NODP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.NOD
-      if self.checkBox_QUADP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.QUA
-      #if self.checkBox_INSP.checkState() == Qt.Checked:
-      #   newOSMODE = newOSMODE | QadSnapTypeEnum.INS
-      #if self.checkBox_INTAPP.checkState() == Qt.Checked:
-      #   newOSMODE = newOSMODE | QadSnapTypeEnum.APP
-      if self.checkBox_NEARP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.NEA
-      if self.checkBox_PARALP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.PAR
-      if self.checkBox_PERP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.PER
-      if self.checkBox_PROGRESP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.PR
-      if self.checkBox_TANP.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.TAN
-      if self.checkBox_EXT_INT.checkState() == Qt.Checked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.EXT_INT
-      if self.checkBox_IsOsnapON.checkState() == Qt.Unchecked:
-         newOSMODE = newOSMODE | QadSnapTypeEnum.DISABLE
-      QadVariables.set(QadMsg.translate("Environment variables", "OSMODE"), newOSMODE)
-      
-      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))         
-      if self.checkBox_PolarPickPoint.checkState() == Qt.Checked:
-         AutoSnap = AutoSnap | 8
-      elif AutoSnap & 8:      
-         AutoSnap = AutoSnap - 8
-      QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), AutoSnap)
-      
-      # Memorizzo il valore di PolarANG
-      SUserAngle = self.comboBox_increment_angle.currentText()
-      UserAngle = qad_utils.str2float(SUserAngle)
-      QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
-      
-      SProgrDist = self.lineEdit_ProgrDistance.text()
-      ProgrDist = qad_utils.str2float(SProgrDist)
-      QadVariables.set(QadMsg.translate("Environment variables", "OSPROGRDISTANCE"), ProgrDist)
-
-      QadVariables.save()
-
-      
-      self.close()
-      return True
 
 
    def lineEdit_ProgrDistance_Validation(self):
@@ -222,6 +214,55 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          self.lineEdit_ProgrDistance.selectAll()
          return False
       return True
+
+
+   ######################################
+   # TAB che riguarda il puntamento polare
+   def init_polar_tab(self):
+      # Inizializzazione del TAB che riguarda il puntamento polare
+      UserAngle = QadVariables.get(QadMsg.translate("Environment variables", "POLARANG"))
+      angoliDef = ["90", "45", "30", "22.5", "18", "15", "10", "5"]
+      self.comboBox_increment_angle.addItems(angoliDef)
+      stringA = str(UserAngle)
+      self.comboBox_increment_angle.lineEdit().setText(stringA)
+      self.comboBox_increment_angle.installEventFilter(self)
+      
+      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+      self.checkBox_PolarPickPoint.setChecked(AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING)
+
+      PolarMode = QadVariables.get(QadMsg.translate("Environment variables", "POLARMODE"))
+      if PolarMode & QadPOLARMODEnum.POLAR_TRACKING:
+         self.radioButton_OsnapPolarAngle.setChecked(True)
+      else:
+         self.radioButton_OsnapOrtho.setChecked(True)
+
+      if PolarMode & QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE:
+         self.radioButton_OsnapPolarRelative.setChecked(True)
+      else:
+         self.radioButton_OsnapPolarAbolute.setChecked(True)
+
+
+   def accept_polar_tab(self):
+      # Memorizzo il valore di AUTOSNAP
+      AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
+      if self.checkBox_PolarPickPoint.checkState() == Qt.Checked:
+         AutoSnap = AutoSnap | QadAUTOSNAPEnum.POLAR_TRACKING
+      elif AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING:
+         AutoSnap = AutoSnap - QadAUTOSNAPEnum.POLAR_TRACKING
+      QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), AutoSnap)
+      
+      # Memorizzo il valore di POLARANG
+      SUserAngle = self.comboBox_increment_angle.currentText()
+      UserAngle = qad_utils.str2float(SUserAngle)
+      QadVariables.set(QadMsg.translate("Environment variables", "POLARANG"), UserAngle)
+
+      # Memorizzo il valore di POLARMODE
+      PolarMode = 0
+      if self.radioButton_OsnapPolarAngle.isChecked():
+         PolarMode = PolarMode | QadPOLARMODEnum.POLAR_TRACKING
+      if self.radioButton_OsnapPolarRelative.isChecked():
+         PolarMode = PolarMode | QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE
+      QadVariables.set(QadMsg.translate("Environment variables", "POLARMODE"), PolarMode)
     
     
    def comboBox_increment_angle_Validation(self):
@@ -232,6 +273,32 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          self.comboBox_increment_angle.lineEdit().setFocus()
          self.comboBox_increment_angle.lineEdit().selectAll()
          return False
+      return True
+
+
+   ######################################
+   # Funzioni generiche
+   def eventFilter(self, obj, event):
+      if event is not None:
+         if event.type() == QEvent.FocusOut:
+            if obj == self.lineEdit_ProgrDistance:
+               return not self.lineEdit_ProgrDistance_Validation()
+            elif obj == self.comboBox_increment_angle:
+               return not self.comboBox_increment_angle_Validation()            
+
+      # standard event processing
+      return QObject.eventFilter(self, obj, event);
+
+
+   def ButtonBOX_Accepted(self):
+      self.accept_osnap_tab() # salvo i valori del tab "object snap"
+      self.accept_polar_tab() # salvo i valori del tab "polar tracking"
+      
+      QadVariables.save()
+
+      self.plugIn.dsettingsLastUsedTabIndex = self.tabWidget.currentIndex()
+      
+      self.close()
       return True
 
 

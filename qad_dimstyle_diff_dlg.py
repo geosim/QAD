@@ -40,10 +40,11 @@ import qad_utils
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di comparazione tra stili di quotatura
 class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle_Diff_Dialog):
-   def __init__(self, plugIn, dimStyleName1 = None, dimStyleName2 = None):
+   def __init__(self, plugIn, parent, dimStyleName1 = None, dimStyleName2 = None):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
-      QDialog.__init__(self, self.iface)
+      
+      QDialog.__init__(self, parent)
       
       self.setupUi(self)
                  

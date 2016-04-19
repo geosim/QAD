@@ -68,5 +68,9 @@
         <file>icons/help.png</file>
         <file>icons/lengthen.png</file>
         <file>icons/variable.png</file>
+        <file>icons/options.png</file>
+        <file>icons/mapmpedit.png</file>
+        <file>icons/join.png</file>
+        <file>icons/disjoin.png</file>
     </qresource>    
 </RCC>

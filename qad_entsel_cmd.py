@@ -62,10 +62,12 @@ class QadEntSelClass(QadCommandClass):
       self.checkDimLayers = True
       self.selDimEntity = False # per restituire o meno un oggetto QadDimEntity
       self.msg = QadMsg.translate("QAD", "Select object: ")
+      self.deselectOnFinish = False
+      self.canceledByUsr = False # diventa true se l'utente non vuole scegliere niente (es. se usato il tasto destro del mouse)
       
    def __del__(self):
       QadCommandClass.__del__(self)
-      if self.entity.isInitialized():
+      if self.deselectOnFinish:
          self.entity.deselectOnLayer()
 
 
@@ -90,15 +92,14 @@ class QadEntSelClass(QadCommandClass):
    #============================================================================
    # getLayersToCheck
    #============================================================================
-   def getLayersToCheck(self):      
+   def getLayersToCheck(self):
       layerList = []
-      for layer in self.plugIn.canvas.layers(): # Tutti i layer visibili visibili
+      for layer in qad_utils.getVisibleVectorLayers(self.plugIn.canvas): # Tutti i layer vettoriali visibili
          # considero solo i layer vettoriali che sono filtrati per tipo
-         if (layer.type() == QgsMapLayer.VectorLayer) and \
-             ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
-              (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
-              (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
-              (self.onlyEditableLayers == False or layer.isEditable()):
+         if ((layer.geometryType() == QGis.Point and self.checkPointLayer == True) or \
+             (layer.geometryType() == QGis.Line and self.checkLineLayer == True) or \
+             (layer.geometryType() == QGis.Polygon and self.checkPolygonLayer == True)) and \
+             (self.onlyEditableLayers == False or layer.isEditable()):
             # se devo includere i layers delle quotature
             if self.checkDimLayers == True or \
                len(QadDimStyles.getDimListByLayer(layer)) == 0:
@@ -145,6 +146,7 @@ class QadEntSelClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
+                  self.canceledByUsr = True
                   return True # fine comando
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -157,6 +159,7 @@ class QadEntSelClass(QadCommandClass):
             value = msg
 
          if value is None:
+            self.canceledByUsr = True
             return True # fine comando
          
          if type(value) == unicode:
@@ -178,6 +181,7 @@ class QadEntSelClass(QadCommandClass):
                # cerco se ci sono entità nel punto indicato
                result = qad_utils.getEntSel(self.getPointMapTool().toCanvasCoordinates(value),
                                             self.getPointMapTool(), \
+                                            QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")), \
                                             self.getLayersToCheck())
                if result is not None:
                   feature = result[0]
@@ -188,5 +192,7 @@ class QadEntSelClass(QadCommandClass):
 
             self.point = value
                                    
+         if self.deselectOnFinish:
+            self.entity.deselectOnLayer()
+
          return True # fine comando
-         
