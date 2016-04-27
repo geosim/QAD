@@ -34,6 +34,7 @@ import bisect
 import qad_utils
 from qad_arc import *
 from qad_circle import *
+from qad_msg import QadMsg
 
 
 #===============================================================================

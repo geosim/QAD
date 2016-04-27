@@ -34,6 +34,7 @@ from qad_circle import *
 from qad_variables import *
 from qad_entity import *
 from qad_dim import *
+from qad_msg import QadMsg
 
 
 #===============================================================================

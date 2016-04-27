@@ -396,7 +396,7 @@ simboli con i seguenti campi:
 
 -  un campo numerico reale per memorizzare la rotazione del simbolo
    della quota (gradi in senso antiorario dove lo zero = orizzontale a
-   dx)
+   dx, usare espressione “360-campo\_rotazione”)
 
 Campi opzionali:
 

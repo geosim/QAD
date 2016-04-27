@@ -661,7 +661,9 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                return False                      
          entity.stretch(self.plugIn, ptList, offSetX, offSetY)
          if entity.addToLayers(self.plugIn) == False:
-            return False             
+            return False
+         # non so per quale motivo a volte non si aggiorna la mappa quindi forzo l'aggiornamento
+         self.plugIn.canvas.refresh()
             
       return True
 

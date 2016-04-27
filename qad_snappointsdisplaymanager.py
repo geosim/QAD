@@ -32,6 +32,7 @@ from qgis.gui import *
 from qad_snapper import *
 from qad_vertexmarker import *
 from qad_rubberband import createRubberBand
+from qad_msg import QadMsg
 
 
 class QadSnapPointsDisplayManager():

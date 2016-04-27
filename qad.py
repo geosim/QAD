@@ -40,8 +40,10 @@ from qad_textwindow import *
 from qad_commands import *
 from qad_entity import *
 from qad_dim import QadDimStyles
-import qad_layer
+from qad_layer import getLayerById
 import qad_undoredo
+from qad_msg import QadMsg
+
 
 class Qad(QObject):
    """

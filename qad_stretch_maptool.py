@@ -38,6 +38,7 @@ from qad_getpoint import *
 from qad_dim import *
 import qad_stretch_fun
 from qad_highlight import QadHighlight
+from qad_msg import QadMsg
 
 
 #===============================================================================

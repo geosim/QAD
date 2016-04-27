@@ -37,6 +37,7 @@ from qad_variables import *
 from qad_getpoint import *
 from qad_highlight import QadHighlight
 from qad_dim import QadDimStyles
+from qad_msg import QadMsg
 
 
 #===============================================================================

@@ -36,6 +36,7 @@ from qad_snappointsdisplaymanager import *
 from qad_variables import *
 from qad_getpoint import *
 from qad_rubberband import QadRubberBand
+from qad_msg import QadMsg
 
 
 #===============================================================================

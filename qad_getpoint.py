@@ -38,6 +38,7 @@ from qad_entity import *
 from qad_variables import *
 from qad_rubberband import *
 from qad_cacheareas import QadLayerCacheGeomsDict
+from qad_msg import QadMsg
 
 
 #===============================================================================

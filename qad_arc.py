@@ -33,6 +33,7 @@ import math
 import qad_utils
 from qad_circle import *
 from qad_variables import *
+from qad_msg import QadMsg
 
 
 #===============================================================================

@@ -354,14 +354,15 @@ Optional settings:
 -  The color can be read from a character field that stores the
    dimension text color (tab <Labels>-<Text>)
 
-Modello del layer simboli per la quotatura:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Symbol layer model for dimensioning:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The dimension symbols (arrows, etc.) should be stored in a layer with
 the following fields:
 
 -  a real number field to store dimension text rotation (degree
-   counterclockwise where zero = horizontal to the right)
+   counterclockwise where zero = horizontal to the right, use expression
+   “360-rotation\_field”)
 
 Optional fields:
 

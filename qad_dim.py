@@ -39,6 +39,7 @@ import qad_layer
 import qad_label
 from qad_entity import *
 from qad_variables import *
+from qad_msg import QadMsg
 
 
 """
@@ -586,7 +587,21 @@ class QadDimStyle():
       for field in fields.toList():
          i = fields.indexFromName(field.name())
          f[field.name()] = provider.defaultValue(i)
-               
+
+
+   #============================================================================
+   # getDefaultDimFilePath
+   #============================================================================
+   def getDefaultDimFilePath(self):
+      # ottiene il percorso automatico dove salvare/caricare il file della quotatura
+      # se esiste un progetto caricato il percorso è quello del progetto
+      prjFileInfo = QFileInfo(QgsProject.instance().fileName())
+      path = prjFileInfo.absolutePath()
+      if len(path) == 0:
+         # se non esiste un progetto caricato uso il percorso di installazione di qad
+         path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
+      return path + "/"
+
    
    #============================================================================
    # save
@@ -598,9 +613,9 @@ class QadDimStyle():
       if path == "" and self.path != "":
          _path = self.path
       else:         
-         dir, base = os.path.split(path)
+         dir, base = os.path.split(path) # ritorna percorso e nome file con estensione
          if dir == "":
-            dir = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad") + "/"
+            dir = self.getDefaultDimFilePath()
          else:
             dir = QDir.cleanPath(dir) + "/"
          
@@ -697,20 +712,6 @@ class QadDimStyle():
       
       return True
 
-
-   #============================================================================
-   # getDefaultDimFilePath
-   #============================================================================
-   def getDefaultDimFilePath(self, fileName):
-      # ottiene il percorso automatico dove salvare/caricare il file della quotatura
-      # se esiste un progetto caricato il percorso è quello del progetto
-      prjFileInfo = QFileInfo(QgsProject.instance().fileName())
-      path = prjFileInfo.absolutePath()
-      if len(path) == 0:
-         # se non esiste un progetto caricato uso il percorso di installazione di qad
-         path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
-      return path + "/" + fileName
-
    
    #============================================================================
    # load
@@ -721,9 +722,10 @@ class QadDimStyle():
       """
       if path is None or path == "":
          return False
-      
+            
       if os.path.dirname(path) == "": # path contiene solo il nome del file (senza dir)
-         _path = self.getDefaultDimFilePath(path)
+         _path = self.getDefaultDimFilePath()
+         _path = _path + path
       else:
          _path = path
          
