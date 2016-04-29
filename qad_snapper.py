@@ -1911,7 +1911,7 @@ def str2snapTypeEnum(s):
             param = snapTypeStr[len(QadMsg.translate("Snap", "PR")):]
          else:
             param = snapTypeStr[len("_PR"):]
-         if len(param) == 0 or str2float(param) is not None:
+         if len(param) == 0 or qad_utils.str2float(param) is not None:
             snapType = snapType | QadSnapTypeEnum.PR
       # "EST_INT" intersezione su estensione
       elif snapTypeStr == QadMsg.translate("Snap", "EXT_INT") or snapTypeStr == "_EXT_INT":
@@ -1995,9 +1995,9 @@ def str2snapParams(s):
          string.find(snapTypeStr, "_PR") == 0:
          # la parte successiva PR può essere vuota o numerica
          if string.find(snapTypeStr, QadMsg.translate("Snap", "PR")) == 0:
-            param = str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
+            param = qad_utils.str2float(snapTypeStr[len(QadMsg.translate("Snap", "PR")):]) # fino alla fine della stringa
          else:
-            param = str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
+            param = qad_utils.str2float(snapTypeStr[len("_PR"):]) # fino alla fine della stringa
          if param is not None:
             params.append([QadSnapTypeEnum.PR, param])         
 

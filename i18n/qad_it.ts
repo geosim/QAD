@@ -6842,7 +6842,7 @@ Comando sconosciuto &quot;{0}&quot;.</translation>
     <message>
         <location filename="../qad_commands.py" line="338"/>
         <source>*Canceled*</source>
-        <translation>*Canceled*</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../qad_copy_cmd.py" line="305"/>
