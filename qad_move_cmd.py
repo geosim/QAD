@@ -105,10 +105,11 @@ class QadMOVECommandClass(QadCommandClass):
          # sposto la quota e la rimuovo da entitySet
          dimEntitySet = dimEntity.getEntitySet()
          if dimEntity.deleteToLayers(self.plugIn) == False:
-            return False                     
-         if dimEntity.move(offSetX, offSetY) == False:
+            return False 
+         newDimEntity = QadDimEntity(dimEntity) # la copio
+         if newDimEntity.move(offSetX, offSetY) == False:
             return False             
-         if dimEntity.addToLayers(self.plugIn) == False:
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
          entitySet.subtract(dimEntitySet)
             
@@ -351,8 +352,9 @@ class QadGRIPMOVECommandClass(QadCommandClass):
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False                      
-         entity.move(offSetX, offSetY)
-         if entity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.move(offSetX, offSetY)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
             
       return True

@@ -33,6 +33,7 @@ import qad_rc
 import math
 
 
+from qad_msg import QadMsg
 import qad_utils
 from qad_maptool import QadMapTool
 from qad_variables import *
@@ -40,9 +41,9 @@ from qad_textwindow import *
 from qad_commands import *
 from qad_entity import *
 from qad_dim import QadDimStyles
-from qad_layer import getLayerById
+from qad_layer import getLayerById, QadLayerStatusEnum, QadLayerStatusListClass
 import qad_undoredo
-from qad_msg import QadMsg
+from qad_array_cmd import QadARRAYCommandClassSeriesTypeEnum
 
 
 class Qad(QObject):
@@ -55,7 +56,6 @@ class Qad(QObject):
    dimToolBar = None
    menu = None
    translator = None
-
    
    # Map Tool attivo. Quando non ci sono comandi che necessitano di input dalla finestra grafica
    # QadMapTool é quello attivo 
@@ -70,6 +70,7 @@ class Qad(QObject):
    currentAction = None
    # Finestra testuale già collegata
    __alreadyDockedTextWindow = False
+   
    # ultimo punto selezionato
    lastPoint = None
    # coeff angolare ultimo segmento
@@ -122,13 +123,39 @@ class Qad(QObject):
    # ultima modalità operativa del comando lengthen
    lastOpMode_lengthen = "DElta"
 
+   # INIZIO PARAMETRI COMANDO ARRRAY
+   # ultima tipo di serie del comando array
+   lastArrayType_array = QadARRAYCommandClassSeriesTypeEnum.RECTANGLE
+   # memorizzo se gli elementi vanno ruotati
+   lastItemsRotation_array = True
+   
+   # ultimo l'angolo di orientamento della serie di tipo rettangolo
+   lastRectangleAngle_array = 0.0
+   # ultimo numero di colonne della serie di tipo rettangolo
+   lastRectangleCols_array = 4
+   # ultimo numero di righe della serie di tipo rettangolo
+   lastRectangleRows_array = 3
+   
+   # ultima direzione della tangente per la serie di tipo traiettoria
+   lastPathTangentDirection_array = 0.0
+   # ultimo numero di righe della serie di tipo traiettoria
+   lastPathRows_array = 1
+
+   # ultimo numero di elementi della serie di tipo polare
+   lastPolarItemsNumber_array = 6
+   # ultimo angolo tra gli elementi della serie di tipo polare
+   lastPolarAngleBetween_array = math.pi / 3 # 60 gradi (60 * 6 = 360 gradi)
+   # ultimo numero di righe della serie di tipo polare
+   lastPolarRows_array = 1
+   # FINE PARAMETRI COMANDO ARRRAY
+
    # flag per identificare se un comando di QAD é attivo oppure no
    isQadActive = False
    
    # Quotatura
    dimTextEntitySetRecodeOnSave = QadLayerEntitySet() # entity set dei testi delle quote da riallineare in salvataggio
    beforeCommitChangesDimLayer = None         # layer da cui é scaturito il salvataggio delle quotature
-   isSaveControlledByQAD = False
+   layerStatusList = QadLayerStatusListClass()
 
    # comando dsettings - ultimo tab utilizzato
    dsettingsLastUsedTabIndex = -1 # -1 = non inizializzato
@@ -141,7 +168,7 @@ class Qad(QObject):
    # version
    #============================================================================
    def version(self):
-      return "2.8.011"
+      return "2.8.12"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -279,6 +306,42 @@ class Qad(QObject):
       # memorizzo modalità operativa del comando lengthen: "DElta" o "Percent" o "Total" o "DYnamic"
       if opMode == "DElta" or opMode == "Percent" or opMode == "Total" or opMode == "DYnamic":
          self.lastOpMode_lengthen = opMode     
+
+   # INIZIO PARAMETRI COMANDO ARRRAY
+   def setLastArrayType_array(self, arrayType):
+      # memorizzo il tipo di serie del comando array
+      self.lastArrayType_array = arrayType
+   def setLastItemsRotation_array(self, itemsRotation):
+      # memorizzo se gli elementi vanno ruotati
+      self.lastItemsRotation_array = itemsRotation
+
+   def setLastRectangleAngle_array(self, rectangleAngle):
+      # memorizzo l'angolo di orientamento della serie di tipo rettangolo
+      self.lastRectangleAngle_array = rectangleAngle
+   def setLastRectangleCols_array(self, rectangleCols):
+      # memorizzo il numero di colonne della serie di tipo rettangolo
+      self.lastRectangleCols_array = rectangleCols
+   def setLastRectangleRows_array(self, rectangleRows):
+      # memorizzo il numero di righe della serie di tipo rettangolo
+      self.lastRectangleRows_array = rectangleRows
+
+   def setLastPathTangentDirection_array(self, pathTangentDirection):
+      # memorizzo la direzione della tangente per la serie di tipo traiettoria
+      self.lastPathTangentDirection_array = pathTangentDirection
+   def setLastPathRows_array(self, pathRows):
+      # memorizzo il numero di righe della serie di tipo traiettoria
+      self.lastPathRows_array = pathRows
+
+   def setLastPolarItemsNumber_array(self, polarItemsNumber):
+      # memorizzo il numero di elementi della serie di tipo polare
+      self.lastPolarItemsNumber_array = polarItemsNumber
+   def setLastPolarAngleBetween_array(self, polarAngleBetween):
+      # memorizzo l'angolo tra gli elementi della serie di tipo polare
+      self.lastPolarAngleBetween_array = polarAngleBetween
+   def setLastPolarRows_array(self, polarRows):
+      # memorizzo il numero di righe della serie di tipo polare
+      self.lastPolarRows_array = polarRows
+   # FINE PARAMETRI COMANDO ARRRAY
 
    def loadDimStyles(self):
       global QadDimStyles
@@ -425,6 +488,11 @@ class Qad(QObject):
       self.toolBar.addAction(self.move_action)
       self.toolBar.addAction(self.scale_action)
       self.toolBar.addAction(self.copy_action)
+      
+      # array
+      self.arrayToolButton = self.createArrayToolButton()
+      self.toolBar.addWidget(self.arrayToolButton)
+      
       self.toolBar.addAction(self.offset_action)
       self.toolBar.addAction(self.extend_action)
       self.toolBar.addAction(self.trim_action)
@@ -451,6 +519,11 @@ class Qad(QObject):
       # aggiungo i segnali di aggiunta e rimozione di layer per collegare ogni layer
       # all'evento <layerModified> per sapere se la modifica fatta su quel layer
       # é stata fatta da QAD o dall'esterno
+      # per i layer esistenti
+      for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+         self.layerAdded(layer)
+         self.removeLayer(layer.id())
+      # per i layer futuri
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
       QObject.connect(self.iface, SIGNAL("projectRead()"), self.onProjectLoaded)
@@ -508,12 +581,6 @@ class Qad(QObject):
       self.mainAction.setCheckable(True)
       QObject.connect(self.mainAction, SIGNAL("triggered()"), self.run)
       
-      # PLINE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "PLINE"))
-      self.pline_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.pline_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.pline_action)
-      
       # SETCURRLAYERBYGRAPH
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "SETCURRLAYERBYGRAPH"))
       self.setCurrLayerByGraph_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -525,11 +592,6 @@ class Qad(QObject):
       self.setCurrUpdateableLayerByGraph_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.setCurrUpdateableLayerByGraph_action)
             
-      # ARC
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARC"))
-      self.arc_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.arc_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.arc_action)
       # ARC BY 3 POINTS (MACRO)
       self.arcBy3Points_action = QAction(QIcon(":/plugins/qad/icons/arcBy3Points.png"), \
                                          QadMsg.translate("Command_ARC", "Arc passing through 3 points"), \
@@ -580,12 +642,29 @@ class Qad(QObject):
                                                    QadMsg.translate("Command_ARC", "Arc defined by central, start points and cord length"), \
                                                    self.iface.mainWindow())
       QObject.connect(self.arcByCenterStartLength_action, SIGNAL("triggered()"), self.runARC_BY_CENTER_START_LENGTH_Command)
-      
-      # CIRCLE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "CIRCLE"))
-      self.circle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.circle_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.circle_action)
+
+      # ARRAYRECT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARRAYRECT"))
+      self.arrayRect_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.arrayRect_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.arrayRect_action)
+      # ARRAYPATH
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARRAYPATH"))
+      self.arrayPath_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.arrayPath_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.arrayPath_action)
+      # ARRAYPOLAR (MACRO)
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARRAYPOLAR"))
+      self.arrayPolar_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.arrayPolar_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.arrayPolar_action)
+
+      # BREAK
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "BREAK"))
+      self.break_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.break_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.break_action)
+
       # CIRCLE BY CENTER RADIUS (MACRO)
       self.circleByCenterRadius_action = QAction(QIcon(":/plugins/qad/icons/circleByCenterRadius.png"), \
                                                  QadMsg.translate("Command_CIRCLE", "Circle defined by central point and radius"), \
@@ -617,17 +696,39 @@ class Qad(QObject):
                                                 self.iface.mainWindow())
       QObject.connect(self.circleBy3Tans_action, SIGNAL("triggered()"), self.runCIRCLE_BY_3TANS_Command)
       
+      # COPY
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "COPY"))
+      self.copy_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.copy_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.copy_action)
+      
+      # DIMALIGNED
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMALIGNED"))
+      self.dimAligned_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimAligned_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimAligned_action)
+      # DIMLINEAR
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMLINEAR"))
+      self.dimLinear_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimLinear_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimLinear_action)
+      # DIMSTYLE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMSTYLE"))
+      self.dimStyle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimStyle_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimStyle_action)
+      
       # DSETTINGS
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DSETTINGS"))
       self.dsettings_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.dsettings_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.dsettings_action)
       
-      # LINE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "LINE"))
-      self.line_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.line_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.line_action)
+      # DISJOIN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DISJOIN"))
+      self.disjoin_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.disjoin_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.disjoin_action)
       
       # ERASE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ERASE"))
@@ -635,11 +736,53 @@ class Qad(QObject):
       self.erase_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.erase_action)
       
-      # MPOLYGON
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MPOLYGON"))
-      self.mpolygon_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.mpolygon_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.mpolygon_action)
+      # EXTEND
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "EXTEND"))
+      self.extend_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.extend_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.extend_action)
+      
+      # FILLET
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "FILLET"))
+      self.fillet_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.fillet_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.fillet_action)
+
+      # HELP
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "HELP"))
+      self.help_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.help_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.help_action)
+      
+      # INSERT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "INSERT"))
+      self.insert_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.insert_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.insert_action)
+      
+      # JOIN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "JOIN"))
+      self.join_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.join_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.join_action)
+      
+      # LENGTHEN
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "LENGTHEN"))
+      self.lengthen_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.lengthen_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.lengthen_action)
+      
+      # LINE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "LINE"))
+      self.line_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.line_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.line_action)
+      
+      # MAPMPEDIT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MAPMPEDIT"))
+      self.mapmpedit_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.mapmpedit_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.mapmpedit_action)
       
       # MBUFFER
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MBUFFER"))
@@ -647,11 +790,11 @@ class Qad(QObject):
       self.mbuffer_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.mbuffer_action)
       
-      # ROTATE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ROTATE"))
-      self.rotate_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.rotate_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.rotate_action)
+      # MIRROR
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MIRROR"))
+      self.mirror_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.mirror_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.mirror_action)
       
       # MOVE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MOVE"))
@@ -659,17 +802,11 @@ class Qad(QObject):
       self.move_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.move_action)
       
-      # SCALE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "SCALE"))
-      self.scale_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.scale_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.scale_action)
-      
-      # COPY
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "COPY"))
-      self.copy_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.copy_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.copy_action)
+      # MPOLYGON
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MPOLYGON"))
+      self.mpolygon_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.mpolygon_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.mpolygon_action)
       
       # OFFSET
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "OFFSET"))
@@ -677,23 +814,23 @@ class Qad(QObject):
       self.offset_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.offset_action)
       
-      # EXTEND
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "EXTEND"))
-      self.extend_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.extend_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.extend_action)
+      # OPTIONS
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "OPTIONS"))
+      self.options_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.options_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.options_action)
       
-      # TRIM
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "TRIM"))
-      self.trim_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.trim_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.trim_action)
+      # PEDIT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "PEDIT"))
+      self.pedit_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.pedit_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.pedit_action)
       
-      # RECTANGLE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "RECTANGLE"))
-      self.rectangle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.rectangle_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.rectangle_action)
+      # PLINE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "PLINE"))
+      self.pline_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.pline_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.pline_action)
       
       # POLYGON
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "POLYGON"))
@@ -701,11 +838,47 @@ class Qad(QObject):
       self.polygon_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.polygon_action)
       
-      # MIRROR
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MIRROR"))
-      self.mirror_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.mirror_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.mirror_action)
+      # RECTANGLE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "RECTANGLE"))
+      self.rectangle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.rectangle_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.rectangle_action)
+      
+      # REDO
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "REDO"))
+      self.redo_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.redo_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.redo_action)
+      
+      # ROTATE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ROTATE"))
+      self.rotate_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.rotate_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.rotate_action)
+      
+      # SCALE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "SCALE"))
+      self.scale_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.scale_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.scale_action)
+      
+      # STRETCH
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "STRETCH"))
+      self.stretch_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.stretch_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.stretch_action)
+      
+      # TEXT
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "TEXT"))
+      self.text_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.text_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.text_action)
+      
+      # TRIM
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "TRIM"))
+      self.trim_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.trim_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.trim_action)
       
       # UNDO
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "UNDO"))
@@ -717,100 +890,6 @@ class Qad(QObject):
                                     QadMsg.translate("Command_UNDO", "Undo last operation"), \
                                     self.iface.mainWindow())
       QObject.connect(self.u_action, SIGNAL("triggered()"), self.runU_Command)
-      
-      # REDO
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "REDO"))
-      self.redo_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.redo_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.redo_action)
-      
-      # INSERT
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "INSERT"))
-      self.insert_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.insert_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.insert_action)
-      
-      # TEXT
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "TEXT"))
-      self.text_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.text_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.text_action)
-      
-      # STRETCH
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "STRETCH"))
-      self.stretch_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.stretch_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.stretch_action)
-      
-      # LENGTHEN
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "LENGTHEN"))
-      self.lengthen_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.lengthen_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.lengthen_action)
-      
-      # BREAK
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "BREAK"))
-      self.break_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.break_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.break_action)
-      
-      # PEDIT
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "PEDIT"))
-      self.pedit_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.pedit_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.pedit_action)
-      
-      # MAPMPEDIT
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MAPMPEDIT"))
-      self.mapmpedit_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.mapmpedit_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.mapmpedit_action)
-      
-      # FILLET
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "FILLET"))
-      self.fillet_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.fillet_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.fillet_action)
-      
-      # JOIN
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "JOIN"))
-      self.join_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.join_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.join_action)
-      
-      # DISJOIN
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DISJOIN"))
-      self.disjoin_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.disjoin_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.disjoin_action)
-      
-      # DIMLINEAR
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMLINEAR"))
-      self.dimLinear_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.dimLinear_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.dimLinear_action)
-      # DIMALIGNED
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMALIGNED"))
-      self.dimAligned_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.dimAligned_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.dimAligned_action)
-      # DIMSTYLE
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMSTYLE"))
-      self.dimStyle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.dimStyle_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.dimStyle_action)
-
-      # HELP
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "HELP"))
-      self.help_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.help_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.help_action)
-      
-      # OPTIONS
-      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "OPTIONS"))
-      self.options_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
-      self.options_action.setToolTip(cmd.getToolTipText())
-      cmd.connectQAction(self.options_action)
 
 
    #============================================================================
@@ -827,7 +906,7 @@ class Qad(QObject):
    # INIZIO - Gestione MENU (da chiamare prima di creare TOOLBAR)
    #============================================================================
    def createArcMenu(self):
-      # menu Draw            
+      # menu Arco
       arcMenu = QMenu(QadMsg.translate("Command_list", "ARC"))
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARC"))
       arcMenu.setIcon(cmd.getIcon())
@@ -847,7 +926,7 @@ class Qad(QObject):
       return arcMenu
 
    def createCircleMenu(self):
-      # menu Draw            
+      # menu Circle
       circleMenu = QMenu(QadMsg.translate("Command_list", "CIRCLE"))
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "CIRCLE"))
       circleMenu.setIcon(cmd.getIcon())
@@ -861,8 +940,18 @@ class Qad(QObject):
       circleMenu.addAction(self.circleBy3Tans_action)
       return circleMenu
 
+   def createArrayMenu(self):
+      # menu Circle
+      arrayMenu = QMenu(QadMsg.translate("Command_list", "ARRAY"))
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ARRAY"))
+      arrayMenu.setIcon(cmd.getIcon())
+      arrayMenu.addAction(self.arrayRect_action)
+      arrayMenu.addAction(self.arrayPath_action)
+      arrayMenu.addAction(self.arrayPolar_action)
+      return arrayMenu
+
    def createDrawMenu(self):
-      # menu Draw            
+      # menu Draw
       drawMenu = QMenu(QadMsg.translate("QAD", "Draw"))
       drawMenu.addAction(self.line_action)
       drawMenu.addAction(self.pline_action)      
@@ -870,6 +959,7 @@ class Qad(QObject):
       # menu arco
       self.arcMenu = self.createArcMenu()
       drawMenu.addMenu(self.arcMenu)
+      
       # menu cerchio
       self.circleMenu = self.createCircleMenu()
       drawMenu.addMenu(self.circleMenu)
@@ -891,6 +981,11 @@ class Qad(QObject):
       editMenu.addAction(self.move_action)
       editMenu.addAction(self.scale_action)
       editMenu.addAction(self.copy_action)
+      
+      # menu array
+      self.arrayMenu = self.createArrayMenu()
+      editMenu.addMenu(self.arrayMenu)
+      
       editMenu.addAction(self.offset_action)
       editMenu.addAction(self.extend_action)
       editMenu.addAction(self.trim_action)
@@ -950,6 +1045,16 @@ class Qad(QObject):
    def circleToolButtonTriggered(self, action):
       self.circleToolButton.setDefaultAction(action)
 
+   def createArrayToolButton(self):
+      arrayToolButton = QToolButton(self.toolBar)
+      arrayToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      arrayToolButton.setMenu(self.arrayMenu)
+      arrayToolButton.setDefaultAction(self.arrayMenu.actions()[0]) # prima voce di menu
+      arrayToolButton.triggered.connect(self.arrayToolButtonTriggered)
+      return arrayToolButton
+   def arrayToolButtonTriggered(self, action):
+      self.arrayToolButton.setDefaultAction(action)
+
    def createDimToolBar(self):
       # aggiunge la toolbar per la quotatura
       toolBar = self.iface.addToolBar(QadMsg.translate("QAD", "QAD - Dimensioning"))
@@ -984,6 +1089,8 @@ class Qad(QObject):
    #    2) committedFeaturesAdded su layer simboli
    
    def layerAdded(self, layer):
+      if (layer.type() != QgsMapLayer.VectorLayer):
+         return
       QObject.connect(layer, SIGNAL("layerModified()"), self.layerModified)
       QObject.connect(layer, SIGNAL("beforeCommitChanges()"), self.beforeCommitChanges)
       QObject.connect(layer, SIGNAL("committedFeaturesAdded(QString, QgsFeatureList)"), self.committedFeaturesAdded)
@@ -993,12 +1100,27 @@ class Qad(QObject):
       #QObject.connect(layer, SIGNAL("repaintRequested()"), self.repaintRequested)
       # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
       QObject.connect(layer, SIGNAL("editingStopped()"), self.editingStopped)      
-     
-      
+
+
    def removeLayer(self, layerId):
+      layer = qad_layer.getLayerById(layerId)
+      if (layer.type() != QgsMapLayer.VectorLayer):
+         return
+      QObject.disconnect(layer, SIGNAL("layerModified()"), self.layerModified)
+      QObject.disconnect(layer, SIGNAL("beforeCommitChanges()"), self.beforeCommitChanges)
+      QObject.disconnect(layer, SIGNAL("committedFeaturesAdded(QString, QgsFeatureList)"), self.committedFeaturesAdded)
+      # vedi qgsvectorlayer.cpp funzione QgsVectorLayer::commitChanges()
+      # devo predere l'ultimo segnale vhe viene emesso dal salvataggio QGIS
+      # questo segnale arriva alla fine del salvataggio di un layer dalla versione 2.3 di QGIS
+      #QObject.disconnect(layer, SIGNAL("repaintRequested()"), self.repaintRequested)
+      # questo segnale arriva alla fine del salvataggio di un layer alla versione 2.2 di QGIS
+      QObject.disconnect(layer, SIGNAL("editingStopped()"), self.editingStopped)      
+
       # viene rimosso un layer quindi lo tolgo dallo stack
       self.undoStack.clearByLayer(layerId)
       self.enableUndoRedoButtons()
+      # lo elimino anche dalla lista degli stati dei layer
+      self.layerStatusList.remove(layer.name())
 
 
    def editingStopped(self):
@@ -1009,35 +1131,21 @@ class Qad(QObject):
          # ricavo gli stili di quotatura
          dimStyleList = self.mQadDimStyle.getDimListByLayer(layer)
          for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
-               # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
+            if dimStyle.isValid(): # stile valido
+               # cerco tutte le feature text in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
                # di quotatura dimStyle
-               textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)
+               textAddedEntitySet = dimStyle.getFilteredLayerEntitySet(self.dimTextEntitySetRecodeOnSave)
                # salvo gli oggetti di quello stile di quotatura aggiornando i reference
-               self.isSaveControlledByQAD = True
                # ricodifica          
-               dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+               dimStyle.updateTextReferencesOnSave(self, textAddedEntitySet)
             
          self.dimTextEntitySetRecodeOnSave.clear()
 
          for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
+            if dimStyle.isValid(): # stile valido
                # salvataggio
-               dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+               dimStyle.commitChanges(self) # la funzione scarta self.beforeCommitChangesDimLayer
                self.beforeCommitChangesDimLayer = None
-               self.isSaveControlledByQAD = False
-               dimStyle.startEditing()
-      elif self.isSaveControlledByQAD == False:
-         layer = self.sender()
-         # verifico se il layer che si è appena finito di salvare appartiene ad uno o più stili di quotatura
-         dimStyleList = self.mQadDimStyle.getDimListByLayer(layer)
-         for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
-               # salvataggio
-               self.isSaveControlledByQAD = True
-               dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
-               self.beforeCommitChangesDimLayer = None
-               self.isSaveControlledByQAD = False
                dimStyle.startEditing()
 
 
@@ -1048,39 +1156,38 @@ class Qad(QObject):
          # ricavo gli stili di quotatura
          dimStyleList = self.mQadDimStyle.getDimListByLayer(self.dimTextEntitySetRecodeOnSave.layer)
          for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
+            if dimStyle.isValid(): # stile valido
                # cerco tutte le feature in self.dimTextEntitySetRecodeOnSave che appartengono allo stile
                # di quotatura dimStyle
-               textAddedFeatures = dimStyle.getFilteredFeatureCollection(self.dimTextEntitySetRecodeOnSave)            
+               textAddedEntitySet = dimStyle.getFilteredLayerEntitySet(self.dimTextEntitySetRecodeOnSave)
                # salvo gli oggetti di quello stile di quotatura aggiornando i reference
-               self.isSaveControlledByQAD = True
                # ricodifica          
-               dimStyle.updateTextReferencesOnSave(self, textAddedFeatures)
+               dimStyle.updateTextReferencesOnSave(self, textAddedEntitySet)
             
          self.dimTextEntitySetRecodeOnSave.clear()
          
          for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
+            if dimStyle.isValid(): # stile valido
                # salvataggio
-               dimStyle.commitChanges(self.beforeCommitChangesDimLayer)
+               dimStyle.commitChanges(self) # la funzione scarta self.beforeCommitChangesDimLayer
                self.beforeCommitChangesDimLayer = None
-               self.isSaveControlledByQAD = False
                dimStyle.startEditing()
 
       
    def beforeCommitChanges(self):
-      if self.isSaveControlledByQAD == False:
-         layer = self.sender()
+      layer = self.sender()
+      # verifico se il salvataggio del layer non è controllato da QAD
+      if self.layerStatusList.getStatus(layer.id()) != QadLayerStatusEnum.COMMIT_BY_INTERNAL: 
          # verifico se il layer che si sta per salvare appartiene ad uno o più stili di quotatura
          dimStyleList = self.mQadDimStyle.getDimListByLayer(layer)
          for dimStyle in dimStyleList:
-            if dimStyle.getInValidErrMsg() is None: # stile valido
+            if dimStyle.isValid(): # stile valido
                if dimStyle.getTextualLayer().id() != layer.id(): # se non si tratta del layer dei testi di quota
-                  self.beforeCommitChangesDimLayer = layer # memorizzo il layer da cui é scaturito il salvataggio delle quotature
-                  self.isSaveControlledByQAD = True
-                  dimStyle.textCommitChangesOnSave() # salvo i testi delle quote per ricodifica ID
+                  # memorizzo il layer da cui é scaturito il salvataggio delle quotature per scartarlo
+                  # nella funzione dimStyle.commitChanges 
+                  self.beforeCommitChangesDimLayer = layer 
+                  dimStyle.textCommitChangesOnSave(self) # salvo i testi delle quote per ricodifica ID
                   dimStyle.startEditing()
-                  self.isSaveControlledByQAD = False
 
       
    def committedFeaturesAdded(self, layerId, addedFeatures):
@@ -1088,7 +1195,7 @@ class Qad(QObject):
       # verifico se il layer che é stato salvato appartiene ad uno o più stili di quotatura
       dimStyleList = self.mQadDimStyle.getDimListByLayer(layer)
       for dimStyle in dimStyleList:
-         if dimStyle.getInValidErrMsg() is None: # stile valido
+         if dimStyle.isValid(): # stile valido
             # se si tratta del layer testuale delle quote
             if dimStyle.getTextualLayer().id() == layerId:
                # mi memorizzo le features testuali da riallineare 
@@ -1482,7 +1589,16 @@ class Qad(QObject):
               QadMsg.translate("Command_ARC", "chord Length"), \
               None]
       self.runMacroAbortingTheCurrent(args)
-            
+
+   def runARRAYCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAY"))
+   def runARRAYRECTCommand(self): 
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAYRECT"))
+   def runARRAYPATHCommand(self): 
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAYPATH"))
+   def runARRAYPOLARCommand(self): 
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAYPOLAR"))
+
    def runCIRCLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "CIRCLE"))
    def runCIRCLE_BY_CENTER_RADIUS_Command(self): # MACRO

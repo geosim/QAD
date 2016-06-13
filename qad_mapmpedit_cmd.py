@@ -32,6 +32,7 @@ from qgis.gui import *
 from qad_generic_cmd import QadCommandClass
 from qad_snapper import *
 from qad_getpoint import *
+from qad_pline_cmd import QadPLINECommandClass
 from qad_ssget_cmd import QadSSGetClass
 from qad_msg import QadMsg
 from qad_textwindow import *
@@ -48,6 +49,7 @@ class QadMAPMPEDITCommandOpTypeEnum():
    UNION        = 1 # unione tra poligoni
    INTERSECTION = 2 # intersezione tra poligoni
    DIFFERENCE   = 3 # differenza tra poligoni
+
 
 # Classe che gestisce il comando MAPMPEDIT
 class QadMAPMPEDITCommandClass(QadCommandClass):
@@ -433,6 +435,61 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
 
 
    #============================================================================
+   # dividePolygon
+   #============================================================================
+   def splitPolygon(self, splitLine, createNewEntities):
+      """
+      divide il poligono corrente usando una polilinea con i vertci in <plineVertices> in modo da generare o meno nuove entità
+      """
+      layerList = []
+      layerList.append(self.poligonEntity.layer)
+      
+      splitLineTransformed = self.mapToLayerCoordinates(self.poligonEntity.layer, splitLine)
+      f = self.poligonEntity.getFeature()
+      geom = f.geometry()
+      result, newGeoms, topologyTestPts = geom.splitGeometry(splitLineTransformed, False)
+
+      if result <> 0 or len(newGeoms) == 0:
+         self.showMsg(QadMsg.translate("QAD", "Invalid object."))
+         return False
+         
+      newfeatures =[]
+      if createNewEntities:
+         for newGeom in newGeoms:
+            newfeature = QgsFeature(f)
+            newfeature.setGeometry(newGeom)
+            newfeatures.append(newfeature)
+      else:
+         for newGeom in newGeoms:
+            # Riduco la geometria in point o polyline
+            simplifiedGeoms = qad_utils.asPointOrPolyline(newGeom)
+            for simplifiedGeom in simplifiedGeoms:
+               points = simplifiedGeom.asPolyline() # vettore di punti                     
+               res = geom.addPart(points)
+      
+      f.setGeometry(geom)
+      
+      self.plugIn.beginEditCommand("Feature edited", layerList)
+         
+      # plugIn, layer, feature, refresh, check_validity
+      if qad_layer.updateFeatureToLayer(self.plugIn, self.poligonEntity.layer, f, False, False) == False:
+         self.plugIn.destroyEditCommand()
+         return False
+
+      if len(newfeatures) > 0:
+         # plugIn, layer, features, coordTransform, refresh, check_validity
+         if qad_layer.addFeaturesToLayer(self.plugIn, self.poligonEntity.layer, newfeatures, None, False, False) == False:
+            self.plugIn.destroyEditCommand()
+            return
+
+      self.plugIn.endEditCommand()
+      self.nOperationsToUndo = self.nOperationsToUndo + 1
+
+      return True
+
+
+
+   #============================================================================
    # waitForEntsel
    #============================================================================
    def waitForEntsel(self, msgMapTool, msg):
@@ -461,8 +518,11 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
                  QadMsg.translate("Command_MAPMPEDIT", "Union") + "/" + \
                  QadMsg.translate("Command_MAPMPEDIT", "Substract") + "/" + \
                  QadMsg.translate("Command_MAPMPEDIT", "Intersect") + "/" + \
-                 QadMsg.translate("Command_MAPMPEDIT", "include Objs")
-      englishKeyWords = "Add" + "/" + "Delete" + "/" + "Union" + "/" + "Substract" + "/" + "Intersect" "/" + "include Objs"
+                 QadMsg.translate("Command_MAPMPEDIT", "split Objects") + "/" + \
+                 QadMsg.translate("Command_MAPMPEDIT", "split Parts") + "/" + \
+                 QadMsg.translate("Command_MAPMPEDIT", "iNclude objs")
+      englishKeyWords = "Add" + "/" + "Delete" + "/" + "Union" + "/" + "Substract" + "/" + "Intersect" "/" + \
+                        "split Objects" + "/" + "split Parts" + "/" + "iNclude objs"
 
       if self.nOperationsToUndo > 0: # se c'è qualcosa che si può annullare
          keyWords = keyWords + "/" +  QadMsg.translate("Command_MAPMPEDIT", "Undo")
@@ -579,7 +639,25 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
             self.SSGetClass.run(msgMapTool, msg)
             self.step = 7
             return False
-         elif value == QadMsg.translate("Command_MAPMPEDIT", "include Objs") or value == "include Objs":
+         elif value == QadMsg.translate("Command_MAPMPEDIT", "split Objects") or value == "split Objects":
+            # Disegna una polilinea di divisione del poligono
+            self.PLINECommand = QadPLINECommandClass(self.plugIn)
+            # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
+            # che non verrà salvata su un layer
+            self.PLINECommand.virtualCmd = True   
+            self.PLINECommand.run(msgMapTool, msg)
+            self.step = 9
+            return False
+         elif value == QadMsg.translate("Command_MAPMPEDIT", "split Parts") or value == "split Parts":
+            # Disegna una polilinea di divisione del poligono
+            self.PLINECommand = QadPLINECommandClass(self.plugIn)
+            # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
+            # che non verrà salvata su un layer
+            self.PLINECommand.virtualCmd = True   
+            self.PLINECommand.run(msgMapTool, msg)
+            self.step = 10
+            return False
+         elif value == QadMsg.translate("Command_MAPMPEDIT", "iNclude objs") or value == "iNclude objs":
             self.SSGetClass.checkPointLayer = True # includo i layer puntuali
             self.SSGetClass.run(msgMapTool, msg)
             self.step = 8
@@ -662,3 +740,26 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
             self.reinitSSGetClass()
             self.WaitForMainMenu()
          return False # continua
+
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA DELLA LINEA DI DIVISIONE (da step = 2)
+      elif self.step == 9: # dopo aver atteso un punto si riavvia il comando
+         if self.PLINECommand.run(msgMapTool, msg) == True:
+            self.showMsg("\n")
+            self.splitPolygon(self.PLINECommand.vertices, True)
+            del self.PLINECommand
+            self.PLINECommand = None
+            self.WaitForMainMenu()
+         return False
+
+      #=========================================================================
+      # RISPOSTA ALLA RICHIESTA DELLA LINEA DI DIVISIONE (da step = 2)
+      elif self.step == 10: # dopo aver atteso un punto si riavvia il comando
+         if self.PLINECommand.run(msgMapTool, msg) == True:
+            self.showMsg("\n")
+            self.splitPolygon(self.PLINECommand.vertices, False)
+            del self.PLINECommand
+            self.PLINECommand = None
+            self.WaitForMainMenu()
+         return False
+      

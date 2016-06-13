@@ -200,7 +200,7 @@ class QadMapTool(QgsMapTool):
                      self.timerForGripMenu = QTimer()
                      self.timerForGripMenu.setSingleShot(True)
                      self.timerForGripMenu.timeout.connect(shot)
-                     self.timerForGripMenu.start(1000)
+                     self.timerForGripMenu.start(1000) # 1 sec
                      return
    
 #          # se non ci sono grip point selezionati

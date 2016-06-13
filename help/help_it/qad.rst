@@ -289,10 +289,10 @@ Quotatura
 
 Uno stile di quotatura è un insieme di proprietà che determinano
 l’aspetto delle quote. Tali proprietà vengono archiviate in file con
-estensione .dim e sono caricati all’avvio di QAD. I files di quotatura
-devono essere salvati nelle cartelle specificate dalla variabile
-SUPPORTPATH oppure nella cartella personale del plugin QAD (ad esempio
-in windows xp “C:\\Documents and Settings\\\ *utente
+estensione .dim e sono caricati all’avvio di QAD o al caricamento di un
+progetto. I files di quotatura devono essere salvati nella cartella del
+progetto corrente oppure nella cartella personale del plugin QAD (ad
+esempio in windows 8 “C:\\Users\\\ *utente
 corrente*\\.qgis2\\python\\plugins\\qad”).
 
 QAD memorizza gli elementi costituenti una quotatura in 3 layer
@@ -324,10 +324,19 @@ avere i seguenti campi:
 
 Campi opzionali:
 
--  un campo numerico intero per memorizzare il codice identificativo
-   univoco della quota (necessario se si desidera raggruppare gli
-   elementi di una stessa quotatura e quindi usare le funzioni di
-   cancellazione e modifica di una quota esistente)
+-  | un campo numerico intero per memorizzare il codice identificativo
+     univoco della quota.
+   | Questo campo è necessario se si desidera raggruppare gli elementi
+     di una stessa quotatura e quindi usare le funzioni di cancellazione
+     e modifica di una quota esistente. Poiché deve essere un campo con
+     valori univoci, attualmente è supportato solo per tabelle in
+     PostGIS in cui deve essere stato creato un campo di tipo serial non
+     nullo che deve essere chiave primaria della tabella (es.”id”).
+     Oltre a questo campo deve esistere un altro campo di tipo bigint
+     gestito da QAD allo scopo di memorizzare il codice identificativo
+     della quota (es. dim\_id”). I files shape non consentono il
+     raggruppamento degli oggetti di una stessa quota quindi, dopo aver
+     disegnato una quota, ogni oggetto sarà indipendente dagli altri.
 
 -  un campo carattere per memorizzare il colore del testo della quota
 
@@ -354,6 +363,59 @@ Campi opzionali:
    | "AR" = quota per la lunghezza di un cerchio o di un arco
    | (necessario se si desidera usare le funzioni di modifica di una
      quota esistente)
+
+Un esempio di SQL per generare la tabella PostGIS e i relativi indici
+per i testi delle quotature:
+
+CREATE TABLE qad\_dimension.dim\_text
+
+(
+
+id serial NOT NULL,
+
+text character varying(50) NOT NULL,
+
+font character varying(50) NOT NULL,
+
+h\_text double precision NOT NULL,
+
+rot double precision NOT NULL,
+
+color character varying(10) NOT NULL,
+
+dim\_style character varying(50) NOT NULL,
+
+dim\_type character varying(2) NOT NULL,
+
+geom geometry(Point,3003),
+
+dim\_id bigint NOT NULL,
+
+CONSTRAINT dim\_text\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_text\_dim\_id
+
+ON qad\_dimension.dim\_text
+
+USING btree
+
+(dim\_id);
+
+CREATE INDEX sidx\_dim\_text\_geom
+
+ON qad\_dimension.dim\_text
+
+USING gist
+
+(geom);
 
 Il layer testuale deve essere definito con le etichette impostate come
 segue:
@@ -420,6 +482,55 @@ Campi opzionali:
    raggruppare gli elementi di una stessa quotatura e quindi usare le
    funzioni di cancellazione e modifica di una quota esistente)
 
+Un esempio di SQL per generare la tabella PostGIS e i relativi indici
+per i simboli delle quotature:
+
+CREATE TABLE qad\_dimension.dim\_symbol
+
+(
+
+name character varying(50),
+
+scale double precision,
+
+rot double precision,
+
+color character varying(10),
+
+type character varying(2) NOT NULL,
+
+id\_parent bigint NOT NULL,
+
+geom geometry(Point,3003),
+
+id serial NOT NULL,
+
+CONSTRAINT dim\_symbol\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_symbol\_id\_parent
+
+ON qad\_dimension.dim\_symbol
+
+USING btree
+
+(id\_parent);
+
+CREATE INDEX sidx\_dim\_symbol\_geom
+
+ON qad\_dimension.dim\_symbol
+
+USING gist
+
+(geom);
+
 Il layer simboli deve essere definito con lo stile impostato come segue:
 
 -  Opzione <Simbolo singolo> attivata (scheda <Stile>)
@@ -474,6 +585,51 @@ Campi opzionali:
    univoco della quota (necessario se si desidera raggruppare gli
    elementi di una stessa quotatura e quindi usare le funzioni di
    cancellazione e modifica di una quota esistente)
+
+Un esempio di SQL per generare la tabella PostGIS e i relativi indici
+per le linee delle quotature:
+
+CREATE TABLE qad\_dimension.dim\_line
+
+(
+
+line\_type character varying(50),
+
+color character varying(10),
+
+type character varying(2) NOT NULL,
+
+id\_parent bigint NOT NULL,
+
+geom geometry(LineString,3003),
+
+id serial NOT NULL,
+
+CONSTRAINT dim\_line\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_line\_id\_parent
+
+ON qad\_dimension.dim\_line
+
+USING btree
+
+(id\_parent);
+
+CREATE INDEX sidx\_dim\_line\_geom
+
+ON qad\_dimension.dim\_line
+
+USING gist
+
+(geom);
 
 Il layer lineare deve essere definito con lo stile impostato come segue:
 
@@ -713,6 +869,29 @@ SCALA
 
 Scala gli oggetti selezionati.
 
+SERIE
+~~~~~
+
+Crea copie di oggetti disposti in un modello.
+
+SERIEPOLARE
+~~~~~~~~~~~
+
+Distribuisce uniformemente copie di oggetti in un modello circolare
+attorno a un punto centrale.
+
+SERIERETTANG
+~~~~~~~~~~~~
+
+Distribuisce copie di oggetti in qualsiasi combinazione di righe e
+colonne.
+
+SERIETRAIETT
+~~~~~~~~~~~~
+
+Distribuisce uniformemente copie di oggetti lungo una traiettoria o
+porzione di una traiettoria.
+
 SETCURRLAYERDAGRAFICA
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -908,6 +1087,18 @@ CURSORSIZE
 
 Come i CAD più popolari.
 
+DELOBJ
+~~~~~~
+
+| Controlla se la geometria utilizzata per creare altri oggetti viene
+  mantenuta o eliminata.
+| 0 = Viene mantenuta l'intera geometria di definizione. Questa
+  impostazione prevede la conservazione degli oggetti di origine per
+  tutti i comandi di serie.
+| 1 = Elimina tutta la geometria di definizione.
+| -1 = Viene visualizzato un messaggio di richiesta per l'eliminazione
+  di tutta la geometria di definizione.
+
 DIMSTYLE
 ~~~~~~~~
 
@@ -975,6 +1166,11 @@ INPUTSEARCHOPTIONS
 ~~~~~~~~~~~~~~~~~~
 
 Come la variabile di Sistema AUTOCOMPLETEMODE dei CAD più popolari.
+
+MAXARRAY
+~~~~~~~~
+
+Come i CAD più popolari.
 
 OFFSETDIST
 ~~~~~~~~~~

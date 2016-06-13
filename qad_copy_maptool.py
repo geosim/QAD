@@ -86,11 +86,12 @@ class Qad_copy_maptool(QadGetPoint):
          f.setGeometry(qad_utils.moveQgsGeometry(f.geometry(), offSetX, offSetY))
          self.__highlight.addGeometry(f.geometry(), layerEntitySet.layer)
       else:
+         newDimEntity = QadDimEntity(dimEntity) # la copio
          # sposto la quota
-         dimEntity.move(offSetX, offSetY)
-         self.__highlight.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
-         self.__highlight.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
-         self.__highlight.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())
+         newDimEntity.move(offSetX, offSetY)
+         self.__highlight.addGeometry(newDimEntity.textualFeature.geometry(), newDimEntity.getTextualLayer())
+         self.__highlight.addGeometries(newDimEntity.getLinearGeometryCollection(), newDimEntity.getLinearLayer())
+         self.__highlight.addGeometries(newDimEntity.getSymbolGeometryCollection(), newDimEntity.getSymbolLayer())
    
    
    def setCopiedGeometries(self, newPt):

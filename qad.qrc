@@ -72,5 +72,8 @@
         <file>icons/mapmpedit.png</file>
         <file>icons/join.png</file>
         <file>icons/disjoin.png</file>
+        <file>icons/arrayRect.png</file>
+        <file>icons/arrayPath.png</file>
+        <file>icons/arrayPolar.png</file>
     </qresource>    
 </RCC>

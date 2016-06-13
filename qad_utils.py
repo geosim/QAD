@@ -27,7 +27,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
-#from qgis.utils import *
 import qgis.utils
 
 
@@ -7125,6 +7124,24 @@ class QadLinearObject():
          else:
             return self.getArc().getTanDirectionOnPt(middlePt)
 
+
+   #============================================================================
+   # getTanDirectionOnPt
+   #============================================================================
+   def getTanDirectionOnPt(self, pt):
+      """
+      la funzione ritorna la direzione della tangente al punto dell'oggetto.
+      """
+      if self.isSegment(): # segmento
+         return getAngleBy2Pts(self.getStartPt(), self.getEndPt())
+      else: # se é un arco
+         arc = QadArc()
+         middlePt = self.getMiddlePt()
+         if self.isInverseArc():
+            return self.getArc().getTanDirectionOnPt(pt) + math.pi
+         else:
+            return self.getArc().getTanDirectionOnPt(pt)
+
    
    #============================================================================
    # length
@@ -7354,17 +7371,18 @@ class QadLinearObject():
    #============================================================================
    def getPointFromStart(self, distance):
       """
-      la funzione restituisce un punto della parte alla distanza <distance> (che deve essere sull'oggetto) dal punto iniziale.
+      la funzione restituisce un punto (e la direzione della tangente) della parte alla distanza <distance> 
+      (che deve essere sull'oggetto) dal punto iniziale.
       """
       if distance < 0:
-         return None
+         return None, None
       l = self.length()
       if distance > l:
-         return None
+         return None, None
      
       if self.isSegment(): # segmento
          angle = getAngleBy2Pts(self.getStartPt(), self.getEndPt())
-         return getPolarPointByPtAngle(self.getStartPt(), angle, distance)
+         return getPolarPointByPtAngle(self.getStartPt(), angle, distance), angle
       else: # arco
          # (2*pi) : (2*pi*r) = angle : delta            
          angle = delta / self.getArc().radius
@@ -7374,9 +7392,10 @@ class QadLinearObject():
          else:
             angle = self.getArc().startAngle + angle
          
-         return getPolarPointByPtAngle(self.getArc().center, angle, self.getArc().radius)
+         pt = getPolarPointByPtAngle(self.getArc().center, angle, self.getArc().radius)
+         return pt, self.getTanDirectionOnPt(pt)
    
-      return None
+      return None, None
 
 
    #============================================================================
@@ -8125,6 +8144,16 @@ class QadLinearObjectList():
             if self.qty() > 1:
                self.remove(-1)
 
+   #============================================================================
+   # getTanDirectionOnStartPt
+   #============================================================================
+   def getTanDirectionOnStartPt(self):
+      """
+      la funzione ritorna la direzione della tangente al punto iniziale dell'oggetto.
+      """
+      linearObject = self.getLinearObjectAt(0) # primo oggetto lineare
+      return None if linearObject is None else linearObject.getTanDirectionOnStartPt()
+
 
    #============================================================================
    # curve
@@ -8291,11 +8320,12 @@ class QadLinearObjectList():
    #============================================================================
    def getPointFromStart(self, distance):
       """
-      la funzione restituisce un punto della polilinea alla distanza <distance> (che deve essere sull'oggetto) dal punto iniziale.
+      la funzione restituisce un punto (e la direzione della tangente) della polilinea alla distanza <distance>
+      (che deve essere sull'oggetto) dal punto iniziale.
       Da usarsi solo se le parti rappresentano una polilinea.
       """
       if distance < 0:
-         return None
+         return None, None
       d = distance
       for linearObject in self.defList:
          l = linearObject.length()
@@ -8304,7 +8334,7 @@ class QadLinearObjectList():
          else:
             return linearObject.getPointFromStart(d)
 
-      return None
+      return None, None
 
 
    #============================================================================

@@ -13,6 +13,9 @@
 @font-face
 	{font-family:Calibri;
 	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
  /* Style Definitions */
  p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{margin-top:0cm;
@@ -68,6 +71,12 @@ h4
 	page-break-after:avoid;
 	font-size:14.0pt;
 	font-family:"Calibri","sans-serif";}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Testo fumetto Carattere";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:8.0pt;
+	font-family:"Tahoma","sans-serif";}
 p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
 	{margin-top:0cm;
 	margin-right:0cm;
@@ -127,6 +136,10 @@ span.Titolo4Carattere
 	font-weight:bold;}
 span.skimlinks-unlinked
 	{mso-style-name:skimlinks-unlinked;}
+span.TestofumettoCarattere
+	{mso-style-name:"Testo fumetto Carattere";
+	mso-style-link:"Testo fumetto";
+	font-family:"Tahoma","sans-serif";}
 .MsoChpDefault
 	{font-size:10.0pt;
 	font-family:"Calibri","sans-serif";}

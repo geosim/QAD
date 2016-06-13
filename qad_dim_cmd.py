@@ -3,7 +3,7 @@
 /***************************************************************************
  QAD Quantum Aided Design plugin
 
- comando COPY per copiare oggetti
+ comandi per generare le quotature
  
                               -------------------
         begin                : 2014-02-19

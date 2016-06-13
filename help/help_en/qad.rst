@@ -270,9 +270,9 @@ Dimensioning
 
 Dimension style is a set of properties that determine the appearance of
 dimensions. These properties are stored in files with the extension .dim
-and are loaded at QAD startup. Dimension files must be saved in the
-folders specified by SUPPORTPATH variable or in the QAD installation
-folder (i.e. in windows xp "C:\\Documents and Settings\\\ *current
+and are loaded on QAD startup or on loading a project. Dimension files
+must be saved in the current project folder or in the QAD installation
+folder (i.e. in windows 8 "C:\\users\\*current
 user\\*.qgis2\\python\\plugins\\qad ").
 
 QAD stores the elements constituting a dimension in 3 different layers::
@@ -302,9 +302,17 @@ the following fields:
 
 Optional fields:
 
--  an integer number field to store the unique ID of the dimension
-   (necessary if you want to group the objects of a dimension, and
-   implement the erasing and editing features of an existing dimension)
+-  | an integer number field to store the unique ID of the dimension
+   | This field is required if you want to group the objects of the same
+     dimension and implement the erasing and editing features of an
+     existing dimension. Because it must be a unique value field,
+     actually, it is supported for PostGIS table only where you have to
+     create a serial type not null field which is the primary key of the
+     table. (i.e. “id”). In addition to this you have to create another
+     bigint type field which will be managed by QAD to store the
+     dimension ID (i.e. “dim\_id”). Shape files don’t let QAD group
+     objects of the same dimension so, after drawing a dimension, every
+     objects will be independent each one from the other.
 
 -  a character field to store the color of the dimension text
 
@@ -324,6 +332,58 @@ Optional fields:
    | "AR" = measure the length along a circle or arc
    | (required if you want to use the editing features of an existing
      dimension)
+
+An SQL example to create a PostGIS table and indexes for dimension text:
+
+CREATE TABLE qad\_dimension.dim\_text
+
+(
+
+id serial NOT NULL,
+
+text character varying(50) NOT NULL,
+
+font character varying(50) NOT NULL,
+
+h\_text double precision NOT NULL,
+
+rot double precision NOT NULL,
+
+color character varying(10) NOT NULL,
+
+dim\_style character varying(50) NOT NULL,
+
+dim\_type character varying(2) NOT NULL,
+
+geom geometry(Point,3003),
+
+dim\_id bigint NOT NULL,
+
+CONSTRAINT dim\_text\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_text\_dim\_id
+
+ON qad\_dimension.dim\_text
+
+USING btree
+
+(dim\_id);
+
+CREATE INDEX sidx\_dim\_text\_geom
+
+ON qad\_dimension.dim\_text
+
+USING gist
+
+(geom);
 
 The textual layer must be defined with labels as follows:
 
@@ -385,6 +445,55 @@ Optional fields:
    (necessary if you want to group the objects of a dimension, and
    implement the erasing and editing features of an existing dimension)
 
+An SQL example to create a PostGIS table and indexes for dimension
+symbol:
+
+CREATE TABLE qad\_dimension.dim\_symbol
+
+(
+
+name character varying(50),
+
+scale double precision,
+
+rot double precision,
+
+color character varying(10),
+
+type character varying(2) NOT NULL,
+
+id\_parent bigint NOT NULL,
+
+geom geometry(Point,3003),
+
+id serial NOT NULL,
+
+CONSTRAINT dim\_symbol\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_symbol\_id\_parent
+
+ON qad\_dimension.dim\_symbol
+
+USING btree
+
+(id\_parent);
+
+CREATE INDEX sidx\_dim\_symbol\_geom
+
+ON qad\_dimension.dim\_symbol
+
+USING gist
+
+(geom);
+
 The symbol layer must be defined with a style set as follows:
 
 -  <Style>-<Single Symbol> option enabled
@@ -435,6 +544,51 @@ Optional fields:
 -  an integer number field to store the unique ID of the dimension
    (necessary if you want to group the objects of a dimension, and
    implement the erasing and editing features of an existing dimension)
+
+An SQL example to create a PostGIS table and indexes for dimension
+lines:
+
+CREATE TABLE qad\_dimension.dim\_line
+
+(
+
+line\_type character varying(50),
+
+color character varying(10),
+
+type character varying(2) NOT NULL,
+
+id\_parent bigint NOT NULL,
+
+geom geometry(LineString,3003),
+
+id serial NOT NULL,
+
+CONSTRAINT dim\_line\_pkey PRIMARY KEY (id)
+
+)
+
+WITH (
+
+OIDS=FALSE
+
+);
+
+CREATE INDEX dim\_line\_id\_parent
+
+ON qad\_dimension.dim\_line
+
+USING btree
+
+(id\_parent);
+
+CREATE INDEX sidx\_dim\_line\_geom
+
+ON qad\_dimension.dim\_line
+
+USING gist
+
+(geom);
 
 The linear layer must be defined with the style set as follows:
 
@@ -487,6 +641,27 @@ ARC
 
 Draw an arc.
 
+ARRAY
+~~~~~
+
+Creates copies of objects arranged in a pattern.
+
+ARRAYPATH
+~~~~~~~~~
+
+Evenly distributes object copies along a path or a portion of a path.
+
+ARRAYPOLAR
+~~~~~~~~~~
+
+Evenly distributes object copies in a circular pattern around a center
+point.
+
+ARRAYRECT
+~~~~~~~~~
+
+Distributes object copies into any combination of rows and columns.
+
 BREAK
 ~~~~~
 
@@ -526,12 +701,12 @@ Set some properties to draw.
 ERASE
 ~~~~~
 
-Erase one or more objects.
+Erases one or more objects.
 
 EXTEND
 ~~~~~~
 
-Extend one or more objects..
+Extends one or more objects.
 
 FILLET
 ~~~~~~
@@ -551,7 +726,7 @@ It shows the coordinate of the specified position.
 INSERT
 ~~~~~~
 
-Insert a symbol. If the symbol scale is derived from a field then the
+Inserts a symbol. If the symbol scale is derived from a field then the
 command will ask the factor scale. If the symbol rotation is derived
 from a field than the command will ask the rotation (degree). Only for
 symbol layer.
@@ -863,6 +1038,14 @@ CURSORSIZE
 
 The same as the most popular CAD.
 
+DELOBJ
+~~~~~~
+
+| It controls whether the original geometry is retained or removed.
+| 0 = All defining geometry is retained.
+| 1 = Deletes all defining geometry.
+| -1 = Displays prompts to delete all defining geometry.
+
 DIMSTYLE
 ~~~~~~~~
 
@@ -930,6 +1113,11 @@ INPUTSEARCHOPTIONS
 ~~~~~~~~~~~~~~~~~~
 
 The same as AUTOCOMPLETEMODE system variable of the most popular CAD.
+
+MAXARRAY
+~~~~~~~~
+
+The same as the most popular CAD.
 
 OFFSETDIST
 ~~~~~~~~~~

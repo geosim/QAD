@@ -413,7 +413,7 @@ class QadGetPoint(QgsMapTool):
       # self.__AutoSnap, self.__PolarAng, self.__PolarMode, self.__PolarAngOffset, self.__snapMarkerSizeInMapUnits
       # self.__QadSnapper viene svuotato dai punti polari se "Object Snap Tracking off"
       
-      if autoSnap is None:      
+      if autoSnap is None:
          self.__AutoSnap = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
       else:
          self.__AutoSnap = autoSnap
@@ -496,10 +496,12 @@ class QadGetPoint(QgsMapTool):
          else:
             p1 = self.__RubberBand.getPoint(0, 0)
 
-            if point.x() > p1.x(): # se il punto è a destra di p1 (punto iniziale)
-               self.__RubberBand.setFillColor(self.rectangleWindowSelectionColor)
-            else:
-               self.__RubberBand.setFillColor(self.rectangleCrossingSelectionColor)
+            # se l'obiettivo é selezionare un gruppo di selezione
+            if self.getSelectionMode() == QadGetPointSelectionModeEnum.ENTITYSET_SELECTION:
+               if point.x() > p1.x(): # se il punto è a destra di p1 (punto iniziale)
+                  self.__RubberBand.setFillColor(self.rectangleWindowSelectionColor)
+               else:
+                  self.__RubberBand.setFillColor(self.rectangleCrossingSelectionColor)
             
             adjustedPoint = qad_utils.getAdjustedRubberBandVertex(p1, point)                     
             self.__RubberBand.movePoint(numberOfVertices - 3, QgsPoint(p1.x(), adjustedPoint.y()))

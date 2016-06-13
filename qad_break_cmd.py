@@ -88,8 +88,8 @@ class QadBREAKCommandClass(QadCommandClass):
       self.EntSelClass.checkPointLayer = False
       self.EntSelClass.checkLineLayer = True
       self.EntSelClass.checkPolygonLayer = False
-      self.EntSelClass.checkDimLayers = False     
-      self.EntSelClass.onlyEditableLayers = True         
+      self.EntSelClass.checkDimLayers = False
+      self.EntSelClass.onlyEditableLayers = True
 
       self.EntSelClass.run(msgMapTool, msg)
 

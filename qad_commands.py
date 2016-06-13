@@ -73,6 +73,7 @@ from qad_help_cmd import QadHELPCommandClass
 from qad_options_cmd import QadOPTIONSCommandClass
 from qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
 from qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
+from qad_array_cmd import QadARRAYCommandClass, QadARRAYRECTCommandClass, QadARRAYPATHCommandClass, QadARRAYPOLARCommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -125,7 +126,11 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadOPTIONSCommandClass(self.plugIn)) # OPTIONS
       self.__cmdObjs.append(QadMAPMPEDITCommandClass(self.plugIn)) # MAPMEDIT
       self.__cmdObjs.append(QadJOINCommandClass(self.plugIn)) # JOIN
-      self.__cmdObjs.append(QadDISJOINCommandClass(self.plugIn)) # DISJOIN      
+      self.__cmdObjs.append(QadDISJOINCommandClass(self.plugIn)) # DISJOIN
+      self.__cmdObjs.append(QadARRAYCommandClass(self.plugIn)) # ARRAY
+      self.__cmdObjs.append(QadARRAYRECTCommandClass(self.plugIn)) # ARRAYRECT
+      self.__cmdObjs.append(QadARRAYPATHCommandClass(self.plugIn)) # ARRAYPATH
+      self.__cmdObjs.append(QadARRAYPOLARCommandClass(self.plugIn)) # ARRAYPOLAR
       
       self.actualCommand = None  # Comando in corso di esecuzione
    
@@ -501,7 +506,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
          return QadCommandClass.getPointMapTool(self, drawMode)
 
    def setCmdAndOptionsToRun(self, CmdAndArglist):
-      # primo eleemto della lista = nome comando
+      # primo elemento della lista = nome comando
       # gli altri elementi sono gli argomenti del comando None = input dell'utente
       cmdName = CmdAndArglist[0]
       self.args = CmdAndArglist[1:] # copio la lista saltando il primo elemento

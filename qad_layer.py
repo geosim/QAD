@@ -700,5 +700,48 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
         
    return True
-      
-          
+
+
+#===============================================================================
+# QadLayerStatusEnum class.
+#===============================================================================
+class QadLayerStatusEnum():
+   UNKNOWN = 0
+   COMMIT_BY_EXTERNAL = 1 # salvataggio quando questo è richiamato da eventi esterni a QAD
+   COMMIT_BY_INTERNAL = 2 # salvataggio quando questo è richiamato da eventi interni a QAD
+
+#===============================================================================
+# QadLayerStatusListClass class.
+#===============================================================================
+class QadLayerStatusListClass():
+   def __init__(self):
+      self.layerStatusList = [] # lista di coppie (<id layer>-<stato layer>)
+
+   def __del__(self):
+      del self.layerStatusList
+
+   def getStatus(self, layerId):
+      for layerStatus in self.layerStatusList:
+         if layerStatus[0] == layerId:
+            return layerStatus[1]
+      return QadLayerStatusEnum.UNKNOWN
+   
+   def setStatus(self, layerId, status):
+      # verifico se c'era già in lista
+      for layerStatus in self.layerStatusList:
+         if layerStatus[0] == layerId:
+            layerStatus[1] = status
+            return
+      # se non c'era lo aggiungo
+      self.layerStatusList.append([layerId, status])
+      return
+   
+   def remove(self, layerId):
+      i = 0
+      for layerStatus in self.layerStatusList:
+         if layerStatus[0] == layerId:
+            del self.layerStatusList[i]
+            return
+         else:
+            i = i + 1
+      return

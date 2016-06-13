@@ -513,7 +513,7 @@ class QadSnapper():
          allSnapPoints[item[0]] = item[1]
          
       # puntamento polare
-      if (self.__startPoint is not None) and (polarAng is not None):
+      if polarAng is not None:
          # per tutti i punti di osnap selezionati per l'opzione polare e per per il punto corrente
          allSnapPoints[QadSnapTypeEnum.POLAR] = self.getOsnapPtAndLinesForPolar(point, polarAng, polarAngOffset)
          # calcolo le intersezioni delle linee polari e le aggiungo in allSnapPoints[QadSnapTypeEnum.INT]

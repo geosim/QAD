@@ -89,7 +89,7 @@ class Qad_mirror_maptool(QadGetPoint):
       else:
          # specchio la quota e la rimuovo da entitySet
          dimEntitySet = dimEntity.getEntitySet()         
-         dimEntity.mirror(self.plugIn, pt1, qad_utils.getAngleBy2Pts(pt1, pt2))
+         dimEntity.mirror(pt1, qad_utils.getAngleBy2Pts(pt1, pt2))
          self.__highlight.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
          self.__highlight.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
          self.__highlight.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())

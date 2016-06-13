@@ -29,10 +29,19 @@ zero = orizzontale a dx)</li>
 <p class="MsoNormal">Campi opzionali:</p>
 <ul style='margin-top:0cm' type="disc">
 <li class="MsoNormal">un campo numerico intero per memorizzare il
-codice identificativo univoco della quota (necessario se si
-desidera raggruppare gli elementi di una stessa quotatura e quindi
-usare le funzioni di cancellazione e modifica di una quota
-esistente)</li>
+codice identificativo univoco della quota.<br>
+Questo campo è necessario se si desidera raggruppare gli elementi
+di una stessa quotatura e quindi usare le funzioni di cancellazione
+e modifica di una quota esistente. Poiché deve essere un campo con
+valori univoci, attualmente è supportato solo per tabelle in
+PostGIS in cui deve essere stato creato un campo di tipo serial non
+nullo che deve essere chiave primaria della tabella (es.”id”).
+Oltre a questo campo deve esistere un altro campo di tipo bigint
+gestito da QAD allo scopo di memorizzare il codice identificativo
+della quota (es. dim_id”). I files shape non consentono il
+raggruppamento degli oggetti di una stessa quota quindi, dopo aver
+disegnato una quota, ogni oggetto sarà indipendente dagli
+altri.</li>
 <li class="MsoNormal">un campo carattere per memorizzare il colore
 del testo della quota</li>
 <li class="MsoNormal">un campo carattere per memorizzare il nome
@@ -60,6 +69,106 @@ davanti<br>
 (necessario se si desidera usare le funzioni di modifica di una
 quota esistente)</li>
 </ul>
+<p class="MsoNormal">Un esempio di SQL per generare la tabella
+PostGIS e i relativi indici per i testi delle quotature:</p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; text character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; font character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; h_text double precision
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; rot double precision NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_style character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_type character
+varying(2) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(Point,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_id bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT dim_text_pkey
+PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_text_dim_id</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (dim_id);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_text_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
 <p class="MsoNormal">&nbsp;</p>
 <p class="MsoNormal">Il layer testuale deve essere definito con le
 etichette impostate come segue:</p>

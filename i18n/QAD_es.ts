@@ -118,6 +118,250 @@
     </message>
 </context>
 <context>
+    <name>Command_ARRAY</name>
+    <message>
+        <source>Creates copies of objects in a regularly spaced rectangular, polar, or path array.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rectangular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PAth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>POlar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter array type [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill entire path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Items to Array or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Items to Array &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify number of rows &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between rows or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between rows &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies the total distance between the start and end row &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete source objects of the array ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate objects as they are arrayed ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align arrayed items to the path ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>COUnt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rotate Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the angle of rotation for the row axis &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify number of columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unit cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between columns or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies the total distance between the start and end columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify first cell corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second cell corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the object to use for the path of the array: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tangent direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Divide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify path method [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the first point for array tangent direction: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between items along path &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify center point of array or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle between</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ROWs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the angle between items &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify angle to fill (+ = CCW, - = CW) &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The array size can&apos;t be greater than {0} elements. See MAXARRAY system variable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Cell size must be greater than 0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Maximun number of items = {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The distance between items can&apos;t be greater than {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distributes object copies into any combination of rows and columns.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evenly distributes object copies along a path or a portion of a path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evenly distributes object copies in a circular pattern around a center point.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an option to edit array or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The angle between can&apos;t be greater than {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_BREAK</name>
     <message>
         <source>Breaks an object.</source>
@@ -1056,10 +1300,6 @@ No perpendicular possible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>include Objs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1073,6 +1313,18 @@ No perpendicular possible</source>
     </message>
     <message>
         <source>Select boundary: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>split Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>split Parts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>iNclude objs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2300,6 +2552,22 @@ A mark can&apos;t be inserted into a group.</source>
     </message>
     <message>
         <source>DISJOIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYRECT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYPATH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYPOLAR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAY</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3647,16 +3915,8 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the textual layer for dimension which is not a textual layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>has not the symbol layer for dimension.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>has the symbol layer for dimension which is not a symbol layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3665,26 +3925,31 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the linear layer for dimension which is not a linear layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>has not the layers with the same coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the textual layer not editable.
-</source>
+        <source>has the textual layer for dimension ({0}) which is not a textual layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the symbol layer not editable.
-</source>
+        <source>has the symbol layer for dimension ({0}) which is not a symbol layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the linear layer not editable.
-</source>
+        <source>has the linear layer for dimension ({0}) which is not a linear layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the textual layer ({0}) not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the symbol layer ({0}) not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the linear layer ({0}) not editable.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4182,6 +4447,25 @@ When set to 0, grips are always displayed.</source>
     </message>
     <message>
         <source>Controls the size of the object target box, in pixels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DELOBJ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAXARRAY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether geometry used to create other objects is retained or deleted:
+0  = All defining geometry is retained.
+1  = Deletes all defining geometry.
+-1 = Ask the user for delete all defining geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the Size of arrays in ARRAY command.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

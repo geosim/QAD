@@ -45,6 +45,98 @@ codice parente del testo che identifica la quota di appartenenza
 quotatura e quindi usare le funzioni di cancellazione e modifica di
 una quota esistente)</li>
 </ul>
+<p class="MsoNormal">Un esempio di SQL per generare la tabella
+PostGIS e i relativi indici per i simboli delle quotature:</p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; name character
+varying(50),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; scale double
+precision,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; rot double
+precision,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; type character varying(2)
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id_parent bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(Point,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT
+dim_symbol_pkey PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_symbol_id_parent</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (id_parent);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_symbol_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
 <p class="MsoNormal">&nbsp;</p>
 <p class="MsoNormal">Il layer simboli deve essere definito con lo
 stile impostato come segue:</p>

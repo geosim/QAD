@@ -27,19 +27,21 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
+import qgis.utils
+
 import codecs
 import ConfigParser
 import math
 import sys
 
 
+from qad_msg import QadMsg
 import qad_utils
 import qad_stretch_fun
 import qad_layer
 import qad_label
 from qad_entity import *
 from qad_variables import *
-from qad_msg import QadMsg
 
 
 """
@@ -879,14 +881,16 @@ class QadDimStyle():
       if self.getTextualLayer() is None:
          return prefix + QadMsg.translate("Dimension", "has not the textual layer for dimension.\n")
       if qad_layer.isTextLayer(self.getTextualLayer()) == False:
-         errMsg = prefix + QadMsg.translate("Dimension", "has the textual layer for dimension which is not a textual layer.")         
+         errPartial = QadMsg.translate("Dimension", "has the textual layer for dimension ({0}) which is not a textual layer.")
+         errMsg = prefix + errPartial.format(self.getTextualLayer().name())
          errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.\n")
          return errMsg
 
       if self.getSymbolLayer() is None:
          return prefix + QadMsg.translate("Dimension", "has not the symbol layer for dimension.\n")
       if qad_layer.isSymbolLayer(self.getSymbolLayer()) == False:
-         errMsg = prefix + QadMsg.translate("Dimension", "has the symbol layer for dimension which is not a symbol layer.")         
+         errPartial = QadMsg.translate("Dimension", "has the symbol layer for dimension ({0}) which is not a symbol layer.")
+         errMsg = prefix + errPartial.format(self.getSymbolLayer().name())
          errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
          return errMsg
 
@@ -894,7 +898,8 @@ class QadDimStyle():
          return prefix + QadMsg.translate("Dimension", "has not the linear layer for dimension.\n")
       # deve essere un VectorLayer di tipo linea
       if (self.getLinearLayer().type() != QgsMapLayer.VectorLayer) or (self.getLinearLayer().geometryType() != QGis.Line):
-         errMsg = prefix + QadMsg.translate("Dimension", "has the linear layer for dimension which is not a linear layer.")         
+         errPartial = QadMsg.translate("Dimension", "has the linear layer for dimension ({0}) which is not a linear layer.")
+         errMsg = prefix + errPartial.format(self.getSymbolLayer().name())
          return errMsg
       # i layer devono avere lo stesso sistema di coordinate
       if not (self.getTextualLayer().crs() == self.getLinearLayer().crs() and self.getLinearLayer().crs() == self.getSymbolLayer().crs()):
@@ -902,6 +907,17 @@ class QadDimStyle():
          return errMsg
          
       return None
+
+   
+   #============================================================================
+   # isValid
+   #============================================================================
+   def isValid(self):
+      """
+      Verifica se lo stile di quotatura é valido e in caso affermativo ritorna True.
+      Se la quotatura non é valida ritorna False.
+      """
+      return True if self.getInValidErrMsg() is None else False
    
    
    #===============================================================================
@@ -916,21 +932,27 @@ class QadDimStyle():
       
       provider = self.getTextualLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "has the textual layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the textual layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getTextualLayer().name())
       if not self.getTextualLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "has the textual layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the textual layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getTextualLayer().name())
 
       provider = self.getSymbolLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "has the symbol layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getSymbolLayer().name())
       if not self.getSymbolLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "has the symbol layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getSymbolLayer().name())
       
       provider = self.getLinearLayer().dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         return prefix + QadMsg.translate("Dimension", "has the linear layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the linear layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getLinearLayer().name())
       if not self.getLinearLayer().isEditable():
-         return prefix + QadMsg.translate("Dimension", "has the linear layer not editable.\n")
+         errPartial = QadMsg.translate("Dimension", "has the linear layer ({0}) not editable.")
+         return prefix + errPartial.format(self.getLinearLayer().name())
       
       return None
    
@@ -1042,14 +1064,18 @@ class QadDimStyle():
       return True        
 
 
-   def textCommitChangesOnSave(self):
+   def textCommitChangesOnSave(self, plugIn):
       """
       Salva i testi delle quote per ottenere i nuovi ID 
       e richiamare updateTextReferencesOnSave tramite il segnale committedFeaturesAdded.
       """
       # salvo i testi per avere la codifica definitiva
       if self.getTextualLayer() is not None:
-         return self.getTextualLayer().commitChanges()
+         # segno che questo layer è salvato da QAD
+         plugIn.layerStatusList.setStatus(self.getTextualLayer().id(), qad_layer.QadLayerStatusEnum.COMMIT_BY_INTERNAL)
+         res = self.getTextualLayer().commitChanges()
+         plugIn.layerStatusList.remove(self.getTextualLayer().id())
+         return res
       else:
          return False
 
@@ -1057,9 +1083,9 @@ class QadDimStyle():
    #============================================================================
    # updateTextReferencesOnSave
    #============================================================================
-   def updateTextReferencesOnSave(self, plugIn, textAddedFeatures):
+   def updateTextReferencesOnSave(self, plugIn, textAddedEntitySet):
       """
-      Aggiorna e salva i reference delle features dello stile di quotatura contenuti in textAddedFeatures.
+      Aggiorna e salva i reference delle entità dello stile di quotatura contenuti in textAddedEntitySet.
       """
       if self.startEditing() == False:
          return False     
@@ -1067,10 +1093,10 @@ class QadDimStyle():
       plugIn.beginEditCommand("Dimension recoded", [self.getSymbolLayer(), self.getLinearLayer(), self.getTextualLayer()])
       
       entity = QadEntity()
-      for f in textAddedFeatures:
-         entity.set(self.getTextualLayer(), f.id())
+      entityIterator = textAddedEntitySet.getEntities()
+      while entityIterator.nextEntity(entity):
          oldDimId = entity.getAttribute(self.idFieldName)
-         newDimId = f.id()        
+         newDimId = entity.getFeature().id()
          if oldDimId is None or self.recodeDimId(plugIn, oldDimId, newDimId) == False:
             return False
 
@@ -1097,19 +1123,30 @@ class QadDimStyle():
    #============================================================================
    # commitChanges
    #============================================================================
-   def commitChanges(self, excludedLayer):
+   def commitChanges(self, plugIn):
       if self.startEditing() == False:
          return False     
       
+      excludedLayer = plugIn.beforeCommitChangesDimLayer
+      
       if (excludedLayer is None) or excludedLayer.id() != self.getTextualLayer().id():
+         # segno che questo layer è salvato da QAD
+         plugIn.layerStatusList.setStatus(self.getTextualLayer().id(), qad_layer.QadLayerStatusEnum.COMMIT_BY_INTERNAL)
          # salvo le entità testuali
          self.getTextualLayer().commitChanges()
+         plugIn.layerStatusList.remove(self.getTextualLayer().id())
       if (excludedLayer is None) or excludedLayer.id() != self.getLinearLayer().id():
+         # segno che questo layer è salvato da QAD
+         plugIn.layerStatusList.setStatus(self.getLinearLayer().id(), qad_layer.QadLayerStatusEnum.COMMIT_BY_INTERNAL)
          # salvo le entità lineari
          self.getLinearLayer().commitChanges()
+         plugIn.layerStatusList.remove(self.getLinearLayer().id())
       if (excludedLayer is None) or excludedLayer.id() != self.getSymbolLayer().id():
+         # segno che questo layer è salvato da QAD
+         plugIn.layerStatusList.setStatus(self.getSymbolLayer().id(), qad_layer.QadLayerStatusEnum.COMMIT_BY_INTERNAL)
          # salvo le entità puntuali
          self.getSymbolLayer().commitChanges()
+         plugIn.layerStatusList.remove(self.getSymbolLayer().id())
    
 
    #============================================================================
@@ -1233,7 +1270,7 @@ class QadDimStyle():
       
       try:
          # leggo il tipo dello stile di quotatura
-         self.dimType = f.attribute(self.dimTypeFieldName)         
+         self.dimType = f.attribute(self.dimTypeFieldName)
       except:
          pass
       
@@ -1256,18 +1293,18 @@ class QadDimStyle():
 
 
    #============================================================================
-   # getFilteredFeatureCollection
+   # getFilteredLayerEntitySet
    #============================================================================
-   def getFilteredFeatureCollection(self, layerEntitySet):
+   def getFilteredLayerEntitySet(self, layerEntitySet):
       """
       La funzione, dato un QadLayerEntitySet, filtra e restituisce solo quelle appartenenti allo stile di quotatura.
       """
-      result = []
+      result = QadLayerEntitySet()
       entity = QadEntity()
-      for f in layerEntitySet.getFeatureCollection():
-         entity.set(layerEntitySet.layer, f.id())
+      entityIterator = layerEntitySet.getEntities()
+      while entityIterator.nextEntity(entity):
          if self.getDimIdByEntity(entity) is not None:
-            result.append(f)
+            result.addEntity(entity)
       
       return result
 
@@ -3101,13 +3138,13 @@ class QadDimEntity():
    # __init__
    #============================================================================
    def __init__(self, dimEntity = None):
+      self.dimStyle = None
+      self.textualFeature = None
+      self.linearFeatures = []
+      self.symbolFeatures = []
+      
       if dimEntity is not None:
          self.set(dimEntity)
-      else:
-         self.dimStyle = None
-         self.textualFeature = None
-         self.linearFeatures = []
-         self.symbolFeatures = []
 
          
    def whatIs(self):
@@ -3209,7 +3246,7 @@ class QadDimEntity():
          return None      
 
 
-   def recodeDimIdToFeature(self, newDimId):      
+   def recodeDimIdToFeature(self, newDimId):
       try:
          # imposto il codice della quota
          self.textualFeature.setAttribute(self.dimStyle.idFieldName, newDimId)
@@ -3574,7 +3611,8 @@ class QadDimEntity():
    def move(self, offSetX, offSetY):
       # offSetX = spostamento X in map coordinate
       # offSetY = spostamento Y in map coordinate
-      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
       
       g = self.textualFeature.geometry()
       
@@ -3619,9 +3657,10 @@ class QadDimEntity():
    #============================================================================
    # rotate
    #============================================================================
-   def rotate(self, plugIn, basePt, angle):
+   def rotate(self, basePt, angle):
       # basePt = punto base espresso in map coordinate
-      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
       
       measure = self.getTextValue()
       
@@ -3634,7 +3673,7 @@ class QadDimEntity():
             dimPt2 = qad_utils.rotatePoint(dimPt2, basePt, angle)              
             linePosPt = qad_utils.rotatePoint(linePosPt, basePt, angle)
                           
-            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(canvas, \
                                                                             dimPt1, \
                                                                             dimPt2, \
                                                                             linePosPt, \
@@ -3661,7 +3700,7 @@ class QadDimEntity():
             dimLinearAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
             dimLineRotation = dimLineRotation + angle
             
-            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(canvas, \
                                                                            dimPt1, \
                                                                            dimPt2, \
                                                                            linePosPt, \
@@ -3674,9 +3713,10 @@ class QadDimEntity():
    #============================================================================
    # scale
    #============================================================================
-   def scale(self, plugIn, basePt, scale):
+   def scale(self, basePt, scale):
       # basePt = punto base espresso in map coordinate
-      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
 
       measure = None if self.isCalculatedText() else self.getTextValue()
       
@@ -3689,7 +3729,7 @@ class QadDimEntity():
             dimPt2 = qad_utils.scalePoint(dimPt2, basePt, scale)              
             linePosPt = qad_utils.scalePoint(linePosPt, basePt, scale)
                           
-            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(canvas, \
                                                                             dimPt1, \
                                                                             dimPt2, \
                                                                             linePosPt, \
@@ -3715,7 +3755,7 @@ class QadDimEntity():
                dimLineRotation = math.pi / 2
             dimLinearAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
 
-            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(canvas, \
                                                                            dimPt1, \
                                                                            dimPt2, \
                                                                            linePosPt, \
@@ -3728,9 +3768,10 @@ class QadDimEntity():
    #============================================================================
    # mirror
    #============================================================================
-   def mirror(self, plugIn, mirrorPt, mirrorAngle):
+   def mirror(self, mirrorPt, mirrorAngle):
       # mirrorPt = punto base espresso in map coordinate
-      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
 
       measure = None if self.isCalculatedText() else self.getTextValue()
             
@@ -3743,7 +3784,7 @@ class QadDimEntity():
             dimPt2 = qad_utils.mirrorPoint(dimPt2, mirrorPt, mirrorAngle)              
             linePosPt = qad_utils.mirrorPoint(linePosPt, mirrorPt, mirrorAngle)
                           
-            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(canvas, \
                                                                             dimPt1, \
                                                                             dimPt2, \
                                                                             linePosPt, \
@@ -3773,7 +3814,7 @@ class QadDimEntity():
             ptDummy = qad_utils.mirrorPoint(ptDummy, mirrorPt, mirrorAngle)
             dimLineRotation = qad_utils.getAngleBy2Pts(mirrorPt, ptDummy)            
 
-            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(canvas, \
                                                                            dimPt1, \
                                                                            dimPt2, \
                                                                            linePosPt, \
@@ -3786,14 +3827,15 @@ class QadDimEntity():
    #============================================================================
    # stretch
    #============================================================================
-   def stretch(self, plugIn, containerGeom, offSetX, offSetY):
+   def stretch(self, containerGeom, offSetX, offSetY):
       """
       containerGeom = può essere una QgsGeometry rappresentante un poligono contenente i punti di geom da stirare
                       oppure una lista dei punti da stirare espressi in map coordinate
       offSetX = spostamento X in map coordinate
       offSetY = spostamento Y in map coordinate
       """
-      destinationCrs = plugIn.canvas.mapRenderer().destinationCrs()
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
       
       measure = None if self.isCalculatedText() else self.getTextValue()
             
@@ -3824,7 +3866,7 @@ class QadDimEntity():
          
          if (dimPt1 is not None) and (dimPt2 is not None) and \
             (linePosPt is not None):
-            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getAlignedDimFeatures(canvas, \
                                                                             dimPt1, \
                                                                             dimPt2, \
                                                                             linePosPt, \
@@ -3868,7 +3910,7 @@ class QadDimEntity():
                dimLineRotation = math.pi / 2
             dimLinearAlignment = QadDimStyleAlignmentEnum.HORIZONTAL
             
-            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(plugIn.canvas, \
+            dimEntity, textOffsetRect = self.dimStyle.getLinearDimFeatures(canvas, \
                                                                            dimPt1, \
                                                                            dimPt2, \
                                                                            linePosPt, \

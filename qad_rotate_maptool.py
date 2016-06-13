@@ -99,7 +99,7 @@ class Qad_rotate_maptool(QadGetPoint):
             self.__highlight.addGeometry(rotatedGeom, entity.layer)
       else:
          # ruoto la quota
-         entity.rotate(self.plugIn, basePt, angle)
+         entity.rotate(basePt, angle)
          self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
          self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
          self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())

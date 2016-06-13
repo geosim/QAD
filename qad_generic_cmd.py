@@ -83,7 +83,7 @@ class QadCommandClass():
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.INT, default, "", inputMode)
 
-   def waitForlong(self, msg, default = None, inputMode = QadInputModeEnum.NONE):
+   def waitForLong(self, msg, default = None, inputMode = QadInputModeEnum.NONE):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.LONG, default, "", inputMode)
@@ -219,6 +219,17 @@ class QadCommandClass():
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
+      elif (type(point_geom) == list or type(point_geom) == tuple): # lista di punti o di geometrie
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         res = []
+         for pt in point_geom:
+            if type(pt) == QgsPoint:
+               res.append(coordTransform.transform(pt))
+            elif type(point_geom) == QgsGeometry:
+               g = QgsGeometry(point_geom)
+               g.transform(coordTransform)
+               res.append(g)
+         return res
       else:
          return None
 
@@ -234,5 +245,16 @@ class QadCommandClass():
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
+      elif (type(point_geom) == list or type(point_geom) == tuple): # lista di punti o di geometrie
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         res = []
+         for pt in point_geom:
+            if type(pt) == QgsPoint:
+               res.append(coordTransform.transform(pt))
+            elif type(point_geom) == QgsGeometry:
+               g = QgsGeometry(point_geom)
+               g.transform(coordTransform)
+               res.append(g)
+         return res
       else:
          return None

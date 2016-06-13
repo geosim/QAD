@@ -125,9 +125,10 @@ class QadSTRETCHCommandClass(QadCommandClass):
       elif entity.whatIs() == "DIMENTITY":
          # stiro la quota
          if entity.deleteToLayers(self.plugIn) == False:
-            return False                      
-         entity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
-         if entity.addToLayers(self.plugIn) == False:
+            return False
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.stretch(containerGeom, offSetX, offSetY)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
             
       return True
@@ -659,8 +660,9 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False                      
-         entity.stretch(self.plugIn, ptList, offSetX, offSetY)
-         if entity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.stretch(ptList, offSetX, offSetY)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False
          # non so per quale motivo a volte non si aggiorna la mappa quindi forzo l'aggiornamento
          self.plugIn.canvas.refresh()
