@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 25 March 2009), see www.w3.org">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="Generator" content="Microsoft Word 14 (filtered)">
+<link rel="stylesheet" type="text/css" href="embeddedstyles.css">
+<title>Symbol layer model for dimensioning:</title>
+<meta name="generator" content="chmProcessor">
+</head>
+<body lang="IT">
+<div class="WordSection1">
+<h3><a name="node13" id="node13"></a><span lang="EN-US">Symbol
+layer model for dimensioning:</span></h3>
+<p class="MsoNormal"><span lang="EN-US">The dimension symbols
+(arrows, etc.) should be stored in a layer with the following
+fields:</span></p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN-US">a real number field to
+store dimension text rotation (degree counterclockwise where zero =
+horizontal to the right, use expression
+“360-rotation_field”)</span></li>
+</ul>
+<p class="MsoNormal">Optional fields:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN-US">a character field to store
+the symbol name</span></li>
+<li class="MsoNormal"><span lang="EN-US">a real number field to
+store the symbol scale</span></li>
+<li class="MsoNormal"><span lang="EN-US">a character field (2
+characters) field to store the punctual object type according to
+the following scheme:<br>
+"B1" = first arrow block ("Block 1")<br>
+"B2" = second arrow block ("Block 2")<br>
+"LB" = leader arrow block ("Leader Block")<br>
+"AB" = arc symbol ("Arc Block")<br>
+"D1" = dimension point 1<br>
+"D2" = dimension point 2<br>
+<br>
+(required if you want to use the editing features of an existing
+dimension)</span></li>
+<li class="MsoNormal"><span lang="EN-US">an integer number field to
+store the unique ID of the dimension (necessary if you want to
+group the objects of a dimension, and implement the erasing and
+editing features of an existing dimension)</span></li>
+</ul>
+<p class="MsoNormal"><span lang="EN-US">An SQL example to create a
+PostGIS table and indexes for dimension symbol:</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; name character
+varying(50),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; scale double
+precision,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; rot double
+precision,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; type character varying(2)
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id_parent bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(Point,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT
+dim_symbol_pkey PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_symbol_id_parent</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (id_parent);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_symbol_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_symbol</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN">The symbol layer must be
+defined with a style set as follows</span><span lang=
+"EN-US">:</span></p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal"><span lang="EN">&lt;Style&gt;-&lt;Single
+Symbol&gt; option enabled</span></li>
+<li class="MsoNormal"><span lang="EN">&lt;Style&gt;-&lt;map
+units&gt; option enabled</span></li>
+<li class="MsoNormal"><span lang="EN-US">Set the size of the symbol
+so that the width of the arrow is 1 map unit (tab
+&lt;Style&gt;)</span></li>
+<li class="MsoNormal"><span lang="EN">The rotation must be read by
+a real number field that stores the symbol rotation through the
+formula "360-&lt;field that stores the rotation&gt;"
+(</span><span lang="EN-US">degree counterclockwise where zero =
+horizontal to the right,</span> <span lang=
+"EN">&lt;Style&gt;-&lt;Advanced&gt; option "rotation field
+name"-&lt;Espressione</span><span lang="EN-US">&gt;)</span></li>
+<li class="MsoNormal"><span lang="EN-US">The scale can be read by a
+real number field that stores the scale of the symbol
+(&lt;Style&gt;-&lt;Advanced&gt;-&lt;Size scale field&gt;-“ field
+that stores the scale” and &lt;Style&gt;-&lt; Advanced
+&gt;-&lt;Size scale field &gt;-&lt;Scale diameter&gt;)</span></li>
+</ul>
+<p class="MsoNormal"><span lang="EN-US">The arrow symbol when
+inserted with rotation = 0 must be horizontal with the arrow
+pointing to the right and its insertion point should be on the tip
+of the arrow.</span></p>
+</div>
+</body>
+</html>

@@ -11,6 +11,9 @@
         <file>icons/arcByStartEndAngle.png</file>
         <file>icons/arcByStartEndRadius.png</file>
         <file>icons/arcByStartEndTan.png</file>
+        <file>icons/arrayRect.png</file>
+        <file>icons/arrayPath.png</file>
+        <file>icons/arrayPolar.png</file>
         <file>icons/break.png</file>
         <file>icons/circle.png</file>
         <file>icons/circleBy2Points.png</file>
@@ -22,18 +25,26 @@
         <file>icons/copy.png</file>
         <file>icons/copyEnt.png</file>
         <file>icons/dimAligned.png</file>
+        <file>icons/dimArc.png</file>
         <file>icons/dimLinear.png</file>
+        <file>icons/dimStyle.png</file>
+        <file>icons/disjoin.png</file>
         <file>icons/dsettings.png</file>
         <file>icons/erase.png</file>
         <file>icons/extend.png</file>
         <file>icons/fillet.png</file>
+        <file>icons/help.png</file>
         <file>icons/insert.png</file>
+        <file>icons/join.png</file>
+        <file>icons/lengthen.png</file>
         <file>icons/line.png</file>
+        <file>icons/mapmpedit.png</file>
         <file>icons/mbuffer.png</file>
         <file>icons/mirror.png</file>
         <file>icons/move.png</file>
         <file>icons/mpolygon.png</file>
         <file>icons/offset.png</file>
+        <file>icons/options.png</file>
         <file>icons/osnap_cen.png</file>
         <file>icons/osnap_disable.png</file>
         <file>icons/osnap_end.png</file>
@@ -64,13 +75,6 @@
         <file>icons/trim.png</file>
         <file>icons/u.png</file>
         <file>icons/undo.png</file>
-        <file>icons/dimStyle.png</file>
-        <file>icons/help.png</file>
-        <file>icons/lengthen.png</file>
         <file>icons/variable.png</file>
-        <file>icons/options.png</file>
-        <file>icons/mapmpedit.png</file>
-        <file>icons/join.png</file>
-        <file>icons/disjoin.png</file>
     </qresource>    
 </RCC>

@@ -102,7 +102,7 @@ class Qad_scale_maptool(QadGetPoint):
       else:
          # scalo la quota e la rimuovo da entitySet
          dimEntitySet = dimEntity.getEntitySet()
-         dimEntity.scale(self.plugIn, basePt, scale)
+         dimEntity.scale(basePt, scale)
          self.__highlight.addGeometry(dimEntity.textualFeature.geometry(), dimEntity.getTextualLayer())
          self.__highlight.addGeometries(dimEntity.getLinearGeometryCollection(), dimEntity.getLinearLayer())
          self.__highlight.addGeometries(dimEntity.getSymbolGeometryCollection(), dimEntity.getSymbolLayer())

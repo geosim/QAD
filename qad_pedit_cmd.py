@@ -738,7 +738,7 @@ class QadPEDITCommandClass(QadCommandClass):
          return
       
       if line2 is not None:
-         brokenFeature2 = QgsFeature(f)      
+         brokenFeature2 = QgsFeature(f)
          brokenFeature2.setGeometry(line2)
          # plugIn, layer, feature, coordTransform, refresh, check_validity
          if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False) == False:

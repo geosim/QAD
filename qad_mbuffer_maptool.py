@@ -30,6 +30,7 @@ from qgis.gui import *
 import math
 
 
+from qad_msg import QadMsg
 import qad_utils
 from qad_snapper import *
 from qad_snappointsdisplaymanager import *

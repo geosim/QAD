@@ -940,7 +940,7 @@ class QadPreviewDim(QgsMapCanvas):
 
       self.eraseDim()
 
-      if dimStyle.getInValidErrMsg() is not None:
+      if dimStyle.isValid() == False:
          return
       self.dimStyle = dimStyle
 
@@ -974,7 +974,7 @@ class QadPreviewDim(QgsMapCanvas):
             layer.startEditing()
          self.addLayer(layer.id())
 
-      if self.dimStyle.getInValidErrMsg() is not None:
+      if self.dimStyle.isValid() == False:
          return
 
 

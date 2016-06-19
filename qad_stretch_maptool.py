@@ -38,6 +38,7 @@ from qad_getpoint import *
 from qad_dim import *
 import qad_stretch_fun
 from qad_highlight import QadHighlight
+from qad_msg import QadMsg
 
 
 #===============================================================================
@@ -109,11 +110,12 @@ class Qad_stretch_maptool(QadGetPoint):
             self.__highlight.addGeometry(stretchedGeom, entity.layer)
 
       elif entity.whatIs() == "DIMENTITY":
+         newDimEntity = QadDimEntity(entity) # la copio
          # stiro la quota
-         entity.stretch(self.plugIn, containerGeom, offSetX, offSetY)
-         self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
-         self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
-         self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
+         newDimEntity.stretch(containerGeom, offSetX, offSetY)
+         self.__highlight.addGeometry(newDimEntity.textualFeature.geometry(), newDimEntity.getTextualLayer())
+         self.__highlight.addGeometries(newDimEntity.getLinearGeometryCollection(), newDimEntity.getLinearLayer())
+         self.__highlight.addGeometries(newDimEntity.getSymbolGeometryCollection(), newDimEntity.getSymbolLayer())
             
       return True
 
@@ -255,7 +257,7 @@ class Qad_gripStretch_maptool(QadGetPoint):
             self.__highlight.addGeometry(stretchedGeom, entity.layer)
       elif entity.whatIs() == "DIMENTITY":
          # stiro la quota
-         entity.stretch(self.plugIn, ptList, offSetX, offSetY)
+         entity.stretch(ptList, offSetX, offSetY)
          self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
          self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
          self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())

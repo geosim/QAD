@@ -106,9 +106,10 @@ class QadCOPYCommandClass(QadCommandClass):
          if qad_layer.addFeatureToLayer(self.plugIn, layerEntitySet.layer, f, None, False, False) == False:  
             return False
       else:
+         newDimEntity = QadDimEntity(dimEntity) # la copio
          # sposto la quota
-         dimEntity.move(offSetX, offSetY)                               
-         if dimEntity.addToLayers(self.plugIn) == False:
+         newDimEntity.move(offSetX, offSetY)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
             
       return True
@@ -150,13 +151,13 @@ class QadCOPYCommandClass(QadCommandClass):
                deltaY = offSetY
                               
                for i in xrange(1, self.seriesLen, 1):
-                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimEntity) == False:  
+                  if self.move(f, deltaX, deltaY, layerEntitySet, entitySet, dimEntity) == False:
                      self.plugIn.destroyEditCommand()
                      return
                   deltaX = deltaX + offSetX
                   deltaY = deltaY + offSetY
             else:
-               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity) == False:  
+               if self.move(f, offSetX, offSetY, layerEntitySet, entitySet, dimEntity) == False:
                   self.plugIn.destroyEditCommand()
                   return
                

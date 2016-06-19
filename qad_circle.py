@@ -33,6 +33,7 @@ import sys
 import qad_utils
 from qad_variables import *
 from qad_arc import *
+from qad_msg import QadMsg
 
 
 #===============================================================================
@@ -1909,7 +1910,7 @@ class QadCircleList():
          polygonList = geom.asMultiPolygon() # vettore di poligoni
          for polygon in polygonList:
             iRing = -1
-            for points in lineList:
+            for points in polygon:
                if circle.fromPolyline(points, _atLeastNSegment):
                   self.circleList.append(QadCircle(circle)) # ne faccio una copia
                   if iRing == -1: # si tratta della parte più esterna

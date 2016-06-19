@@ -104,7 +104,8 @@ class QadSCALECommandClass(QadCommandClass):
          f.setGeometry(qad_utils.scaleQgsGeometry(f.geometry(), basePt, scale))
          if sizeFldName is not None:
             sizeValue = f.attribute(sizeFldName)
-            if sizeValue is None:
+            # a volte vale None e a volte null (vai a capire...)
+            if sizeValue is None or isinstance(sizeValue, QPyNullVariant):
                sizeValue = 1
             sizeValue = sizeValue * scale
             f.setAttribute(sizeFldName, sizeValue)                           
@@ -127,8 +128,9 @@ class QadSCALECommandClass(QadCommandClass):
          if self.copyFeatures == False:
             if dimEntity.deleteToLayers(self.plugIn) == False:
                return False                      
-         dimEntity.scale(self.plugIn,basePt, scale)
-         if dimEntity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(dimEntity) # la copio
+         newDimEntity.scale(basePt, scale)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
          entitySet.subtract(dimEntitySet)
 
@@ -564,7 +566,8 @@ class QadGRIPSCALECommandClass(QadCommandClass):
          f.setGeometry(qad_utils.scaleQgsGeometry(entity.getGeometry(), basePt, scale))
          if len(sizeFldName) > 0:
             sizeValue = f.attribute(sizeFldName)
-            if sizeValue is None:
+            # a volte vale None e a volte null (vai a capire...)
+            if sizeValue is None or isinstance(sizeValue, QPyNullVariant):
                sizeValue = 1
             sizeValue = sizeValue * scale
             f.setAttribute(sizeFldName, sizeValue)                           
@@ -583,8 +586,9 @@ class QadGRIPSCALECommandClass(QadCommandClass):
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False           
-         entity.scale(self.plugIn, basePt, scale)
-         if entity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.scale(basePt, scale)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False
 
 

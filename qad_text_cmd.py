@@ -148,7 +148,7 @@ class QadTEXTCommandClass(QadCommandClass):
       if field.type() == QVariant.Double: # si appresta ad attendere un double o valore nullo      
          self.waitForFloat(prompt, None, QadInputModeEnum.NONE)
       elif field.type() == QVariant.LongLong: # si appresta ad attendere un long a 64 bit o valore nullo       
-         self.waitForlong(prompt, None, QadInputModeEnum.NONE)
+         self.waitForLong(prompt, None, QadInputModeEnum.NONE)
       elif field.type() == QVariant.Int: # si appresta ad attendere un integer o valore nullo     
          self.waitForInt(prompt, None, QadInputModeEnum.NONE)
       elif field.type() == QVariant.Bool: # si appresta ad attendere un boolean o valore nullo

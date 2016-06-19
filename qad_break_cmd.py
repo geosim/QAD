@@ -62,47 +62,47 @@ class QadBREAKCommandClass(QadCommandClass):
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
-      self.EntSelClass = None      
+      self.entSelClass = None      
       self.firstPt = None
       self.secondPt = None
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      if self.EntSelClass is not None:
-         self.EntSelClass.entity.deselectOnLayer()
-         del self.EntSelClass
+      if self.entSelClass is not None:
+         self.entSelClass.entity.deselectOnLayer()
+         del self.entSelClass
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 1: # quando si é in fase di selezione entità
-         return self.EntSelClass.getPointMapTool(drawMode)
+         return self.entSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
    
    def waitForEntsel(self, msgMapTool, msg):
-      if self.EntSelClass is not None:
-         del self.EntSelClass
+      if self.entSelClass is not None:
+         del self.entSelClass
       self.step = 1         
-      self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_BREAK", "Select the object to break: ")
+      self.entSelClass = QadEntSelClass(self.plugIn)
+      self.entSelClass.msg = QadMsg.translate("Command_BREAK", "Select the object to break: ")
       # scarto la selezione di punti e poligoni
-      self.EntSelClass.checkPointLayer = False
-      self.EntSelClass.checkLineLayer = True
-      self.EntSelClass.checkPolygonLayer = False
-      self.EntSelClass.checkDimLayers = False     
-      self.EntSelClass.onlyEditableLayers = True         
+      self.entSelClass.checkPointLayer = False
+      self.entSelClass.checkLineLayer = True
+      self.entSelClass.checkPolygonLayer = False
+      self.entSelClass.checkDimLayers = False
+      self.entSelClass.onlyEditableLayers = True
 
-      self.EntSelClass.run(msgMapTool, msg)
+      self.entSelClass.run(msgMapTool, msg)
 
 
    #============================================================================
    # breakFeatures
    #============================================================================
    def breakFeatures(self):
-      f = self.EntSelClass.entity.getFeature()
+      f = self.entSelClass.entity.getFeature()
       if f is None:
          return
       
-      layer = self.EntSelClass.entity.layer
+      layer = self.entSelClass.entity.layer
       LineTempLayer = None
       self.plugIn.beginEditCommand("Feature broken", layer)
       
@@ -186,10 +186,10 @@ class QadBREAKCommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA SELEZIONE DI UN'ENTITA' (da step = 0)
       elif self.step == 1:
-         if self.EntSelClass.run(msgMapTool, msg) == True:
-            if self.EntSelClass.entity.isInitialized():
-               layer = self.EntSelClass.entity.layer
-               self.firstPt = self.EntSelClass.point
+         if self.entSelClass.run(msgMapTool, msg) == True:
+            if self.entSelClass.entity.isInitialized():
+               layer = self.entSelClass.entity.layer
+               self.firstPt = self.entSelClass.point
                self.plugIn.setLastPoint(self.firstPt)
                
                keyWords = QadMsg.translate("Command_BREAK", "First point")

@@ -44,6 +44,90 @@ group the objects of a dimension, and implement the erasing and
 editing features of an existing dimension)</span></li>
 </ul>
 <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">An SQL example to create a
+PostGIS table and indexes for dimension lines:</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; line_type character
+varying(50),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; type character varying(2)
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id_parent bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(LineString,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT dim_line_pkey
+PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_line_id_parent</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (id_parent);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_line_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (geom);</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
 <p class="MsoNormal"><span lang="EN-US">The linear layer must be
 defined with the style set as follows:</span></p>
 <p class="MsoNormal"><span lang="EN">Optional settings</span>:</p>

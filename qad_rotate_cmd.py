@@ -105,7 +105,8 @@ class QadROTATECommandClass(QadCommandClass):
 
          if len(rotFldName) > 0:
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            # a volte vale None e a volte null (vai a capire...)
+            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
 
@@ -126,8 +127,9 @@ class QadROTATECommandClass(QadCommandClass):
          if self.copyFeatures == False:
             if dimEntity.deleteToLayers(self.plugIn) == False:
                return False                      
-         dimEntity.rotate(self.plugIn, basePt, angle)
-         if dimEntity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(dimEntity) # la copio
+         newDimEntity.rotate(basePt, angle)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
          entitySet.subtract(dimEntitySet)
             
@@ -537,7 +539,8 @@ class QadGRIPROTATECommandClass(QadCommandClass):
          f.setGeometry(qad_utils.rotateQgsGeometry(entity.getGeometry(), basePt, angle))
          if len(rotFldName) > 0:
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            # a volte vale None e a volte null (vai a capire...)
+            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
          
@@ -555,8 +558,9 @@ class QadGRIPROTATECommandClass(QadCommandClass):
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
                return False           
-         entity.rotate(self.plugIn, basePt, angle)
-         if entity.addToLayers(self.plugIn) == False:
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.rotate(basePt, angle)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
 
       return True

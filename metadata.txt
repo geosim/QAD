@@ -9,14 +9,14 @@
 
 [general]
 name=QAD
-email=
-author=geosim
+email=gam17@riseup.net
+author=gam17
 qgisMinimumVersion=2.0
 description=Quantum Aided Design: cad like commands in QGIS
 about=Quantum Aided Design: cad like commands in QGIS
-version=2.8.010
-tracker=https://github.com/geosim/QAD/issues
-repository=https://github.com/geosim/QAD
+version=2.8.12
+tracker=https://github.com/gam17/QAD/issues
+repository=https://github.com/gam17/QAD
 
 # end of mandatory metadata
 
@@ -30,10 +30,10 @@ category=Vector
 # tags are comma separated with spaces allowed
 tags=cad,circle,digitizing,dimensioning,polygon,polyline,rectangle,snap,vector
 
-homepage=https://github.com/geosim/QAD
+homepage=https://github.com/gam17/QAD
 icon=icons/qad.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False

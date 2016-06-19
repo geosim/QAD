@@ -73,10 +73,19 @@ class QadINPUTSEARCHOPTIONSEnum():
 class QadPOLARMODEnum():
    MEASURE_RELATIVE_ANGLE = 1 # if setted: Measure polar angles from selected objects (relative) 
                               # if not setted: Measure polar angles based on current UCS (absolute)
-   POLAR_TRACKING   = 2       # if setted: Use polar tracking settings in object snap tracking
+   POLAR_TRACKING         = 2 # if setted: Use polar tracking settings in object snap tracking
                               # if not setted: Track orthogonally only
-   SHIFT_TO_ACQUIRE = 8       # if setted: Press Shift to acquire object snap tracking points, if not setted
+   SHIFT_TO_ACQUIRE       = 8 # if setted: Press Shift to acquire object snap tracking points, if not setted
                               # if not setted: Acquire automatically object snap tracking points
+
+
+#===============================================================================
+# Qad DELOBJ class.
+#===============================================================================
+class QadDELOBJnum():
+   ALL_RETAINED       =  0 # All defining geometry is retained
+   DELETE_ALL         =  1 # Delete all defining geometry 
+   ASK_FOR_DELETE_ALL = -1 # Ask the user for delete all defining geometry 
 
 
 #===============================================================================
@@ -313,7 +322,34 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             1, 100, \
                                                             VariableDescr)
-      
+
+      # DELOBJ (int): Controlla se la geometria utilizzata per creare altri oggetti viene mantenuta o eliminata.
+      VariableName = QadMsg.translate("Environment variables", "DELOBJ") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls whether geometry used to create other objects is retained or deleted:" + \
+                                       "\n0  = All defining geometry is retained." + \
+                                       "\n1  = Deletes all defining geometry." + \
+                                       "\n-1 = Ask the user for delete all defining geometry.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(1), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            -1, 1, \
+                                                            VariableDescr)
+
+      # DIMARCSYM (int): Controlla la visualizzazione del simbolo di arco nel comando DIMARC.
+      # O = Posiziona il simbolo di arco prima del testo di quota
+      # 1 = Posiziona il simbolo di arco sopra il testo di quota
+      # 2 = Sopprima la visualizzazione del simbolo di arco
+      VariableName = QadMsg.translate("Environment variables", "DIMARCSYM") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Controls display of the arc symbol in an arc length dimension." + \
+                                       "\n0 = Places arc length symbols before the dimension text." + \
+                                       "\n1 = Places arc length symbols above the dimension text." + \
+                                       "\n2 = Suppresses the display of arc length symbols.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            0, 2, \
+                                                            VariableDescr)
+
       # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente
       VariableName = QadMsg.translate("Environment variables", "DIMSTYLE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Stores the name of the current dimension style.") # x lupdate
@@ -449,6 +485,15 @@ class QadVariablesClass():
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(15), \
                                                             QadVariableTypeEnum.INT, \
                                                             0, 31, \
+                                                            VariableDescr)
+
+      # MAXARRAY (int): limita la dimensione degli array nel comando ARRAY
+      VariableName = QadMsg.translate("Environment variables", "MAXARRAY") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Limit the Size of arrays in ARRAY command.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(100000), \
+                                                            QadVariableTypeEnum.INT, \
+                                                            100, 10000000, \
                                                             VariableDescr)
 
       # OFFSETDIST(float): Setta la distanza di default per l'offset

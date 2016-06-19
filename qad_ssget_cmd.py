@@ -242,6 +242,13 @@ class QadSSGetClass(QadCommandClass):
    # elaborateSelSet
    #============================================================================
    def elaborateSelSet(self, selSet, shiftKey):
+      if self.checkDimLayers == True:
+         dimEntitySet = QadEntitySet(selSet)
+         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
+         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
+         QadDimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
+         selSet.unite(dimEntitySet)
+
       if self.AddOnSelection == True: # aggiungi al gruppo di selezione
          if shiftKey: # se la selezione é avvenuta con shift premuto
             if self.pickAdd == 0: # The objects most recently selected become the selection set
@@ -275,13 +282,6 @@ class QadSSGetClass(QadCommandClass):
             layerEntitySet.deselectOnLayer()
 
       self.entitySet.set(selSet)
-         
-      if self.checkDimLayers == True:
-         dimEntitySet = QadEntitySet(selSet)
-         # La funzione verifica se le entità che fanno parte di un entitySet sono anche parte di quotatura e,
-         # in caso affermativo, aggiunge tutti i componenti delle quotature all'entitySet.
-         QadDimStyles.addAllDimComponentsToEntitySet(dimEntitySet, self.onlyEditableLayers)
-         self.entitySet.unite(dimEntitySet)
 
       self.showMsgOnAddRemove(self.entitySet.count())
       self.entitySet.selectOnLayer(False) # incremental = False

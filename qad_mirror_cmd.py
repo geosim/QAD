@@ -99,7 +99,8 @@ class QadMIRRORCommandClass(QadCommandClass):
          f.setGeometry(qad_utils.mirrorQgsGeometry(f.geometry(), pt1, pt2))
          if len(rotFldName) > 0:
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            # a volte vale None e a volte null (vai a capire...)
+            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             ptDummy = qad_utils.getPolarPointByPtAngle(pt1, rotValue, 1)
             mirrorAngle = qad_utils.getAngleBy2Pts(pt1, pt2)
             ptDummy = qad_utils.mirrorPoint(ptDummy, pt1, mirrorAngle)
@@ -124,9 +125,10 @@ class QadMIRRORCommandClass(QadCommandClass):
          dimEntitySet = dimEntity.getEntitySet()
          if self.copyFeatures == False:
             if dimEntity.deleteToLayers(self.plugIn) == False:
-               return False                      
-         dimEntity.mirror(self.plugIn, pt1, mirrorAngle)
-         if dimEntity.addToLayers(self.plugIn) == False:
+               return False
+         newDimEntity = QadDimEntity(dimEntity) # la copio
+         newDimEntity.mirror(pt1, mirrorAngle)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
          entitySet.subtract(dimEntitySet)
 
@@ -377,7 +379,8 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
          f.setGeometry(qad_utils.mirrorQgsGeometry(entity.getGeometry(), pt1, pt2))
          if len(rotFldName) > 0:
             rotValue = f.attribute(rotFldName)
-            rotValue = 0 if rotValue is None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            # a volte vale None e a volte null (vai a capire...)
+            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             ptDummy = qad_utils.getPolarPointByPtAngle(pt1, rotValue, 1)
             mirrorAngle = qad_utils.getAngleBy2Pts(pt1, pt2)
             ptDummy = qad_utils.mirrorPoint(ptDummy, pt1, mirrorAngle)
@@ -397,9 +400,11 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
          # specchio la quota
          if self.copyEntities == False:
             if entity.deleteToLayers(self.plugIn) == False:
-               return False           
-         entity.mirror(self.plugIn, pt1, mirrorAngle)
-         if entity.addToLayers(self.plugIn) == False:
+               return False
+            
+         newDimEntity = QadDimEntity(entity) # la copio
+         newDimEntity.mirror(pt1, mirrorAngle)
+         if newDimEntity.addToLayers(self.plugIn) == False:
             return False             
 
       return True

@@ -86,11 +86,12 @@ class Qad_move_maptool(QadGetPoint):
          if movedGeom is not None:
             self.__highlight.addGeometry(movedGeom, entity.layer)
       else:
+         newDimEntity = QadDimEntity(entity) # la copio
          # sposto la quota
-         entity.move(offSetX, offSetY)
-         self.__highlight.addGeometry(entity.textualFeature.geometry(), entity.getTextualLayer())
-         self.__highlight.addGeometries(entity.getLinearGeometryCollection(), entity.getLinearLayer())
-         self.__highlight.addGeometries(entity.getSymbolGeometryCollection(), entity.getSymbolLayer())
+         newDimEntity.move(offSetX, offSetY)
+         self.__highlight.addGeometry(newDimEntity.textualFeature.geometry(), newDimEntity.getTextualLayer())
+         self.__highlight.addGeometries(newDimEntity.getLinearGeometryCollection(), newDimEntity.getLinearLayer())
+         self.__highlight.addGeometries(newDimEntity.getSymbolGeometryCollection(), newDimEntity.getSymbolLayer())
 
    
    def addMovedGeometries(self, newPt):
@@ -121,7 +122,7 @@ class Qad_move_maptool(QadGetPoint):
                      found = True
                if found == False: # quota non ancora elaborata
                   dimElaboratedList.append(dimEntity)
-                  self.stretch(dimEntity, offSetX, offSetY)
+                  self.move(dimEntity, offSetX, offSetY)
 
 
    def canvasMoveEvent(self, event):

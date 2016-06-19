@@ -32,6 +32,7 @@ from qgis.gui import *
 
 from qad_entity import *
 from qad_variables import *
+from qad_msg import QadMsg
 
 
 #===============================================================================

@@ -14,15 +14,15 @@
 <h3><a name="node12" id="node12"></a><span lang="EN-US">Text layer
 model for dimensioning:</span></h3>
 <p class="MsoNormal"><span lang="EN-US">The main element of a
-dimension is the text.</span> Its textual layer must have the
-following fields:</p>
+dimension is the text. Its textual layer must have the following
+fields:</span></p>
 <ul style='margin-top:0cm' type="disc">
 <li class="MsoNormal"><span lang="EN-US">a character field to store
 the dimension text</span></li>
 <li class="MsoNormal"><span lang="EN-US">a character field to store
 the font Of the dimension text</span></li>
-<li class="MsoNormal">a real number field to store the dimension
-text height (in map unit)</li>
+<li class="MsoNormal"><span lang="EN-US">a real number field to
+store the dimension text height (in map unit)</span></li>
 <li class="MsoNormal"><span lang="EN-US">a real number field to
 store text rotation (degree counterclockwise where zero =
 horizontal to the right)</span></li>
@@ -30,9 +30,17 @@ horizontal to the right)</span></li>
 <p class="MsoNormal"><span lang="EN">Optional fields</span>:</p>
 <ul style='margin-top:0cm' type="disc">
 <li class="MsoNormal"><span lang="EN-US">an integer number field to
-store the unique ID of the dimension (necessary if you want to
-group the objects of a dimension, and implement the erasing and
-editing features of an existing dimension)</span></li>
+store the unique ID of the dimension<br>
+This field is required if you want to group the objects of the same
+dimension and implement the erasing and editing features of an
+existing dimension. Because it must be a unique value field,
+actually, it is supported for PostGIS table only where you have to
+create a serial type not null field which is the primary key of the
+table. (i.e. “id”). In addition to this you have to create another
+bigint type field which will be managed by QAD to store the
+dimension ID (i.e. “dim_id”). Shape files don’t let QAD group
+objects of the same dimension so, after drawing a dimension, every
+objects will be independent each one from the other.</span></li>
 <li class="MsoNormal"><span lang="EN">a character field to store
 the color of the dimension text</span></li>
 <li class="MsoNormal"><span lang="EN-US">a character field to store
@@ -54,6 +62,106 @@ of the locations<br>
 (required if you want to use the editing features of an existing
 dimension)</span></li>
 </ul>
+<p class="MsoNormal"><span lang="EN-US">An SQL example to create a
+PostGIS table and indexes for dimension text:</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; text character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; font character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; h_text double precision
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; rot double precision NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_style character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_type character
+varying(2) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(Point,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_id bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT dim_text_pkey
+PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_text_dim_id</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (dim_id);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_text_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
 <p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
 <p class="MsoNormal"><span lang="EN-US">The textual layer must be
 defined with labels as follows:</span></p>

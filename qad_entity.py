@@ -37,6 +37,7 @@ from qad_arc import *
 from qad_circle import *
 import qad_layer
 import qad_stretch_fun
+import qad_label
 
 
 #===============================================================================
@@ -188,7 +189,7 @@ class QadEntity():
       # se entityType non è già stato inizializzato
       if self.entityType == QadEntityGeomTypeEnum.NONE:
          self.__initQadInfo()
-      
+
       # se entityType è stato inizializzato
       if self.entityType != QadEntityGeomTypeEnum.NONE:
          if type(self.entityType) == list:
@@ -274,6 +275,12 @@ class QadEntity():
       if self.isInitialized() == False:
          return None
       return self.layer.id()
+
+
+   def crs(self):
+      if self.isInitialized() == False:
+         return None
+      return self.layer.crs()
 
 
    def set(self, layer_or_entity, featureId = None):
@@ -391,8 +398,8 @@ class QadEntity():
       self.layer.deselect(self.featureId)
 
 
-   #===============================================================================
-   # operazioni geometriche - inizio
+#===============================================================================
+# operazioni geometriche - inizio
    
    def gripStretch(self, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
       # se entityType è già stato inizializzato
@@ -408,8 +415,61 @@ class QadEntity():
       return self.__getGeomFromQadGeom(newQadGeom, tolerance2ApproxCurve)
 
 
+   #============================================================================
+   # rotate
+   #============================================================================
+   def rotate(self, basePt, angle):
+      # basePt = punto base espresso in map coordinate
+      # restituisce una feature ruotata
+      canvas = qgis.utils.iface.mapCanvas()
+      destinationCrs = canvas.mapRenderer().destinationCrs()
+
+      f = self.getFeature()
+      g = g.geometry()
+      g.transform(QgsCoordinateTransform(self.crs(), destinationCrs))
+      # ruoto la feature
+      g = qad_utils.rotateQgsGeometry(g, basePt, angle)
+      g.transform(QgsCoordinateTransform(destinationCrs, self.crs()))
+      f.setGeometry(g)
+      
+      rotFldName = ""
+      if self.getEntityType() == QadEntityGeomTypeEnum.TEXT:
+         # se la rotazione dipende da un solo campo
+         rotFldNames = qad_label.get_labelRotationFieldNames(self.layer)
+         if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
+            rotFldName = rotFldNames[0]         
+      elif self.getEntityType() == QadEntityGeomTypeEnum.SYMBOL:
+         rotFldName = qad_layer.get_symbolRotationFieldName(self.layer)
+      
+      if len(rotFldName) > 0:
+         rotValue = f.attribute(rotFldName)
+         # a volte vale None e a volte null (vai a capire...)
+         rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+         rotValue = rotValue + angle
+         f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
+
+      return f
+   
 # operazioni geometriche - fine
 #===============================================================================
+
+
+#===============================================================================
+# QadLayerEntitySetIterator
+#===============================================================================
+class QadLayerEntitySetIterator():
+   # classe per iterare le entità di un QadLayerEntitySet
+   def __init__(self, layerEntitySet):
+      self.i = 0
+      self.layerEntitySet = layerEntitySet
+
+   def nextEntity(self, ent):
+      if self.i < len(self.layerEntitySet.featureIds):
+         ent.set(self.layerEntitySet.layer, self.layerEntitySet.featureIds[self.i])
+         self.i += 1
+         return True
+      else:
+         return False
 
 
 #===============================================================================
@@ -418,6 +478,7 @@ class QadEntity():
 class QadLayerEntitySet():
     
    def __init__(self, layerEntitySet = None):
+      
       if layerEntitySet is not None:
          self.set(layerEntitySet.layer, layerEntitySet.featureIds)
       else:    
@@ -455,11 +516,19 @@ class QadLayerEntitySet():
       del self.featureIds[:] 
 
 
+   def getEntities(self): # ritorna un iterator
+      return QadLayerEntitySetIterator(self)
+   
+      
    def layerId(self):
       if self.isInitialized() == False:
          return None
       return self.layer.id()
 
+   def crs(self):
+      if self.isInitialized() == False:
+         return None
+      return self.layer.crs()
 
    def set(self, layer, features = None):
       if type(layer) == QgsVectorLayer:
@@ -531,7 +600,7 @@ class QadLayerEntitySet():
       result = []
       for featureId in self.featureIds:
          f = self.getFeature(featureId)
-         if f is not None:                    
+         if f is not None:
             result.append(f)
       return result
 
@@ -681,7 +750,43 @@ class QadLayerEntitySet():
    def removeNotExisting(self):
       featureIds = self.getNotExistingFeaturedIds()
       self.featureIds = list(set(self.featureIds) - set(featureIds))    
-      
+
+
+   def boundingBox(self):
+      # ritorna il rettangolo di occupazione delle entita dl layer
+      result = None
+      geoms = self.getGeometryCollection()
+      for g in geoms:
+         if result is None:
+            result = g.boundingBox()
+         else:
+            result.combineExtentWith(g.boundingBox())
+      return result
+
+
+#===============================================================================
+# QadEntitySetIterator
+#===============================================================================
+class QadEntitySetIterator():
+   # classe per iterare le entità di un QadEntitySet
+   def __init__(self, entitySet):
+      self.i = 0
+      self.entitySet = entitySet
+      self.entitySetIterator = None
+
+   def nextEntity(self, ent):
+      if self.i < len(self.layerEntitySetList):
+         if self.entitySetIterator is None:
+            self.entitySetIterator = QadLayerEntitySetIterator(self.layerEntitySetList[self.i])
+         if self.entitySetIterator.nextEntity(ent):
+            return True
+         self.i += 1
+         del self.entitySetIterator
+         self.entitySetIterator = None
+         return self.nextEntity(ent)
+      else:
+         return False
+
 
 #===============================================================================
 # QadEntitySet entities of a layers class
@@ -864,14 +969,14 @@ class QadEntitySet():
 
 
    def removeNotEditable(self):
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):    
+      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.layer.isEditable() == False:
             del self.layerEntitySetList[i]
                   
 
    def removeGeomType(self, type):
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):    
+      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.layer.geometryType() == type:
             del self.layerEntitySetList[i]
@@ -879,8 +984,23 @@ class QadEntitySet():
 
    def purge(self):
       # rimuove i layer con zero oggetti
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):    
+      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.count() == 0:
             del self.layerEntitySetList[i]
                   
+
+   def boundingBox(self, destCRS):
+      # ritorna il rettangolo di occupazione del selset
+      result = None
+      for layerEntitySet in self.layerEntitySetList:
+         partial = layerEntitySet.boundingBox()
+         if partial is not None:
+            coordTransform = QgsCoordinateTransform(layerEntitySet.crs(), destCRS) # trasformo la geometria
+            if result is None:
+               result = QgsRectangle(coordTransform.transform(partial.xMinimum(), partial.yMinimum()), \
+                                     coordTransform.transform(partial.xMaximum(), partial.yMaximum()))
+            else:
+               result.combineExtentWith(QgsRectangle(coordTransform.transform(partial.xMinimum(), partial.yMinimum()), \
+                                        coordTransform.transform(partial.xMaximum(), partial.yMaximum())))
+      return result
