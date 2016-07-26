@@ -334,7 +334,7 @@ class QadVariablesClass():
                                                             QadVariableTypeEnum.INT, \
                                                             -1, 1, \
                                                             VariableDescr)
-      
+
       # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente
       VariableName = QadMsg.translate("Environment variables", "DIMSTYLE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Stores the name of the current dimension style.") # x lupdate

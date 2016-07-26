@@ -117,7 +117,7 @@ class Qad_rotate_maptool(QadGetPoint):
       for layerEntitySet in self.entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
          
-         transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
+         transformedBasePt = self.canvas.mapSettings().mapToLayerCoordinates(layer, self.basePt)
 
          for featureId in layerEntitySet.featureIds:
             # verifico se l'entità appartiene ad uno stile di quotatura

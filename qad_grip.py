@@ -197,7 +197,7 @@ class QadEntityGripPoint():
    
    def isIntersecting(self, point):
       # point è in map coordinate
-      ToleranceInMapUnits = self.gripMarker.iconSize * self.gripMarker.canvas.mapRenderer().mapUnitsPerPixel()
+      ToleranceInMapUnits = self.gripMarker.iconSize * self.gripMarker.canvas.mapSettings().mapUnitsPerPixel()
       if point.x() >= self.getPoint().x() - ToleranceInMapUnits and \
          point.x() <= self.getPoint().x() + ToleranceInMapUnits and \
          point.y() >= self.getPoint().y() - ToleranceInMapUnits and \
@@ -373,13 +373,13 @@ class QadEntityGripPoints(QgsMapCanvasItem):
             
       elif wkbType == QGis.WKBLineString:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapSettings().destinationCrs())
          g.transform(coordTransform)           
          result = self.getGripPointsFromPolyline(g.asPolyline(), 0, 0, grips)
          
       elif wkbType == QGis.WKBMultiLineString:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapSettings().destinationCrs())
          g.transform(coordTransform)  
 
          lineList = g.asMultiPolyline() # vettore di linee
@@ -390,7 +390,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
                         
       elif wkbType == QGis.WKBPolygon:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapSettings().destinationCrs())
          g.transform(coordTransform)  
 
          lineList = g.asPolygon() # vettore di linee    
@@ -405,7 +405,7 @@ class QadEntityGripPoints(QgsMapCanvasItem):
          
       elif wkbType == QGis.WKBMultiPolygon:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(self.entity.layer.crs(), self.mapCanvas.mapSettings().destinationCrs())
          g.transform(coordTransform)  
 
          polygonList = g.asMultiPolygon() # vettore di poligoni

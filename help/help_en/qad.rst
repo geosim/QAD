@@ -682,6 +682,11 @@ DIMALIGNED
 
 Draws an aligned dimension.
 
+DIMARC
+~~~~~~
+
+Draws a length arc dimension.
+
 DIMLINEAR
 ~~~~~~~~~
 

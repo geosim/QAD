@@ -117,7 +117,7 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
    f = QgsFeature()
    
    if transform:
-      transformedPoint = plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point)
+      transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
       g = QgsGeometry.fromPoint(transformedPoint)
    else:
       g = QgsGeometry.fromPoint(point)
@@ -171,7 +171,7 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
    if transform:
       layerPoints = []
       for point in points:
-         transformedPoint = plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point)
+         transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
          layerPoints.append(transformedPoint)    
       g = QgsGeometry.fromPolyline(layerPoints)
    else:
@@ -226,7 +226,7 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
    if transform:
       layerPoints = []
       for point in points:
-         transformedPoint = plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point)
+         transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
          layerPoints.append(transformedPoint)      
       g = QgsGeometry.fromPolygon([layerPoints])
    else:
@@ -616,7 +616,7 @@ def createQADTempLayer(plugIn, GeomType):
    <epsg> = the authority identifier for this srs    
    """
    layer = None
-   epsg = plugIn.iface.mapCanvas().mapRenderer().destinationCrs().authid()
+   epsg = plugIn.iface.mapCanvas().mapSettings().destinationCrs().authid()
    
    if GeomType == QGis.Point:
       layerName = QadMsg.translate("QAD", "QAD - Temporary points")

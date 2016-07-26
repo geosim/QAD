@@ -109,7 +109,7 @@ class Qad_offset_maptool(QadGetPoint):
       
       tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       # uso il crs del canvas per lavorare con coordinate piane xy
-      epsg = self.canvas.mapRenderer().destinationCrs().authid()
+      epsg = self.canvas.mapSettings().destinationCrs().authid()
       lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \

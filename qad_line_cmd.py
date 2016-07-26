@@ -144,7 +144,7 @@ class QadLINECommandClass(QadCommandClass):
 
             
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -224,7 +224,7 @@ class QadLINECommandClass(QadCommandClass):
                      self.firstPtPer = None
                      self.firstPtTan = value
                      self.firstGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      self.firstGeom.transform(coordTransform)
                      # imposto il map tool
                      self.getPointMapTool().tan1 = self.firstPtTan
@@ -233,7 +233,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFrom2TanPts(self.firstGeom, self.firstPtTan, secondGeom, value)
                      if tangent is not None:
@@ -253,7 +253,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFromTanPerPts(secondGeom, value, self.firstGeom, self.firstPtPer)
                      if tangent is not None:
@@ -278,7 +278,7 @@ class QadLINECommandClass(QadCommandClass):
                      self.firstPtTan = None
                      self.firstPtPer = value
                      self.firstGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      self.firstGeom.transform(coordTransform)         
                      # imposto il map tool
                      self.getPointMapTool().per1 = self.firstPtPer
@@ -287,7 +287,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      tangent = qad_utils.lineFromTanPerPts(self.firstGeom, self.firstPtTan, secondGeom, value)
                      if tangent is not None:
@@ -307,7 +307,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
                      secondGeom = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+                     coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
                      secondGeom.transform(coordTransform)
                      line = qad_utils.lineFrom2PerPts(self.firstGeom, self.firstPtPer, secondGeom, value)
                      if line is not None:
@@ -328,11 +328,11 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità TAN_DEF
                   if self.firstPtTan is not None:
                      snapper = QadSnapper()
-                     snapper.setSnapPointCRS(self.plugIn.canvas.mapRenderer().destinationCrs())
+                     snapper.setSnapPointCRS(self.plugIn.canvas.mapSettings().destinationCrs())
                      snapper.setSnapType(QadSnapTypeEnum.TAN)
                      snapper.setStartPoint(value)
                      oSnapPoints = snapper.getSnapPoint(self.firstGeom, self.firstPtTan, 
-                                                        self.plugIn.canvas.mapRenderer().destinationCrs())
+                                                        self.plugIn.canvas.mapSettings().destinationCrs())
                      # memorizzo il punto di snap in point (prendo il primo valido)
                      for item in oSnapPoints.items():
                         points = item[1]
@@ -346,11 +346,11 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità PER_DEF
                   elif self.firstPtPer is not None:
                      snapper = QadSnapper()
-                     snapper.setSnapPointCRS(self.plugIn.canvas.mapRenderer().destinationCrs())
+                     snapper.setSnapPointCRS(self.plugIn.canvas.mapSettings().destinationCrs())
                      snapper.setSnapType(QadSnapTypeEnum.PER)
                      snapper.setStartPoint(value)
                      oSnapPoints = snapper.getSnapPoint(self.firstGeom, self.firstPtPer, 
-                                                        self.plugIn.canvas.mapRenderer().destinationCrs())
+                                                        self.plugIn.canvas.mapSettings().destinationCrs())
                      # memorizzo il punto di snap in point (prendo il primo valido)
                      for item in oSnapPoints.items():
                         points = item[1]

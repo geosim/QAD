@@ -258,7 +258,7 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
             pt = QgsPoint(x, y)
             
          if pt is not None:
-            destCRS = qgis.utils.iface.mapCanvas().mapRenderer().destinationCrs() # CRS corrente
+            destCRS = qgis.utils.iface.mapCanvas().mapSettings().destinationCrs() # CRS corrente
             return QgsCoordinateTransform(CRS, destCRS).transform(pt) # trasformo le coord
 
 
@@ -500,8 +500,8 @@ def distMapToLayerCoordinates(dist, canvas, layer):
    y = (boundBox.yMinimum() + boundBox.yMaximum()) / 2
    pt1 = QgsPoint(x, y)
    pt2 = QgsPoint(x + dist, y)
-   transformedPt1 = canvas.mapRenderer().mapToLayerCoordinates(layer, pt1)
-   transformedPt2 = canvas.mapRenderer().mapToLayerCoordinates(layer, pt2)
+   transformedPt1 = canvas.mapSettings().mapToLayerCoordinates(layer, pt1)
+   transformedPt2 = canvas.mapSettings().mapToLayerCoordinates(layer, pt2)
    return getDistance(transformedPt1, transformedPt2)
          
 
@@ -785,7 +785,7 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
    """           
    layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
    ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
-                                                          mQgsMapTool.canvas.mapRenderer(), \
+                                                          mQgsMapTool.canvas.mapSettings(), \
                                                           QgsTolerance.Pixels)
 
    selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
@@ -890,12 +890,12 @@ def isGeomInBox(point, mQgsMapTool, geom, boxSize, crs = None, \
        (geom.type() == QGis.Polygon and checkPolygonLayer == True)):      
       mapPoint = mQgsMapTool.toMapCoordinates(point)
       mapGeom = QgsGeometry(geom)
-      if crs is not None and mQgsMapTool.canvas.mapRenderer().destinationCrs() != crs:
+      if crs is not None and mQgsMapTool.canvas.mapSettings().destinationCrs() != crs:
          # trasformo le coord della geometria in map coordinates
-         coordTransform = QgsCoordinateTransform(crs, mQgsMapTool.canvas.mapRenderer().destinationCrs())          
+         coordTransform = QgsCoordinateTransform(crs, mQgsMapTool.canvas.mapSettings().destinationCrs())          
          mapGeom.transform(coordTransform)      
          
-      ToleranceInMapUnits = boxSize * mQgsMapTool.canvas.mapRenderer().mapUnitsPerPixel()
+      ToleranceInMapUnits = boxSize * mQgsMapTool.canvas.mapSettings().mapUnitsPerPixel()
       selectRect = QgsRectangle(mapPoint.x() - ToleranceInMapUnits, mapPoint.y() - ToleranceInMapUnits, \
                                 mapPoint.x() + ToleranceInMapUnits, mapPoint.y() + ToleranceInMapUnits)
                                            
@@ -1080,8 +1080,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
          elif mode.upper() == "CO": # crossing object
             # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
-            if mQgsMapTool.canvas.mapRenderer().destinationCrs() != layer.crs():       
-               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapRenderer().destinationCrs(), \
+            if mQgsMapTool.canvas.mapSettings().destinationCrs() != layer.crs():       
+               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapSettings().destinationCrs(), \
                                                        layer.crs()) # trasformo la geometria
                g.transform(coordTransform)
                         
@@ -1090,7 +1090,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:   
                Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
                ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
-                                                                      mQgsMapTool.canvas.mapRenderer(), \
+                                                                      mQgsMapTool.canvas.mapSettings(), \
                                                                       QgsTolerance.Pixels)
       
                pt = g.asPoint()
@@ -1103,8 +1103,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                # fetchAttributes, fetchGeometry, rectangle, useIntersect             
                request = getFeatureRequest([], True, g.boundingBox(), True)
                
-            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
-            for feature in layer.getFeatures(request):                           
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect
+            for feature in layer.getFeatures(request):
                # solo le feature intersecanti l'oggetto
                if g.intersects(feature.geometry()):
                   entity.set(layer, feature.id())
@@ -1112,8 +1112,8 @@ def getSelSet(mode, mQgsMapTool, points = None, \
          elif mode.upper() == "WO": # windows object
             # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
-            if mQgsMapTool.canvas.mapRenderer().destinationCrs() != layer.crs():       
-               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapRenderer().destinationCrs(), \
+            if mQgsMapTool.canvas.mapSettings().destinationCrs() != layer.crs():       
+               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapSettings().destinationCrs(), \
                                                        layer.crs()) # trasformo la geometria
                g.transform(coordTransform)
 
@@ -1122,7 +1122,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:   
                Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
                ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
-                                                                      mQgsMapTool.canvas.mapRenderer(), \
+                                                                      mQgsMapTool.canvas.mapSettings(), \
                                                                       QgsTolerance.Pixels)
       
                pt = g.asPoint()
@@ -1131,7 +1131,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                # fetchAttributes, fetchGeometry, rectangle, useIntersect             
                request = getFeatureRequest([], True, selectRect, True)
             else:
-               # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+               # fetchAttributes, fetchGeometry, rectangle, useIntersect
                request = getFeatureRequest([], True, g.boundingBox(), True)
             
             # solo le feature completamente interne all'oggetto
@@ -1146,7 +1146,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                
             g = QgsGeometry.fromPolyline(polyline)
             # Select features in the polyline bounding box
-            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect
             for feature in layer.getFeatures(getFeatureRequest([], True, g.boundingBox(), True)):                       
                # solo le feature che intersecano la polyline
                if g.intersects(feature.geometry()):                     
@@ -7385,7 +7385,7 @@ class QadLinearObject():
          return getPolarPointByPtAngle(self.getStartPt(), angle, distance), angle
       else: # arco
          # (2*pi) : (2*pi*r) = angle : delta            
-         angle = delta / self.getArc().radius
+         angle = distance / self.getArc().radius
          
          if self.isInverseArc():
             angle = self.getArc().endAngle - angle

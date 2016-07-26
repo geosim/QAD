@@ -339,7 +339,7 @@ class Qad_gripChangeArcRadius_maptool(QadGetPoint):
       self.entity = QadEntity(entity)
       self.arc = self.entity.getQadGeom() # arco in map coordinate
       self.basePt = self.arc.center
-      self.coordTransform = QgsCoordinateTransform(self.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+      self.coordTransform = QgsCoordinateTransform(self.canvas.mapSettings().destinationCrs(), entity.layer.crs())
 
 
    #============================================================================

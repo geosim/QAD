@@ -129,7 +129,7 @@ class QadARRAYCommandClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
       self.SSGetClass = QadSSGetClass(plugIn)
       self.SSGetClass.onlyEditableLayers = True
-      self.EntSelClass = QadEntSelClass(self.plugIn)
+      self.entSelClass = None
       self.entitySet = QadEntitySet()
       self.defaultValue = None
       
@@ -240,7 +240,7 @@ class QadARRAYCommandClass(QadCommandClass):
    #============================================================================
    def setEntitySet(self, ss):
       self.entitySet.set(ss)
-      rect = self.entitySet.boundingBox(self.plugIn.canvas.mapRenderer().destinationCrs())
+      rect = self.entitySet.boundingBox(self.plugIn.canvas.mapSettings().destinationCrs())
       self.distanceBetweenRows = rect.height() + (rect.height() / 2) if rect.height() != 0 else 1
       self.distanceBetweenCols = rect.width() + (rect.width() / 2) if rect.width() != 0 else 1
       center = rect.center()
@@ -876,17 +876,21 @@ class QadARRAYCommandClass(QadCommandClass):
    #============================================================================
    # waitForPathObject
    #============================================================================
-   def waitForPathObject(self):
+   def waitForPathObject(self, msgMapTool, msg):
+      if self.entSelClass is not None:
+         del self.entSelClass
+      
       self.step = QadARRAYCommandClassStepEnum.ASK_FOR_PATH_OBJ
       
-      self.EntSelClass.msg = QadMsg.translate("Command_ARRAY", "Select the object to use for the path of the array: ")
+      self.entSelClass = QadEntSelClass(self.plugIn)
+      self.entSelClass.msg = QadMsg.translate("Command_ARRAY", "Select the object to use for the path of the array: ")
       # scarto la selezione di punti e quote
-      self.EntSelClass.checkPointLayer = False
-      self.EntSelClass.checkLineLayer = True
-      self.EntSelClass.checkPolygonLayer = True
-      self.EntSelClass.checkDimLayers = False
+      self.entSelClass.checkPointLayer = False
+      self.entSelClass.checkLineLayer = True
+      self.entSelClass.checkPolygonLayer = True
+      self.entSelClass.checkDimLayers = False
 
-      self.EntSelClass.run()
+      self.entSelClass.run(msgMapTool, msg)
       
 
    #============================================================================
@@ -1072,7 +1076,7 @@ class QadARRAYCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -1118,7 +1122,7 @@ class QadARRAYCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_ARRAY", "PAth") or value == "PAth":
                self.arrayType = QadARRAYCommandClassSeriesTypeEnum.PATH
                self.plugIn.setLastArrayType_array(self.arrayType)
-               self.waitForPathObject()
+               self.waitForPathObject(msgMapTool, msg)
             elif value == QadMsg.translate("Command_ARRAY", "POlar") or value == "POlar":
                self.arrayType = QadARRAYCommandClassSeriesTypeEnum.POLAR
                self.plugIn.setLastArrayType_array(self.arrayType)
@@ -1709,11 +1713,17 @@ class QadARRAYCommandClass(QadCommandClass):
       #=========================================================================
       # RISPOSTA ALLA SELEZIONE DI UN'ENTITA' DA USARE COME PERCORSO DELLA SERIE (da step = ASK_FOR_ARRAYTYPE)
       elif self.step == QadARRAYCommandClassStepEnum.ASK_FOR_PATH_OBJ:
-         if self.EntSelClass.run(msgMapTool, msg) == True:
-            if self.EntSelClass.entity.isInitialized():
-               if self.setPathLinearObjectList(self.EntSelClass.entity, self.EntSelClass.point) == True:
+         if self.entSelClass.run(msgMapTool, msg) == True:
+            if self.entSelClass.entity.isInitialized():
+               if self.setPathLinearObjectList(self.entSelClass.entity, self.entSelClass.point) == True:
                   self.setItemNumberByDistanceBetweenColsOnMeasure()
                   self.waitForMainOptions()
+            else:               
+               if self.entSelClass.canceledByUsr == True: # fine comando
+                  return True
+               self.showMsg(QadMsg.translate("QAD", "No geometries in this position."))
+               self.waitForPathObject(msgMapTool, msg)
+               
          return False
 
 
@@ -1937,7 +1947,7 @@ class QadARRAYRECTCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -2010,7 +2020,7 @@ class QadARRAYPATHCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -2083,7 +2093,7 @@ class QadARRAYPOLARCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             

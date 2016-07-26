@@ -104,7 +104,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          if stretchedGeom is None: # se non c'è lo salto senza errore
             return True
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs())
          stretchedGeom.transform(coordTransform)           
          # stiro la feature
          stretchedGeom = qad_stretch_fun.stretchQgsGeometry(stretchedGeom, containerGeom, \
@@ -113,7 +113,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          
          if stretchedGeom is not None:
             # trasformo la geometria nel crs del layer
-            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), entity.layer.crs())
             stretchedGeom.transform(coordTransform)
                        
             f = entity.getFeature()
@@ -280,7 +280,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
      
@@ -632,7 +632,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
             return True
 
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs())
          stretchedGeom.transform(coordTransform)           
          # stiro la feature
          stretchedGeom = qad_stretch_fun.gripStretchQgsGeometry(stretchedGeom, self.basePt, ptList, \
@@ -641,7 +641,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
          
          if stretchedGeom is not None:
             # trasformo la geometria nel crs del layer
-            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+            coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), entity.layer.crs())
             stretchedGeom.transform(coordTransform)
                        
             f = entity.getFeature()
@@ -766,7 +766,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
      

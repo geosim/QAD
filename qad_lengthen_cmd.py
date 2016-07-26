@@ -258,7 +258,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
       pointList = subGeom.asPolyline()
       LinearObjectListToMisure.fromPolyline(pointList)
       # la trasformo in unità di mappa
-      LinearObjectListToMisure.transformFromCRSToCRS(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())      
+      LinearObjectListToMisure.transformFromCRSToCRS(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs())      
       
       msg = QadMsg.translate("Command_LENGTHEN", "\nCurrent length: {0}")
       msg = msg.format(str(LinearObjectListToMisure.length()))
@@ -465,7 +465,7 @@ class QadLENGTHENCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -968,7 +968,7 @@ class QadGRIPLENGTHENCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 

@@ -99,7 +99,7 @@ class QadArc():
                                               self.startAngle,
                                               self.radius)
    def setStartAngleByPt(self, pt):
-      # da usare per modificare un arco già efinito
+      # da usare per modificare un arco già definito
       angle = qad_utils.getAngleBy2Pts(self.center, pt)
       if angle == self.endAngle:
          return False
@@ -128,16 +128,27 @@ class QadArc():
       else:
          return False
 
+
    def inverse(self):
       dummy = self.endAngle
       self.endAngle = self.startAngle 
       self.startAngle = dummy
+
 
    def getMiddlePt(self):
       halfAngle = self.totalAngle() / 2
       return qad_utils.getPolarPointByPtAngle(self.center,
                                               self.startAngle + halfAngle,
                                               self.radius)
+
+
+   def getPtFromStart(self, distance):
+      # la funzione restituisce un punto sull'arco ad una distanza nota da punto iniziale
+      # (2*pi) : (2*pi*r) = angle : distance
+      angle = distance / self.radius
+      angle = self.startAngle + angle
+      return qad_utils.getPolarPointByPtAngle(self.center, angle, self.radius)
+
 
    def getQuadrantPoints(self):
       result = []      
@@ -410,6 +421,32 @@ class QadArc():
       angle = 2 * math.asin(chord / (2 * self.radius))
       self.endAngle = self.startAngle + angle
       return True
+   
+
+   #============================================================================
+   # fromStartCenterPtsLength
+   #============================================================================
+   def fromStartCenterPtsLength(self, startPt, centerPt, length):
+      """
+      setta le caratteristiche dell'arco attraverso:
+      punto iniziale
+      centro
+      lunghezza dela corda tra punto iniziale e finale
+      """
+      if startPt == centerPt or chord == 0:
+         return False
+
+      self.center = centerPt
+      self.radius = qad_utils.getDistance(centerPt, startPt)
+      circumference = 2 * math.pi * self.radius
+      if length >= circumference:
+         return False
+      self.startAngle = qad_utils.getAngleBy2Pts(centerPt, startPt)
+      
+      #circumference : math.pi * 2 = length : angle
+      angle = (math.pi * 2) * length / circumference
+      self.endAngle = self.startAngle + angle
+      return True
 
 
    #============================================================================
@@ -677,6 +714,38 @@ class QadArc():
          
       return None
    
+
+   #============================================================================
+   # rotate
+   #============================================================================
+   def rotate(self, basePt, angle):
+      self.center = qad_utils.rotatePoint(self.center, basePt, angle)
+      newStartPt = qad_utils.rotatePoint(self.getStartPt(), basePt, angle)
+      newEndPt = qad_utils.rotatePoint(self.getEndPt(), basePt, angle)
+      self.startAngle = qad_utils.getAngleBy2Pts(self.center, newStartPt)
+      self.endAngle = qad_utils.getAngleBy2Pts(self.center, newEndPt)
+   
+
+   #============================================================================
+   # scale
+   #============================================================================
+   def scale(self, basePt, scale):
+      self.center = qad_utils.scalePoint(self.center, basePt, scale)
+      newStartPt = qad_utils.scalePoint(self.getStartPt(), basePt, scale)
+      newEndPt = qad_utils.scalePoint(self.getEndPt(), basePt, scale)
+      self.startAngle = qad_utils.getAngleBy2Pts(self.center, newStartPt)
+      self.endAngle = qad_utils.getAngleBy2Pts(self.center, newEndPt)
+   
+
+   #============================================================================
+   # mirror
+   #============================================================================
+   def mirror(self, mirrorPt, mirrorAngle):
+      startPt = qad_utils.mirrorPoint(self.getStartPt(), mirrorPt, mirrorAngle)
+      secondPt = qad_utils.mirrorPoint(self.getMiddlePt(), mirrorPt, mirrorAngle)
+      endPt = qad_utils.mirrorPoint(self.getEndPt(), mirrorPt, mirrorAngle)
+      self.fromStartSecondEndPts(startPt, secondPt, endPt)
+
 
 #===============================================================================
 # QadArcList lista di archi class

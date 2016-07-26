@@ -12,7 +12,6 @@
         developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
-/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -162,13 +161,16 @@ class Qad(QObject):
    
    # comando options - ultimo tab utilizzato
    optionsLastUsedTabIndex = -1 # -1 = non inizializzato
+   
+   # comando dimstyle - ultimo tab utilizzato
+   dimStyleLastUsedTabIndex = -1 # -1 = non inizializzato
 
 
    #============================================================================
    # version
    #============================================================================
    def version(self):
-      return "2.8.12"
+      return "2.8.13"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -712,6 +714,11 @@ class Qad(QObject):
       self.dimLinear_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.dimLinear_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.dimLinear_action)
+      # DIMARC
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMARC"))
+      self.dimArc_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimArc_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimArc_action)
       # DIMSTYLE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMSTYLE"))
       self.dimStyle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -1014,6 +1021,7 @@ class Qad(QObject):
       dimMenu = QMenu(QadMsg.translate("QAD", "Dimensioning"))
       dimMenu.addAction(self.dimLinear_action)
       dimMenu.addAction(self.dimAligned_action)
+      dimMenu.addAction(self.dimArc_action)
       dimMenu.addAction(self.dimStyle_action)
       return dimMenu
       
@@ -1061,6 +1069,7 @@ class Qad(QObject):
       toolBar.setObjectName(QadMsg.translate("QAD", "QAD - Dimensioning"))
       toolBar.addAction(self.dimLinear_action)
       toolBar.addAction(self.dimAligned_action)
+      toolBar.addAction(self.dimArc_action)
       toolBar.addAction(self.dimStyle_action)
       return toolBar
 
@@ -1734,6 +1743,9 @@ class Qad(QObject):
 
    def runDIMALIGNEDCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMALIGNED"))
+
+   def runDIMARCCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMARC"))
 
    def runDIMSTYLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMSTYLE"))

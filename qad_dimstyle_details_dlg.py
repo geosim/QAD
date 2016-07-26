@@ -40,6 +40,18 @@ import qad_layer
 import qad_utils
 
 
+#===============================================================================
+# QadDIMSTYLEDETAILSTabIndexEnum class.
+#===============================================================================
+class QadDIMSTYLEDETAILSTabIndexEnum():
+   DB             = 0
+   LINES          = 1
+   SYMBOLS_ARROWS = 2
+   TEXT           = 3
+   FIT            = 4
+   PRIMARY_UNITS  = 5
+
+
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica della funzione di creazione nuovo stile
 class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_DimStyle_Details_Dialog):
@@ -61,6 +73,11 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.init_adjust_tab()
       self.init_primaryUnits_tab()
       self.previewDim.drawDim(self.dimStyle)
+      
+      if self.plugIn.dimStyleLastUsedTabIndex == -1: # non inizializzato
+         self.plugIn.dimStyleLastUsedTabIndex = QadDIMSTYLEDETAILSTabIndexEnum.DB
+      self.tabWidget.setCurrentIndex(self.plugIn.dimStyleLastUsedTabIndex)
+      
 
    def closeEvent(self, event):
       del self.previewDim # cancello il canvans di preview della quota chiamato QadPreviewDim 
@@ -408,6 +425,15 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.blockLeaderName.setText(self.dimStyle.blockLeaderName)
       self.blockWidth.setValue(self.dimStyle.blockWidth)
       self.blockScale.setValue(self.dimStyle.blockScale)
+      
+      # arcSymbPos
+      if self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.BEFORE_TEXT:
+         self.arcSymbolPreceding.setChecked(True)         
+      elif self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.ABOVE_TEXT:
+         self.arcSymbolAbove.setChecked(True)
+      elif self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.NONE:
+         self.arcSymbolNone.setChecked(True)
+      
       self.onInit = False 
 
    def accept_symbols_tab(self):
@@ -416,6 +442,14 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.dimStyle.blockLeaderName = self.blockLeaderName.text()
       self.dimStyle.blockWidth = self.blockWidth.value()      
       self.dimStyle.blockScale = self.blockScale.value()      
+
+      # textForcedRot
+      if self.arcSymbolPreceding.isChecked():
+         self.dimStyle.arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT
+      elif self.arcSymbolAbove.isChecked():
+         self.dimStyle.arcSymbPos = QadDimStyleArcSymbolPosEnum.ABOVE_TEXT
+      elif self.arcSymbolNone.isChecked():
+         self.dimStyle.arcSymbPos = QadDimStyleArcSymbolPosEnum.NONE
 
    def redrawDimOnSymbolsTabChanged(self):
       if self.onInit == True: # esco se sono in fase di inizializzazione
@@ -439,6 +473,15 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.redrawDimOnSymbolsTabChanged()
 
    def blockScaleChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def arcSymbolPrecedingToggled(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def arcSymbolAboveToggled(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def arcSymbolNoneToggled(self, value):
       self.redrawDimOnSymbolsTabChanged()
 
    
@@ -505,7 +548,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       elif self.dimStyle.textRotMode == QadDimStyleTxtRotModeEnum.FORCED_ROTATION:
          self.textRotModeFixedRot.setChecked(True)
       
-      self.textForcedRot.setValue(self.dimStyle.textForcedRot)
+      self.textForcedRot.setValue(qad_utils.toDegrees(self.dimStyle.textForcedRot))
       self.textRotModeFixedRotToggled(self.textRotModeFixedRot.isChecked())
       self.onInit = False 
 
@@ -554,7 +597,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       elif self.textRotModeFixedRot.isChecked():
          self.dimStyle.textRotMode = QadDimStyleTxtRotModeEnum.FORCED_ROTATION
      
-      self.dimStyle.textForcedRot = self.textForcedRot.value()
+      self.dimStyle.textForcedRot = qad_utils.toRadians(self.textForcedRot.value())
 
    def redrawDimOnTextTabChanged(self):
       if self.onInit == True: # esco se sono in fase di inizializzazione
@@ -757,6 +800,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
                                  QMessageBox.Yes | QMessageBox.No)
          if res == QMessageBox.No:
             return
+
+      self.plugIn.dimStyleLastUsedTabIndex = self.tabWidget.currentIndex()
       QDialog.accept(self)
       
       
@@ -800,30 +845,27 @@ class QadPreviewDim(QgsMapCanvas):
       self.onCrsChanged()
       self.onCrsTransformEnabled( self.iface.mapCanvas().hasCrsTransformEnabled() )
 
+
    def onExtentsChanged(self):
       prevFlag = self.renderFlag()
       self.setRenderFlag(False)
-
       self.setExtent(self.iface.mapCanvas().extent())
- 
       self.setRenderFlag( prevFlag )
+
 
    def onCrsChanged(self):
       prevFlag = self.renderFlag()
-      self.setRenderFlag( False )
-
-      renderer = self.iface.mapCanvas().mapRenderer()
-      self._setRendererCrs( self.mapRenderer(), self._rendererCrs(renderer) )
-      self.mapRenderer().setMapUnits( renderer.mapUnits() )
-
+      self.setRenderFlag( False )     
+      mapSettings = self.iface.mapCanvas().mapSettings()
+      self.mapSettings().setDestinationCrs(mapSettings.destinationCrs())
+      self.mapSettings().setMapUnits(mapSettings.mapUnits())
       self.setRenderFlag( prevFlag )
+
 
    def onCrsTransformEnabled(self, enabled):
       prevFlag = self.renderFlag()
       self.setRenderFlag( False )
-
-      self.mapRenderer().setProjectionsEnabled( enabled )
-
+      self.mapSettings().setCrsTransformEnabled(enabled)
       self.setRenderFlag( prevFlag )
 
 
@@ -909,15 +951,6 @@ class QadPreviewDim(QgsMapCanvas):
          return layer.id()
       return layer.getLayerID() 
 
-   def _rendererCrs(self, renderer):
-      if hasattr(renderer, 'destinationCrs'):
-         return renderer.destinationCrs()
-      return renderer.destinationSrs()
-
-   def _setRendererCrs(self, renderer, crs):
-      if hasattr(renderer, 'setDestinationCrs'):
-         return renderer.setDestinationCrs( crs )
-      return renderer.setDestinationSrs( crs )
 
    def zoomOnRect(self, zoomRect):
       mapSettings = self.mapSettings()
@@ -933,7 +966,8 @@ class QadPreviewDim(QgsMapCanvas):
       self.setCenter(zoomRect.center())
 
       self.setRenderFlag( prevFlag )
-      
+
+
    def drawDim(self, dimStyle):
       if dimStyle is None:
          return
@@ -1030,6 +1064,23 @@ class QadPreviewDim(QgsMapCanvas):
          rect.combineExtentWith(g.boundingBox())
       
       self.dimStyle.addAlignedDimToLayers(self.plugIn, dimPt1, dimPt2, linePosPt, None)
+
+      ###########################
+      # quota arco
+      dimArc = QadArc()
+      dimArc.fromStartSecondEndPts(QgsPoint(23, -20), QgsPoint(10, -15), QgsPoint(0, -15.7))
+      linePosPt = QgsPoint(13, -13)
+      
+      # calcolo il rettangolo di occupazione della quota
+      dimEntity, textOffsetRectGeom = self.dimStyle.getArcDimFeatures(self.plugIn.canvas, \
+                                                                      dimArc, linePosPt)
+      rect.combineExtentWith(textOffsetRectGeom.boundingBox())
+      for g in dimEntity.getLinearGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      for g in dimEntity.getSymbolGeometryCollection():
+         rect.combineExtentWith(g.boundingBox())
+      
+      self.dimStyle.addArcDimToLayers(self.plugIn, dimArc, linePosPt)
 
       self.zoomOnRect(rect)
 

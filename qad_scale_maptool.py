@@ -124,7 +124,7 @@ class Qad_scale_maptool(QadGetPoint):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
 
-         transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
+         transformedBasePt = self.canvas.mapSettings().mapToLayerCoordinates(layer, self.basePt)
 
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]

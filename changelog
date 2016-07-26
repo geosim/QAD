@@ -7,4 +7,10 @@ version 2.8.12:
 
 * 2016-05-05 Added <ARRAY>, <ARRAYRECT>, <ARRAYPATH>, <ARRAYPOLAR> commands
 
-* 2016-05-13 Fixed bug on dimension saving
+* 2016-06-13 Fixed bug on dimension saving
+
+* 2016-06-16 Added <DIMARCSYM> system variable
+
+* 2016-06-30 Removed <DIMARCSYM> system variable (used as dim style property)
+
+* 2016-06-30 Added <DIMARC> command

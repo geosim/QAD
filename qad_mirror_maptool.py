@@ -105,8 +105,8 @@ class Qad_mirror_maptool(QadGetPoint):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
 
-         transformedFirstMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.firstMirrorPt)
-         transformedNewPtMirrorPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
+         transformedFirstMirrorPt = self.canvas.mapSettings().mapToLayerCoordinates(layer, self.firstMirrorPt)
+         transformedNewPtMirrorPt = self.canvas.mapSettings().mapToLayerCoordinates(layer, newPt)
 
          while len(layerEntitySet.featureIds) > 0:
             featureId = layerEntitySet.featureIds[0]

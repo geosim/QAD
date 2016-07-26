@@ -64,30 +64,30 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
    
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
-      self.EntSelClass = None
+      self.entSelClass = None
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      if self.EntSelClass is not None:
-         del self.EntSelClass            
+      if self.entSelClass is not None:
+         del self.entSelClass            
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0 or self.step == 1: # quando si é in fase di selezione entità
-         return self.EntSelClass.getPointMapTool(drawMode)
+         return self.entSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
    
    def waitForEntsel(self, msgMapTool, msg):
-      if self.EntSelClass is not None:
-         del self.EntSelClass
-         self.EntSelClass = None
-      self.EntSelClass = QadEntSelClass(self.plugIn)
-      self.EntSelClass.msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Select object whose layer will be the current layer: ")
+      if self.entSelClass is not None:
+         del self.entSelClass
+         self.entSelClass = None
+      self.entSelClass = QadEntSelClass(self.plugIn)
+      self.entSelClass.msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "Select object whose layer will be the current layer: ")
       self.getPointMapTool().setSnapType(QadSnapTypeEnum.DISABLE)
-      self.EntSelClass.run(msgMapTool, msg)
+      self.entSelClass.run(msgMapTool, msg)
         
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       
@@ -97,9 +97,9 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
          return False # continua
       
       elif self.step == 1:
-         if self.EntSelClass.run(msgMapTool, msg) == True:
-            if self.EntSelClass.entity.isInitialized():
-               layer = self.EntSelClass.entity.layer
+         if self.entSelClass.run(msgMapTool, msg) == True:
+            if self.entSelClass.entity.isInitialized():
+               layer = self.entSelClass.entity.layer
                if self.plugIn.canvas.currentLayer() is None or \
                   self.plugIn.canvas.currentLayer() != layer:                              
                   self.plugIn.canvas.setCurrentLayer(layer)
@@ -107,8 +107,8 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
                   self.plugIn.iface.legendInterface().refreshLayerSymbology(layer)
                   msg = QadMsg.translate("Command_SETCURRLAYERBYGRAPH", "\nThe current layer is {0}.")
                   self.showMsg(msg.format(layer.name()))
-               del self.EntSelClass
-               self.EntSelClass = None
+               del self.entSelClass
+               self.entSelClass = None
                return True
             else:               
                if self.entSelClass.canceledByUsr == True: # fine comando

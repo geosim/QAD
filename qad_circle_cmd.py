@@ -91,7 +91,7 @@ class QadCIRCLECommandClass(QadCommandClass):
    def run(self, msgMapTool = False, msg = None):
       self.isValidPreviousInput = True # per gestire il comando anche in macro
 
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -345,7 +345,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.firstPt = None
             self.firstPtTan = value
             self.firstGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
             self.firstGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)
@@ -389,7 +389,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.secondPt = None
             self.secondPtTan = value
             self.secondGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
             self.secondGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_THIRD_PT)
@@ -433,7 +433,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.thirdPt = None
             self.thirdPtTan = value
             self.thirdGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
             self.thirdGeomTan.transform(coordTransform)         
          else: # altrimenti é un punto esplicito 
             self.thirdPt = value
@@ -522,7 +522,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.firstDiamPt = None
             self.firstDiamPtTan = value
             self.firstDiamGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria         
-            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
             self.firstDiamGeomTan.transform(coordTransform)         
             # imposto il map tool
             self.getPointMapTool().setMode(Qad_circle_maptool_ModeEnum.FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT)
@@ -565,7 +565,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             self.secondDiamPt = None
             self.secondDiamPtTan = value
             self.secondDiamGeomTan = QgsGeometry(entity.getGeometry()) # duplico la geometria
-            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
             self.secondDiamGeomTan.transform(coordTransform)            
          else: # altrimenti é un punto esplicito 
             self.secondDiamPt = value  
@@ -641,7 +641,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             return False
          
          self.tanGeom1 = QgsGeometry(entity.getGeometry())         
-         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
          self.tanGeom1.transform(coordTransform)         
          self.tanPt1 = self.getPointMapTool().point
 
@@ -692,7 +692,7 @@ class QadCIRCLECommandClass(QadCommandClass):
             return False
          
          self.tanGeom2 = QgsGeometry(entity.getGeometry())
-         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs()) # trasformo la geometria
          self.tanGeom2.transform(coordTransform)                  
          self.tanPt2 = self.getPointMapTool().point
 

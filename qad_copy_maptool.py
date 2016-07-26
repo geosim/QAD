@@ -103,8 +103,8 @@ class Qad_copy_maptool(QadGetPoint):
       for layerEntitySet in entitySet.layerEntitySetList:
          layer = layerEntitySet.layer
 
-         transformedBasePt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, self.basePt)
-         transformedNewPt = self.canvas.mapRenderer().mapToLayerCoordinates(layer, newPt)
+         transformedBasePt = self.canvas.mapSettings().mapToLayerCoordinates(layer, self.basePt)
+         transformedNewPt = self.canvas.mapSettings().mapToLayerCoordinates(layer, newPt)
          offSetX = transformedNewPt.x() - transformedBasePt.x()
          offSetY = transformedNewPt.y() - transformedBasePt.y()
          entity = QadEntity()

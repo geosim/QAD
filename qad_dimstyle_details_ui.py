@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle_details.ui'
 #
-# Created: Fri Apr 15 15:01:16 2016
+# Created: Mon Jul 04 12:00:42 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -259,6 +259,18 @@ class Ui_DimStyle_Details_Dialog(object):
         self.label_20 = QtGui.QLabel(self.groupBox_3)
         self.label_20.setGeometry(QtCore.QRect(10, 140, 111, 21))
         self.label_20.setObjectName(_fromUtf8("label_20"))
+        self.groupBox_4 = QtGui.QGroupBox(self.SymbolTab)
+        self.groupBox_4.setGeometry(QtCore.QRect(290, 210, 241, 81))
+        self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
+        self.arcSymbolPreceding = QtGui.QRadioButton(self.groupBox_4)
+        self.arcSymbolPreceding.setGeometry(QtCore.QRect(10, 20, 221, 17))
+        self.arcSymbolPreceding.setObjectName(_fromUtf8("arcSymbolPreceding"))
+        self.arcSymbolAbove = QtGui.QRadioButton(self.groupBox_4)
+        self.arcSymbolAbove.setGeometry(QtCore.QRect(10, 40, 221, 17))
+        self.arcSymbolAbove.setObjectName(_fromUtf8("arcSymbolAbove"))
+        self.arcSymbolNone = QtGui.QRadioButton(self.groupBox_4)
+        self.arcSymbolNone.setGeometry(QtCore.QRect(10, 60, 221, 17))
+        self.arcSymbolNone.setObjectName(_fromUtf8("arcSymbolNone"))
         self.tabWidget.addTab(self.SymbolTab, _fromUtf8(""))
         self.TextTab = QtGui.QWidget()
         self.TextTab.setObjectName(_fromUtf8("TextTab"))
@@ -420,7 +432,7 @@ class Ui_DimStyle_Details_Dialog(object):
         self.horizontalLayout.addWidget(self.helpButton)
 
         self.retranslateUi(DimStyle_Details_Dialog)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QObject.connect(self.linearLayerName, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), DimStyle_Details_Dialog.linearLayerNameChanged)
         QtCore.QObject.connect(self.symbolLayerName, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), DimStyle_Details_Dialog.symbolLayerNameChanged)
         QtCore.QObject.connect(self.textualLayerName, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), DimStyle_Details_Dialog.textualLayerNameChanged)
@@ -476,6 +488,9 @@ class Ui_DimStyle_Details_Dialog(object):
         QtCore.QObject.connect(self.textBlockAdjustFirstSymbolOutside, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.textBlockAdjustFirstSymbolOutsideToggled)
         QtCore.QObject.connect(self.textBlockAdjustFirstTextOutside, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.textBlockAdjustFirstTextOutsideToggled)
         QtCore.QObject.connect(self.textBlockAdjustBothOutside, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.textBlockAdjustBothOutsideToggled)
+        QtCore.QObject.connect(self.arcSymbolPreceding, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.arcSymbolPrecedingToggled)
+        QtCore.QObject.connect(self.arcSymbolAbove, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.arcSymbolAboveToggled)
+        QtCore.QObject.connect(self.arcSymbolNone, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), DimStyle_Details_Dialog.arcSymbolNoneToggled)
         QtCore.QMetaObject.connectSlotsByName(DimStyle_Details_Dialog)
 
     def retranslateUi(self, DimStyle_Details_Dialog):
@@ -551,6 +566,10 @@ class Ui_DimStyle_Details_Dialog(object):
         self.label_17.setText(_translate("DimStyle_Details_Dialog", "Arrowhead size:", None))
         self.blockScale.setToolTip(_translate("DimStyle_Details_Dialog", "Arrowhead scale.", None))
         self.label_20.setText(_translate("DimStyle_Details_Dialog", "Arrowhead scale:", None))
+        self.groupBox_4.setTitle(_translate("DimStyle_Details_Dialog", "Arc length symbol", None))
+        self.arcSymbolPreceding.setText(_translate("DimStyle_Details_Dialog", "Preceding dimension text", None))
+        self.arcSymbolAbove.setText(_translate("DimStyle_Details_Dialog", "Above dimension text", None))
+        self.arcSymbolNone.setText(_translate("DimStyle_Details_Dialog", "None", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.SymbolTab), _translate("DimStyle_Details_Dialog", "Symbols and arrows", None))
         self.groupBox_9.setTitle(_translate("DimStyle_Details_Dialog", "Text appearance", None))
         self.label_26.setText(_translate("DimStyle_Details_Dialog", "Text height:", None))

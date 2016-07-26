@@ -114,7 +114,7 @@ class QadEntity():
          return QadEntityGeomTypeEnum.NONE
 
       # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-      coordTransform = QgsCoordinateTransform(self.layer.crs(), iface.mapCanvas().mapRenderer().destinationCrs())
+      coordTransform = QgsCoordinateTransform(self.layer.crs(), iface.mapCanvas().mapSettings().destinationCrs())
       g.transform(coordTransform)
 
       wkbType = g.wkbType()
@@ -351,7 +351,7 @@ class QadEntity():
             g = QgsGeometry.fromPolygon(Pts)
 
       # trasformo la geometria nel crs del layer
-      coordTransform = QgsCoordinateTransform(iface.mapCanvas().mapRenderer().destinationCrs(), self.layer.crs())
+      coordTransform = QgsCoordinateTransform(iface.mapCanvas().mapSettings().destinationCrs(), self.layer.crs())
       g.transform(coordTransform)
       return g
       
@@ -422,7 +422,7 @@ class QadEntity():
       # basePt = punto base espresso in map coordinate
       # restituisce una feature ruotata
       canvas = qgis.utils.iface.mapCanvas()
-      destinationCrs = canvas.mapRenderer().destinationCrs()
+      destinationCrs = canvas.mapSettings().destinationCrs()
 
       f = self.getFeature()
       g = g.geometry()

@@ -50,21 +50,14 @@ class Qad_dim_maptool_ModeEnum():
    # noto i punti di quotatura si richiede la posizione della linea di quota lineare
    FIRST_SECOND_PT_KNOWN_ASK_FOR_LINEAR_DIM_LINE_POS = 3     
    # si richiede il testo di quota
-   ASK_FOR_TEXT = 6
+   ASK_FOR_TEXT = 4
    # noto i punti di quotatura si richiede la posizione della linea di quota allineata
-   FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS = 7
+   FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS = 5
+   # si richiede un punto sull'arco per la quota arco
+   ASK_FOR_PARTIAL_ARC_PT_FOR_DIM_ARC = 6
+   # noto i punti di quotatura si richiede la posizione della linea di quota arco
+   FIRST_SECOND_PT_KNOWN_ASK_FOR_ARC_DIM_LINE_POS = 7
 
-   # noto il primo punto di estremità diam si richiede il secondo punto di estremità diam
-   FIRST_DIAM_PT_KNOWN_ASK_FOR_SECOND_DIAM_PT = 8
-   # noto niente si richiede l'entita del primo punto di tangenza
-   NONE_KNOWN_ASK_FOR_FIRST_TAN = 9
-   # nota l'entita del primo punto di tangenza si richiede quella del secondo punto di tangenza
-   FIRST_TAN_KNOWN_ASK_FOR_SECOND_TAN = 10
-   # note la prima e la seconda entita dei punti di tangenza si richiede il raggio
-   FIRST_SECOND_TAN_KNOWN_ASK_FOR_RADIUS = 11
-   # noto note la prima, la seconda entita dei punti di tangenza e il primo punto per misurare il raggio
-   # si richiede il secondo punto per misurare il raggio
-   FIRST_SECOND_TAN_FIRSTPTRADIUS_KNOWN_ASK_FOR_SECONDPTRADIUS = 12
 
 #===============================================================================
 # Qad_dim_maptool class
@@ -79,24 +72,17 @@ class Qad_dim_maptool(QadGetPoint):
       self.dimPt2 = None
       self.dimCircle = None
       
+      self.dimArc = None # per quotatura arco
+      
       self.forcedTextRot = None # rotazione del testo di quota
       self.measure = None # misura della quota (se None viene calcolato)
       self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL # allineamento della linea di quota
       self.forcedDimLineAlignment = None # allineamento della linea di quota forzato
       self.forcedDimLineRot = 0.0 # rotazione della linea di quota forzato
+      self.leader = None # per disegnare la linea direttrice nella quotatura arco
       
       self.__rubberBand = QadRubberBand(self.canvas)      
-                              
-      
-      self.centerPt = None
-      self.radius = None
-      self.dimPt1 = None
-      self.dimPt2 = None
-      self.firstDiamPt = None
-      self.tan1 = None
-      self.tan2 = None
-      self.startPtForRadius = None
-      self.geomType = QGis.Polygon
+
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
@@ -112,7 +98,7 @@ class Qad_dim_maptool(QadGetPoint):
       self.mode = None    
             
 
-   def seDimLineAlignment(self, LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2):
+   def setDimLineAlignment(self, LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2):
       # < 0 se a sinistra della linea
       sxOfHorizLine1 = True if qad_utils.leftOfLine(LinePosPt, horizLine1[0], horizLine1[1]) < 0 else False
       sxOfHorizLine2 = True if qad_utils.leftOfLine(LinePosPt, horizLine2[0], horizLine2[1]) < 0 else False
@@ -152,7 +138,7 @@ class Qad_dim_maptool(QadGetPoint):
       
       # se non é stato impostato un allineamento forzato, lo calcolo in automatico
       if self.forcedDimLineAlignment is None:         
-         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+         self.setDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
       else:
          self.preferredAlignment = self.forcedDimLineAlignment
          
@@ -182,7 +168,7 @@ class Qad_dim_maptool(QadGetPoint):
          pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt2, self.forcedDimLineRot, 1)
          verticalLine2 = [self.dimPt2, pt2]
          
-         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+         self.setDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
       else:
          self.preferredAlignment = self.forcedDimLineAlignment
             
@@ -218,6 +204,12 @@ class Qad_dim_maptool(QadGetPoint):
                                                                          self.dimPt2, \
                                                                          self.tmpPoint, \
                                                                          self.measure)
+      # noti i punti di quotatura si richiede la posizione della linea di quota arco
+      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ARC_DIM_LINE_POS:
+         dimEntity, textOffsetRect = self.dimStyle.getArcDimFeatures(self.canvas, \
+                                                                     self.dimArc, \
+                                                                     self.tmpPoint, \
+                                                                     self.measure)
 
       if dimEntity is not None:
          # testo di quota
@@ -260,3 +252,9 @@ class Qad_dim_maptool(QadGetPoint):
       # noti i punti di quotatura si richiede la posizione della linea di quota allineata
       elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS:
          self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+      # si richiede un punto sull'arco per la quota arco
+      elif self.mode == Qad_dim_maptool_ModeEnum.ASK_FOR_PARTIAL_ARC_PT_FOR_DIM_ARC:
+         self.setDrawMode(QadGetPointDrawModeEnum.NONE)
+      # noto i punti di quotatura si richiede la posizione della linea di quota
+      elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ARC_DIM_LINE_POS:
+         self.setDrawMode(QadGetPointDrawModeEnum.NONE)         

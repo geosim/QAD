@@ -96,7 +96,7 @@ class Qad_stretch_maptool(QadGetPoint):
          if stretchedGeom is None: # se non c'è lo salto senza errore
             return True
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.canvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(entity.layer.crs(), self.canvas.mapSettings().destinationCrs())
          stretchedGeom.transform(coordTransform)           
          # stiro la feature
          stretchedGeom = qad_stretch_fun.stretchQgsGeometry(stretchedGeom, containerGeom, \
@@ -105,7 +105,7 @@ class Qad_stretch_maptool(QadGetPoint):
          
          if stretchedGeom is not None:
             # trasformo la geometria nel crs del layer
-            coordTransform = QgsCoordinateTransform(self.canvas.mapRenderer().destinationCrs(), entity.layer.crs())
+            coordTransform = QgsCoordinateTransform(self.canvas.mapSettings().destinationCrs(), entity.layer.crs())
             stretchedGeom.transform(coordTransform)
             self.__highlight.addGeometry(stretchedGeom, entity.layer)
 

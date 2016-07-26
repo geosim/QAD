@@ -670,7 +670,15 @@ The value must be between 2 and 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select an arc.</source>
+        <source>Specify first point on the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point on the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an arc or polyline arc segment.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3455,6 +3463,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 Do you want to accepts these settings ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc length symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preceding dimension text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above dimension text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -30,6 +30,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
+import sys, traceback
 
 from qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
 from qad_msg import QadMsg
@@ -66,7 +67,7 @@ from qad_break_cmd import QadBREAKCommandClass
 from qad_pedit_cmd import QadPEDITCommandClass
 from qad_fillet_cmd import QadFILLETCommandClass
 from qad_polygon_cmd import QadPOLYGONCommandClass
-from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass
+from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass, QadDIMARCCommandClass
 from qad_dimstyle_cmd import QadDIMSTYLECommandClass
 from qad_lengthen_cmd import QadLENGTHENCommandClass
 from qad_help_cmd import QadHELPCommandClass
@@ -120,6 +121,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadPOLYGONCommandClass(self.plugIn)) # POLYGON
       self.__cmdObjs.append(QadDIMLINEARCommandClass(self.plugIn)) # DIMLINEAR
       self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
+      self.__cmdObjs.append(QadDIMARCCommandClass(self.plugIn)) # DIMALIGNED
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
       self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
@@ -230,105 +232,125 @@ class QadCommandsClass():
    # run
    #============================================================================
    def run(self, command, param = None):
-      # se c'é un comando attivo
-      if self.actualCommand is not None:
-         return
-
-      # eccezione per comando virtuale "QadVirtualSelCommandClass" che in realtà non è un comando
-      # ma è usato per selezionare oggetti quando nessun comando è attivo
-      if command == "QadVirtualSelCommandClass":
-         self.actualCommand = QadVirtualSelCommandClass(self.plugIn)
-         # param è la posizione corrente del mouse
-         if self.actualCommand.run(False, param) == True: # comando terminato
-            self.clearCommand()
-         return
-
-      # eccezione per comando virtuale "QadVirtualGripCommandsClass" che in realtà non è un comando
-      # ma è usato per modificare gli oggetti selezionati da grip points
-      if command == "QadVirtualGripCommandsClass":
-         self.actualCommand = QadVirtualGripCommandsClass(self.plugIn)
-         # param è una lista in cui:
-         # il primo elemento è il codice del comando da eseguire
-         # il secondo elemento è entitySetGripPoints
-         # il terzo elemento è il punto del grip corrente
-         self.actualCommand.entitySetGripPoints = param[1]
-         self.actualCommand.basePt = param[2]
-         self.actualCommand.initStartCommand(param[0])
-         if self.actualCommand.run(False) == True: # comando terminato
-            self.clearCommand()
-         return
-      
-      self.actualCommand = self.getCommandObj(command)
-      if self.actualCommand is None:
-         # verifico se è una variabile di sistema
-         if QadVariables.get(command) is not None:
-            self.showMsg("\n")
-            # lancio comando SETVAR per settare la variabile
-            args = [QadMsg.translate("Command_list", "SETVAR"), command]
-            return self.runMacro(args)
-            
-         msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
-         self.showErr(msg.format(command))
-         return
-
-      self.usedCmdNames.setUsed(command)
-      self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
-      if self.actualCommand.run() == True: # comando terminato
-         self.clearCommand()
+      try:
+         # se c'é un comando attivo
+         if self.actualCommand is not None:
+            return
+   
+         # eccezione per comando virtuale "QadVirtualSelCommandClass" che in realtà non è un comando
+         # ma è usato per selezionare oggetti quando nessun comando è attivo
+         if command == "QadVirtualSelCommandClass":
+            self.actualCommand = QadVirtualSelCommandClass(self.plugIn)
+            # param è la posizione corrente del mouse
+            if self.actualCommand.run(False, param) == True: # comando terminato
+               self.clearCommand()
+            return
+   
+         # eccezione per comando virtuale "QadVirtualGripCommandsClass" che in realtà non è un comando
+         # ma è usato per modificare gli oggetti selezionati da grip points
+         if command == "QadVirtualGripCommandsClass":
+            self.actualCommand = QadVirtualGripCommandsClass(self.plugIn)
+            # param è una lista in cui:
+            # il primo elemento è il codice del comando da eseguire
+            # il secondo elemento è entitySetGripPoints
+            # il terzo elemento è il punto del grip corrente
+            self.actualCommand.entitySetGripPoints = param[1]
+            self.actualCommand.basePt = param[2]
+            self.actualCommand.initStartCommand(param[0])
+            if self.actualCommand.run(False) == True: # comando terminato
+               self.clearCommand()
+            return
          
+         self.actualCommand = self.getCommandObj(command)
+         if self.actualCommand is None:
+            # verifico se è una variabile di sistema
+            if QadVariables.get(command) is not None:
+               self.showMsg("\n")
+               # lancio comando SETVAR per settare la variabile
+               args = [QadMsg.translate("Command_list", "SETVAR"), command]
+               return self.runMacro(args)
+               
+            msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
+            self.showErr(msg.format(command))
+            return
+   
+         self.usedCmdNames.setUsed(command)
+         self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
+         if self.actualCommand.run() == True: # comando terminato
+            self.clearCommand()
+
+      except Exception as e:
+         self.abortCommand()
+         displayError(e)
+          
          
    #============================================================================
    # runMacro
    #============================================================================
    def runMacro(self, args):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is not None:
-         return
-      
-      self.actualCommand = self.getCommandObj("MACRO_RUNNER")
-      if self.actualCommand is None:
-         msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
-         self.showErr(msg.format(command))
-         return
+      try:
+         # se non c'é alcun comando attivo
+         if self.actualCommand is not None:
+            return
+         
+         self.actualCommand = self.getCommandObj("MACRO_RUNNER")
+         if self.actualCommand is None:
+            msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
+            self.showErr(msg.format(command))
+            return
+   
+         self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
+         self.actualCommand.setCmdAndOptionsToRun(args)
+         
+         self.showMsg(args[0]) # visualizzo il nome del comando in macro
+         if self.actualCommand.run() == True: # comando terminato
+            self.clearCommand()
 
-      self.plugIn.clearEntityGripPoints() # pulisco i grip points correnti
-      self.actualCommand.setCmdAndOptionsToRun(args)
-      
-      self.showMsg(args[0]) # visualizzo il nome del comando in macro
-      if self.actualCommand.run() == True: # comando terminato
-         self.clearCommand()
+      except Exception as e:
+         self.abortCommand()
+         displayError(e)
 
 
    #============================================================================
    # continueCommandFromMapTool
    #============================================================================
    def continueCommandFromMapTool(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
-         return
-      msg = None
-      # se é stato premuto il tasto destro del mouse valuto cosa é stato inserito nella finestra di testo
-      if self.actualCommand.getPointMapTool().rightButton == True:
-         msg = self.actualCommand.getCurrMsgFromTxtWindow()
-         if (msg is not None) and len(msg) > 0:
-            self.actualCommand.showEvaluateMsg()
+      try:
+         # se non c'é alcun comando attivo
+         if self.actualCommand is None:
+            return
+         msg = None
+         # se é stato premuto il tasto destro del mouse valuto cosa é stato inserito nella finestra di testo
+         if self.actualCommand.getPointMapTool().rightButton == True:
+            msg = self.actualCommand.getCurrMsgFromTxtWindow()
+            if (msg is not None) and len(msg) > 0:
+               self.actualCommand.showEvaluateMsg()
+            else:
+               if self.actualCommand.run(True) == True: # comando terminato
+                  self.clearCommand()
          else:
             if self.actualCommand.run(True) == True: # comando terminato
                self.clearCommand()
-      else:
-         if self.actualCommand.run(True) == True: # comando terminato
-            self.clearCommand()
+
+      except Exception as e:
+         self.abortCommand()
+         displayError(e)
 
 
    #============================================================================
    # continueCommandFromTextWindow
    #============================================================================
    def continueCommandFromTextWindow(self, msg):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
-         return
-      if self.actualCommand.run(False, msg) == True: # comando terminato
-         self.clearCommand()
+      try:
+         # se non c'é alcun comando attivo
+         if self.actualCommand is None:
+            return
+         if self.actualCommand.run(False, msg) == True: # comando terminato
+            self.clearCommand()
+
+      except Exception as e:
+         self.abortCommand()
+         displayError(e)
 
             
    #============================================================================
@@ -505,6 +527,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
 
+
    def setCmdAndOptionsToRun(self, CmdAndArglist):
       # primo elemento della lista = nome comando
       # gli altri elementi sono gli argomenti del comando None = input dell'utente
@@ -519,6 +542,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
          return False
       self.plugIn.updateHistoryfromTxtWindow(cmdName)
       return True
+
             
    def run(self, msgMapTool = False, msg = None):
       
@@ -579,3 +603,13 @@ class QadUsedCmdNamesClass():
                nUsedCmd = _cmdName[1]
 
       return moreUsedCmd, nUsedCmd
+   
+
+def displayError(exception = None):
+   exc_type, exc_value, exc_traceback = sys.exc_info()
+   format_exception = traceback.format_exception(exc_type, exc_value, exc_traceback)
+   stk = QadMsg.translate("QAD", "Well, this is embarrassing message...\n\n")
+   for s in format_exception:
+      stk += s
+   if exception is not None: stk += "\n" + exception.__doc__
+   QMessageBox.critical(None, "QAD", stk)
