@@ -335,21 +335,6 @@ class QadVariablesClass():
                                                             -1, 1, \
                                                             VariableDescr)
 
-      # DIMARCSYM (int): Controlla la visualizzazione del simbolo di arco nel comando DIMARC.
-      # O = Posiziona il simbolo di arco prima del testo di quota
-      # 1 = Posiziona il simbolo di arco sopra il testo di quota
-      # 2 = Sopprima la visualizzazione del simbolo di arco
-      VariableName = QadMsg.translate("Environment variables", "DIMARCSYM") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Controls display of the arc symbol in an arc length dimension." + \
-                                       "\n0 = Places arc length symbols before the dimension text." + \
-                                       "\n1 = Places arc length symbols above the dimension text." + \
-                                       "\n2 = Suppresses the display of arc length symbols.") # x lupdate
-      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type.")
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
-                                                            QadVariableTypeEnum.INT, \
-                                                            0, 2, \
-                                                            VariableDescr)
-
       # DIMSTYLE (str): Imposta il nome dello stile di quotatura corrente
       VariableName = QadMsg.translate("Environment variables", "DIMSTYLE") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Stores the name of the current dimension style.") # x lupdate

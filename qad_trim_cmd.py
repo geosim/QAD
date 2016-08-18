@@ -119,7 +119,7 @@ class QadTRIMCommandClass(QadCommandClass):
                
             for intPt in intPts:               
                if toExtend:
-                  newGeom = qad_utils.extendQgsGeometry(self.plugIn.canvas.mapRenderer().destinationCrs(), f_geom, intPt, \
+                  newGeom = qad_utils.extendQgsGeometry(self.plugIn.canvas.mapSettings().destinationCrs(), f_geom, intPt, \
                                                         self.limitEntitySet, self.edgeMode, \
                                                         tolerance2ApproxCurve)
                   if newGeom is not None:
@@ -132,7 +132,7 @@ class QadTRIMCommandClass(QadCommandClass):
                         self.plugIn.destroyEditCommand()
                         return
                else: # trim
-                  result = qad_utils.trimQgsGeometry(self.plugIn.canvas.mapRenderer().destinationCrs(), f_geom, intPt, \
+                  result = qad_utils.trimQgsGeometry(self.plugIn.canvas.mapSettings().destinationCrs(), f_geom, intPt, \
                                                      self.limitEntitySet, self.edgeMode, \
                                                      tolerance2ApproxCurve)                  
                   if result is not None:
@@ -233,7 +233,7 @@ class QadTRIMCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 

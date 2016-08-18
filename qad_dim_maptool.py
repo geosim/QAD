@@ -72,24 +72,17 @@ class Qad_dim_maptool(QadGetPoint):
       self.dimPt2 = None
       self.dimCircle = None
       
+      self.dimArc = None # per quotatura arco
+      
       self.forcedTextRot = None # rotazione del testo di quota
       self.measure = None # misura della quota (se None viene calcolato)
       self.preferredAlignment = QadDimStyleAlignmentEnum.HORIZONTAL # allineamento della linea di quota
       self.forcedDimLineAlignment = None # allineamento della linea di quota forzato
       self.forcedDimLineRot = 0.0 # rotazione della linea di quota forzato
+      self.leader = None # per disegnare la linea direttrice nella quotatura arco
       
       self.__rubberBand = QadRubberBand(self.canvas)      
-                              
-      
-      self.centerPt = None
-      self.radius = None
-      self.dimPt1 = None
-      self.dimPt2 = None
-      self.firstDiamPt = None
-      self.tan1 = None
-      self.tan2 = None
-      self.startPtForRadius = None
-      self.geomType = QGis.Polygon
+
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
@@ -105,7 +98,7 @@ class Qad_dim_maptool(QadGetPoint):
       self.mode = None    
             
 
-   def seDimLineAlignment(self, LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2):
+   def setDimLineAlignment(self, LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2):
       # < 0 se a sinistra della linea
       sxOfHorizLine1 = True if qad_utils.leftOfLine(LinePosPt, horizLine1[0], horizLine1[1]) < 0 else False
       sxOfHorizLine2 = True if qad_utils.leftOfLine(LinePosPt, horizLine2[0], horizLine2[1]) < 0 else False
@@ -145,7 +138,7 @@ class Qad_dim_maptool(QadGetPoint):
       
       # se non é stato impostato un allineamento forzato, lo calcolo in automatico
       if self.forcedDimLineAlignment is None:         
-         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+         self.setDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
       else:
          self.preferredAlignment = self.forcedDimLineAlignment
          
@@ -175,7 +168,7 @@ class Qad_dim_maptool(QadGetPoint):
          pt2 = qad_utils.getPolarPointByPtAngle(self.dimPt2, self.forcedDimLineRot, 1)
          verticalLine2 = [self.dimPt2, pt2]
          
-         self.seDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
+         self.setDimLineAlignment(LinePosPt, horizLine1, horizLine2, verticalLine1, verticalLine2)
       else:
          self.preferredAlignment = self.forcedDimLineAlignment
             
@@ -213,11 +206,10 @@ class Qad_dim_maptool(QadGetPoint):
                                                                          self.measure)
       # noti i punti di quotatura si richiede la posizione della linea di quota arco
       elif self.mode == Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ARC_DIM_LINE_POS:
-         dimEntity, textOffsetRect = self.dimStyle.getArcdDimFeatures(self.canvas, \
-                                                                      self.dimPt1, \
-                                                                      self.dimPt2, \
-                                                                      self.tmpPoint, \
-                                                                      self.measure)
+         dimEntity, textOffsetRect = self.dimStyle.getArcDimFeatures(self.canvas, \
+                                                                     self.dimArc, \
+                                                                     self.tmpPoint, \
+                                                                     self.measure)
 
       if dimEntity is not None:
          # testo di quota

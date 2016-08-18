@@ -98,10 +98,10 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di tangenza si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
-         snapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
+         snapper.setSnapPointCRS(self.canvas.mapSettings().destinationCrs())
          snapper.setSnapType(QadSnapTypeEnum.TAN)
          snapper.setStartPoint(self.tmpPoint)
-         oSnapPoints = snapper.getSnapPoint(self.geom1, self.tan1, self.canvas.mapRenderer().destinationCrs())
+         oSnapPoints = snapper.getSnapPoint(self.geom1, self.tan1, self.canvas.mapSettings().destinationCrs())
          # memorizzo il punto di snap in point (prendo il primo valido)
          for item in oSnapPoints.items():
             points = item[1]
@@ -111,10 +111,10 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
-         snapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
+         snapper.setSnapPointCRS(self.canvas.mapSettings().destinationCrs())
          snapper.setSnapType(QadSnapTypeEnum.PER)
          snapper.setStartPoint(self.tmpPoint)
-         oSnapPoints = snapper.getSnapPoint(self.geom1, self.per1, self.canvas.mapRenderer().destinationCrs())
+         oSnapPoints = snapper.getSnapPoint(self.geom1, self.per1, self.canvas.mapSettings().destinationCrs())
          # memorizzo il punto di snap in point (prendo il primo valido)
          for item in oSnapPoints.items():
             points = item[1]

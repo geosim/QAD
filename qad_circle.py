@@ -237,7 +237,8 @@ class QadCircle():
       radius2_self = self.radius * self.radius # raggio del cerchio <self> al quadrato
       
       diffX = p2.x() - p1.x()
-      if diffX == 0: # se la retta passante per p1 e p2 é verticale
+      # se diffX è così vicino a zero 
+      if qad_utils.doubleNear(diffX, 0.0): # se la retta passante per p1 e p2 é verticale
          B = -2 * self.center.y()
          C = x2_self + y2_self + (p1.x() * p1.x()) - (2* p1.x() * self.center.x()) - radius2_self
          D = (B * B) - (4 * C) 

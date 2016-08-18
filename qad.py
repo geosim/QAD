@@ -12,7 +12,6 @@
         developers           : bbbbb aaaaa ggggg
  ***************************************************************************/
 
-/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -162,13 +161,16 @@ class Qad(QObject):
    
    # comando options - ultimo tab utilizzato
    optionsLastUsedTabIndex = -1 # -1 = non inizializzato
+   
+   # comando dimstyle - ultimo tab utilizzato
+   dimStyleLastUsedTabIndex = -1 # -1 = non inizializzato
 
 
    #============================================================================
    # version
    #============================================================================
    def version(self):
-      return "2.8.12"
+      return "2.8.13"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -499,7 +501,11 @@ class Qad(QObject):
       self.toolBar.addAction(self.mirror_action)
       self.toolBar.addAction(self.stretch_action)
       self.toolBar.addAction(self.lengthen_action)
-      self.toolBar.addAction(self.break_action)
+      
+      # break
+      self.breakToolButton = self.createBreakToolButton()
+      self.toolBar.addWidget(self.breakToolButton)
+      
       self.toolBar.addAction(self.pedit_action)
       self.toolBar.addAction(self.mapmpedit_action)
       self.toolBar.addAction(self.fillet_action)
@@ -527,6 +533,7 @@ class Qad(QObject):
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
       QObject.connect(self.iface, SIGNAL("projectRead()"), self.onProjectLoaded)
+      QObject.connect(self.iface, SIGNAL("newProjectCreated()"), self.onProjectLoaded)
 
       self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
       self.setStandardMapTool()
@@ -664,6 +671,11 @@ class Qad(QObject):
       self.break_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.break_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.break_action)
+      # BREAK BY 1 POINT (MACRO)
+      self.breakBy1Point_action = QAction(QIcon(":/plugins/qad/icons/breakBy1Point.png"), \
+                                          QadMsg.translate("Command_BREAK", "Breaks an object at one point"), \
+                                          self.iface.mainWindow())
+      QObject.connect(self.breakBy1Point_action, SIGNAL("triggered()"), self.runBREAK_BY_1_POINT_Command)
 
       # CIRCLE BY CENTER RADIUS (MACRO)
       self.circleByCenterRadius_action = QAction(QIcon(":/plugins/qad/icons/circleByCenterRadius.png"), \
@@ -712,6 +724,11 @@ class Qad(QObject):
       self.dimLinear_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.dimLinear_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.dimLinear_action)
+      # DIMARC
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMARC"))
+      self.dimArc_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.dimArc_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.dimArc_action)
       # DIMSTYLE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIMSTYLE"))
       self.dimStyle_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -925,6 +942,15 @@ class Qad(QObject):
       arcMenu.addAction(self.arcByCenterStartLength_action)      
       return arcMenu
 
+   def createBreakMenu(self):
+      # menu Break
+      breakMenu = QMenu(QadMsg.translate("Command_list", "BREAK"))
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "BREAK"))
+      breakMenu.setIcon(cmd.getIcon())
+      breakMenu.addAction(self.break_action)
+      breakMenu.addAction(self.breakBy1Point_action)
+      return breakMenu
+
    def createCircleMenu(self):
       # menu Circle
       circleMenu = QMenu(QadMsg.translate("Command_list", "CIRCLE"))
@@ -992,7 +1018,11 @@ class Qad(QObject):
       editMenu.addAction(self.mirror_action)
       editMenu.addAction(self.stretch_action)
       editMenu.addAction(self.lengthen_action)
-      editMenu.addAction(self.break_action)
+      
+      # menu break      
+      self.breakMenu = self.createBreakMenu()
+      editMenu.addMenu(self.breakMenu)
+      
       editMenu.addAction(self.pedit_action)
       editMenu.addAction(self.mapmpedit_action)
       editMenu.addAction(self.fillet_action)
@@ -1014,6 +1044,7 @@ class Qad(QObject):
       dimMenu = QMenu(QadMsg.translate("QAD", "Dimensioning"))
       dimMenu.addAction(self.dimLinear_action)
       dimMenu.addAction(self.dimAligned_action)
+      dimMenu.addAction(self.dimArc_action)
       dimMenu.addAction(self.dimStyle_action)
       return dimMenu
       
@@ -1034,16 +1065,7 @@ class Qad(QObject):
       return arcToolButton
    def arcToolButtonTriggered(self, action):
       self.arcToolButton.setDefaultAction(action)
-   
-   def createCircleToolButton(self):
-      circleToolButton = QToolButton(self.toolBar)
-      circleToolButton.setPopupMode(QToolButton.MenuButtonPopup)
-      circleToolButton.setMenu(self.circleMenu)
-      circleToolButton.setDefaultAction(self.circleMenu.actions()[0]) # prima voce di menu
-      circleToolButton.triggered.connect(self.circleToolButtonTriggered)
-      return circleToolButton
-   def circleToolButtonTriggered(self, action):
-      self.circleToolButton.setDefaultAction(action)
+
 
    def createArrayToolButton(self):
       arrayToolButton = QToolButton(self.toolBar)
@@ -1055,12 +1077,36 @@ class Qad(QObject):
    def arrayToolButtonTriggered(self, action):
       self.arrayToolButton.setDefaultAction(action)
 
+
+   def createBreakToolButton(self):
+      breakToolButton = QToolButton(self.toolBar)
+      breakToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      breakToolButton.setMenu(self.breakMenu)
+      breakToolButton.setDefaultAction(self.breakMenu.actions()[0]) # prima voce di menu
+      breakToolButton.triggered.connect(self.breakToolButtonTriggered)
+      return breakToolButton
+   def breakToolButtonTriggered(self, action):
+      self.breakToolButton.setDefaultAction(action)
+
+   
+   def createCircleToolButton(self):
+      circleToolButton = QToolButton(self.toolBar)
+      circleToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      circleToolButton.setMenu(self.circleMenu)
+      circleToolButton.setDefaultAction(self.circleMenu.actions()[0]) # prima voce di menu
+      circleToolButton.triggered.connect(self.circleToolButtonTriggered)
+      return circleToolButton
+   def circleToolButtonTriggered(self, action):
+      self.circleToolButton.setDefaultAction(action)
+
+
    def createDimToolBar(self):
       # aggiunge la toolbar per la quotatura
       toolBar = self.iface.addToolBar(QadMsg.translate("QAD", "QAD - Dimensioning"))
       toolBar.setObjectName(QadMsg.translate("QAD", "QAD - Dimensioning"))
       toolBar.addAction(self.dimLinear_action)
       toolBar.addAction(self.dimAligned_action)
+      toolBar.addAction(self.dimArc_action)
       toolBar.addAction(self.dimStyle_action)
       return toolBar
 
@@ -1599,6 +1645,15 @@ class Qad(QObject):
    def runARRAYPOLARCommand(self): 
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAYPOLAR"))
 
+   def runBREAK_BY_1_POINT_Command(self): # MACRO
+      # nome comando + argomenti
+      args = [QadMsg.translate("Command_list", "BREAK"), \
+              None, \
+              QadMsg.translate("Command_BREAK", "First point"), \
+              None, \
+              "@"]
+      self.runMacroAbortingTheCurrent(args)
+
    def runCIRCLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "CIRCLE"))
    def runCIRCLE_BY_CENTER_RADIUS_Command(self): # MACRO
@@ -1609,7 +1664,7 @@ class Qad(QObject):
       self.runMacroAbortingTheCurrent(args)
    def runCIRCLE_BY_CENTER_DIAMETER_Command(self): # MACRO
       # nome comando + argomenti
-      args = [QadMsg.translate("Command_list", "CERCHIO"), \
+      args = [QadMsg.translate("Command_list", "CIRCLE"), \
               None, \
               QadMsg.translate("Command_CIRCLE", "Diameter"), \
               None]
@@ -1734,6 +1789,9 @@ class Qad(QObject):
 
    def runDIMALIGNEDCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMALIGNED"))
+
+   def runDIMARCCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMARC"))
 
    def runDIMSTYLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMSTYLE"))

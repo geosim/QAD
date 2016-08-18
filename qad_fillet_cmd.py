@@ -203,7 +203,7 @@ class QadFILLETCommandClass(QadCommandClass):
          return False
    
       # uso il crs del canvas per lavorare con coordinate piane xy
-      epsg = self.plugIn.canvas.mapRenderer().destinationCrs().authid()
+      epsg = self.plugIn.canvas.mapSettings().destinationCrs().authid()
       res = qad_utils.getFilletLinearObjectList(self.linearObjectList1, self.partAt1, self.pointAt1, \
                                                 self.linearObjectList2, self.partAt2, self.pointAt2,\
                                                 self.filletMode, self.radius, epsg)
@@ -389,7 +389,7 @@ class QadFILLETCommandClass(QadCommandClass):
 
         
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
       

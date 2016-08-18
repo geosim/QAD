@@ -131,7 +131,7 @@ class QadOFFSETCommandClass(QadCommandClass):
 
       tolerance2ApproxCurve = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
       # uso il crs del canvas per lavorare con coordinate piane xy
-      epsg = self.plugIn.canvas.mapRenderer().destinationCrs().authid()
+      epsg = self.plugIn.canvas.mapSettings().destinationCrs().authid()
       lines = qad_utils.offSetPolyline(self.subGeom.asPolyline(), epsg, \
                                        offSetDistance, \
                                        "left" if dummy[3] < 0 else "right", \
@@ -414,7 +414,7 @@ class QadOFFSETCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 

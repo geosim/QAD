@@ -698,6 +698,11 @@ ARCO
 
 Disegna un arco.
 
+ARCOQUOTA
+~~~~~~~~~
+
+Disegna una quota di lunghezza arco.
+
 ALLUNGA
 ~~~~~~~
 

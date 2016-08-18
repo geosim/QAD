@@ -231,7 +231,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -290,7 +290,7 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             if self.entSelClass.entity.isInitialized():
                result = getStartEndPointClosestPartWithContext(self.entSelClass.entity, \
                                                                self.entSelClass.point, \
-                                                               self.plugIn.canvas.mapRenderer().destinationCrs())
+                                                               self.plugIn.canvas.mapSettings().destinationCrs())
                if result is not None:                   
                   if (type(result) == list or type(result) == tuple): # se é una lista di 2 punti
                      self.dimPt1 = result[0]                    
@@ -598,7 +598,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -657,7 +657,7 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
             if self.entSelClass.entity.isInitialized():
                result = getStartEndPointClosestPartWithContext(self.entSelClass.entity, \
                                                                self.entSelClass.point, \
-                                                               self.plugIn.canvas.mapRenderer().destinationCrs())
+                                                               self.plugIn.canvas.mapSettings().destinationCrs())
                if result is not None:
                   if (type(result) == list or type(result) == tuple): # se é una lista di 2 punti
                      self.dimPt1 = result[0]                    
@@ -786,12 +786,13 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
 # QadDIMARCCommandClassStepEnum class.
 #===============================================================================
 class QadDIMARCCommandClassStepEnum():
-   ASK_FOR_ENTSEL       = 0 # richiede la selezione di un'entità (deve essere = 0 perchè è l'inizio del comando)
-   ASK_FOR_MAIN_OPTIONS = 1 # richiede di selezionare un'opzione
-   ASK_FOR_TEXT_VALUE   = 2 # richiede il valore del testo della quota
-   ASK_FOR_TEXT_ROT     = 3 # richiede la rotazione del testo della quota
-   ASK_FOR_1PT_ARC      = 4 # richiede il primo punto dell'arco
-   ASK_FOR_2PT_ARC      = 5 # richiede il secondo punto dell'arco
+   START                = 0 # deve essere = 0 perchè è l'inizio del comando
+   ASK_FOR_ENTSEL       = 1 # richiede la selezione di un'entità
+   ASK_FOR_MAIN_OPTIONS = 2 # richiede di selezionare un'opzione
+   ASK_FOR_TEXT_VALUE   = 3 # richiede il valore del testo della quota
+   ASK_FOR_TEXT_ROT     = 4 # richiede la rotazione del testo della quota
+   ASK_FOR_1PT_ARC      = 5 # richiede il primo punto dell'arco
+   ASK_FOR_2PT_ARC      = 6 # richiede il secondo punto dell'arco
 
 
 # Classe che gestisce il comando DIMARC da finire
@@ -821,10 +822,10 @@ class QadDIMARCCommandClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
       self.entSelClass = None
       self.GetAngleClass = None
-      self.waitForEntsel()
       self.dimPt1 = QgsPoint()
       self.dimPt2 = QgsPoint()
       self.dimArc = None    # oggetto arco da quotare
+      self.dimPartialArc = QadArc()
       self.leader = False # opzione disponibile solo per archi > 90 gradi 
             
       self.measure = None # misura della quota (se None viene calcolato)
@@ -863,29 +864,26 @@ class QadDIMARCCommandClass(QadCommandClass):
    #============================================================================
    def setArc(self, entity, point):
       """
-      Setta self.dimArc che definisce l'arco da quotare e self.dimPt1, self.dimPt2
+      Setta self.dimArc che definisce l'arco da quotare
       """      
       geom = self.layerToMapCoordinates(entity.layer, entity.getGeometry())
       obj = qad_utils.whatGeomIs(point, geom)
       if (obj is None):
          return False
-      if obj.whatIs() == "ARC": # se è arco lo trasformo in cerchio
+      if obj.whatIs() == "ARC":
          self.dimArc = obj
-         pt = self.dimArc.getStartPt()
-         self.dimPt1.set(pt.x(), pt.y())
-         pt = self.dimArc.getEndPt()
-         self.dimPt2.set(pt.x(), pt.y())
+         self.dimPartialArc.set(self.dimArc.center, self.dimArc.radius, self.dimArc.startAngle, self.dimArc.endAngle)
          return True
       else:
          return False
 
 
    #============================================================================
-   # setArc
+   # getPartialPtOnArc
    #============================================================================
    def getPartialPtOnArc(self, pt):
       """
-      calcola il punto sull'arco da pt è un punto scelto dall'utente
+      calcola il punto sull'arco più vicino a pt che è un punto scelto dall'utente
       """      
       perpPts = self.dimArc.getPerpendicularPoints(pt)
       if len(perpPts) == 0: # cerco il punto più vicino a pt1 tra quello iniziale e finale
@@ -904,13 +902,33 @@ class QadDIMARCCommandClass(QadCommandClass):
             return perpPts[1]
 
       return None
-   
+
+
+   #============================================================================
+   # setPartialArc
+   #============================================================================
+   def setPartialArc(self):
+      """
+      Calcola l'arco parziale di dimArc che ha i punti finali in dimPt1 e dimPt2
+      """
+      self.dimPartialArc.setEndAngleByPt(self.dimPt1)
+      l1 = self.dimPartialArc.length()
+      self.dimPartialArc.setEndAngleByPt(self.dimPt2)
+      l2 = self.dimPartialArc.length()
+      
+      if l1 > l2: # se dimPt1 è più lontano di dimPt2 dal punto iniziale dell'arco
+         self.dimPartialArc.setEndAngleByPt(self.dimPt1)
+         self.dimPartialArc.setStartAngleByPt(self.dimPt2)
+      else: # se dimPt1 è più vicino di dimPt2 dal punto iniziale dell'arco
+         self.dimPartialArc.setStartAngleByPt(self.dimPt1)
+
+
    #============================================================================
    # addDimToLayers
    #============================================================================
    def addDimToLayers(self, linePosPt):
-      return self.dimStyle.addAlignedDimToLayers(self.plugIn, self.dimPt1, self.dimPt2, \
-                                                 linePosPt, self.measure)
+      return self.dimStyle.addArcDimToLayers(self.plugIn, self.dimPartialArc, \
+                                             linePosPt, self.measure, self.leader)
 
    
    #============================================================================
@@ -922,11 +940,13 @@ class QadDIMARCCommandClass(QadCommandClass):
       self.step = QadDIMARCCommandClassStepEnum.ASK_FOR_ENTSEL
       self.entSelClass = QadEntSelClass(self.plugIn)
       self.entSelClass.msg = QadMsg.translate("Command_DIM", "Select arc or polyline arc segment: ")
-      # scarto la selezione di punti
+      # scarto la selezione di punti e delle quote
       self.entSelClass.checkPointLayer = False
       self.entSelClass.checkLineLayer = True
       self.entSelClass.checkPolygonLayer = True
-      self.entSelClass.getPointMapTool().setSnapType(QadSnapTypeEnum.DISABLE)         
+      self.entSelClass.checkDimLayers = False
+      self.entSelClass.getPointMapTool().setSnapType(QadSnapTypeEnum.DISABLE)
+      self.entSelClass.run(msgMapTool, msg)
 
    
    #============================================================================
@@ -935,11 +955,9 @@ class QadDIMARCCommandClass(QadCommandClass):
    def waitForDimensionLinePos(self):
       self.step = QadDIMARCCommandClassStepEnum.ASK_FOR_MAIN_OPTIONS
       # imposto il map tool      
-      self.getPointMapTool().dimPt1 = self.dimPt1
-      self.getPointMapTool().dimPt2 = self.dimPt2
-      self.getPointMapTool().dimArc = self.dimArc
-      self.getPointMapTool().dimStyle = self.dimStyle      
-      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ALIGNED_DIM_LINE_POS)                                
+      self.getPointMapTool().dimArc = self.dimPartialArc
+      self.getPointMapTool().dimStyle = self.dimStyle
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.FIRST_SECOND_PT_KNOWN_ASK_FOR_ARC_DIM_LINE_POS)
       
       # si appresta ad attendere un punto o una parola chiave
       # si appresta ad attendere un punto o una parola chiave
@@ -958,7 +976,7 @@ class QadDIMARCCommandClass(QadCommandClass):
             englishKeyWords = englishKeyWords + "/" + "No leader"
          
       prompt = QadMsg.translate("Command_DIM", "Specify dimension location or [{0}]: ").format(keyWords)
-      keyWords += "_" + englishKeyWordsAngle
+      keyWords += "_" + englishKeyWords
 
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, \
@@ -974,7 +992,7 @@ class QadDIMARCCommandClass(QadCommandClass):
    def waitForFirstPt(self):
       self.step = QadDIMARCCommandClassStepEnum.ASK_FOR_1PT_ARC
       # imposto il map tool
-      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_1PT_ARC)
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_PARTIAL_ARC_PT_FOR_DIM_ARC)
 
       msg = QadMsg.translate("Command_DIM", "Specify first point on the arc: ")
       
@@ -988,7 +1006,7 @@ class QadDIMARCCommandClass(QadCommandClass):
    def waitForSecondPt(self):
       self.step = QadDIMARCCommandClassStepEnum.ASK_FOR_2PT_ARC
       # imposto il map tool
-      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_2PT_ARC)
+      self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_PARTIAL_ARC_PT_FOR_DIM_ARC)
 
       msg = QadMsg.translate("Command_DIM", "Specify second point on the arc: ")
       
@@ -1000,7 +1018,7 @@ class QadDIMARCCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
 
@@ -1018,10 +1036,13 @@ class QadDIMARCCommandClass(QadCommandClass):
          self.showMsg(errMsg)
          return True # fine comando
 
+      if self.step == QadDIMARCCommandClassStepEnum.START:
+         self.waitForEntsel(msgMapTool, msg)
+         return False # continua
 
       #=========================================================================
       # RISPOSTA ALLA SELEZIONE DI UN'ENTITA'
-      elif self.step == QadDIMARCCommandClassStepEnum.ASK_FOR_ENTSEL:
+      if self.step == QadDIMARCCommandClassStepEnum.ASK_FOR_ENTSEL:
          if self.entSelClass.run(msgMapTool, msg) == True:
             if self.entSelClass.entity.isInitialized():
                if self.setArc(self.entSelClass.entity, self.entSelClass.point) == True:
@@ -1058,7 +1079,7 @@ class QadDIMARCCommandClass(QadCommandClass):
          if type(value) == unicode:
             if value == QadMsg.translate("Command_DIM", "Text") or value == "Text":
                prompt = QadMsg.translate("Command_DIM", "Enter dimension text <{0}>: ")
-               dist = qad_utils.getDistance(self.dimPt1, self.dimPt2)
+               dist = self.dimPartialArc.length()
                self.waitForString(prompt.format(str(dist)), dist)
                self.getPointMapTool().setMode(Qad_dim_maptool_ModeEnum.ASK_FOR_TEXT)
                self.step = QadDIMARCCommandClassStepEnum.ASK_FOR_TEXT_VALUE
@@ -1075,15 +1096,13 @@ class QadDIMARCCommandClass(QadCommandClass):
             elif value == QadMsg.translate("Command_DIM", "Partial") or value == "Partial":
                self.waitForFirstPt()
             elif value == QadMsg.translate("Command_DIM", "Leader") or value == "Leader":
-               self.leader == True
+               self.leader = True
                self.waitForDimensionLinePos()
             elif value == QadMsg.translate("Command_DIM", "No leader") or value == "No leader":
-               self.leader == False
+               self.leader = False
                self.waitForDimensionLinePos()
                
          elif type(value) == QgsPoint: # se é stato inserito il punto di posizionamento linea quota
-            self.dimPt1 = self.getPointMapTool().dimPt1
-            self.dimPt2 = self.getPointMapTool().dimPt2
             self.addDimToLayers(value)
             return True # fine comando
             
@@ -1136,10 +1155,11 @@ class QadDIMARCCommandClass(QadCommandClass):
 
          if type(value) == QgsPoint: # se é stato inserito il secondo punto
             ptOnArc = self.getPartialPtOnArc(value)
-            if ptOnAtc is not None:
-               self.dimPt1.set(ptOnAtc.x(), ptOnAtc.y())
+            if ptOnArc is not None:
+               self.dimPt1.set(ptOnArc.x(), ptOnArc.y())
 
-         self.self.waitForSecondPt()
+         self.waitForSecondPt()
+         
          return False 
       
 
@@ -1164,8 +1184,10 @@ class QadDIMARCCommandClass(QadCommandClass):
 
          if type(value) == QgsPoint: # se é stato inserito il secondo punto
             ptOnArc = self.getPartialPtOnArc(value)
-            if ptOnAtc is not None:
-               self.dimPt2.set(ptOnAtc.x(), ptOnAtc.y())
+            if ptOnArc is not None:
+               self.dimPt2.set(ptOnArc.x(), ptOnArc.y())
+            
+            self.setPartialArc()
             self.waitForDimensionLinePos()
          
          return False 

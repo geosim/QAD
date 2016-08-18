@@ -77,7 +77,7 @@ def stretchPoint(point, containerGeom, offSetX, offSetY):
 #===============================================================================
 # stretchQgsGeometry
 #===============================================================================
-def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):
+def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve = None):
    """
    Stira una geometria
    geom = geometria da tirare
@@ -86,7 +86,12 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
    offSetX = spostamento X
    offSetY = spostamento Y
    tolerance2ApproxCurve = tolleranza per rigenerare le curve
-   """
+   """   
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+
    wkbType = geom.wkbType()
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
       pt = stretchPoint(geom.asPoint(), containerGeom, offSetX, offSetY)
@@ -99,13 +104,13 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
       atSubGeom = 0
       for pt in points:
          subGeom = QgsGeometry.fromPoint(pt)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance)
          stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])
          atSubGeom = atSubGeom + 1
       return stretchedGeom
 
    if wkbType == QGis.WKBLineString:
-      return stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
+      return stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance)
    
    if wkbType == QGis.WKBMultiLineString:
       stretchedGeom = QgsGeometry(geom)
@@ -113,7 +118,7 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
       atSubGeom = 0
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = stretchQgsGeometry(subGeom, containerGeom, offSetX, offSetY, tolerance)
          stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
          atSubGeom = atSubGeom + 1
       return stretchedGeom
@@ -124,7 +129,7 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
       iRing = -1
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
          if iRing == -1: # si tratta della parte più esterna
             stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0])
          else:
@@ -140,7 +145,7 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
          iRing = -1
          for line in polygon:
             subGeom = QgsGeometry.fromPolyline(line)
-            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
             if iRing == -1: # si tratta della parte più esterna
                stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart])
             else:
@@ -155,7 +160,7 @@ def stretchQgsGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCu
 #===============================================================================
 # stretchQgsLineStringGeometry
 #===============================================================================
-def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):
+def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, tolerance2ApproxCurve = None):
    """
    Stira i punti di una linestring che sono contenuti in containerGeom
    point = punto da tirare
@@ -164,6 +169,11 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
    offSetX = spostamento X
    offSetY = spostamento Y
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+
    obj = qad_utils.whatGeomIs(0, geom)
    if (type(obj) != list and type(obj) != tuple):
       objType = obj.whatIs()
@@ -171,7 +181,7 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
          if isPtContainedForStretch(obj.center, containerGeom): # se il punto è contenuto in containerGeom
             obj.center.setX(obj.center.x() + offSetX)
             obj.center.setY(obj.center.y() + offSetY)
-         return QgsGeometry.fromPolyline(obj.asPolyline(tolerance2ApproxCurve))         
+         return QgsGeometry.fromPolyline(obj.asPolyline(tolerance))
 
    stretchedGeom = QgsGeometry(geom)
    snapper = QadSnapper()
@@ -244,7 +254,7 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
                   
             atPart = linearObjectListToStretch.containsPt(point, atPart + 1)
             
-   pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
+   pts = linearObjectListToStretch.asPolyline(tolerance)
    stretchedGeom = QgsGeometry.fromPolyline(pts)    
       
    return stretchedGeom   
@@ -258,7 +268,7 @@ def stretchQgsLineStringGeometry(geom, containerGeom, offSetX, offSetY, toleranc
 #===============================================================================
 # gripStretchQgsGeometry
 #===============================================================================
-def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
+def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve = None):
    """
    Stira una geometria in coordinate piane mediante grip point
    geom = geometria da stirare
@@ -267,6 +277,11 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
    offSetY = spostamento Y
    tolerance2ApproxCurve = tolleranza per rigenerare le curve
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+   
    wkbType = geom.wkbType()
    if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:
       pt = stretchPoint(geom.asPoint(), ptListToStretch, offSetX, offSetY)
@@ -279,13 +294,13 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
       atSubGeom = 0
       for pt in points:
          subGeom = QgsGeometry.fromPoint(pt)
-         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
          stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
          atSubGeom = atSubGeom + 1
       return stretchedGeom
 
    if wkbType == QGis.WKBLineString:
-      return gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+      return gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
    
    if wkbType == QGis.WKBMultiLineString:
       stretchedGeom = QgsGeometry(geom)
@@ -293,7 +308,7 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
       atSubGeom = 0
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
          stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [atSubGeom])    
          atSubGeom = atSubGeom + 1
       return stretchedGeom
@@ -304,7 +319,7 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
       iRing = -1
       for line in lines:        
          subGeom = QgsGeometry.fromPolyline(line)
-         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
          if iRing == -1: # si tratta della parte più esterna
             stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [0])
          else:
@@ -320,7 +335,7 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
          iRing = -1
          for line in polygon:
             subGeom = QgsGeometry.fromPolyline(line)
-            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+            stretchedSubGeom = gripStretchQgsGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
             if iRing == -1: # si tratta della parte più esterna
                stretchedGeom = qad_utils.setSubGeom(stretchedGeom, stretchedSubGeom, [iPart])
             else:
@@ -335,7 +350,7 @@ def gripStretchQgsGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
 #===============================================================================
 # gripStretchQadGeometry
 #===============================================================================
-def gripStretchQadGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
+def gripStretchQadGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve = None):
    """
    Stira una entità qad in coordinate piane mediante grip point
    geom = entità qad da stirare
@@ -344,20 +359,25 @@ def gripStretchQadGeometry(geom, basePt, ptListToStretch, offSetX, offSetY, tole
    offSetY = spostamento Y
    tolerance2ApproxCurve = tolleranza per rigenerare le curve
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+
    if type(geom) == list: # entità composta da più geometrie
       res = []
       for subGeom in geom:
-         res.append(gripStretchQadGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve))
+         res.append(gripStretchQadGeometry(subGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance))
       return res
    else:
       if type(geom) == QgsPoint:
          return stretchPoint(geom, ptListToStretch, offSetX, offSetY)
       elif geom.whatIs() == "ARC":
-         return gripStretchArc(geom, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)         
+         return gripStretchArc(geom, ptListToStretch, offSetX, offSetY, tolerance)
       elif geom.whatIs() == "CIRCLE":
-         return gripStretchCircle(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         return gripStretchCircle(geom, basePt, ptListToStretch, offSetX, offSetY, tolerance)
       elif geom.whatIs() == "LINEAROBJS":
-         return gripStretchQgsLinearObjectList(geom, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         return gripStretchQgsLinearObjectList(geom, ptListToStretch, offSetX, offSetY, tolerance)
 
    return None
 
@@ -374,6 +394,11 @@ def gripStretchCircle(circle, basePt, ptListToStretch, offSetX, offSetY, toleran
    offSetX = spostamento X
    offSetY = spostamento Y
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+   
    newCenter = QgsPoint(circle.center)
    newRadius = circle.radius
    
@@ -402,6 +427,11 @@ def gripStretchArc(arc, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve
    offSetX = spostamento X
    offSetY = spostamento Y
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+   
    startPt = arc.getStartPt()
    endPt = arc.getEndPt()
    middlePt = arc.getMiddlePt()
@@ -460,17 +490,22 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
    offSetX = spostamento X
    offSetY = spostamento Y
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+   
    obj = qad_utils.whatGeomIs(0, geom)
    if (type(obj) != list and type(obj) != tuple):
       objType = obj.whatIs()
       if objType == "CIRCLE": # se é cerchio
-         newCircle = gripStretchCircle(obj, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         newCircle = gripStretchCircle(obj, basePt, ptListToStretch, offSetX, offSetY, tolerance)
          if newCircle is not None:
-            return QgsGeometry.fromPolyline(newCircle.asPolyline(tolerance2ApproxCurve))
+            return QgsGeometry.fromPolyline(newCircle.asPolyline(tolerance))
       elif objType == "ARC": # se é arco
-         newArc = gripStretchArc(obj, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
+         newArc = gripStretchArc(obj, ptListToStretch, offSetX, offSetY, tolerance)
          if newArc is not None:
-            return QgsGeometry.fromPolyline(newArc.asPolyline(tolerance2ApproxCurve))
+            return QgsGeometry.fromPolyline(newArc.asPolyline(tolerance))
       return None
    
    linearObjectListToStretch = qad_utils.QadLinearObjectList()
@@ -494,19 +529,19 @@ def gripStretchQgsLineStringGeometry(geom, basePt, ptListToStretch, offSetX, off
             pt.setY(pt.y() + offSetY)
             linearObject.setEndPt(pt)
       else: # se è arco
-         newArc, newInverseFlag = gripStretchArc(linearObject.getArc(), ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve, linearObject.isInverseArc())
+         newArc, newInverseFlag = gripStretchArc(linearObject.getArc(), ptListToStretch, offSetX, offSetY, tolerance, linearObject.isInverseArc())
          if newArc is None:
             return None
          linearObject.setArc(newArc, newInverseFlag)
 
       atPart = atPart + 1
    
-   pt = linearObjectListToStretch.getCentroid(tolerance2ApproxCurve) # verifico se polilinea ha un centroide
+   pt = linearObjectListToStretch.getCentroid(tolerance) # verifico se polilinea ha un centroide
    if pt is not None:
       if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
          linearObjectListToStretch.move(offSetX, offSetY)
    
-   pts = linearObjectListToStretch.asPolyline(tolerance2ApproxCurve)
+   pts = linearObjectListToStretch.asPolyline(tolerance)
    stretchedGeom = QgsGeometry.fromPolyline(pts)    
       
    return stretchedGeom   
@@ -523,6 +558,11 @@ def gripStretchQgsLinearObjectList(linearObjectList, ptListToStretch, offSetX, o
    offSetX = spostamento X
    offSetY = spostamento Y
    """
+   if tolerance2ApproxCurve == None:
+      tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+   else:
+      tolerance = tolerance2ApproxCurve
+   
    linearObjectListToStretch = qad_utils.QadLinearObjectList(linearObjectList)
    
    atPart = 0
@@ -543,14 +583,14 @@ def gripStretchQgsLinearObjectList(linearObjectList, ptListToStretch, offSetX, o
             pt.setY(pt.y() + offSetY)
             linearObject.setEndPt(pt)
       else: # se è arco
-         newArc, newInverseFlag = gripStretchArc(linearObject.getArc(), ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve, linearObject.isInverseArc())
+         newArc, newInverseFlag = gripStretchArc(linearObject.getArc(), ptListToStretch, offSetX, offSetY, tolerance, linearObject.isInverseArc())
          if newArc is None:
             return None
          linearObject.setArc(newArc, newInverseFlag)
 
       atPart = atPart + 1
    
-   pt = linearObjectListToStretch.getCentroid(tolerance2ApproxCurve) # verifico se polilinea ha un centroide
+   pt = linearObjectListToStretch.getCentroid(tolerance) # verifico se polilinea ha un centroide
    if pt is not None:
       if isPtContainedForStretch(pt, ptListToStretch): # se il punto è contenuto in ptListToStretch
          linearObjectListToStretch.move(offSetX, offSetY)

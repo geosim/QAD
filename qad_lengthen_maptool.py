@@ -97,7 +97,7 @@ class Qad_lengthen_maptool(QadGetPoint):
          return False
          
       self.layer = entity.layer
-      transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.layer, point)
+      transformedPt = self.canvas.mapSettings().mapToLayerCoordinates(self.layer, point)
       geom = entity.getGeometry()
                   
       # ritorna una tupla (<The squared cartesian distance>,
@@ -160,7 +160,7 @@ class Qad_lengthen_maptool(QadGetPoint):
       # si richiede un punto per la nuova estremità
       elif self.mode == Qad_lengthen_maptool_ModeEnum.ASK_FOR_DYNAMIC_POINT:
          newTmpLinearObjectList = qad_utils.QadLinearObjectList(self.tmpLinearObjectList)
-         transformedPt = self.canvas.mapRenderer().mapToLayerCoordinates(self.layer, self.tmpPoint)
+         transformedPt = self.canvas.mapSettings().mapToLayerCoordinates(self.layer, self.tmpPoint)
          
          if self.move_startPt:
             linearObject = newTmpLinearObjectList.getLinearObjectAt(0)

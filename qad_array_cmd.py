@@ -240,7 +240,7 @@ class QadARRAYCommandClass(QadCommandClass):
    #============================================================================
    def setEntitySet(self, ss):
       self.entitySet.set(ss)
-      rect = self.entitySet.boundingBox(self.plugIn.canvas.mapRenderer().destinationCrs())
+      rect = self.entitySet.boundingBox(self.plugIn.canvas.mapSettings().destinationCrs())
       self.distanceBetweenRows = rect.height() + (rect.height() / 2) if rect.height() != 0 else 1
       self.distanceBetweenCols = rect.width() + (rect.width() / 2) if rect.width() != 0 else 1
       center = rect.center()
@@ -1076,7 +1076,7 @@ class QadARRAYCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -1947,7 +1947,7 @@ class QadARRAYRECTCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -2020,7 +2020,7 @@ class QadARRAYPATHCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             
@@ -2093,7 +2093,7 @@ class QadARRAYPOLARCommandClass(QadCommandClass):
    # run
    #============================================================================
    def run(self, msgMapTool = False, msg = None):
-      if self.plugIn.canvas.mapRenderer().destinationCrs().geographicFlag():
+      if self.plugIn.canvas.mapSettings().destinationCrs().geographicFlag():
          self.showMsg(QadMsg.translate("QAD", "\nThe coordinate reference system of the project must be a projected coordinate system.\n"))
          return True # fine comando
             

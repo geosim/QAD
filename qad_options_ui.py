@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_options.ui'
 #
-# Created: Fri Apr 15 15:01:17 2016
+# Created: Mon Jul 04 12:00:43 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!

@@ -137,7 +137,7 @@ class Qad_fillet_maptool(QadGetPoint):
                   return
 
                # uso il crs del canvas per lavorare con coordinate piane xy
-               epsg = self.canvas.mapRenderer().destinationCrs().authid()
+               epsg = self.canvas.mapSettings().destinationCrs().authid()
                
                if self.tmpShiftKey == True: # tasto shift premuto durante il movimento del mouse
                   # filletMode = 1 # modalità di raccordo; 1=Taglia-estendi

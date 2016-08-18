@@ -212,15 +212,15 @@ class QadCommandClass():
       if self.plugIn is None:
          return None
       if type(point_geom) == QgsPoint:
-         return self.plugIn.canvas.mapRenderer().mapToLayerCoordinates(layer, point_geom)
+         return self.plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point_geom)
       elif type(point_geom) == QgsGeometry:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), layer.crs())
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
       elif (type(point_geom) == list or type(point_geom) == tuple): # lista di punti o di geometrie
-         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), layer.crs())
          res = []
          for pt in point_geom:
             if type(pt) == QgsPoint:
@@ -238,15 +238,15 @@ class QadCommandClass():
       if self.plugIn is None:
          return None
       if type(point_geom) == QgsPoint:
-         return self.plugIn.canvas.mapRenderer().layerToMapCoordinates(layer, point_geom)
+         return self.plugIn.canvas.mapSettings().layerToMapCoordinates(layer, point_geom)
       elif type(point_geom) == QgsGeometry:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(layer.crs(), self.plugIn.canvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(layer.crs(), self.plugIn.canvas.mapSettings().destinationCrs())
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
       elif (type(point_geom) == list or type(point_geom) == tuple): # lista di punti o di geometrie
-         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapRenderer().destinationCrs(), layer.crs())
+         coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), layer.crs())
          res = []
          for pt in point_geom:
             if type(pt) == QgsPoint:

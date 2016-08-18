@@ -118,11 +118,251 @@
     </message>
 </context>
 <context>
-    <name>Command_BREAK</name>
+    <name>Command_ARRAY</name>
     <message>
-        <source>Non ci sono geometrie in questa posizione.</source>
+        <source>Creates copies of objects in a regularly spaced rectangular, polar, or path array.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Rectangular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PAth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>POlar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter array type [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify base point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill entire path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Items to Array or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Items to Array &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify number of rows &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between rows or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between rows &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies the total distance between the start and end row &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete source objects of the array ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate objects as they are arrayed ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align arrayed items to the path ? [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>COUnt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rotate Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the angle of rotation for the row axis &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify number of columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unit cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between columns or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies the total distance between the start and end columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between columns &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify first cell corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second cell corner: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the object to use for the path of the array: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tangent direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Divide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify path method [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the first point for array tangent direction: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify distance between items along path &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify center point of array or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle between</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ROWs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the angle between items &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify angle to fill (+ = CCW, - = CW) &lt;{0}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The array size can&apos;t be greater than {0} elements. See MAXARRAY system variable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Cell size must be greater than 0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Maximun number of items = {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The distance between items can&apos;t be greater than {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distributes object copies into any combination of rows and columns.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evenly distributes object copies along a path or a portion of a path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Evenly distributes object copies in a circular pattern around a center point.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an option to edit array or [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+The angle between can&apos;t be greater than {0}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_BREAK</name>
     <message>
         <source>Breaks an object.</source>
         <translation type="unfinished"></translation>
@@ -390,10 +630,6 @@ The value must be between 2 and 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No geometries in this position.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enter dimension text &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -434,7 +670,15 @@ The value must be between 2 and 32767.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select an arc.</source>
+        <source>Specify first point on the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify second point on the arc: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select an arc or polyline arc segment.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -442,6 +686,17 @@ The value must be between 2 and 32767.</source>
     <name>Command_DIMSTYLE</name>
     <message>
         <source>Creates new styles, sets the current style, modifies styles, sets overrides on the current style, and compares styles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_DISJOIN</name>
+    <message>
+        <source>Disjoin existing geometries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object to disjoin: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -890,6 +1145,22 @@ The points must be different.</source>
     </message>
 </context>
 <context>
+    <name>Command_JOIN</name>
+    <message>
+        <source>Join existing geometries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select object to join to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Select objects to join: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_LENGTHEN</name>
     <message>
         <source>Lengthen an object.</source>
@@ -999,6 +1270,69 @@ No perpendicular possible</source>
     </message>
     <message>
         <source>Specify next point or [{0}]: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Command_MAPMPEDIT</name>
+    <message>
+        <source>Modifies existing polygon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The boundary doesn&apos;t belong to the selected polygon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select polygon: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Substract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eXit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter an option [{0}] &lt;{1}&gt;: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select boundary: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>split Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>split Parts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>iNclude objs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1155,6 +1489,13 @@ Polygon not valid.
     </message>
 </context>
 <context>
+    <name>Command_OPTIONS</name>
+    <message>
+        <source>QAD Options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Command_PEDIT</name>
     <message>
         <source>Modifies existing polylines or polygon.</source>
@@ -1302,6 +1643,18 @@ Polygon not valid.
     </message>
     <message>
         <source>Specify second point: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify tolerance: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify tolerance &lt;{0}&gt;: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1683,10 +2036,6 @@ Scale of a copy of the selected objects.</source>
     <message>
         <source>
 The current layer is {0}.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No geometries in this position.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2197,6 +2546,38 @@ A mark can&apos;t be inserted into a group.</source>
         <source>LENGTHEN</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>OPTIONS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAPMPEDIT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>JOIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DISJOIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYRECT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYPATH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAYPOLAR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ARRAY</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DSettings_Dialog</name>
@@ -2450,6 +2831,62 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Object snap settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object Snap Tracking Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track orthogonally only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track using polar angle settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polar Angle measurement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relative to last segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Turns object snap on and off. The selected object snap modes are active when the object snap is activated (system variable OSMODE).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object Snap Tracking (F11)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turns polar tracking on and off (system variable AUTOSNAP).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays only orthogonal (horizontal/vertical) object snap tracking paths for acquired object snap points when object snap tracking is on (POLARMODE system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Applies polar tracking settings to object snap tracking. When you use object snap tracking, the cursor tracks along polar alignment angles from acquired object snap points (POLARMODE system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bases polar tracking angles on the current user coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bases polar tracking angles on the last segment drawn.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Turns object snap tracking on and off. Using the object snap tracking, the cursor can track along alignment paths that are based on object snap points. To use the object snap tracking, select one or more object snap (system variable AUTOSNAP).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3028,6 +3465,22 @@ p, li { white-space: pre-wrap; }
 Do you want to accepts these settings ?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Arc length symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preceding dimension text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above dimension text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Dialog</name>
@@ -3486,16 +3939,8 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the textual layer for dimension which is not a textual layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>has not the symbol layer for dimension.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>has the symbol layer for dimension which is not a symbol layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3504,26 +3949,31 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the linear layer for dimension which is not a linear layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>has not the layers with the same coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the textual layer not editable.
-</source>
+        <source>has the textual layer for dimension ({0}) which is not a textual layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the symbol layer not editable.
-</source>
+        <source>has the symbol layer for dimension ({0}) which is not a symbol layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>has the linear layer not editable.
-</source>
+        <source>has the linear layer for dimension ({0}) which is not a linear layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the textual layer ({0}) not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the symbol layer ({0}) not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has the linear layer ({0}) not editable.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3574,19 +4024,11 @@ The dimension style &quot;{0}&quot; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OSCOLOR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>OSMODE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OSPROGRDISTANCE</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSSIZE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3686,10 +4128,6 @@ When ORTHOMODE is turned on, the cursor can move only horizontally or vertically
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Osnap symbols color (RGB, #FF0000 = red).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Sets running object snaps.
 The setting is stored as a bitcode using the sum of the following values:
 0 = NONe.
@@ -3714,10 +4152,6 @@ The setting is stored as a bitcode using the sum of the following values:
     </message>
     <message>
         <source>Progressive distance for &lt;Progressive distance&gt; snap mode.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Osnap symbol size in pixel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3904,6 +4338,187 @@ The setting is stored as a bitcode using the sum of the following values:
 1 = On. You can also select objects before you start a command.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>POLARMODE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls settings for polar and object snap tracking.
+The setting is stored as a bitcode using the sum of the following values:
+Polar angle measurements
+0 = Measure polar angles based on current UCS (absolute)
+1 = Measure polar angles from selected objects (relative)
+Object snap tracking
+0 = Track orthogonally only
+2 = Use polar tracking settings in object snap tracking
+Acquire object snap tracking points
+0 = Acquire automatically
+8 = Press Shift to acquire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AUTOSNAPSIZE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AUTOSNAPCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>APBOX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>APERTURE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPOBJLIMIT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRIPMULTIFUNCTIONAL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDHISTORYFORECOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDHISTORYBACKCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDLINEFORECOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDLINEBACKCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDLINEOPTCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDLINEOPTBACKCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CMDLINEOPTHIGHLIGHTEDCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turns the display of the AutoSnap aperture box on or off.
+The aperture box is displayed in the center of the crosshairs when you snap to an object.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the color of the AutoSnap marker (RGB, #33A02C = green).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AutoSnap marker size in pixel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AUTOTRECKINGVECTORCOLOR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autotreck vector color (RGB, #33A02C = green).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command history background color (RGB, #C8C8C8 = grey).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command history text color (RGB, #000000 = black).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active prompt background color (RGB, #FFFFFF = white).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active prompt color (RGB, #000000 = black).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option keyword color (RGB, #0000FF = blue).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option keyword background color (RGB, #D2D2D2 = grey).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option highlighted color (RGB, #B3B3B3 = grey).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specifies the access methods to multi-functional grips.
+0 = Access to multi-functional grips is disabled.
+2 = Access multi-functional grips with the dynamic menu and the Hot Grip shortcut menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses the display of grips when the selection set includes more than the specified number of objects.
+The valid range is 0 to 32,767. For example, when set to 1, grips are suppressed when more than one object is selected.
+When set to 0, grips are always displayed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the size of the object target box, in pixels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DELOBJ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAXARRAY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether geometry used to create other objects is retained or deleted:
+0  = All defining geometry is retained.
+1  = Deletes all defining geometry.
+-1 = Ask the user for delete all defining geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Limit the Size of arrays in ARRAY command.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GripColor_Dialog</name>
+    <message>
+        <source>QAD - Grip colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unselected grip color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hover grip color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected grip color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grip contour color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Help</name>
@@ -3913,6 +4528,314 @@ The setting is stored as a bitcode using the sum of the following values:
     </message>
     <message>
         <source>DSETTINGS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OPTIONS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Options_Dialog</name>
+    <message>
+        <source>QAD - Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window Elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the Drawing Window Colors dialog box. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically appends suggestions as each keystroke is entered after the second keystroke (system variable INPUTSEARCHOPTIONS).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AutoComplete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the text window at startup (system variable SHOWTEXTWINDOW).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the text window at startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximun command history length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the maximum number of previous input values that are stored for a prompt in a command (system variable CMDINPUTHISTORYMAX).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Controls the amount of time that elapses before automated keyboard features display at the Command prompt.&lt;/p&gt;&lt;p&gt;Valid values are real numbers from 100 to 10,000, which represent milliseconds.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delay time (msec)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turns on/off all automated keyboard features when typing at the Command prompt (system variable INPUTSEARCHOPTIONS).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automated keyboard features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays a list of suggestions as keystrokes are entered (system variable INPUTSEARCHOPTIONS).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays a list of suggestions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the icon of the command or system variable, if available (system variable INPUTSEARCHOPTIONS).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the icon of the command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Excludes the display of system variables (system variable INPUTSEARCHOPTIONS).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Excludes system variables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments to approximate an arc (system variable ARCMINSEGMENTQTY).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments in an arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments to approximate a circle (system variable CIRCLEMINSEGMENTQTY).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum number of segments in a circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum error approximating a curve to segments (system variable TOLERANCE2APPROXCURVE).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximun admitted error between a real curve and the aproximated, segmented curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Crosshair size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Determines the size of the crosshair as a percentage of the screen size (system variable CURSORSIZE).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drafting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AutoSnap Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of the AutoSnap marker. The marker is a geometric symbol that is displayed when the crosshairs move over a snap point ( AUTOSNAP system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display AutoSnap aperture box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of the AutoSnap tooltip. The tooltip is a label that describes which part of the object you are snapping to (AUTOSNAP system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display AutoSnap tooltip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turns the AutoSnap magnet on or off. The magnet is an automatic movement of the crosshairs that locks the crosshairs onto the nearest snap point (AUTOSNAP system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Magnet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alignment Point Acquisition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays tracking vectors automatically when the aperture moves over an object snap.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays tracking vectors when you press Shift and move the aperture over an object snap.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift to acquire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AutoSnap Marker Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the display size for the AutoSnap marker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aperture Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the display size for the object snap target box, in pixels (APERTURE system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pickbox size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the object selection target height, in pixels (PICKBOX system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grip size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the size of the grip box in pixels ( GRIPSIZE system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection modes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether you select objects before (noun-verb selection) or after you issue a command (PICKFIRST system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Noun/verb selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether subsequent selections replace the current selection set or add to it (PICKADD system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Shift to add to selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays the Grip Colors dialog box where you can specify the colors for different grip status and elements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grip Colors...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of grips on selected objects. Displaying grips in a drawing significantly affects performance. Clear this option to optimize performance ( GRIPS system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows grips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the display of dynamic menu when pausing over a multi-functional grip (GRIPMULTIFUNCTIONAL system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows dynamic grip menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Suppresses the display of grips when the selection set includes more than the specified number of objects (GRIPOBJLIMIT system variable).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object selection limit for display of grips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid maximum command history length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid delay time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid minimum number of segments in an arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid minimum number of segments in a circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid tolerance between real and segmented curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid crosshair size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid object selection limit for display of grips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turns the display of the AutoSnap aperture box on or off.
+The aperture box is a box that appears inside the crosshairs when you snap to an object (APBOX system variable).</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4277,8 +5200,43 @@ The geometry type of the current layer is {0} and it is not valid.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Invalid object.</source>
+        <source>&lt;Object Snap Tracking on&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Object Snap Tracking off&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>: enter a number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> &gt;= {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> and</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> &lt;= {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> &gt; {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> &lt; {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No geometries in this position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid object.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4352,11 +5310,174 @@ Invalid object.</source>
         <source>EXT_INT</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Segment end point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polyline end point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Middle point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quadrant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insertion point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perpendicular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Near</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apparent intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parallel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Progressive distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersection on extension</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Text_window</name>
     <message>
         <source>QAD text window</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WindowColor_Dialog</name>
+    <message>
+        <source>Drawing window Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply &amp;&amp; Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Context:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interface element:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore current element</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore current context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore all context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Crosshairs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pickbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autotreck vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autosnap marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command history background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command history text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active prompt background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active prompt text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option keyword background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command option highlighted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -110,7 +110,7 @@ class QadGetPoint(QgsMapTool):
 
       self.__QadSnapper = QadSnapper()
       self.__QadSnapper.setSnapMode(QadSnapModeEnum.ONE_RESULT) # Viene restituito solo il punto più vicino
-      self.__QadSnapper.setSnapPointCRS(self.canvas.mapRenderer().destinationCrs())
+      self.__QadSnapper.setSnapPointCRS(self.canvas.mapSettings().destinationCrs())
       self.__QadSnapper.setSnapLayers(qad_utils.getVisibleVectorLayers(self.canvas)) # Tutti i layer vettoriali visibili
       self.__QadSnapper.setProgressDistance(QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE")))
       self.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
@@ -119,7 +119,7 @@ class QadGetPoint(QgsMapTool):
       self.setAutoSnap() # setto secondo le variabili d'ambiente
       
       # leggo la tolleranza in unità di mappa
-      ToleranceInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) * self.canvas.mapRenderer().mapUnitsPerPixel()    
+      ToleranceInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) * self.canvas.mapSettings().mapUnitsPerPixel()    
       self.__QadSnapper.setDistToExcludeNea(ToleranceInMapUnits)
       self.__QadSnapper.setToleranceExtParLines(ToleranceInMapUnits)
 
@@ -320,9 +320,9 @@ class QadGetPoint(QgsMapTool):
    def appendTmpGeometry(self, geom, CRS = None):
       if geom is None:
          return
-      if CRS is not None and CRS != self.canvas.mapRenderer().destinationCrs():
+      if CRS is not None and CRS != self.canvas.mapSettings().destinationCrs():
          g = QgsGeometry(geom)
-         coordTransform = QgsCoordinateTransform(CRS, self.canvas.mapRenderer().destinationCrs()) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(CRS, self.canvas.mapSettings().destinationCrs()) # trasformo la geometria
          g.transform(coordTransform)
          self.tmpGeometries.append(g)
       else:
@@ -433,7 +433,7 @@ class QadGetPoint(QgsMapTool):
 
       # calcolo la dimensione dei simboli di snap in map unit
       self.__snapMarkerSizeInMapUnits = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE")) * \
-                                        self.canvas.mapRenderer().mapUnitsPerPixel()
+                                        self.canvas.mapSettings().mapUnitsPerPixel()
 
 
    def refreshAutoSnap(self):
@@ -715,7 +715,7 @@ class QadGetPoint(QgsMapTool):
          if tmpGeometry is not None:
             self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perché tmpGeometry può essere variato
             allSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, self.tmpPoint, \
-                                                         self.canvas.mapRenderer().destinationCrs(), \
+                                                         self.canvas.mapSettings().destinationCrs(), \
                                                          None, \
                                                          self.getRealPolarAng(), \
                                                          self.getRealPolarAngOffset(), \
@@ -730,13 +730,13 @@ class QadGetPoint(QgsMapTool):
             if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
                self.__prevGeom = QgsGeometry(tmpGeometry)
                runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, \
-                                                                           self.canvas.mapRenderer().destinationCrs(), \
+                                                                           self.canvas.mapSettings().destinationCrs(), \
                                                                            allSnapPoints, self.tmpShiftKey)
                self.__stopTimer = False
                QTimer.singleShot(500, runToggleReferenceLines)
          else:
             allSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
-                                                           self.canvas.mapRenderer().destinationCrs(), \
+                                                           self.canvas.mapSettings().destinationCrs(), \
                                                            None, \
                                                            self.getRealPolarAng(), \
                                                            self.getRealPolarAngOffset())
@@ -1141,10 +1141,10 @@ class QadGetPoint(QgsMapTool):
       if self.canvas is None:
          return None
       if type(point_geom) == QgsPoint:
-         return self.canvas.mapRenderer().mapToLayerCoordinates(layer, point_geom)
+         return self.canvas.mapSettings().mapToLayerCoordinates(layer, point_geom)
       elif type(point_geom) == QgsGeometry:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(self.canvas.mapRenderer().destinationCrs(), layer.crs())
+         coordTransform = QgsCoordinateTransform(self.canvas.mapSettings().destinationCrs(), layer.crs())
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
@@ -1156,10 +1156,10 @@ class QadGetPoint(QgsMapTool):
       if self.canvas is None:
          return None
       if type(point_geom) == QgsPoint:
-         return self.canvas.mapRenderer().layerToMapCoordinates(layer, point_geom)
+         return self.canvas.mapSettings().layerToMapCoordinates(layer, point_geom)
       elif type(point_geom) == QgsGeometry:
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-         coordTransform = QgsCoordinateTransform(layer.crs(), self.canvas.mapRenderer().destinationCrs())
+         coordTransform = QgsCoordinateTransform(layer.crs(), self.canvas.mapSettings().destinationCrs())
          g = QgsGeometry(point_geom)
          g.transform(coordTransform)
          return g
@@ -1269,7 +1269,7 @@ class QadGetPoint(QgsMapTool):
 #          if tmpGeometry is not None:
 #             self.__QadSnapper.clearCacheSnapPoints() # pulisco la cache perché tmpGeometry può essere variato
 #             allSnapPoints = self.__QadSnapper.getSnapPoint(tmpGeometry, self.tmpPoint, \
-#                                                          self.canvas.mapRenderer().destinationCrs(), \
+#                                                          self.canvas.mapSettings().destinationCrs(), \
 #                                                          None, \
 #                                                          self.getRealPolarAng(), \
 #                                                          self.getRealPolarAngOffset(), \
@@ -1284,13 +1284,13 @@ class QadGetPoint(QgsMapTool):
 #             if (self.__prevGeom is None) or not self.__prevGeom.equals(tmpGeometry):
 #                self.__prevGeom = QgsGeometry(tmpGeometry)
 #                runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, \
-#                                                                            self.canvas.mapRenderer().destinationCrs(), \
+#                                                                            self.canvas.mapSettings().destinationCrs(), \
 #                                                                            allSnapPoints, self.tmpShiftKey)
 #                self.__stopTimer = False
 #                QTimer.singleShot(500, runToggleReferenceLines)
 #          else:
 #             allSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
-#                                                            self.canvas.mapRenderer().destinationCrs(), \
+#                                                            self.canvas.mapSettings().destinationCrs(), \
 #                                                            None, \
 #                                                            self.getRealPolarAng(), \
 #                                                            self.getRealPolarAngOffset())

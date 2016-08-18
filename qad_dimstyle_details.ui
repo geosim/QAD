@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="DBTab">
     <attribute name="title">
@@ -979,6 +979,58 @@
       </property>
       <property name="text">
        <string>Arrowhead scale:</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>210</y>
+       <width>241</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Arc length symbol</string>
+     </property>
+     <widget class="QRadioButton" name="arcSymbolPreceding">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>221</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Preceding dimension text</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="arcSymbolAbove">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>221</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Above dimension text</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="arcSymbolNone">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>221</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>None</string>
       </property>
      </widget>
     </widget>
@@ -2511,6 +2563,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>arcSymbolPreceding</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DimStyle_Details_Dialog</receiver>
+   <slot>arcSymbolPrecedingToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>382</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>arcSymbolAbove</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DimStyle_Details_Dialog</receiver>
+   <slot>arcSymbolAboveToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>408</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>426</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>arcSymbolNone</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DimStyle_Details_Dialog</receiver>
+   <slot>arcSymbolNoneToggled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>344</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>402</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>linearLayerNameChanged()</slot>
@@ -2568,5 +2668,8 @@
   <slot>textBlockAdjustFirstSymbolOutsideToggled()</slot>
   <slot>textBlockAdjustFirstTextOutsideToggled()</slot>
   <slot>textBlockAdjustBothOutsideToggled()</slot>
+  <slot>arcSymbolPrecedingToggled()</slot>
+  <slot>arcSymbolAboveToggled()</slot>
+  <slot>arcSymbolNoneToggled()</slot>
  </slots>
 </ui>
