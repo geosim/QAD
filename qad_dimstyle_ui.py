@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_dimstyle.ui'
 #
-# Created: Mon Jul 04 12:00:42 2016
+# Created: Wed Oct 12 11:24:05 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,10 +64,10 @@ class Ui_DimStyle_Dialog(object):
         self.descriptionSelectedStyle.setGeometry(QtCore.QRect(10, 10, 481, 41))
         self.descriptionSelectedStyle.setObjectName(_fromUtf8("descriptionSelectedStyle"))
         self.label_3 = QtGui.QLabel(DimStyle_Dialog)
-        self.label_3.setGeometry(QtCore.QRect(190, 40, 81, 16))
+        self.label_3.setGeometry(QtCore.QRect(190, 40, 101, 16))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.selectedStyle = QtGui.QLabel(DimStyle_Dialog)
-        self.selectedStyle.setGeometry(QtCore.QRect(280, 40, 241, 20))
+        self.selectedStyle.setGeometry(QtCore.QRect(300, 40, 221, 20))
         self.selectedStyle.setObjectName(_fromUtf8("selectedStyle"))
         self.layoutWidget = QtGui.QWidget(DimStyle_Dialog)
         self.layoutWidget.setGeometry(QtCore.QRect(360, 310, 158, 25))

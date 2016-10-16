@@ -501,6 +501,8 @@ class Qad(QObject):
       self.toolBar.addAction(self.mirror_action)
       self.toolBar.addAction(self.stretch_action)
       self.toolBar.addAction(self.lengthen_action)
+      self.toolBar.addAction(self.divide_action)
+      self.toolBar.addAction(self.measure_action)
       
       # break
       self.breakToolButton = self.createBreakToolButton()
@@ -747,6 +749,12 @@ class Qad(QObject):
       self.disjoin_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.disjoin_action)
       
+      # DIVIDE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIVIDE"))
+      self.divide_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.divide_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.divide_action)
+      
       # ERASE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ERASE"))
       self.erase_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -806,6 +814,12 @@ class Qad(QObject):
       self.mbuffer_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.mbuffer_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.mbuffer_action)
+      
+      # MEASURE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MEASURE"))
+      self.measure_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.measure_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.measure_action)
       
       # MIRROR
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MIRROR"))
@@ -1018,6 +1032,8 @@ class Qad(QObject):
       editMenu.addAction(self.mirror_action)
       editMenu.addAction(self.stretch_action)
       editMenu.addAction(self.lengthen_action)
+      editMenu.addAction(self.divide_action)
+      editMenu.addAction(self.measure_action)
       
       # menu break      
       self.breakMenu = self.createBreakMenu()
@@ -1795,6 +1811,12 @@ class Qad(QObject):
 
    def runDIMSTYLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMSTYLE"))
+
+   def runDIVIDECommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIVIDE"))
+
+   def runMEASURECommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "MEASURE"))
 
    def runHELPCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "HELP"))

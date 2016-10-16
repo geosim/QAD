@@ -148,9 +148,6 @@ class QadGetPoint(QgsMapTool):
       self.tempo_tot = 0
       self.tempo1 = 0
       self.tempo2 = 0
-      self.tempo3 = 0
-      self.tempo4 = 0
-      self.tempo5 = 0
       
 
    def __del__(self):

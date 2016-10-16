@@ -75,6 +75,8 @@ from qad_options_cmd import QadOPTIONSCommandClass
 from qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
 from qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
 from qad_array_cmd import QadARRAYCommandClass, QadARRAYRECTCommandClass, QadARRAYPATHCommandClass, QadARRAYPOLARCommandClass
+from qad_divide_cmd import QadDIVIDECommandClass
+from qad_measure_cmd import QadMEASURECommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -133,7 +135,9 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadARRAYRECTCommandClass(self.plugIn)) # ARRAYRECT
       self.__cmdObjs.append(QadARRAYPATHCommandClass(self.plugIn)) # ARRAYPATH
       self.__cmdObjs.append(QadARRAYPOLARCommandClass(self.plugIn)) # ARRAYPOLAR
-      
+      self.__cmdObjs.append(QadDIVIDECommandClass(self.plugIn)) # DIVIDE
+      self.__cmdObjs.append(QadMEASURECommandClass(self.plugIn)) # MEASURE
+
       self.actualCommand = None  # Comando in corso di esecuzione
    
       # scarto gli alias che hanno lo stesso nome dei comandi
@@ -608,7 +612,7 @@ class QadUsedCmdNamesClass():
 def displayError(exception = None):
    exc_type, exc_value, exc_traceback = sys.exc_info()
    format_exception = traceback.format_exception(exc_type, exc_value, exc_traceback)
-   stk = QadMsg.translate("QAD", "Well, this is embarrassing message...\n\n")
+   stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n")
    for s in format_exception:
       stk += s
    if exception is not None: stk += "\n" + exception.__doc__

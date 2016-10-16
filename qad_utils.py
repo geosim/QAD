@@ -525,7 +525,7 @@ def filterFeaturesByType(features, filterByGeomType):
       f = features[i]
       g = f.geometry()
       geomType = g.type()
-      if geomType != filterByGeomType:            
+      if geomType != filterByGeomType:
          if geomType == QGis.Point:      
             resultPoint.append(QgsGeometry(g))
          elif geomType == QGis.Line:      

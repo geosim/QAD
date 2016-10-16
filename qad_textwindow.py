@@ -710,7 +710,10 @@ class QadEdit(QTextEdit):
          if event.button() == Qt.LeftButton:
             cmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
             if cmdOptionPos is not None:
-               self.showEvaluateMsg(cmdOptionPos.name, False)
+               # estraggo la parte maiuscola della parola chiave
+               # questo serve per evitare che ad es. l'opzione "End" si confonda con osnap "end"
+               upperPart = self.__extractUpperCaseSubstr(cmdOptionPos.name)
+               self.showEvaluateMsg(upperPart, False)
 
 
    def updateHistory(self, command):
@@ -912,7 +915,18 @@ class QadEdit(QTextEdit):
          return QadMsg.translate("QAD", "\nBoolean not valid.\n")
       else:
          return ""
-      
+
+
+   def __extractUpperCaseSubstr(self, str):
+      # estraggo la parte maiuscola della stringa
+      upperPart = ""
+      for letter in str:
+         if letter.isupper():
+            upperPart = upperPart + letter
+         elif len(upperPart) > 0:
+            break
+      return upperPart
+
 
    def __evaluateKeyWords(self, cmd, keyWordList):
       # The required portion of the keyword is specified in uppercase characters, 
@@ -924,12 +938,7 @@ class QadEdit(QTextEdit):
       selectedKeyWords = []
       for keyWord in keyWordList:
          # estraggo la parte maiuscola della parola chiave
-         upperPart = ""
-         for letter in keyWord:
-            if letter.isupper():
-               upperPart = upperPart + letter
-            elif len(upperPart) > 0:
-               break
+         upperPart = self.__extractUpperCaseSubstr(keyWord)
          
          if upperPart.find(upperCmd) == 0: # se la parte maiuscola della parola chiave inizia per upperCmd
             if upperPart == upperCmd: # Se uguale
@@ -948,7 +957,7 @@ class QadEdit(QTextEdit):
       elif selectedKeyWordsLen == 1:
          return selectedKeyWords[0]
       else:
-         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with greater clarity...\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with more clarity...\n"))
          Msg = ""         
          for keyWord in selectedKeyWords:
             if Msg == "":

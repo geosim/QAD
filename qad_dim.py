@@ -885,7 +885,7 @@ class QadDimStyle():
       if qad_layer.isTextLayer(self.getTextualLayer()) == False:
          errPartial = QadMsg.translate("Dimension", "has the textual layer for dimension ({0}) which is not a textual layer.")
          errMsg = prefix + errPartial.format(self.getTextualLayer().name())
-         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vector punctual layer having a label and the symbol transparency no more than 10%.\n")
          return errMsg
 
       if self.getSymbolLayer() is None:
@@ -893,7 +893,7 @@ class QadDimStyle():
       if qad_layer.isSymbolLayer(self.getSymbolLayer()) == False:
          errPartial = QadMsg.translate("Dimension", "has the symbol layer for dimension ({0}) which is not a symbol layer.")
          errMsg = prefix + errPartial.format(self.getSymbolLayer().name())
-         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vector punctual layer without label.\n")
          return errMsg
 
       if self.getLinearLayer() is None:

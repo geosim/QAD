@@ -739,6 +739,12 @@ DIMSTILE
 Crea, modifica, compara gli stili di quota. Setta lo stile di quota
 corrente.
 
+DIVIDI
+~~~~~~
+
+Crea oggetti puntuali a distanza uguale lungo il perimetro o la
+lunghezza di un oggetto.
+
 EDITPL
 ~~~~~~
 
@@ -811,6 +817,12 @@ MBUFFER
 
 Disegna un buffer intorno agli oggetti selezionati. Selezionare gli
 oggetti quindi specificare la larghezza del buffer.
+
+MISURA
+~~~~~~
+
+Crea oggetti puntuali ad intervalli definiti lungo il perimetro o la
+lunghezza di un oggetto.
 
 MODIVAR
 ~~~~~~~
@@ -983,120 +995,133 @@ Variabili di sistema
 
 Le variabili di Sistema sono delle impostazioni che controllano il
 comportamento di alcuni comandi. Possono essere di tipo intero, reale,
-carattere, booleano or colori RGB (es. “#FF0000”). **Se esiste un
-progetto corrent**\ e, sono salvate e caricate nel file <nome progetto
-corrente>\_QAD.INI della cartella del progetto corrente altrimenti verrà
-usato il file QAD.INI situato nella cartella di installazione.
+carattere, booleano or colori RGB (es. “#FF0000”).
+
+Le variabili si dicono “globali” quando il loro valore non cambia in
+funzione del progetto corrente. Queste variabili vengono salvate e
+caricate nel file QAD.INI situato nella cartella di installazione.
+
+Le variabili si dicono “di progetto” quando il loro valore cambia in
+funzione del progetto corrente. Queste variabili vengono salvate e
+caricate nel file <nome progetto corrente>\_QAD.INI della cartella del
+progetto corrente.
 
 APBOX
 ~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 APERTURE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 ARCMINSEGMENTQTY
 ~~~~~~~~~~~~~~~~
 
 Numero minimo di segmenti per approssimare un arco. Valori validi da 4 a
-999, tipo intero, valore predefinito 12.
+999, tipo intero, valore predefinito 12. Variabile di progetto.
 
 AUTOSNAP
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 AUTOSNAPCOLOR
 ~~~~~~~~~~~~~
 
-Colore dei simboli di snap.
+Colore dei simboli di snap. Variabile globale.
 
 AUTOSNAPSIZE
 ~~~~~~~~~~~~
 
-Dimensione dei simboli di autosnap in pixel.
+Dimensione dei simboli di autosnap in pixel. Variabile globale.
 
 AUTOTRACKINGVECTORCOLOR
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Imposta il colore del vettore autotrack (linee polari, linee di
-estensione).
+estensione). Variabile globale.
 
 CIRCLEMINSEGMENTQTY
 ~~~~~~~~~~~~~~~~~~~
 
 Numero minimo di segmenti per approssimare un cerchio. Valori validi da
-6 to 999, tipo intero, valore predefinito 12.
+6 to 999, tipo intero, valore predefinito 12. Variabile di progetto.
 
 CMDHISTORYBACKCOLOR
 ~~~~~~~~~~~~~~~~~~~
 
 Imposta il colore di sfondo della finestra di cronologia dei comandi.
+Variabile globale.
 
 CMDHISTORYFORECOLOR
 ~~~~~~~~~~~~~~~~~~~
 
 Imposta il colore del testo della finestra di cronologia dei comandi.
+Variabile globale.
 
 CMDINPUTHISTORYMAX
 ~~~~~~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 CMDLINEBACKCOLOR
 ~~~~~~~~~~~~~~~~
 
-Imposta il colore di sfondo della finestra dei comandi.
+Imposta il colore di sfondo della finestra dei comandi. Variabile
+globale.
 
 CMDLINEFORECOLOR
 ~~~~~~~~~~~~~~~~
 
-Imposta il colore del testo della finestra dei comandi.
+Imposta il colore del testo della finestra dei comandi. Variabile
+globale.
 
 CMDLINEOPTBACKCOLOR
 ~~~~~~~~~~~~~~~~~~~
 
 Imposta il colore di sfondo della parola chiave opzione di comando.
+Variabile globale.
 
 CMDLINEOPTCOLOR
 ~~~~~~~~~~~~~~~
 
-Imposta il colore della parola chiave opzione di comando.
+Imposta il colore della parola chiave opzione di comando. Variabile
+globale.
 
 CMDLINEOPTHIGHLIGHTEDCOLOR
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Imposta il colore della opzione di comando evidenziata.
+Imposta il colore della opzione di comando evidenziata. Variabile
+globale.
 
 COPYMODE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 CROSSINGAREACOLOR
 ~~~~~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 CURSORCOLOR
 ~~~~~~~~~~~
 
 Colore del puntatore a croce. Valori validi colori RGB, tipo colore,
-valore predefinito rosso =“#FF0000”.
+valore predefinito rosso =“#FF0000”. Variabile globale.
 
 CURSORSIZE
 ~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 DELOBJ
 ~~~~~~
 
 | Controlla se la geometria utilizzata per creare altri oggetti viene
-  mantenuta o eliminata.
+  mantenuta o eliminata. Variabile globale.
 | 0 = Viene mantenuta l'intera geometria di definizione. Questa
   impostazione prevede la conservazione degli oggetti di origine per
   tutti i comandi di serie.
@@ -1107,42 +1132,43 @@ DELOBJ
 DIMSTYLE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile di progetto.
 
 EDGEMODE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 FILLETRAD
 ~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile di progetto.
 
 GRIPCOLOR
 ~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPCONTOUR
 ~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPHOT
 ~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPHOVER
 ~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPMULTIFUNCTIONAL
 ~~~~~~~~~~~~~~~~~~~
 
 | Specifica i metodi di accesso per le opzioni dei grip multifunzionali.
+  Variabile globale.
 | 0 = Le opzioni dei grip multifunzionali non sono disponibili
 | 2 = È possibile accedere alle opzioni dei grip multifunzionali tramite
   il menu dei grip visualizzato quando si passa con il mouse su un grip.
@@ -1150,122 +1176,125 @@ GRIPMULTIFUNCTIONAL
 GRIPOBJLIMIT
 ~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPS
 ~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 GRIPSIZE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 INPUTSEARCHDELAY
 ~~~~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 INPUTSEARCHOPTIONS
 ~~~~~~~~~~~~~~~~~~
 
 Come la variabile di Sistema AUTOCOMPLETEMODE dei CAD più popolari.
+Variabile globale.
 
 MAXARRAY
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 OFFSETDIST
 ~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile di progetto.
 
 OFFSETGAPTYPE
 ~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile di progetto.
 
 ORTHOMODE
 ~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile di progetto.
 
 OSMODE
 ~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 OSPROGRDISTANCE
 ~~~~~~~~~~~~~~~
 
 Distanza progressiva per la modalità di snap <Distanza progressiva>.
-Tipo reale, valore predefinito 0.
+Tipo reale, valore predefinito 0. Variabile di progetto.
 
 PICKADD
 ~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 PICKBOX
 ~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 PICKBOXCOLOR
 ~~~~~~~~~~~~
 
-Imposta il colore del quadratino di selezione degli oggetti.
+Imposta il colore del quadratino di selezione degli oggetti. Variabile
+globale.
 
 PICKFIRST
 ~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 POLARANG
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 POLARMODE
 ~~~~~~~~~
 
 Come i CAD più popolari. Il valore 4 non è supportato (uso degli angoli
-polari aggiuntivi).
+polari aggiuntivi). Variabile globale.
 
 SELECTIONAREA
 ~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 SELECTIONAREAOPACITY
 ~~~~~~~~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 SUPPORTPATH
 ~~~~~~~~~~~
 
-Path di ricerca per i files di supporto. Tipo carattere.
+Path di ricerca per i files di supporto. Tipo carattere. Variabile
+globale.
 
 SHOWTEXTWINDOW
 ~~~~~~~~~~~~~~
 
 Visualizza la finestra di testo all'avvio. Tipo booleano, valore
-predefinito vero.
+predefinito vero. Variabile globale.
 
 TOLERANCE2APPROXCURVE
 ~~~~~~~~~~~~~~~~~~~~~
 
 Massimo errore tollerato tra una vera curva e quella approssimata dai
 segmenti retti. Valori validi da 0.000001, tipo reale, valore
-predefinito 0.1.
+predefinito 0.1. Variabile di progetto.
 
 WINDOWAREACOLOR
 ~~~~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Variabile globale.
 
 .. |image0| image:: media/image1.emf
    :width: 3.45139in

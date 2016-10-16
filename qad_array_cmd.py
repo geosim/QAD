@@ -140,7 +140,7 @@ class QadARRAYCommandClass(QadCommandClass):
       self.itemsRotation = self.plugIn.lastItemsRotation_array
       self.delObj = QadVariables.get(QadMsg.translate("Environment variables", "DELOBJ"))
       self.delOrigSelSet = False
-      if self.delObj == QadDELOBJnum.DELETE_ALL: # Delete all defining geometry
+      if self.delObj == QadDELOBJEnum.DELETE_ALL: # Delete all defining geometry
          self.delOrigSelSet = True
 
       # serie rettangolare
@@ -1162,7 +1162,7 @@ class QadARRAYCommandClass(QadCommandClass):
                elif value ==  QadMsg.translate("Command_ARRAY", "rotate Items") or value == "rotate Items":
                   self.waitForItemsRotation()
                elif value == QadMsg.translate("Command_ARRAY", "eXit") or value == "eXit":
-                  if self.delObj == QadDELOBJnum.ASK_FOR_DELETE_ALL:
+                  if self.delObj == QadDELOBJEnum.ASK_FOR_DELETE_ALL:
                      self.waitForDelOrigObjs()
                   else:                  
                      self.doRectangleArray()
@@ -1185,7 +1185,7 @@ class QadARRAYCommandClass(QadCommandClass):
                elif value ==  QadMsg.translate("Command_ARRAY", "Align items") or value == "Align items":
                   self.waitForItemsRotation()
                elif value == QadMsg.translate("Command_ARRAY", "eXit") or value == "eXit":
-                  if self.delObj == QadDELOBJnum.ASK_FOR_DELETE_ALL:
+                  if self.delObj == QadDELOBJEnum.ASK_FOR_DELETE_ALL:
                      self.waitForDelOrigObjs()
                   else:                  
                      self.doPathArray()
@@ -1205,7 +1205,7 @@ class QadARRAYCommandClass(QadCommandClass):
                elif value ==  QadMsg.translate("Command_ARRAY", "Rotate items") or value == "Rotate items":
                   self.waitForItemsRotation()
                elif value == QadMsg.translate("Command_ARRAY", "eXit") or value == "eXit":
-                  if self.delObj == QadDELOBJnum.ASK_FOR_DELETE_ALL:
+                  if self.delObj == QadDELOBJEnum.ASK_FOR_DELETE_ALL:
                      self.waitForDelOrigObjs()
                   else:                  
                      self.doPolarArray()

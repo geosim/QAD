@@ -97,11 +97,11 @@ class QadPLINECommandClass(QadCommandClass):
       if (self.plugIn is not None):
          if self.mode == "ARC":
             if self.ArcPointMapTool is None:
-               self.ArcPointMapTool = Qad_arc_maptool(self.plugIn, True) # se True significa che è usato per disegnare un poligono
+               self.ArcPointMapTool = Qad_arc_maptool(self.plugIn, self.asToolForMPolygon) # se True significa che è usato per disegnare un poligono
             return self.ArcPointMapTool
          else:
             if self.PointMapTool is None:
-               self.PointMapTool = Qad_pline_maptool(self.plugIn, True) # se True significa che è usato per disegnare un poligono
+               self.PointMapTool = Qad_pline_maptool(self.plugIn, self.asToolForMPolygon) # se True significa che è usato per disegnare un poligono
             return self.PointMapTool
       else:
          return None
@@ -207,7 +207,7 @@ class QadPLINECommandClass(QadCommandClass):
                         "Direction" + "/" + "Line" + "/" + "Radius" + "/" + \
                         "Second point"  + "/" + "Undo"
                  
-      prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+      prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
 
       self.arcStartPt = self.vertices[-1] # ultimo vertice
       self.arcTanOnStartPt = self.getLastSegmentAng()
@@ -479,18 +479,13 @@ class QadPLINECommandClass(QadCommandClass):
                   geom = feature.getGeometry()
 
             if geom is not None and layer is not None:
-               ptEnd = qad_utils.closestVertexPtWithContext(self.mapToLayerCoordinates(layer, value), \
-                                                            geom)
-               transformedPt1 = self.mapToLayerCoordinates(layer, self.vertices[-1])
-               # leggo la parte di linea tra transformedPt1 e transformedPt2
-               points = qad_utils.getLinePart(geom, transformedPt1, ptEnd)
+               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+               geom = self.layerToMapCoordinates(layer, geom)
+               ptEnd = qad_utils.closestVertexPtWithContext(value, geom)
+               # leggo la parte di linea tra self.vertices[-1] e ptEnd
+               points = qad_utils.getLinePart(geom, self.vertices[-1], ptEnd)
                if points is not None:
-                  # converto i punti della linea in map coordinates
-                  transformedPoints = []
-                  for point in points:
-                     transformedPoints.append(self.layerToMapCoordinates(layer, point))
-                         
-                  self.addArcVertices(transformedPoints, False) # aggiungo i punti in ordine
+                  self.addArcVertices(points, False) # aggiungo i punti in ordine
 
          self.WaitForLineMenu()
          self.getPointMapTool().setMode(Qad_pline_maptool_ModeEnum.DRAW_LINE)
@@ -518,8 +513,10 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
+            ctrlPressed = False
 
          if value is None:
             if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
@@ -614,6 +611,9 @@ class QadPLINECommandClass(QadCommandClass):
          elif type(value) == QgsPoint: # é stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsTan(self.arcStartPt, value, self.arcTanOnStartPt) == True:
+               if ctrlPressed: # cambio direzione
+                  arc.inverse()
+                  
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -660,7 +660,7 @@ class QadPLINECommandClass(QadCommandClass):
          keyWords = QadMsg.translate("Command_PLINE", "CEnter", "START_PT_ANGLE_KNOWN_ASK_FOR_END_PT") + "/" + \
                     QadMsg.translate("Command_PLINE", "Radius")
          englishKeyWords = "CEnter" + "/" + "Radius"
-         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
                     
          keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o una parola chiave         
@@ -690,8 +690,10 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
+            ctrlPressed = False
 
          if type(value) == unicode:
             # l'opzione CEnter viene tradotta in italiano in "Centro" nel contesto "START_PT_ANGLE_KNOWN_ASK_FOR_END_PT"
@@ -699,7 +701,7 @@ class QadPLINECommandClass(QadCommandClass):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_KNOWN_ASK_FOR_CENTER_PT)
                # si appresta ad attendere un punto
-               self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the center of the arc: "))
+               self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the center of the arc (hold Ctrl to switch direction): "))
                self.step = 104
             elif value == QadMsg.translate("Command_PLINE", "Radius") or value == "Radius":
                # imposto il map tool
@@ -714,6 +716,9 @@ class QadPLINECommandClass(QadCommandClass):
          elif type(value) == QgsPoint: # é stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsAngle(self.arcStartPt, value, self.arcAngle) == True:
+               if ctrlPressed: # cambio direzione
+                  arc.inverse()
+                  
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -729,7 +734,7 @@ class QadPLINECommandClass(QadCommandClass):
             # l'opzione CEnter viene tradotta in italiano in "Centro" nel contesto "START_PT_ANGLE_KNOWN_ASK_FOR_END_PT"
             keyWords = QadMsg.translate("Command_PLINE", "CEnter", "START_PT_ANGLE_KNOWN_ASK_FOR_END_PT") + "/" + \
                        QadMsg.translate("Command_PLINE", "Radius")
-            prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+            prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
 
             englishKeyWords = "CEnter" + "/" + "Radius"
             keyWords += "_" + englishKeyWords
@@ -741,6 +746,7 @@ class QadPLINECommandClass(QadCommandClass):
                          keyWords, QadInputModeEnum.NOT_NULL)
             
          return False
+
 
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA CENTRO DELL'ARCO (da step = 103)
@@ -758,11 +764,16 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
-         
+            ctrlPressed = False
+
          arc = QadArc()         
          if arc.fromStartCenterPtsAngle(self.arcStartPt, value, self.arcAngle) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -819,7 +830,7 @@ class QadPLINECommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION)
             # si appresta ad attendere un punto o un numero reale         
             # msg, inputType, default, keyWords, isNullable
-            msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc <{0}>: ")
+            msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc (hold Ctrl to switch direction) <{0}>: ")
             self.waitFor(msg.format(str(self.getLastSegmentAng())), \
                          QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                          None, "", QadInputModeEnum.NOT_NULL)
@@ -855,7 +866,7 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION)
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, isNullable
-         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc <{0}>: ")
+         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc (hold Ctrl to switch direction) <{0}>: ")
          self.waitFor(msg.format(str(self.getLastSegmentAng())), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                       None, "", QadInputModeEnum.NOT_NULL)
@@ -878,9 +889,11 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
-         
+            ctrlPressed = False
+
          if type(value) == QgsPoint:
             self.arcChordDirection = qad_utils.getAngleBy2Pts(self.arcStartPt, value)             
          else:
@@ -889,6 +902,9 @@ class QadPLINECommandClass(QadCommandClass):
          arc = QadArc()
          if arc.fromStartPtAngleRadiusChordDirection(self.arcStartPt, self.arcAngle, \
                                                      self.arcRadius, self.arcChordDirection) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+               
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -905,12 +921,13 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION)
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, isNullable
-         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc <{0}>: ")
+         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc (hold Ctrl to switch direction) <{0}>: ")
          self.waitFor(msg.format(str(self.getLastSegmentAng())), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                       None, "", QadInputModeEnum.NOT_NULL)
                  
          return False
+
 
       #=========================================================================
       # RISPOSTA ALLA RICHIESTA CENTRO DELL'ARCO (da step = 101)
@@ -939,7 +956,7 @@ class QadPLINECommandClass(QadCommandClass):
 
          keyWords = QadMsg.translate("Command_PLINE", "Angle") + "/" + \
                     QadMsg.translate("Command_PLINE", "chord Length")
-         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
          
          englishKeyWords = "Angle" + "/" + "chord Length"
          keyWords += "_" + englishKeyWords        
@@ -970,8 +987,10 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
+            ctrlPressed = False
 
          if type(value) == unicode:  
             if value == QadMsg.translate("Command_PLINE", "Angle") or value == "Angle":
@@ -979,7 +998,7 @@ class QadPLINECommandClass(QadCommandClass):
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_ANGLE)
                # si appresta ad attendere un punto o un numero reale         
                # msg, inputType, default, keyWords, valori <> 0
-               self.waitFor(QadMsg.translate("Command_PLINE", "Specify the included angle: "), \
+               self.waitFor(QadMsg.translate("Command_PLINE", "Specify the included angle (hold Ctrl to switch direction): "), \
                             QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
@@ -990,7 +1009,7 @@ class QadPLINECommandClass(QadCommandClass):
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_CHORD)
                # si appresta ad attendere un punto o un numero reale         
                # msg, inputType, default, keyWords, valori positivi
-               self.waitFor(QadMsg.translate("Command_PLINE", "Specify the chord length: "), \
+               self.waitFor(QadMsg.translate("Command_PLINE", "Specify the chord length (hold Ctrl to switch direction): "), \
                             QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                             None, "", \
                             QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
@@ -1001,6 +1020,9 @@ class QadPLINECommandClass(QadCommandClass):
                      
             arc = QadArc()         
             if arc.fromStartCenterEndPts(self.arcStartPt, self.arcCenterPt, self.arcEndPt) == True:
+               if ctrlPressed: # cambio direzione
+                  arc.inverse()
+                  
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -1015,7 +1037,7 @@ class QadPLINECommandClass(QadCommandClass):
             
          keyWords = QadMsg.translate("Command_PLINE", "Angle") + "/" + \
                     QadMsg.translate("Command_PLINE", "chord Length")
-         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
          
          englishKeyWords = "Angle" + "/" + "chord Length"
          keyWords += "_" + englishKeyWords         
@@ -1044,8 +1066,10 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
+            ctrlPressed = False
 
          if type(value) == QgsPoint:
             self.arcAngle = qad_utils.getAngleBy2Pts(self.arcCenterPt, value)             
@@ -1054,6 +1078,9 @@ class QadPLINECommandClass(QadCommandClass):
 
          arc = QadArc()         
          if arc.fromStartCenterPtsAngle(self.arcStartPt, self.arcCenterPt, self.arcAngle) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+               
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -1068,7 +1095,7 @@ class QadPLINECommandClass(QadCommandClass):
 
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, isNullable
-         self.waitFor(QadMsg.translate("Command_PLINE", "Specify the included angle: "), \
+         self.waitFor(QadMsg.translate("Command_PLINE", "Specify the included angle (hold Ctrl to switch direction): "), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                       None, "", \
                       QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO)
@@ -1092,8 +1119,10 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
+            ctrlPressed = False
 
          if type(value) == QgsPoint:
             self.arcChord = qad_utils.getDistance(self.arcStartPt, value)             
@@ -1102,6 +1131,9 @@ class QadPLINECommandClass(QadCommandClass):
 
          arc = QadArc()         
          if arc.fromStartCenterPtsChord(self.arcStartPt, self.arcCenterPt, self.arcChord) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+               
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -1116,7 +1148,7 @@ class QadPLINECommandClass(QadCommandClass):
 
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, valori positivi
-         self.waitFor(QadMsg.translate("Command_PLINE", "Specify the chord length: "), \
+         self.waitFor(QadMsg.translate("Command_PLINE", "Specify the chord length (hold Ctrl to switch direction): "), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT, \
                       None, "", \
                       QadInputModeEnum.NOT_NULL | QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)
@@ -1153,7 +1185,7 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_TAN_KNOWN_ASK_FOR_END_PT)
 
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the final point of the arc: "))
+         self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction): "))
          self.step = 113
          return False
 
@@ -1174,11 +1206,16 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
-         
+            ctrlPressed = False
+
          arc = QadArc()
          if arc.fromStartEndPtsTan(self.arcStartPt, value, self.arcTanOnStartPt) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+               
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -1192,7 +1229,7 @@ class QadPLINECommandClass(QadCommandClass):
                return False      
 
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the final point of the arc: "))
+         self.waitForPoint(QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction): "))
                  
          return False
 
@@ -1235,7 +1272,7 @@ class QadPLINECommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_RADIUS_KNOWN_ASK_FOR_END_PT)
             
             keyWords = QadMsg.translate("Command_PLINE", "Angle")
-            prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+            prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
             englishKeyWords = "Angle"
             keyWords += "_" + englishKeyWords
             # si appresta ad attendere un punto o un numero reale         
@@ -1275,7 +1312,7 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_RADIUS_KNOWN_ASK_FOR_END_PT)
          
          keyWords = QadMsg.translate("Command_PLINE", "Angle")
-         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc or [{0}]: ").format(keyWords)
+         prompt = QadMsg.translate("Command_PLINE", "Specify the final point of the arc (hold Ctrl to switch direction) or [{0}]: ").format(keyWords)
          englishKeyWords = "Angle"
          keyWords += "_" + englishKeyWords
          # si appresta ad attendere un punto o un numero reale         
@@ -1304,9 +1341,11 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
-         
+            ctrlPressed = False
+
          if type(value) == unicode:
             if value == QadMsg.translate("Command_PLINE", "Angle") or value == "Angle":               
                # imposto il map tool
@@ -1321,6 +1360,9 @@ class QadPLINECommandClass(QadCommandClass):
          elif type(value) == QgsPoint: # é stato inserito il punto finale dell'arco
             arc = QadArc()         
             if arc.fromStartEndPtsRadius(self.arcStartPt, value, self.arcRadius) == True:
+               if ctrlPressed: # cambio direzione
+                  arc.inverse()
+                  
                points = arc.asPolyline()
                if points is not None:
                   # se i punti sono così vicini da essere considerati uguali
@@ -1364,7 +1406,7 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION)
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, isNullable
-         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc <{0}>: ")
+         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc (hold Ctrl to switch direction) <{0}>: ")
          self.waitFor(msg.format(str(self.getLastSegmentAng())), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                       None, "", QadInputModeEnum.NOT_NULL)
@@ -1389,9 +1431,11 @@ class QadPLINECommandClass(QadCommandClass):
                   return False
 
             value = self.getPointMapTool().point
+            ctrlPressed = self.getPointMapTool().ctrlKey
          else: # il punto arriva come parametro della funzione
             value = msg
-         
+            ctrlPressed = False
+
          if type(value) == QgsPoint:
             self.arcChordDirection = qad_utils.getAngleBy2Pts(self.arcStartPt, value)             
          else:
@@ -1400,6 +1444,9 @@ class QadPLINECommandClass(QadCommandClass):
          arc = QadArc()
          if arc.fromStartPtAngleRadiusChordDirection(self.arcStartPt, self.arcAngle, \
                                                      self.arcRadius, self.arcChordDirection) == True:
+            if ctrlPressed: # cambio direzione
+               arc.inverse()
+               
             points = arc.asPolyline()
             if points is not None:
                # se i punti sono così vicini da essere considerati uguali
@@ -1416,7 +1463,7 @@ class QadPLINECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION)
          # si appresta ad attendere un punto o un numero reale         
          # msg, inputType, default, keyWords, isNullable
-         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc <{0}>: ")
+         msg = QadMsg.translate("Command_PLINE", "Specify the direction for the chord of the arc (hold Ctrl to switch direction) <{0}>: ")
          self.waitFor(msg.format(str(self.getLastSegmentAng())), \
                       QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                       None, "", QadInputModeEnum.NOT_NULL)

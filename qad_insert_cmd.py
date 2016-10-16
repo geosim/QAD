@@ -127,7 +127,7 @@ class QadINSERTCommandClass(QadCommandClass):
 
       if qad_layer.isSymbolLayer(currLayer) == False:
          errMsg = QadMsg.translate("QAD", "\nCurrent layer is not a symbol layer.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vector punctual layer without label.\n")
          self.showErr(errMsg)         
          return True # fine comando
 

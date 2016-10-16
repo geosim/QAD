@@ -171,7 +171,7 @@ class QadTEXTCommandClass(QadCommandClass):
 
       if qad_layer.isTextLayer(currLayer) == False:
          errMsg = QadMsg.translate("QAD", "\nCurrent layer is not a textual layer.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vectorial punctual layer having a label and the symbol transparency no more than 10%.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA textual layer is a vector punctual layer having a label and the symbol transparency no more than 10%.\n")
          self.showErr(errMsg)         
          return True # fine comando
 
