@@ -1456,7 +1456,7 @@ Los puntos deben ser diferentes.</translation>
     </message>
     <message>
         <source>Specify base point or [{0}] &lt;{0}&gt;: </source>
-        <translation>Precise punto base o [{0}] &lt;{1}&gt;: </translation>
+        <translation>Precise punto base o [{0}] &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specify the displacement fom the origin point 0,0 &lt;{0}, {1}&gt;: </source>

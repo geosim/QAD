@@ -405,7 +405,8 @@ class Qad(QObject):
       
       # inizializzzione sul caricamento del progetto
       self.initOnProjectLoaded()
-      
+
+
    def initOnProjectLoaded(self):
       # carico le variabili d'ambiente
       QadVariables.load()
@@ -417,6 +418,9 @@ class Qad(QObject):
       self.loadDimStyles()
       # Gestore di Undo/Redo
       self.undoStack = qad_undoredo.QadUndoStack()
+      
+      self.UpdatedVariablesEvent()
+
 
    def initGui(self):
       # creo tutte le azioni e le collego ai comandi
@@ -930,7 +934,10 @@ class Qad(QObject):
 
    def UpdatedVariablesEvent(self):
       # aggiorna in base alle nuove impostazioni delle variabili
-      self.tool.UpdatedVariablesEvent()
+      if self.tool:
+          self.tool.UpdatedVariablesEvent()
+      if self.TextWindow:
+         self.TextWindow.refreshColors()
       
       
    #============================================================================

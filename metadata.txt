@@ -9,12 +9,12 @@
 
 [general]
 name=QAD
-email=gam17@riseup.org
+email=gam17@riseup.net
 author=gam17
 qgisMinimumVersion=2.4
 description=Quantum Aided Design: cad like commands in QGIS
 about=Quantum Aided Design: cad like commands in QGIS
-version=2.8.13
+version=2.8.14
 tracker=https://github.com/gam17/QAD/issues
 repository=https://github.com/gam17/QAD
 
@@ -23,24 +23,12 @@ repository=https://github.com/gam17/QAD
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=version 2.8.13:
-* 2016-05-05 Added <split parts> and <slipt objects> in MAPMPEDIT command
-* 2016-05-05 Added <DELOBJ> and <MAXARRAY> system variables
-* 2016-05-05 Added <ARRAY>, <ARRAYRECT>, <ARRAYPATH>, <ARRAYPOLAR> commands
-* 2016-06-13 Fixed bug on dimension saving
-* 2016-06-16 Added <DIMARCSYM> system variable
-* 2016-06-30 Removed <DIMARCSYM> system variable (used as dim style property)
-* 2016-06-30 Added <DIMARC> command
-* 2016-09-09 Added <DIVIDE> command
-* 2016-06-09 Distinction between project variables and global variables (inspired by sdnxgr)
-* 2016-09-12 Added <MEASURE> command
-* 2016-10-12 Added spanish localization
-* 2016-10-14 Added "hold Ctrl to switch direction" option on <ARC> and <PLINE> commands
+# changelog=
 
 category=Vector
 
 # tags are comma separated with spaces allowed
-tags=cad,arc,circle,digitizing,dimensioning,polygon,polyline,rectangle,snap,vector
+tags=cad,circle,digitizing,dimensioning,polygon,polyline,rectangle,snap,vector
 
 homepage=https://github.com/gam17/QAD
 icon=icons/qad.png

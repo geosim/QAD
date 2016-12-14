@@ -237,6 +237,7 @@ class QadMapTool(QgsMapTool):
 
 
    def wheelEvent(self, event):
+      QgsMapTool.wheelEvent(self, event)
       self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
 
 

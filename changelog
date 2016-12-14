@@ -1,26 +1,38 @@
+version 2.8.14:
+---------------------------
+
+* 2016-12-12 Fixed bug on <MOVE> command (Spanish localization only, reported by dortegat)
+
+* 2016-12-12 Fixed bug on "OSNAP is enabled only if polar snapping is also enabled" (reported by sdnxgr)
+
+* 2016-12-12 Fixed bug on "user defined coordinate reference system. Like USER:100000" (reported by AndreyMai)
+
+* 2016-12-12 Fixed bug on "The zoom (scroll wheel) isn't working when using QAD" (reported by patricev)
+
+
 version 2.8.13:
 ---------------------------
 
-* 2016-05-05 Added <split parts> and <slipt objects> in MAPMPEDIT command
-
-* 2016-05-05 Added <DELOBJ> and <MAXARRAY> system variables
-
-* 2016-05-05 Added <ARRAY>, <ARRAYRECT>, <ARRAYPATH>, <ARRAYPOLAR> commands
-
-* 2016-06-13 Fixed bug on dimension saving
-
-* 2016-06-16 Added <DIMARCSYM> system variable
-
-* 2016-06-30 Removed <DIMARCSYM> system variable (used as dim style property)
-
-* 2016-06-30 Added <DIMARC> command
-
-* 2016-09-09 Added <DIVIDE> command
-
-* 2016-06-09 Distinction between project variables and global variables (inspired by sdnxgr)
-
-* 2016-09-12 Added <MEASURE> command
+* 2016-10-14 Added "hold Ctrl to switch direction" option on <ARC> and <PLINE> commands
 
 * 2016-10-12 Added spanish localization
 
-* 2016-10-14 Added "hold Ctrl to switch direction" option on <ARC> and <PLINE> commands
+* 2016-09-12 Added <MEASURE> command
+
+* 2016-06-09 Distinction between project variables and global variables (inspired by sdnxgr)
+
+* 2016-09-09 Added <DIVIDE> command
+
+* 2016-06-30 Added <DIMARC> command
+
+* 2016-06-30 Removed <DIMARCSYM> system variable (used as dim style property)
+
+* 2016-06-16 Added <DIMARCSYM> system variable
+
+* 2016-06-13 Fixed bug on dimension saving
+
+* 2016-05-05 Added <ARRAY>, <ARRAYRECT>, <ARRAYPATH>, <ARRAYPOLAR> commands
+
+* 2016-05-05 Added <DELOBJ> and <MAXARRAY> system variables
+
+* 2016-05-05 Added <split parts> and <slipt objects> in MAPMPEDIT command

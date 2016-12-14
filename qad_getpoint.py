@@ -441,19 +441,27 @@ class QadGetPoint(QgsMapTool):
    # AutoSnap
    #============================================================================
    def setPolarAngOffset(self, polarAngOffset):
-      self.__PolarAngOffset = polarAngOffset
-      
+      self.__PolarAngOffset = polarAngOffset # per gestire l'angolo relativo all'ultimo segmento
+
       
    def getRealPolarAng(self):
       # ritorna l'angolo polare che veramente deve essere usato tenendo conto delle variabili di sistema
+      if self.__AutoSnap is None: return None
+      if (self.__AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING) == False: return None # puntamento polare non attivato
+
+      # il comportamento di QAD è uguale sia per i punti della linea che si sta disegnando che per i punti di osanp
       if (self.__PolarMode & QadPOLARMODEnum.POLAR_TRACKING): # usa POLARANG
          return self.__PolarAng
       else:
          return math.pi / 2 # 90 gradi (ortogonale)
-      
+
+
    def getRealPolarAngOffset(self):
       # ritorna l'angolo polare di offset che veramente deve essere usato tenendo conto delle variabili di sistema
-      if (self.__PolarMode & QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE): # (relativo al coeff angolare dell'ultimo segmento)
+      if self.__AutoSnap is None: return None
+      if (self.__AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING) == False: return None # puntamento polare non attivato
+
+      if (self.__PolarMode is not None and self.__PolarMode & QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE): # (relativo al coeff angolare dell'ultimo segmento)
          return self.__PolarAngOffset 
       else:
          return 0 # 0 gradi (assoluto)
@@ -557,7 +565,7 @@ class QadGetPoint(QgsMapTool):
       if self.__stopTimer == False and (geom is not None):
          if self.__QadSnapper is not None:
             if self.__AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING: # se abilitato l'utilizzo del modo i punti di snap per l'uso polare
-               if self.__PolarMode & QadPOLARMODEnum.SHIFT_TO_ACQUIRE: # acquisisce i punti di snap per l'uso polare solo se premuto shift
+               if self.__PolarMode is not None and self.__PolarMode & QadPOLARMODEnum.SHIFT_TO_ACQUIRE: # acquisisce i punti di snap per l'uso polare solo se premuto shift
                   useOSnapPointsForPolar = True if shiftKey else False
                else: # acquisisce i punti di snap per l'uso polare automaticamente               
                   useOSnapPointsForPolar = True
@@ -690,9 +698,8 @@ class QadGetPoint(QgsMapTool):
             self.__prevGeom = QgsGeometry(geometry)
             runToggleReferenceLines = lambda: self.toggleReferenceLines(self.__prevGeom, layer.crs(), allSnapPoints, self.tmpShiftKey)
             self.__stopTimer = False
-            QTimer.singleShot(500, runToggleReferenceLines)
-      # se NON è stata trovata una geometria
-      else:        
+            QTimer.singleShot(500, runToggleReferenceLines)      
+      else: # se NON è stata trovata una geometria
          # start1 = time.time() # test
          
          # se non é stata trovato alcun oggetto allora verifico se una geometria di tmpGeometries rientra nella casella aperture
@@ -731,7 +738,7 @@ class QadGetPoint(QgsMapTool):
                                                                            allSnapPoints, self.tmpShiftKey)
                self.__stopTimer = False
                QTimer.singleShot(500, runToggleReferenceLines)
-         else:
+         else: # se NON è stata trovata una geometria temporanea (la stessa che si sta disegnando)
             allSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
                                                            self.canvas.mapSettings().destinationCrs(), \
                                                            None, \
