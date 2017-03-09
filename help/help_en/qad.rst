@@ -698,6 +698,12 @@ DIMSTYLE
 Creates, modifies, compare dimensioning styles. It sets the current
 dimensioning style.
 
+DIVIDE
+~~~~~~
+
+Creates evenly spaced punctual objects along the length or perimeter of
+an object.
+
 DSETTINGS
 ~~~~~~~~~
 
@@ -778,6 +784,12 @@ MBUFFER
 
 Draws a buffer around the selected objects. Select the objects and
 specify the buffer width.
+
+MEASURE
+~~~~~~~
+
+Creates punctual objects at measured intervals along the length or
+perimeter of an object.
 
 MIRROR
 ~~~~~~
@@ -936,117 +948,124 @@ System variables
 
 System variables are settings that control how certain commands work.
 They can be integer, real, char, bool or RGB color type (i.e.
-“#FF0000”). If a current project exist, they are saved and loaded into
-<current project name>\_QAD.INI file of the current QGIS project folder
-else in the QAD.INI file located in the installation folder.
+“#FF0000”).
+
+A variable is called “global” when its value doesn’t change when the
+current project change. These variables are saved and loaded into the
+QAD.INI file located in the installation folder.
+
+A variable is called “project” when its value change when the current
+project change. These variables are saved and loaded into <current
+project name>\_QAD.INI file of the current QGIS project folder.
 
 APBOX
 ~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Global variable.
 
 APERTURE
 ~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Global variable.
 
 ARCMINSEGMENTQTY
 ~~~~~~~~~~~~~~~~
 
 Minimum number of segments to approximate an arc. Valid values from 4 to
-999, integer type, default value 12.
+999, integer type, default value 12. Project variable.
 
 AUTOSNAP
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 AUTOSNAPCOLOR
 ~~~~~~~~~~~~~
 
-Color of the snap markers.
+Color of the snap markers. Global variable.
 
 AUTOSNAPSIZE
 ~~~~~~~~~~~~
 
-Dimension of the snap markers in pixel.
+Dimension of the snap markers in pixel. Global variable.
 
 AUTOTRACKINGVECTORCOLOR
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Color of the autotrack vector.
+Color of the autotrack vector. Global variable.
 
 CIRCLEMINSEGMENTQTY
 ~~~~~~~~~~~~~~~~~~~
 
 Minimum number of segments to approximate a circle. Valid values from 6
-to 999, integer type, default value 12.
+to 999, integer type, default value 12. Project variable.
 
 CMDHISTORYBACKCOLOR
 ~~~~~~~~~~~~~~~~~~~
 
-Command history background color.
+Command history background color. Global variable.
 
 CMDHISTORYFORECOLOR
 ~~~~~~~~~~~~~~~~~~~
 
-Command history text color.
+Command history text color. Global variable.
 
 CMDINPUTHISTORYMAX
 ~~~~~~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 CMDLINEBACKCOLOR
 ~~~~~~~~~~~~~~~~
 
-Active prompt background color.
+Active prompt background color. Global variable.
 
 CMDLINEFORECOLOR
 ~~~~~~~~~~~~~~~~
 
-Active prompt color.
+Active prompt color. Global variable.
 
 CMDLINEOPTBACKCOLOR
 ~~~~~~~~~~~~~~~~~~~
 
-Command option keyword background color.
+Command option keyword background color. Global variable.
 
 CMDLINEOPTCOLOR
 ~~~~~~~~~~~~~~~
 
-Command option keyword color.
+Command option keyword color. Global variable.
 
 CMDLINEOPTHIGHLIGHTEDCOLOR
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Command option highlighted color.
+Command option highlighted color. Global variable.
 
 COPYMODE
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 CROSSINGAREACOLOR
 ~~~~~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 CURSORCOLOR
 ~~~~~~~~~~~
 
 Cross pointer color. Valid values are valid RGB colors, color type,
-default value red =“#FF0000”.
+default value red =“#FF0000”. Global variable.
 
 CURSORSIZE
 ~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 DELOBJ
 ~~~~~~
 
 | It controls whether the original geometry is retained or removed.
+  Global variable.
 | 0 = All defining geometry is retained.
 | 1 = Deletes all defining geometry.
 | -1 = Displays prompts to delete all defining geometry.
@@ -1054,42 +1073,43 @@ DELOBJ
 DIMSTYLE
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Project variable.
 
 EDGEMODE
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 FILLETRAD
 ~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Project variable.
 
 GRIPCOLOR
 ~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 GRIPCONTOUR
 ~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 GRIPHOT
 ~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 GRIPOVER
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 GRIPMULTIFUNCTIONAL
 ~~~~~~~~~~~~~~~~~~~
 
-| Specifies the access methods to multi-functional grips.
+| Specifies the access methods to multi-functional grips. Global
+  variable.
 | 0 = Access to multi-functional grips is disabled.
 | 2 = Access multi-functional grips with the dynamic menu and the Hot
   Grip shortcut menu.
@@ -1097,120 +1117,122 @@ GRIPMULTIFUNCTIONAL
 GRIPOBJLIMIT
 ~~~~~~~~~~~~
 
-Come i CAD più popolari.
+Come i CAD più popolari. Global variable.
 
 GRIPS
 ~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 GRIPSIZE
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 INPUTSEARCHDELAY
 ~~~~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 INPUTSEARCHOPTIONS
 ~~~~~~~~~~~~~~~~~~
 
 The same as AUTOCOMPLETEMODE system variable of the most popular CAD.
+Global variable.
 
 MAXARRAY
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 OFFSETDIST
 ~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Project variable.
 
 OFFSETGAPTYPE
 ~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Project variable.
 
 ORTHOMODE
 ~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Project variable.
 
 OSMODE
 ~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 OSPROGRDISTANCE
 ~~~~~~~~~~~~~~~
 
 Progressive distance for <Progressive distance> snap mode. Real type,
-default value 0.
+default value 0. Project variable.
 
 PICKADD
 ~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 PICKBOX
 ~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 PICKBOXCOLOR
 ~~~~~~~~~~~~
 
-Sets the object selection target color.
+Sets the object selection target color. Global variable.
 
 PICKFIRST 
 ~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 POLARANG
 ~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 POLARMODE
 ~~~~~~~~~
 
 The same as the most popular CAD. The value 4 is not supported (use
-additional polar tracking angles).
+additional polar tracking angles). Global variable.
 
 SELECTIONAREA
 ~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 SELECTIONAREAOPACITY
 ~~~~~~~~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 SUPPORTPATH
 ~~~~~~~~~~~
 
-Searching path for support files. Character type.
+Searching path for support files. Character type. Global variable.
 
 SHOWTEXTWINDOW
 ~~~~~~~~~~~~~~
 
-Show the text window at startup. Bool type, default value true.
+Show the text window at startup. Bool type, default value true. Global
+variable.
 
 TOLERANCE2APPROXCURVE
 ~~~~~~~~~~~~~~~~~~~~~
 
 Maximum error approximating a curve to segments. Valid values from
-0.000001, real type, default value 0.1.
+0.000001, real type, default value 0.1. Project variable.
 
 WINDOWAREACOLOR
 ~~~~~~~~~~~~~~~
 
-The same as the most popular CAD.
+The same as the most popular CAD. Global variable.
 
 .. |image0| image:: media/image1.emf
    :width: 3.45278in

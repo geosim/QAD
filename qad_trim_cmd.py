@@ -78,6 +78,7 @@ class QadTRIMCommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 3: # quando si é in fase di disegno linea
          return self.PLINECommand.getPointMapTool(drawMode)
@@ -85,6 +86,16 @@ class QadTRIMCommandClass(QadCommandClass):
          return self.RECTANGLECommand.getPointMapTool(drawMode)      
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 3: # quando si é in fase di disegno linea
+         return self.PLINECommand.getCurrentContextualMenu()
+      elif self.step == 4: # quando si é in fase di disegno rettangolo 
+         return self.RECTANGLECommand.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
 
    #============================================================================
    # trimFeatures

@@ -15,6 +15,7 @@
         <file>icons/arrayPath.png</file>
         <file>icons/arrayPolar.png</file>
         <file>icons/break.png</file>
+        <file>icons/breakBy1Point.png</file>
         <file>icons/circle.png</file>
         <file>icons/circleBy2Points.png</file>
         <file>icons/circleBy2TansRadius.png</file>
@@ -28,6 +29,7 @@
         <file>icons/dimArc.png</file>
         <file>icons/dimLinear.png</file>
         <file>icons/dimStyle.png</file>
+        <file>icons/divide.png</file>
         <file>icons/disjoin.png</file>
         <file>icons/dsettings.png</file>
         <file>icons/erase.png</file>
@@ -40,6 +42,7 @@
         <file>icons/line.png</file>
         <file>icons/mapmpedit.png</file>
         <file>icons/mbuffer.png</file>
+        <file>icons/measure.png</file>
         <file>icons/mirror.png</file>
         <file>icons/move.png</file>
         <file>icons/mpolygon.png</file>

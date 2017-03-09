@@ -77,6 +77,7 @@ class QadINSERTCommandClass(QadCommandClass):
       if self.GetAngleClass is not None:
          del self.GetAngleClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       # quando si é in fase di richiesta distanza (scala)
       if self.step == 2:
@@ -86,7 +87,19 @@ class QadINSERTCommandClass(QadCommandClass):
          return self.GetAngleClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
-        
+
+
+   def getCurrentContextualMenu(self):
+      # quando si é in fase di richiesta distanza (scala)
+      if self.step == 2:
+         return self.GetDistClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == 3:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    def addFeature(self, layer):
       transformedPoint = self.mapToLayerCoordinates(layer, self.insPt)
       g = QgsGeometry.fromPoint(transformedPoint)
@@ -127,7 +140,7 @@ class QadINSERTCommandClass(QadCommandClass):
 
       if qad_layer.isSymbolLayer(currLayer) == False:
          errMsg = QadMsg.translate("QAD", "\nCurrent layer is not a symbol layer.")
-         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vectorial punctual layer without label.\n")
+         errMsg = errMsg + QadMsg.translate("QAD", "\nA symbol layer is a vector punctual layer without label.\n")
          self.showErr(errMsg)         
          return True # fine comando
 

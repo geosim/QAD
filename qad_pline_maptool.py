@@ -64,18 +64,29 @@ class Qad_pline_maptool(QadGetPoint):
       if self.asToolForMPolygon:
          self.__polygonRubberBand = QadRubberBand(self.plugIn.canvas, True)
          self.endVertex = None # punta al vertice iniziale e finale del poligono di QadPLINECommandClass
+      else:
+         self.__polylineTraceRubberBand = QadRubberBand(self.plugIn.canvas, True) # da usare in trace di un oggetto esistente
 
    def hidePointMapToolMarkers(self):
       QadGetPoint.hidePointMapToolMarkers(self)
-      if self.asToolForMPolygon: self.__polygonRubberBand.hide()
+      if self.asToolForMPolygon:
+         self.__polygonRubberBand.hide()
+      else:
+         self.__polylineTraceRubberBand.hide()
 
    def showPointMapToolMarkers(self):
       QadGetPoint.showPointMapToolMarkers(self)
-      if self.asToolForMPolygon: self.__polygonRubberBand.show()
+      if self.asToolForMPolygon:
+         self.__polygonRubberBand.show()
+      else:
+         self.__polylineTraceRubberBand.show()
                              
    def clear(self):
       QadGetPoint.clear(self)
-      if self.asToolForMPolygon: self.__polygonRubberBand.reset()
+      if self.asToolForMPolygon:
+         self.__polygonRubberBand.reset()
+      else:
+         self.__polylineTraceRubberBand.reset()
       self.mode = None
    
    def canvasMoveEvent(self, event):
@@ -83,38 +94,50 @@ class Qad_pline_maptool(QadGetPoint):
 
       if self.asToolForMPolygon == True: # se True significa che è usato per disegnare un poligono
          self.__polygonRubberBand.reset()
+      else:
+         self.__polylineTraceRubberBand.reset()
       
-         startPoint = self.getStartPoint()
-         if startPoint is None: return
-         
-         points = None           
-          
-         # si richiede il punto finale per ricalcare un oggetto esistente
-         if self.mode == Qad_pline_maptool_ModeEnum.ASK_FOR_TRACE_PT:
-            if self.tmpEntity.isInitialized():
-               # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-               geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
-               ptEnd = qad_utils.closestVertexPtWithContext(self.tmpPoint, geom)
-               # leggo la parte di linea tra self.firstPt e ptEnd
-               points = qad_utils.getLinePart(geom, startPoint, ptEnd)
-         else:
-            points = [startPoint, self.tmpPoint]
-         
+      startPoint = self.getStartPoint()
+      if startPoint is None: return
+      
+      points = None           
+       
+      # si richiede il punto finale per ricalcare un oggetto esistente
+      if self.mode == Qad_pline_maptool_ModeEnum.ASK_FOR_TRACE_PT:
+         if self.tmpEntity.isInitialized():
+            # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
+            geom = self.layerToMapCoordinates(self.tmpEntity.layer, self.tmpEntity.getGeometry())
+            ptEnd = qad_utils.closestVertexPtWithContext(self.tmpPoint, geom)
+            # leggo la parte di linea tra self.firstPt e ptEnd
+            points = qad_utils.getLinePart(geom, startPoint, ptEnd)
+      else:
+         points = [startPoint, self.tmpPoint]
+      
+      # caso di poligono
+      if self.asToolForMPolygon:
          if (points is not None) and (self.endVertex is not None) and (startPoint != self.endVertex):
             points.insert(0, self.endVertex)
             self.__polygonRubberBand.setPolygon(points)
-         
-         del startPoint
+      elif self.mode == Qad_pline_maptool_ModeEnum.ASK_FOR_TRACE_PT:
+         if (points is not None): self.__polylineTraceRubberBand.setLine(points)
+      
+      del startPoint
 
     
    def activate(self):
       QadGetPoint.activate(self)
-      if self.asToolForMPolygon: self.__polygonRubberBand.show()
+      if self.asToolForMPolygon:
+         self.__polygonRubberBand.show()
+      else:
+         self.__polylineTraceRubberBand.show()
 
    def deactivate(self):
       try: # necessario perché se si chiude QGIS parte questo evento nonostante non ci sia più l'oggetto maptool !
          QadGetPoint.deactivate(self)
-         if self.asToolForMPolygon: self.__polygonRubberBand.hide()
+         if self.asToolForMPolygon:
+            self.__polygonRubberBand.hide()
+         else:
+            self.__polylineTraceRubberBand.hide()
       except:
          pass
 

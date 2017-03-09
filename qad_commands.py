@@ -75,6 +75,8 @@ from qad_options_cmd import QadOPTIONSCommandClass
 from qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
 from qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
 from qad_array_cmd import QadARRAYCommandClass, QadARRAYRECTCommandClass, QadARRAYPATHCommandClass, QadARRAYPOLARCommandClass
+from qad_divide_cmd import QadDIVIDECommandClass
+from qad_measure_cmd import QadMEASURECommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -133,7 +135,9 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadARRAYRECTCommandClass(self.plugIn)) # ARRAYRECT
       self.__cmdObjs.append(QadARRAYPATHCommandClass(self.plugIn)) # ARRAYPATH
       self.__cmdObjs.append(QadARRAYPOLARCommandClass(self.plugIn)) # ARRAYPOLAR
-      
+      self.__cmdObjs.append(QadDIVIDECommandClass(self.plugIn)) # DIVIDE
+      self.__cmdObjs.append(QadMEASURECommandClass(self.plugIn)) # MEASURE
+
       self.actualCommand = None  # Comando in corso di esecuzione
    
       # scarto gli alias che hanno lo stesso nome dei comandi
@@ -396,72 +400,67 @@ class QadCommandsClass():
    #============================================================================
    # forceCommandMapToolSnapTypeOnce
    #============================================================================
-   def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
+   def getActualCommandPointMapTool(self):
       # se non c'é alcun comando attivo
       if self.actualCommand is None:
-         return
+         return None
       # se non c'é un maptool del comando attuale
       if self.actualCommand.getPointMapTool() is None:
-         return
+         return None
       # se il maptool del comando attuale se non é attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      self.actualCommand.getPointMapTool().forceSnapTypeOnce(snapType, snapParams)
+      return self.actualCommand.getPointMapTool()
+
+
+   #============================================================================
+   # forceCommandMapToolSnapTypeOnce
+   #============================================================================
+   def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
+         return
+      pointMapTool.forceSnapTypeOnce(snapType, snapParams)
 
 
    #============================================================================
    # getCurrenPointFromCommandMapTool
    #============================================================================
    def getCurrenPointFromCommandMapTool(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return None
-      # se non c'é un maptool del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return None
-      # se il maptool del comando attuale se non é attivo
-      if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
-         self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      return self.actualCommand.getPointMapTool().tmpPoint
+      return pointMapTool.tmpPoint
       
 
    #============================================================================
    # refreshCommandMapToolSnapType
    #============================================================================
    def refreshCommandMapToolSnapType(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshSnapType()
+      pointMapTool.refreshSnapType()
       
       
    #============================================================================
    # refreshCommandMapToolOrthoMode
    #============================================================================
    def refreshCommandMapToolOrthoMode(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshOrthoMode()
+      pointMapTool.refreshOrthoMode()
       
       
    #============================================================================
    # refreshCommandMapToolAutoSnap
    #============================================================================
    def refreshCommandMapToolAutoSnap(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshAutoSnap()
+      pointMapTool.refreshAutoSnap()
 
 
 
@@ -540,7 +539,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
          msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return False
-      self.plugIn.updateHistoryfromTxtWindow(cmdName)
+      self.plugIn.updateCmdsHistory(cmdName)
       return True
 
             
@@ -608,7 +607,7 @@ class QadUsedCmdNamesClass():
 def displayError(exception = None):
    exc_type, exc_value, exc_traceback = sys.exc_info()
    format_exception = traceback.format_exception(exc_type, exc_value, exc_traceback)
-   stk = QadMsg.translate("QAD", "Well, this is embarrassing message...\n\n")
+   stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n")
    for s in format_exception:
       stk += s
    if exception is not None: stk += "\n" + exception.__doc__

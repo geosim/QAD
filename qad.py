@@ -165,12 +165,14 @@ class Qad(QObject):
    # comando dimstyle - ultimo tab utilizzato
    dimStyleLastUsedTabIndex = -1 # -1 = non inizializzato
 
+   cmdsHistory = [] # lista della storia degli ultimi comandi usati
+   ptsHistory = [] # lista della storia degli ultimi punti usati
 
    #============================================================================
    # version
    #============================================================================
    def version(self):
-      return "2.8.13"
+      return "2.8.14"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -185,6 +187,7 @@ class Qad(QObject):
    def setLastPoint(self, point):
       # memorizzo l'ultimo punto selezionato         
       self.lastPoint = point
+      self.updatePtsHistory(point)
 
    def setLastSegmentAng(self, segmentAng):
       # memorizzo il coeff angolare ultimo segmento
@@ -405,7 +408,8 @@ class Qad(QObject):
       
       # inizializzzione sul caricamento del progetto
       self.initOnProjectLoaded()
-      
+
+
    def initOnProjectLoaded(self):
       # carico le variabili d'ambiente
       QadVariables.load()
@@ -417,6 +421,9 @@ class Qad(QObject):
       self.loadDimStyles()
       # Gestore di Undo/Redo
       self.undoStack = qad_undoredo.QadUndoStack()
+      
+      self.UpdatedVariablesEvent()
+
 
    def initGui(self):
       # creo tutte le azioni e le collego ai comandi
@@ -501,7 +508,13 @@ class Qad(QObject):
       self.toolBar.addAction(self.mirror_action)
       self.toolBar.addAction(self.stretch_action)
       self.toolBar.addAction(self.lengthen_action)
-      self.toolBar.addAction(self.break_action)
+      self.toolBar.addAction(self.divide_action)
+      self.toolBar.addAction(self.measure_action)
+      
+      # break
+      self.breakToolButton = self.createBreakToolButton()
+      self.toolBar.addWidget(self.breakToolButton)
+      
       self.toolBar.addAction(self.pedit_action)
       self.toolBar.addAction(self.mapmpedit_action)
       self.toolBar.addAction(self.fillet_action)
@@ -529,6 +542,7 @@ class Qad(QObject):
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       QObject.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
       QObject.connect(self.iface, SIGNAL("projectRead()"), self.onProjectLoaded)
+      QObject.connect(self.iface, SIGNAL("newProjectCreated()"), self.onProjectLoaded)
 
       self.showTextWindow(QadVariables.get(QadMsg.translate("Environment variables", "SHOWTEXTWINDOW"), True))
       self.setStandardMapTool()
@@ -666,6 +680,11 @@ class Qad(QObject):
       self.break_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.break_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.break_action)
+      # BREAK BY 1 POINT (MACRO)
+      self.breakBy1Point_action = QAction(QIcon(":/plugins/qad/icons/breakBy1Point.png"), \
+                                          QadMsg.translate("Command_BREAK", "Breaks an object at one point"), \
+                                          self.iface.mainWindow())
+      QObject.connect(self.breakBy1Point_action, SIGNAL("triggered()"), self.runBREAK_BY_1_POINT_Command)
 
       # CIRCLE BY CENTER RADIUS (MACRO)
       self.circleByCenterRadius_action = QAction(QIcon(":/plugins/qad/icons/circleByCenterRadius.png"), \
@@ -737,6 +756,12 @@ class Qad(QObject):
       self.disjoin_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.disjoin_action)
       
+      # DIVIDE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "DIVIDE"))
+      self.divide_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.divide_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.divide_action)
+      
       # ERASE
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "ERASE"))
       self.erase_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
@@ -796,6 +821,12 @@ class Qad(QObject):
       self.mbuffer_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.mbuffer_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.mbuffer_action)
+      
+      # MEASURE
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MEASURE"))
+      self.measure_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.measure_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.measure_action)
       
       # MIRROR
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "MIRROR"))
@@ -906,7 +937,10 @@ class Qad(QObject):
 
    def UpdatedVariablesEvent(self):
       # aggiorna in base alle nuove impostazioni delle variabili
-      self.tool.UpdatedVariablesEvent()
+      if self.tool:
+          self.tool.UpdatedVariablesEvent()
+      if self.TextWindow:
+         self.TextWindow.refreshColors()
       
       
    #============================================================================
@@ -931,6 +965,15 @@ class Qad(QObject):
       arcMenu.addAction(self.arcByCenterStartAngle_action)      
       arcMenu.addAction(self.arcByCenterStartLength_action)      
       return arcMenu
+
+   def createBreakMenu(self):
+      # menu Break
+      breakMenu = QMenu(QadMsg.translate("Command_list", "BREAK"))
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "BREAK"))
+      breakMenu.setIcon(cmd.getIcon())
+      breakMenu.addAction(self.break_action)
+      breakMenu.addAction(self.breakBy1Point_action)
+      return breakMenu
 
    def createCircleMenu(self):
       # menu Circle
@@ -999,7 +1042,13 @@ class Qad(QObject):
       editMenu.addAction(self.mirror_action)
       editMenu.addAction(self.stretch_action)
       editMenu.addAction(self.lengthen_action)
-      editMenu.addAction(self.break_action)
+      editMenu.addAction(self.divide_action)
+      editMenu.addAction(self.measure_action)
+      
+      # menu break      
+      self.breakMenu = self.createBreakMenu()
+      editMenu.addMenu(self.breakMenu)
+      
       editMenu.addAction(self.pedit_action)
       editMenu.addAction(self.mapmpedit_action)
       editMenu.addAction(self.fillet_action)
@@ -1042,6 +1091,29 @@ class Qad(QObject):
       return arcToolButton
    def arcToolButtonTriggered(self, action):
       self.arcToolButton.setDefaultAction(action)
+
+
+   def createArrayToolButton(self):
+      arrayToolButton = QToolButton(self.toolBar)
+      arrayToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      arrayToolButton.setMenu(self.arrayMenu)
+      arrayToolButton.setDefaultAction(self.arrayMenu.actions()[0]) # prima voce di menu
+      arrayToolButton.triggered.connect(self.arrayToolButtonTriggered)
+      return arrayToolButton
+   def arrayToolButtonTriggered(self, action):
+      self.arrayToolButton.setDefaultAction(action)
+
+
+   def createBreakToolButton(self):
+      breakToolButton = QToolButton(self.toolBar)
+      breakToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      breakToolButton.setMenu(self.breakMenu)
+      breakToolButton.setDefaultAction(self.breakMenu.actions()[0]) # prima voce di menu
+      breakToolButton.triggered.connect(self.breakToolButtonTriggered)
+      return breakToolButton
+   def breakToolButtonTriggered(self, action):
+      self.breakToolButton.setDefaultAction(action)
+
    
    def createCircleToolButton(self):
       circleToolButton = QToolButton(self.toolBar)
@@ -1053,15 +1125,6 @@ class Qad(QObject):
    def circleToolButtonTriggered(self, action):
       self.circleToolButton.setDefaultAction(action)
 
-   def createArrayToolButton(self):
-      arrayToolButton = QToolButton(self.toolBar)
-      arrayToolButton.setPopupMode(QToolButton.MenuButtonPopup)
-      arrayToolButton.setMenu(self.arrayMenu)
-      arrayToolButton.setDefaultAction(self.arrayMenu.actions()[0]) # prima voce di menu
-      arrayToolButton.triggered.connect(self.arrayToolButtonTriggered)
-      return arrayToolButton
-   def arrayToolButtonTriggered(self, action):
-      self.arrayToolButton.setDefaultAction(action)
 
    def createDimToolBar(self):
       # aggiunge la toolbar per la quotatura
@@ -1404,6 +1467,12 @@ class Qad(QObject):
    def refreshCommandMapToolSnapType(self):
       self.QadCommands.refreshCommandMapToolSnapType()
    
+   def refreshCommandMapToolAutoSnap(self):
+      self.QadCommands.refreshCommandMapToolAutoSnap()
+   
+   def getCurrenPointFromCommandMapTool(self):
+      return self.QadCommands.getCurrenPointFromCommandMapTool()
+
    def getCurrenPointFromCommandMapTool(self):
       return self.QadCommands.getCurrenPointFromCommandMapTool()
    
@@ -1452,7 +1521,7 @@ class Qad(QObject):
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
       self.showMsg(msg, True)        
-      self.QadCommands.refreshCommandMapToolAutoSnap()
+      self.refreshCommandMapToolAutoSnap()
 
 
    def toggleObjectSnapTracking(self):
@@ -1467,17 +1536,11 @@ class Qad(QObject):
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
       self.showMsg(msg, True)        
-      self.QadCommands.refreshCommandMapToolAutoSnap()
+      self.refreshCommandMapToolAutoSnap()
 
    
    def getCurrMsgFromTxtWindow(self):
       return self.TextWindow.getCurrMsg()
-
-   def getHistoryfromTxtWindow(self):
-      return self.TextWindow.getHistory() # list
-
-   def updateHistoryfromTxtWindow(self, command):
-      return self.TextWindow.updateHistory(command)
 
    def showEvaluateMsg(self, msg = None):
       self.TextWindow.showEvaluateMsg(msg)
@@ -1608,6 +1671,15 @@ class Qad(QObject):
    def runARRAYPOLARCommand(self): 
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ARRAYPOLAR"))
 
+   def runBREAK_BY_1_POINT_Command(self): # MACRO
+      # nome comando + argomenti
+      args = [QadMsg.translate("Command_list", "BREAK"), \
+              None, \
+              QadMsg.translate("Command_BREAK", "First point"), \
+              None, \
+              "@"]
+      self.runMacroAbortingTheCurrent(args)
+
    def runCIRCLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "CIRCLE"))
    def runCIRCLE_BY_CENTER_RADIUS_Command(self): # MACRO
@@ -1618,7 +1690,7 @@ class Qad(QObject):
       self.runMacroAbortingTheCurrent(args)
    def runCIRCLE_BY_CENTER_DIAMETER_Command(self): # MACRO
       # nome comando + argomenti
-      args = [QadMsg.translate("Command_list", "CERCHIO"), \
+      args = [QadMsg.translate("Command_list", "CIRCLE"), \
               None, \
               QadMsg.translate("Command_CIRCLE", "Diameter"), \
               None]
@@ -1750,6 +1822,12 @@ class Qad(QObject):
    def runDIMSTYLECommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIMSTYLE"))
 
+   def runDIVIDECommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "DIVIDE"))
+
+   def runMEASURECommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "MEASURE"))
+
    def runHELPCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "HELP"))
 
@@ -1758,3 +1836,52 @@ class Qad(QObject):
 
    def runOPTIONSCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "OPTIONS"))
+
+
+
+
+   def updateCmdsHistory(self, command):
+      # aggiorna la lista della storia degli ultimi comandi usati 
+      # Se command é una lista di comandi
+      if isinstance(command, list):
+         for line in command:
+            self.updateCmdsHistory(line)
+      elif not command == "":
+         # cerco se il comando è già presente in lista
+         # se era in lista lo rimuovo
+         try:
+            ndx = self.cmdsHistory.index(command)
+            del self.cmdsHistory[ndx]
+         except ValueError:
+            pass
+
+         # aggiungo il comando in fondo alla lista
+         self.cmdsHistory.append(command)
+
+         cmdInputHistoryMax = QadVariables.get(QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"))
+         if len(self.cmdsHistory) > cmdInputHistoryMax:
+            del self.cmdsHistory[0]
+
+
+   def updatePtsHistory(self, pt):
+      # aggiorna la lista della storia degli ultimi punti usati
+      # Se pt é una lista di punti
+      if isinstance(pt, list):
+         for line in pt:
+            self.updatePtsHistory(line)
+      elif pt is not None:
+         # cerco se il punto è già presente in lista
+         # se era in lista lo rimuovo
+         try:
+            ndx = self.ptsHistory.index(pt)
+            del self.ptsHistory[ndx]
+         except ValueError:
+            pass
+
+         # aggiungo il punto in fondo alla lista
+         self.ptsHistory.append(pt)
+         
+         cmdInputHistoryMax = QadVariables.get(QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"))
+         if len(self.ptsHistory) > cmdInputHistoryMax:
+            del self.ptsHistory[0]
+         

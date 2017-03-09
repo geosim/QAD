@@ -146,46 +146,70 @@ class Qad_arc_maptool(QadGetPoint):
       # noti il primo punto e il centro dell'arco si richiede il punto finale
       elif self.mode == Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_END_PT:
          result = arc.fromStartCenterEndPts(self.arcStartPt, self.arcCenterPt, self.tmpPoint)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il primo punto e il centro dell'arco si richiede l'angolo inscritto
       elif self.mode == Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_ANGLE:
          angle = qad_utils.getAngleBy2Pts(self.arcCenterPt, self.tmpPoint)
          result = arc.fromStartCenterPtsAngle(self.arcStartPt, self.arcCenterPt, angle)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il primo punto e il centro dell'arco si richiede la lunghezza della corda
       elif self.mode == Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_CHORD:     
          chord = qad_utils.getDistance(self.arcStartPt, self.tmpPoint)
          result = arc.fromStartCenterPtsChord(self.arcStartPt, self.arcCenterPt, chord)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e finale dell'arco si richiede il centro
       elif self.mode == Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_CENTER:     
          result = arc.fromStartCenterEndPts(self.arcStartPt, self.tmpPoint, self.arcEndPt)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e finale dell'arco si richiede l'angolo inscritto
       elif self.mode == Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_ANGLE:     
          angle = qad_utils.getAngleBy2Pts(self.arcStartPt, self.tmpPoint)
          result = arc.fromStartEndPtsAngle(self.arcStartPt, self.arcEndPt, angle)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e finale dell'arco si richiede la direzione della tangente
       elif self.mode == Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_TAN:     
          tan = qad_utils.getAngleBy2Pts(self.arcStartPt, self.tmpPoint)
          result = arc.fromStartEndPtsTan(self.arcStartPt, self.arcEndPt, tan)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e finale dell'arco si richiede il raggio
       elif self.mode == Qad_arc_maptool_ModeEnum.START_END_PT_KNOWN_ASK_FOR_RADIUS:     
          radius = qad_utils.getDistance(self.arcEndPt, self.tmpPoint)
          result = arc.fromStartEndPtsRadius(self.arcStartPt, self.arcEndPt, radius)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e la tangente al punto iniziale si richiede il punto finale
       elif self.mode == Qad_arc_maptool_ModeEnum.START_PT_TAN_KNOWN_ASK_FOR_END_PT:     
          result = arc.fromStartEndPtsTan(self.arcStartPt, self.tmpPoint, self.arcTanOnStartPt)         
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e l'angolo inscritto dell'arco si richiede il punto finale
       elif self.mode == Qad_arc_maptool_ModeEnum.START_PT_ANGLE_KNOWN_ASK_FOR_END_PT:     
          result = arc.fromStartEndPtsAngle(self.arcStartPt, self.tmpPoint, self.arcAngle)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e l'angolo inscritto dell'arco si richiede il centro
       elif self.mode == Qad_arc_maptool_ModeEnum.START_PT_ANGLE_KNOWN_ASK_FOR_CENTER_PT:     
          result = arc.fromStartCenterPtsAngle(self.arcStartPt, self.tmpPoint, self.arcAngle)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale, l'angolo inscritto e il raggio dell'arco si richiede la direzione della corda
       elif self.mode == Qad_arc_maptool_ModeEnum.START_PT_ANGLE_RADIUS_KNOWN_ASK_FOR_CHORDDIRECTION:     
          chordDirection = qad_utils.getAngleBy2Pts(self.arcStartPt, self.tmpPoint)
          result = arc.fromStartPtAngleRadiusChordDirection(self.arcStartPt, self.arcAngle, \
                                                            self.arcRadius, chordDirection)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       # noti il punto iniziale e il raggio dell'arco si richiede il punto finale
       elif self.mode == Qad_arc_maptool_ModeEnum.START_PT_RADIUS_KNOWN_ASK_FOR_END_PT:     
          result = arc.fromStartEndPtsRadius(self.arcStartPt, self.tmpPoint, self.arcRadius)
+         if result == True and self.tmpCtrlKey: # cambio direzione
+            arc.inverse()
       
       if result == True:
          points = arc.asPolyline()

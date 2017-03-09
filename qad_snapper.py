@@ -488,6 +488,7 @@ class QadSnapper():
       - CRS = sistema di coordinate in cui é espressa la geom e il punto (QgsCoordinateReferenceSystem)
       - excludePoints = lista di punti da escludere espressa in __snapPointCRS
       - polarAng angolo in radianti per il puntamento polare
+      - polarAngOffset angolo in radianti relativo all'ultimo segmento
       - isTemporaryGeom flag che indica se geom é  un oggetto temporaneo che ancora non esiste
       """
 

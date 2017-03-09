@@ -282,6 +282,16 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
          coords = getPolarPointByPtAngle(lastPoint, angle, dist)     
          return QgsPoint(coords[0], coords[1])
 
+
+#===============================================================================
+# QgsPointToString
+#===============================================================================
+def QgsPointToString(pt):
+   """
+   Ritorna la conversione di un punto QgsPoint in stringa
+   """   
+   return pt.toString()
+
 #===============================================================================
 # strLatLon2QgsPoint
 #===============================================================================
@@ -525,7 +535,7 @@ def filterFeaturesByType(features, filterByGeomType):
       f = features[i]
       g = f.geometry()
       geomType = g.type()
-      if geomType != filterByGeomType:            
+      if geomType != filterByGeomType:
          if geomType == QGis.Point:      
             resultPoint.append(QgsGeometry(g))
          elif geomType == QGis.Line:      

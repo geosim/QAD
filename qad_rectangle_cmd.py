@@ -87,6 +87,7 @@ class QadRECTANGLECommandClass(QadCommandClass):
       if self.GetAngleClass is not None:
          del self.GetAngleClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       # quando si é in fase di richiesta distanza
       if self.step == 3 or self.step == 4 or self.step == 5 or \
@@ -102,6 +103,18 @@ class QadRECTANGLECommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None       
+
+
+   def getCurrentContextualMenu(self):
+      # quando si é in fase di richiesta distanza
+      if self.step == 3 or self.step == 4 or self.step == 5 or \
+         self.step == 8 or self.step == 9 or self.step == 10 or self.step == 11:
+         return self.GetDistClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == 13:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
       
    def addRectangleToLayer(self, layer):

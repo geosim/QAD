@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qad_options.ui'
 #
-# Created: Mon Jul 04 12:00:43 2016
+# Created: Wed Oct 12 11:24:06 2016
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -201,7 +201,7 @@ class Ui_Options_Dialog(object):
         self.groupBox_11.setGeometry(QtCore.QRect(280, 100, 271, 131))
         self.groupBox_11.setObjectName(_fromUtf8("groupBox_11"))
         self.button_GripColor = QtGui.QPushButton(self.groupBox_11)
-        self.button_GripColor.setGeometry(QtCore.QRect(80, 20, 101, 23))
+        self.button_GripColor.setGeometry(QtCore.QRect(70, 20, 141, 23))
         self.button_GripColor.setObjectName(_fromUtf8("button_GripColor"))
         self.checkBox_GRIPS = QtGui.QCheckBox(self.groupBox_11)
         self.checkBox_GRIPS.setGeometry(QtCore.QRect(10, 50, 251, 17))

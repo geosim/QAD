@@ -93,6 +93,7 @@ class QadFILLETCommandClass(QadCommandClass):
       self.entity1.deselectOnLayer()
       self.entity2.deselectOnLayer()
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       # quando si é in fase di richiesta distanza
       if self.step == 3 or self.step == 5 or self.step == 7:
@@ -103,6 +104,14 @@ class QadFILLETCommandClass(QadCommandClass):
          return self.PointMapTool
       else:
          return None
+
+
+   def getCurrentContextualMenu(self):
+      # quando si é in fase di richiesta distanza
+      if self.step == 3 or self.step == 5 or self.step == 7:
+         return self.GetDistClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================

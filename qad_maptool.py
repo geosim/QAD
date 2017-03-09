@@ -237,6 +237,7 @@ class QadMapTool(QgsMapTool):
 
 
    def wheelEvent(self, event):
+      QgsMapTool.wheelEvent(self, event)
       self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
 
 
@@ -272,7 +273,7 @@ class QadMapTool(QgsMapTool):
    #============================================================================
    def displayPopupMenuOnQuiescentState(self, pos):
       popupMenu = QMenu(self.canvas)
-      history = self.plugIn.getHistoryfromTxtWindow()
+      history = self.plugIn.cmdsHistory
       isLastCmdToInsert = True
       isRecentMenuToInsert = True
       
@@ -617,10 +618,18 @@ class QadVirtualGripCommandsClass(QadCommandClass):
 
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
-      if self.currentCommand is not None:      
+      if self.currentCommand is not None:
          return self.currentCommand.getPointMapTool(drawMode)
       else:
          return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.currentCommand is not None:
+         return self.currentCommand.getCurrentContextualMenu()
+      else:
+         return None
+
 
    def getCommand(self):
       if self.commandNum == QadVirtualGripCommandsEnum.STRECTH:

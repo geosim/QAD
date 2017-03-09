@@ -59,7 +59,8 @@ class QadLayerCacheGeoms():
       
       str = getStrLayerGeomType(self.layer)
       str = str + "?crs="
-      str = str + self.layer.crs().authid()
+      #str = str + self.layer.crs().authid()
+      str = str + self.layer.crs().toWkt()
       str = str + "&index=yes"
       # creo un layer temporaneo in memoria
       self.cacheLayer = QgsVectorLayer(str, "QadLayerCacheArea", "memory")

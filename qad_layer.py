@@ -620,7 +620,7 @@ def createQADTempLayer(plugIn, GeomType):
    
    if GeomType == QGis.Point:
       layerName = QadMsg.translate("QAD", "QAD - Temporary points")
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("Point?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)
@@ -628,7 +628,7 @@ def createQADTempLayer(plugIn, GeomType):
          layer = layerList[0]
    elif GeomType == QGis.Line:
       layerName = QadMsg.translate("QAD", "QAD - Temporary lines") 
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)
@@ -636,7 +636,7 @@ def createQADTempLayer(plugIn, GeomType):
          layer = layerList[0]
    elif GeomType == QGis.Polygon:
       layerName = QadMsg.translate("QAD", "QAD - Temporary polygons") 
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("Polygon?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)

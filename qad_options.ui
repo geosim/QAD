@@ -765,9 +765,9 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
      <widget class="QPushButton" name="button_GripColor">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>70</x>
         <y>20</y>
-        <width>101</width>
+        <width>141</width>
         <height>23</height>
        </rect>
       </property>

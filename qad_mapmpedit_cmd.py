@@ -105,6 +105,16 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
          return QadCommandClass.getPointMapTool(self, drawMode)
 
 
+   def getCurrentContextualMenu(self):
+      if self.step == 1 or self.step == 4: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      elif self.step == 3 or self.step == 5 or \
+           self.step == 6 or self.step == 7 or self.step == 8: # quando si é in fase di selezione gruppo entità
+         return self.SSGetClass.getCurrentContextualMenu()           
+      else:
+         return self.contextualMenu
+
+
    def reinitSSGetClass(self):
       checkPointLayer = self.SSGetClass.checkPointLayer
       del self.SSGetClass

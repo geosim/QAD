@@ -209,9 +209,6 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def getCurrMsg(self):
       return self.edit.getCurrMsg()
 
-   def getHistory(self):
-      return self.edit.history # list
-
    def updateHistory(self, command):
       return self.edit.updateHistory(command)
                
@@ -369,7 +366,6 @@ class QadEdit(QTextEdit):
    
       self.buffer = []
    
-      self.history = []
       self.historyIndex = 0
 
       # stringa contenente le parole chiave separate da "/".
@@ -593,25 +589,34 @@ class QadEdit(QTextEdit):
 
       
    def showNext(self):
-      if self.historyIndex < len(self.history) and len(self.history) > 0:
+      # mostra il comando successivo nella lista dei comandi usati
+      cmdsHistory = self.parentWidget().plugin.cmdsHistory
+      cmdsHistoryLen = len(cmdsHistory)
+      if self.historyIndex < cmdsHistoryLen and cmdsHistoryLen > 0:
          self.historyIndex += 1
-         if self.historyIndex < len(self.history):
+         if self.historyIndex < cmdsHistoryLen:
             # displayPromptAfterMsg = False, append = True
-            self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
+            self.showMsg(cmdsHistory[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
 
                          
    def showPrevious(self):
-      if self.historyIndex > 0 and len(self.history) > 0:
+      # mostra il comando precedente nella lista dei comandi usati
+      cmdsHistory = self.parentWidget().plugin.cmdsHistory
+      cmdsHistoryLen = len(cmdsHistory)
+      if self.historyIndex > 0 and cmdsHistoryLen > 0:
          self.historyIndex -= 1
-         if self.historyIndex < len(self.history):
+         if self.historyIndex < cmdsHistoryLen:
             # displayPromptAfterMsg = False, append = True
-            self.showMsg(self.history[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
+            self.showMsg(cmdsHistory[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
 
                
    def showLast(self):
-      if len(self.history) > 0:
-         self.showMsg(self.history[len(self.history) - 1])
-         return self.history[len(self.history) - 1]
+      # mostra e ritorna l'ultimo comando nella lista dei comandi usati
+      cmdsHistory = self.parentWidget().plugin.cmdsHistory
+      cmdsHistoryLen = len(cmdsHistory)
+      if cmdsHistoryLen > 0:
+         self.showMsg(cmdsHistory[cmdsHistoryLen - 1])
+         return cmdsHistory[cmdsHistoryLen - 1]
       else:
          return ""
 
@@ -710,20 +715,16 @@ class QadEdit(QTextEdit):
          if event.button() == Qt.LeftButton:
             cmdOptionPos = self.getCmdOptionPosUnderMouse(event.pos())
             if cmdOptionPos is not None:
-               self.showEvaluateMsg(cmdOptionPos.name, False)
+               # estraggo la parte maiuscola della parola chiave
+               # questo serve per evitare che ad es. l'opzione "End" si confonda con osnap "end"
+               upperPart = self.__extractUpperCaseSubstr(cmdOptionPos.name)
+               self.showEvaluateMsg(upperPart, False)
 
 
    def updateHistory(self, command):
-      # Se command é una lista di comandi
-      if isinstance(command, list):
-         for line in command:
-            self.updateHistory(line)
-      elif not command == "":
-         # se lo storico é vuoto o se il comando da inserire é diverso dall'ultimo
-         if len(self.history) <= 0 or command != self.history[-1]: 
-            self.history.append(command)
-            
-         self.historyIndex = len(self.history)
+      self.parentWidget().plugin.updateCmdsHistory(command)
+      cmdsHistory = self.parentWidget().plugin.cmdsHistory
+      self.historyIndex = len(cmdsHistory)
 
 
    def keyPressEvent(self, e):
@@ -756,6 +757,9 @@ class QadEdit(QTextEdit):
       if e.key() == Qt.Key_Escape:
          self.parentWidget().abortCommand()
          self.parentWidget().clearCurrentObjsSelection()
+         
+         cmdsHistory = self.parentWidget().plugin.cmdsHistory
+         self.historyIndex = len(cmdsHistory)
          return
 
       # Se é stato premuto il tasto F10
@@ -794,8 +798,10 @@ class QadEdit(QTextEdit):
          # if Up or Down is pressed
          elif e.key() == Qt.Key_Down:
             self.showNext()
+            return # per non far comparire la finestra di suggerimento
          elif e.key() == Qt.Key_Up:
             self.showPrevious()
+            return # per non far comparire la finestra di suggerimento
          # if backspace is pressed, delete until we get to the prompt
          elif e.key() == Qt.Key_Backspace:
             if not cursor.hasSelection() and cursor.columnNumber() == self.currentPromptLength:
@@ -854,8 +860,10 @@ class QadEdit(QTextEdit):
 
    def entered(self):
       if self.inputType & QadInputTypeEnum.COMMAND:
-         self.showCmdSuggestWindow(False)
+         self.showCmdSuggestWindow(False) # hide suggestion window
       
+      cmdsHistory = self.parentWidget().plugin.cmdsHistory
+      self.historyIndex = len(cmdsHistory)
       cursor = self.textCursor()
       cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
       self.setTextCursor(cursor)
@@ -912,7 +920,18 @@ class QadEdit(QTextEdit):
          return QadMsg.translate("QAD", "\nBoolean not valid.\n")
       else:
          return ""
-      
+
+
+   def __extractUpperCaseSubstr(self, str):
+      # estraggo la parte maiuscola della stringa
+      upperPart = ""
+      for letter in str:
+         if letter.isupper():
+            upperPart = upperPart + letter
+         elif len(upperPart) > 0:
+            break
+      return upperPart
+
 
    def __evaluateKeyWords(self, cmd, keyWordList):
       # The required portion of the keyword is specified in uppercase characters, 
@@ -924,12 +943,7 @@ class QadEdit(QTextEdit):
       selectedKeyWords = []
       for keyWord in keyWordList:
          # estraggo la parte maiuscola della parola chiave
-         upperPart = ""
-         for letter in keyWord:
-            if letter.isupper():
-               upperPart = upperPart + letter
-            elif len(upperPart) > 0:
-               break
+         upperPart = self.__extractUpperCaseSubstr(keyWord)
          
          if upperPart.find(upperCmd) == 0: # se la parte maiuscola della parola chiave inizia per upperCmd
             if upperPart == upperCmd: # Se uguale
@@ -948,7 +962,7 @@ class QadEdit(QTextEdit):
       elif selectedKeyWordsLen == 1:
          return selectedKeyWords[0]
       else:
-         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with greater clarity...\n"))
+         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with more clarity...\n"))
          Msg = ""         
          for keyWord in selectedKeyWords:
             if Msg == "":

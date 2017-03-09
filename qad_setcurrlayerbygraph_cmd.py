@@ -70,12 +70,21 @@ class QadSETCURRLAYERBYGRAPHCommandClass(QadCommandClass):
       QadCommandClass.__del__(self)
       if self.entSelClass is not None:
          del self.entSelClass            
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0 or self.step == 1: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0 or self.step == 1: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
    
    def waitForEntsel(self, msgMapTool, msg):
       if self.entSelClass is not None:
@@ -155,7 +164,15 @@ class QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass(QadCommandClass):
          return self.SSGetClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
-        
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0 or self.step == 1: # quando si é in fase di selezione entità
+         return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    def run(self, msgMapTool = False, msg = None):     
       if self.step == 0: # inizio del comando   
          if self.firstTime == True:

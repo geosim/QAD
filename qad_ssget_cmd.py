@@ -108,6 +108,21 @@ class QadSSGetClass(QadCommandClass):
          ptMapTool.setOrthoMode(0)
          return ptMapTool
 
+
+   def getCurrentContextualMenu(self):
+      if self.step == 4: # quando si é in fase di disegno linea
+         return self.PLINECommand.getCurrentContextualMenu()
+      elif self.step == 5: # quando si é in fase di disegno cerchio
+         return self.CIRCLECommand.getCurrentContextualMenu()
+      elif self.step == 6: # quando si é in fase di selezione entità
+         return self.SSGetClass.getCurrentContextualMenu()
+      elif self.step == 7: # quando si é in fase di disegno polygono
+         return self.MPOLYGONCommand.getCurrentContextualMenu()
+      elif self.step == 8: # quando si é in fase di disegno buffer 
+         return self.MBUFFERCommand.getCurrentContextualMenu()     
+      else:
+         return self.contextualMenu
+
    
    #============================================================================
    # getLayersToCheck
