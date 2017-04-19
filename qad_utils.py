@@ -282,6 +282,16 @@ def str2QgsPoint(s, lastPoint = None, currenPoint = None, oneNumberAllowed = Tru
          coords = getPolarPointByPtAngle(lastPoint, angle, dist)     
          return QgsPoint(coords[0], coords[1])
 
+
+#===============================================================================
+# QgsPointToString
+#===============================================================================
+def QgsPointToString(pt):
+   """
+   Ritorna la conversione di un punto QgsPoint in stringa
+   """   
+   return pt.toString()
+
 #===============================================================================
 # strLatLon2QgsPoint
 #===============================================================================
@@ -970,11 +980,14 @@ def deselectAll(layers):
    """
    la funzione deseleziona tutte le entità selezionate nei layer
    """
-   selFeatureIds = []
    for layer in layers: # ciclo sui layer
       if (layer.type() == QgsMapLayer.VectorLayer):
-         if layer.selectedFeaturesIds() > 0:
-            layer.setSelectedFeatures(selFeatureIds)
+         layer.removeSelection()
+   #selFeatureIds = []
+   #for layer in layers: # ciclo sui layer
+   #   if (layer.type() == QgsMapLayer.VectorLayer):
+   #      if layer.selectedFeaturesIds() > 0:
+   #         layer.setSelectedFeatures(selFeatureIds)
 
 
 #===============================================================================

@@ -81,6 +81,7 @@ class QadTEXTCommandClass(QadCommandClass):
       if self.GetAngleClass is not None:
          del self.GetAngleClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       # quando si éin fase di richiesta distanza (altezza testo)
       if self.step == 2:
@@ -90,6 +91,18 @@ class QadTEXTCommandClass(QadCommandClass):
          return self.GetAngleClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      # quando si éin fase di richiesta distanza (altezza testo)
+      if self.step == 2:
+         return self.GetDistClass.getCurrentContextualMenu()
+      # quando si éin fase di richiesta rotazione
+      elif self.step == 3:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
 
    def addFeature(self, layer):
       transformedPoint = self.mapToLayerCoordinates(layer, self.insPt)

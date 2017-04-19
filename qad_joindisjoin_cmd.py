@@ -78,6 +78,7 @@ class QadJOINCommandClass(QadCommandClass):
       QadCommandClass.__del__(self)
       if self.SSGetClass is not None:  del self.SSGetClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 1: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
@@ -85,6 +86,15 @@ class QadJOINCommandClass(QadCommandClass):
          return self.SSGetClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 1: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      elif self.step == 2: # quando si é in fase di selezione gruppo entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()()
+      else:
+         return self.contextualMenu
 
 
    def reinitSSGetClass(self):
@@ -435,11 +445,19 @@ class QadDISJOINCommandClass(QadCommandClass):
       QadCommandClass.__del__(self)
       del self.SSGetClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 1: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 1: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================

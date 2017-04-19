@@ -198,6 +198,26 @@ class QadARRAYCommandClass(QadCommandClass):
             return None
 
 
+   def getCurrentContextualMenu(self):
+      if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == QadARRAYCommandClassStepEnum.ASK_FOR_ANGLE or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_TAN_DIRECTION or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_ANGLE_BETWEEN_ITEMS or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_FULL_ANGLE:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta distanza
+      elif self.step == QadARRAYCommandClassStepEnum.ASK_FOR_COLUMN_SPACE_2PT or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_ROW_SPACE_TOT or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_COLUMN_SPACE_TOT or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_ITEM_SPACE or \
+           self.step == QadARRAYCommandClassStepEnum.ASK_FOR_ROW_SPACE_2PT:
+         return self.GetDistClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    #============================================================================
    # updatePointMapToolParams
    #============================================================================
@@ -1936,11 +1956,19 @@ class QadARRAYRECTCommandClass(QadCommandClass):
          del self.SSGetClass
       del self.arrayCmd
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
       else:
          return self.arrayCmd.getPointMapTool()
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.arrayCmd.getCurrentContextualMenu()
 
 
    #============================================================================
@@ -2009,11 +2037,19 @@ class QadARRAYPATHCommandClass(QadCommandClass):
          del self.SSGetClass
       del self.arrayCmd
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
       else:
          return self.arrayCmd.getPointMapTool()
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.arrayCmd.getCurrentContextualMenu()
 
 
    #============================================================================
@@ -2087,6 +2123,13 @@ class QadARRAYPOLARCommandClass(QadCommandClass):
          return self.SSGetClass.getPointMapTool()
       else:
          return self.arrayCmd.getPointMapTool()
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.arrayCmd.getCurrentContextualMenu()
 
 
    #============================================================================

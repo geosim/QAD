@@ -79,6 +79,7 @@ class QadSCALECommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.SSGetClass
+
       
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0: # quando si é in fase di selezione entità
@@ -90,6 +91,13 @@ class QadSCALECommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================
@@ -653,11 +661,11 @@ class QadGRIPSCALECommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_NEW_LEN_PT)
          if self.plugIn.lastNewReferenceLen > 0:
             default = self.plugIn.lastNewReferenceLen
-         prompt = QadMsg.translate("Command_GRIPSCALE", "Specify new length or [{0}] <{1}>: ").format(keyWords, str(default))                        
+         prompt = QadMsg.translate("Command_GRIPSCALE", "Specify new length or [{0}]: ").format(keyWords)
       else:
          # imposto il map tool
          self.getPointMapTool().setMode(Qad_scale_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_SCALE_PT)
-         prompt = QadMsg.translate("Command_GRIPSCALE", "Specify scale factor or [{0}] <{1}>: ").format(keyWords, str(default))                        
+         prompt = QadMsg.translate("Command_GRIPSCALE", "Specify scale factor or [{0}]: ").format(keyWords)                        
 
       englishKeyWords = "Base point" + "/" + "Copy" + "/" + "Undo" + "/" + "Reference" + "/" + "eXit"
       keyWords += "_" + englishKeyWords
@@ -665,7 +673,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
       # msg, inputType, default, keyWords, valori positivi
       self.waitFor(prompt, \
                    QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
-                   default, \
+                   None, \
                    keyWords, QadInputModeEnum.NOT_ZERO | QadInputModeEnum.NOT_NEGATIVE)      
       self.step = 1
 

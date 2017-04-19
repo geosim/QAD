@@ -165,12 +165,14 @@ class Qad(QObject):
    # comando dimstyle - ultimo tab utilizzato
    dimStyleLastUsedTabIndex = -1 # -1 = non inizializzato
 
+   cmdsHistory = [] # lista della storia degli ultimi comandi usati
+   ptsHistory = [] # lista della storia degli ultimi punti usati
 
    #============================================================================
    # version
    #============================================================================
    def version(self):
-      return "2.8.13"
+      return "2.14.1"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -185,6 +187,7 @@ class Qad(QObject):
    def setLastPoint(self, point):
       # memorizzo l'ultimo punto selezionato         
       self.lastPoint = point
+      self.updatePtsHistory(point)
 
    def setLastSegmentAng(self, segmentAng):
       # memorizzo il coeff angolare ultimo segmento
@@ -1172,6 +1175,7 @@ class Qad(QObject):
 
 
    def removeLayer(self, layerId):
+      self.abortCommand() # perchè il comando corrente potrebbe puntare al layer
       layer = qad_layer.getLayerById(layerId)
       if (layer.type() != QgsMapLayer.VectorLayer):
          return
@@ -1464,6 +1468,12 @@ class Qad(QObject):
    def refreshCommandMapToolSnapType(self):
       self.QadCommands.refreshCommandMapToolSnapType()
    
+   def refreshCommandMapToolAutoSnap(self):
+      self.QadCommands.refreshCommandMapToolAutoSnap()
+   
+   def getCurrenPointFromCommandMapTool(self):
+      return self.QadCommands.getCurrenPointFromCommandMapTool()
+
    def getCurrenPointFromCommandMapTool(self):
       return self.QadCommands.getCurrenPointFromCommandMapTool()
    
@@ -1512,7 +1522,7 @@ class Qad(QObject):
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
       self.showMsg(msg, True)        
-      self.QadCommands.refreshCommandMapToolAutoSnap()
+      self.refreshCommandMapToolAutoSnap()
 
 
    def toggleObjectSnapTracking(self):
@@ -1527,17 +1537,11 @@ class Qad(QObject):
       QadVariables.set(QadMsg.translate("Environment variables", "AUTOSNAP"), value)
       QadVariables.save()
       self.showMsg(msg, True)        
-      self.QadCommands.refreshCommandMapToolAutoSnap()
+      self.refreshCommandMapToolAutoSnap()
 
    
    def getCurrMsgFromTxtWindow(self):
       return self.TextWindow.getCurrMsg()
-
-   def getHistoryfromTxtWindow(self):
-      return self.TextWindow.getHistory() # list
-
-   def updateHistoryfromTxtWindow(self, command):
-      return self.TextWindow.updateHistory(command)
 
    def showEvaluateMsg(self, msg = None):
       self.TextWindow.showEvaluateMsg(msg)
@@ -1833,3 +1837,52 @@ class Qad(QObject):
 
    def runOPTIONSCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "OPTIONS"))
+
+
+
+
+   def updateCmdsHistory(self, command):
+      # aggiorna la lista della storia degli ultimi comandi usati 
+      # Se command é una lista di comandi
+      if isinstance(command, list):
+         for line in command:
+            self.updateCmdsHistory(line)
+      elif not command == "":
+         # cerco se il comando è già presente in lista
+         # se era in lista lo rimuovo
+         try:
+            ndx = self.cmdsHistory.index(command)
+            del self.cmdsHistory[ndx]
+         except ValueError:
+            pass
+
+         # aggiungo il comando in fondo alla lista
+         self.cmdsHistory.append(command)
+
+         cmdInputHistoryMax = QadVariables.get(QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"))
+         if len(self.cmdsHistory) > cmdInputHistoryMax:
+            del self.cmdsHistory[0]
+
+
+   def updatePtsHistory(self, pt):
+      # aggiorna la lista della storia degli ultimi punti usati
+      # Se pt é una lista di punti
+      if isinstance(pt, list):
+         for line in pt:
+            self.updatePtsHistory(line)
+      elif pt is not None:
+         # cerco se il punto è già presente in lista
+         # se era in lista lo rimuovo
+         try:
+            ndx = self.ptsHistory.index(pt)
+            del self.ptsHistory[ndx]
+         except ValueError:
+            pass
+
+         # aggiungo il punto in fondo alla lista
+         self.ptsHistory.append(pt)
+         
+         cmdInputHistoryMax = QadVariables.get(QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"))
+         if len(self.ptsHistory) > cmdInputHistoryMax:
+            del self.ptsHistory[0]
+         

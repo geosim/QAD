@@ -1,3 +1,11 @@
+version 2.14.1:
+---------------------------
+
+* 2017-03-13 Added contextual menu on right click event for command options
+
+* 2017-03-13 Fixed bug on new feature creation when id is a db sequence result (reported by Benni5K)
+
+
 version 2.8.14:
 ---------------------------
 

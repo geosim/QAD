@@ -78,6 +78,7 @@ class QadLINECommandClass(QadCommandClass):
       self.rubberBand.hide()
       self.plugIn.canvas.scene().removeItem(self.rubberBand)
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
          if self.PointMapTool is None:
@@ -85,6 +86,7 @@ class QadLINECommandClass(QadCommandClass):
          return self.PointMapTool
       else:
          return None       
+
 
    def addVertex(self, point):
       self.vertices.append(point)     

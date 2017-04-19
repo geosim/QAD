@@ -515,7 +515,7 @@ class QadDimStyle():
    #============================================================================
    def getLayer(self, layerName):
       if layerName is not None:
-         layerList = qad_layer.getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+         layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
          if len(layerList) == 1:
             return layerList[0]
       return None
@@ -932,29 +932,47 @@ class QadDimStyle():
       """
       prefix = QadMsg.translate("Dimension", "\nThe dimension style \"{0}\" ").format(self.name)
       
-      provider = self.getTextualLayer().dataProvider()
+      # layer dei testi
+      textualLayer = self.getTextualLayer()
+      if textualLayer is None:
+         errPartial = QadMsg.translate("Dimension", "hasn't the textual layer ({0}).")
+         return prefix + errPartial.format(self.textualLayerName)
+         
+      provider = textualLayer.dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
          errPartial = QadMsg.translate("Dimension", "has the textual layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getTextualLayer().name())
-      if not self.getTextualLayer().isEditable():
+         return prefix + errPartial.format(self.textualLayerName)
+      if not textualLayer.isEditable():
          errPartial = QadMsg.translate("Dimension", "has the textual layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getTextualLayer().name())
+         return prefix + errPartial.format(self.textualLayerName)
 
-      provider = self.getSymbolLayer().dataProvider()
-      if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
-         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getSymbolLayer().name())
-      if not self.getSymbolLayer().isEditable():
-         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getSymbolLayer().name())
+      # layer dei simboli
+      symbolLayer = self.getSymbolLayer()
+      if symbolLayer is None:
+         errPartial = QadMsg.translate("Dimension", "hasn't the symbol layer ({0}).")
+         return prefix + errPartial.format(self.symbolLayerName)
       
-      provider = self.getLinearLayer().dataProvider()
+      provider = symbolLayer.dataProvider()
+      if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
+         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
+         return prefix + errPartial.format(self.symbolLayerName)
+      if not symbolLayer.isEditable():
+         errPartial = QadMsg.translate("Dimension", "has the symbol layer ({0}) not editable.")
+         return prefix + errPartial.format(self.symbolLayerName)
+      
+      # layer delle linee
+      linearLayer = self.getLinearLayer()
+      if linearLayer is None:
+         errPartial = QadMsg.translate("Dimension", "hasn't the symbol layer ({0}).")
+         return prefix + errPartial.format(self.linearLayerName)
+
+      provider = linearLayer.dataProvider()
       if not (provider.capabilities() & QgsVectorDataProvider.EditingCapabilities):
          errPartial = QadMsg.translate("Dimension", "has the linear layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getLinearLayer().name())
-      if not self.getLinearLayer().isEditable():
+         return prefix + errPartial.format(self.linearLayerName)
+      if not linearLayer.isEditable():
          errPartial = QadMsg.translate("Dimension", "has the linear layer ({0}) not editable.")
-         return prefix + errPartial.format(self.getLinearLayer().name())
+         return prefix + errPartial.format(self.linearLayerName)
       
       return None
    
@@ -1218,6 +1236,8 @@ class QadDimStyle():
       result = QadEntitySet()
       if len(self.idFieldName) == 0 or len(self.idParentFieldName) == 0:
          return result
+
+      if self.isValid() == False: return result;
       
       layerEntitySet = QadLayerEntitySet()
       
@@ -1348,13 +1368,16 @@ class QadDimStyle():
          f = entity.getFeature()
       elif entity.layer.name() == self.linearLayerName or \
            entity.layer.name() == self.symbolLayerName:
+         textualLayer = self.getTextualLayer()
+         if textualLayer is None: return None
+         
          dimId = entity.getAttribute(self.idParentFieldName)
          if dimId is None:
             return None
          # ricerco l'entità testo
          expression = "\"" + self.idFieldName + "\"=" + str(dimId)
          f = QgsFeature()
-         if self.getTextualLayer().getFeatures(QgsFeatureRequest().setFilterExpression(expression)).nextFeature(f) == False:
+         if textualLayer.getFeatures(QgsFeatureRequest().setFilterExpression(expression)).nextFeature(f) == False:
             return None
       else:
          return None
@@ -4348,14 +4371,16 @@ class QadDimEntity():
    #============================================================================
    # initByDimId
    #============================================================================
-   def initByDimId(self, dimStyle, dimId):
+   def initByDimId(self, dimStyle, dimId):      
       self.dimStyle = QadDimStyle(dimStyle)
       entitySet = self.dimStyle.getEntitySet(dimId)
+      if entitySet.count() == 0: return False
 
       self.textualFeature = None
       layerEntitySet = entitySet.findLayerEntitySet(self.getTextualLayer())
-      features = layerEntitySet.getFeatureCollection()
-      self.textualFeature = features[0]
+      if layerEntitySet is not None:
+         features = layerEntitySet.getFeatureCollection()
+         self.textualFeature = features[0]
       
       # entità lineari
       layerEntitySet = entitySet.findLayerEntitySet(self.getLinearLayer())
@@ -4377,7 +4402,9 @@ class QadDimEntity():
    #============================================================================
    def getEntitySet(self):      
       result = QadEntitySet()
-                  
+      
+      if self.isValid() == False: return result;
+
       layerEntitySet = QadLayerEntitySet()
       layerEntitySet.set(self.getTextualLayer(), [self.textualFeature])
       result.addLayerEntitySet(layerEntitySet)
@@ -4700,7 +4727,10 @@ class QadDimEntity():
    def getTextValue(self):
       textValue = None
 
-      # se il testo dipende da un solo campo 
+      if self.dimStyle.getTextualLayer() is None:
+         return None;
+
+      # se il testo dipende da un solo campo
       labelFieldNames = qad_label.get_labelFieldNames(self.dimStyle.getTextualLayer())
       if len(labelFieldNames) == 1 and len(labelFieldNames[0]) > 0:
          try:
@@ -4739,6 +4769,7 @@ class QadDimEntity():
          preferredAlignment, dimLineRotation = self.getDimLinearAlignment()
  
          dimLine = self.dimStyle.getDimLine(dimPt1, dimPt2, linePosPt, preferredAlignment, dimLineRotation)
+         if dimLine is None: return False
          return measure == self.dimStyle.getFormattedText(qad_utils.getDistance(dimLine[0], dimLine[1]))
 
       return True
@@ -4796,6 +4827,8 @@ class QadDimEntity():
    def move(self, offSetX, offSetY):
       # offSetX = spostamento X in map coordinate
       # offSetY = spostamento Y in map coordinate
+      if self.isValid() == False: return False;
+
       canvas = qgis.utils.iface.mapCanvas()
       destinationCrs = canvas.mapSettings().destinationCrs()
       
@@ -4837,6 +4870,8 @@ class QadDimEntity():
             g.transform(QgsCoordinateTransform(destinationCrs, self.getSymbolLayer().crs())) # trasformo la geometria in layer coordinate
          
          f.setGeometry(g)
+      
+      return False
 
       
    #============================================================================
@@ -4844,6 +4879,8 @@ class QadDimEntity():
    #============================================================================
    def rotate(self, basePt, angle):
       # basePt = punto base espresso in map coordinate
+      if self.isValid() == False: return False;
+      
       canvas = qgis.utils.iface.mapCanvas()
       destinationCrs = canvas.mapSettings().destinationCrs()
       
@@ -4916,12 +4953,16 @@ class QadDimEntity():
       if textRot is not None:
          self.dimStyle.textRotMode = prevTextRotMode # ripristino la situazione precedente
 
+      return True
+   
 
    #============================================================================
    # scale
    #============================================================================
    def scale(self, basePt, scale):
       # basePt = punto base espresso in map coordinate
+      if self.isValid() == False: return False;
+      
       canvas = qgis.utils.iface.mapCanvas()
       destinationCrs = canvas.mapSettings().destinationCrs()
 
@@ -4997,12 +5038,16 @@ class QadDimEntity():
       if textRot is not None:
          self.dimStyle.textRotMode = prevTextRotMode # ripristino la situazione precedente
 
-
+      return True
+   
+   
    #============================================================================
    # mirror
    #============================================================================
    def mirror(self, mirrorPt, mirrorAngle):
       # mirrorPt = punto base espresso in map coordinate
+      if self.isValid() == False: return False;
+      
       canvas = qgis.utils.iface.mapCanvas()
       destinationCrs = canvas.mapSettings().destinationCrs()
 
@@ -5082,7 +5127,9 @@ class QadDimEntity():
       if textRot is not None:
          self.dimStyle.textRotMode = prevTextRotMode # ripristino la situazione precedente
 
-
+      return True
+   
+   
    #============================================================================
    # stretch
    #============================================================================
@@ -5093,6 +5140,8 @@ class QadDimEntity():
       offSetX = spostamento X in map coordinate
       offSetY = spostamento Y in map coordinate
       """
+      if self.isValid() == False: return False;
+      
       canvas = qgis.utils.iface.mapCanvas()
       destinationCrs = canvas.mapSettings().destinationCrs()
       
@@ -5218,6 +5267,8 @@ class QadDimEntity():
 
       if textRot is not None:
          self.dimStyle.textRotMode = prevTextRotMode # ripristino la situazione precedente
+
+      return True;
 
 
    #============================================================================

@@ -103,7 +103,8 @@ class QadPEDITCommandClass(QadCommandClass):
       self.entitySet.deselectOnLayer()
       del self.snapPointsDisplayManager
       if self.GetDistClass is not None: del self.GetDistClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 2: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()           
@@ -117,6 +118,16 @@ class QadPEDITCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 2: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta distanza
+      elif self.step == 12:
+         return self.GetDistClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================
@@ -1121,6 +1132,7 @@ class QadPEDITCommandClass(QadCommandClass):
             self.WaitForVertexEditingMenu()
             return False
          elif value == QadMsg.translate("Command_PEDIT", "Join") or value == "Join":
+            qad_utils.deselectAll(self.plugIn.canvas.layers())
             if self.entity.isInitialized(): # selezionato solo un oggetto
                self.SSGetClass.checkPolygonLayer = False # scarto i poligoni
                self.SSGetClass.run(msgMapTool, msg)

@@ -79,7 +79,8 @@ class QadMBUFFERCommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
       del SSGetClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
@@ -91,6 +92,13 @@ class QadMBUFFERCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
    
    def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):

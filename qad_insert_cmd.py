@@ -77,6 +77,7 @@ class QadINSERTCommandClass(QadCommandClass):
       if self.GetAngleClass is not None:
          del self.GetAngleClass
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       # quando si é in fase di richiesta distanza (scala)
       if self.step == 2:
@@ -86,7 +87,19 @@ class QadINSERTCommandClass(QadCommandClass):
          return self.GetAngleClass.getPointMapTool()
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
-        
+
+
+   def getCurrentContextualMenu(self):
+      # quando si é in fase di richiesta distanza (scala)
+      if self.step == 2:
+         return self.GetDistClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == 3:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    def addFeature(self, layer):
       transformedPoint = self.mapToLayerCoordinates(layer, self.insPt)
       g = QgsGeometry.fromPoint(transformedPoint)

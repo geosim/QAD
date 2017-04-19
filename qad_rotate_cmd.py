@@ -79,7 +79,8 @@ class QadROTATECommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.SSGetClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
@@ -90,6 +91,13 @@ class QadROTATECommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================
@@ -631,15 +639,14 @@ class QadGRIPROTATECommandClass(QadCommandClass):
                  QadMsg.translate("Command_GRIPROTATE", "Reference") + "/" + \
                  QadMsg.translate("Command_GRIPROTATE", "eXit")
 
-      prompt = QadMsg.translate("Command_GRIPROTATE", "Specify rotation angle or [{0}] <{1}>: ").format(keyWords, \
-               str(qad_utils.toDegrees(self.plugIn.lastRot)))
+      prompt = QadMsg.translate("Command_GRIPROTATE", "Specify rotation angle or [{0}]: ").format(keyWords)
 
       englishKeyWords = "Base point" + "/" + "Copy" + "/" + "Undo" + "/" + "Reference" + "/" + "eXit"
       keyWords += "_" + englishKeyWords
       # si appresta ad attendere un punto, un numero reale o enter o una parola chiave
       # msg, inputType, default, keyWords, nessun controllo
       self.waitFor(prompt, QadInputTypeEnum.POINT2D | QadInputTypeEnum.FLOAT | QadInputTypeEnum.KEYWORDS, \
-                   self.plugIn.lastRot, \
+                   None, \
                    keyWords, QadInputModeEnum.NONE)      
 
 

@@ -91,8 +91,9 @@ class QadLENGTHENCommandClass(QadCommandClass):
          del self.GetDistClass      
       if self.GetAngleClass is not None:
          del self.GetAngleClass
-      
-   def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):      
+
+
+   def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 3: # quando si é in fase di richiesta distanza
          return self.GetDistClass.getPointMapTool()
       if self.step == 4: # quando si é in fase di richiesta angolo
@@ -103,6 +104,16 @@ class QadLENGTHENCommandClass(QadCommandClass):
          return self.PointMapTool
       else:
          return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 3: # quando si é in fase di richiesta distanza
+         return self.GetDistClass.getCurrentContextualMenu()
+      if self.step == 4: # quando si é in fase di richiesta angolo
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
 
    def setInfo(self, entity, point):
       # setta: self.entity, self.linearObjectList, self.atSubGeom e self.move_startPt
@@ -801,7 +812,8 @@ class QadGRIPLENGTHENCommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):      
       if (self.plugIn is not None):
          if self.PointMapTool is None:

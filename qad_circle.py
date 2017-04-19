@@ -423,9 +423,6 @@ class QadCircle():
       N.B. in punti NON devono essere in coordinate geografiche
       """
       totPoints = len(points)
-
-      # il primo e l'ultimo punto devono coincidere
-      if qad_utils.ptNear(points[0], points[totPoints-1]) == False: return False
       
       if atLeastNSegment is None:
          _atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), 12)
@@ -435,6 +432,9 @@ class QadCircle():
       # perché sia un cerchio ci vogliono almeno _atLeastNSegment segmenti
       if (totPoints - 1) < _atLeastNSegment or _atLeastNSegment < 2:
          return False
+
+      # il primo e l'ultimo punto devono coincidere
+      if qad_utils.ptNear(points[0], points[totPoints-1]) == False: return False
 
       # per problemi di approssimazione dei calcoli
       epsilon = 1.e-4 # percentuale del raggio per ottenere max diff. di una distanza con il raggio

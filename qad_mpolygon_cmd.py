@@ -76,11 +76,19 @@ class QadMPOLYGONCommandClass(QadCommandClass):
       if self.PLINECommand is not None:
          del self.PLINECommand
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.PLINECommand is not None:
          return self.PLINECommand.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.PLINECommand is not None:
+         return self.PLINECommand.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    def setRubberBandColor(self, rubberBandBorderColor, rubberBandFillColor):

@@ -87,6 +87,13 @@ class QadMOVECommandClass(QadCommandClass):
             return None
 
 
+   def getCurrentContextualMenu(self):
+      if self.step == 0: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    #============================================================================
    # move
    #============================================================================

@@ -76,7 +76,8 @@ class QadMIRRORCommandClass(QadCommandClass):
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.SSGetClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 0: # quando si é in fase di selezione entità
          return self.SSGetClass.getPointMapTool()
@@ -87,6 +88,13 @@ class QadMIRRORCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 0: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================
@@ -343,7 +351,8 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if (self.plugIn is not None):
          if self.PointMapTool is None:

@@ -326,6 +326,9 @@ class QadPLINECommandClass(QadCommandClass):
             # quindi stato riattivato il comando che torna qui senza che il maptool
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
+               self.setMapTool(self.getPointMapTool()) # riattivo il maptool
+               return False
+               
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   if self.virtualCmd == False: # se si vuole veramente salvare la polylinea in un layer   
                      qad_layer.addLineToLayer(self.plugIn, currLayer, self.vertices)

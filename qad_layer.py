@@ -357,6 +357,18 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
+   # use default value for primary key fields if it's NOT NULL
+   provider = layer.dataProvider()
+   pkAttrList = layer.pendingPkAttributesList()
+   count = layer.pendingFields().count()
+   i = 0
+   while i < count:
+      if i in pkAttrList:
+         defVal = provider.defaultValue(i)
+         if not isinstance(defVal, QPyNullVariant) or layer.providerType() == "spatialite":
+            f[i] = provider.defaultValue(i)         
+      i = i + 1
+ 
    if layer.addFeature(f, False):
       if refresh == True:
          plugIn.endEditCommand()
@@ -500,6 +512,9 @@ def getLayersByName(regularExprName):
    """
    Ritorna la lista dei layer il cui nome soddisfa la regular expression di ricerca
    (per conversione da wildcards vedi la funzione wildCard2regularExpr)
+   the regular expression to only match if the text is an exact match is
+   (for example, to match for abc, then 1abc1, 1abc, and abc1 would not match):
+   use the start and end delimiters: ^abc$
    """
    result = []
    regExprCompiled = re.compile(regularExprName)
@@ -620,7 +635,7 @@ def createQADTempLayer(plugIn, GeomType):
    
    if GeomType == QGis.Point:
       layerName = QadMsg.translate("QAD", "QAD - Temporary points")
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("Point?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)
@@ -628,7 +643,7 @@ def createQADTempLayer(plugIn, GeomType):
          layer = layerList[0]
    elif GeomType == QGis.Line:
       layerName = QadMsg.translate("QAD", "QAD - Temporary lines") 
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)
@@ -636,7 +651,7 @@ def createQADTempLayer(plugIn, GeomType):
          layer = layerList[0]
    elif GeomType == QGis.Polygon:
       layerName = QadMsg.translate("QAD", "QAD - Temporary polygons") 
-      layerList = getLayersByName(qad_utils.wildCard2regularExpr(layerName))
+      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
          layer = QgsVectorLayer("Polygon?crs=%s&index=yes" % epsg, layerName, "memory")
          QgsMapLayerRegistry.instance().addMapLayers([layer], True)

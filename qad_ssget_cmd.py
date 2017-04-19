@@ -51,7 +51,7 @@ class QadSSGetClass(QadCommandClass):
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
       return QadSSGetClass(self.plugIn)
-      
+
    def __init__(self, plugIn):
       self.init(plugIn)
 
@@ -107,6 +107,21 @@ class QadSSGetClass(QadCommandClass):
          ptMapTool.setSnapType(QadSnapTypeEnum.DISABLE)
          ptMapTool.setOrthoMode(0)
          return ptMapTool
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 4: # quando si é in fase di disegno linea
+         return self.PLINECommand.getCurrentContextualMenu()
+      elif self.step == 5: # quando si é in fase di disegno cerchio
+         return self.CIRCLECommand.getCurrentContextualMenu()
+      elif self.step == 6: # quando si é in fase di selezione entità
+         return None # return self.SSGetClass.getCurrentContextualMenu()
+      elif self.step == 7: # quando si é in fase di disegno polygono
+         return self.MPOLYGONCommand.getCurrentContextualMenu()
+      elif self.step == 8: # quando si é in fase di disegno buffer 
+         return self.MBUFFERCommand.getCurrentContextualMenu()     
+      else:
+         return self.contextualMenu
 
    
    #============================================================================
@@ -267,7 +282,7 @@ class QadSSGetClass(QadCommandClass):
             else:
                self.AddRemoveSelSet(selSet, True) # aggiungo il gruppo di selezione
       else: # se si deve rimuovere dal gruppo di selezione
-         self.AddRemoveEntity(selSet, False) # rimuovo  il gruppo di selezione
+         self.AddRemoveSelSet(selSet, False) # rimuovo il gruppo di selezione
 
     
    #============================================================================

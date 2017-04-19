@@ -71,13 +71,21 @@ class QadBREAKCommandClass(QadCommandClass):
       if self.entSelClass is not None:
          self.entSelClass.entity.deselectOnLayer()
          del self.entSelClass
-      
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 1: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
-   
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 1: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    def waitForEntsel(self, msgMapTool, msg):
       if self.entSelClass is not None:
          del self.entSelClass

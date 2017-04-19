@@ -80,6 +80,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
       for SSGeom in self.SSGeomList:
          SSGeom[0].deselectOnLayer()
 
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 2: # quando si é in fase di disegno linea
          return self.MPOLYGONCommand.getPointMapTool(drawMode)
@@ -90,6 +91,13 @@ class QadSTRETCHCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 2: # quando si é in fase di disegno linea
+         return self.MPOLYGONCommand.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    def stretch(self, entity, containerGeom, offSetX, offSetY, tolerance2ApproxCurve):

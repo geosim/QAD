@@ -400,72 +400,67 @@ class QadCommandsClass():
    #============================================================================
    # forceCommandMapToolSnapTypeOnce
    #============================================================================
-   def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
+   def getActualCommandPointMapTool(self):
       # se non c'é alcun comando attivo
       if self.actualCommand is None:
-         return
+         return None
       # se non c'é un maptool del comando attuale
       if self.actualCommand.getPointMapTool() is None:
-         return
+         return None
       # se il maptool del comando attuale se non é attivo
       if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
          self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      self.actualCommand.getPointMapTool().forceSnapTypeOnce(snapType, snapParams)
+      return self.actualCommand.getPointMapTool()
+
+
+   #============================================================================
+   # forceCommandMapToolSnapTypeOnce
+   #============================================================================
+   def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
+         return
+      pointMapTool.forceSnapTypeOnce(snapType, snapParams)
 
 
    #============================================================================
    # getCurrenPointFromCommandMapTool
    #============================================================================
    def getCurrenPointFromCommandMapTool(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return None
-      # se non c'é un maptool del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return None
-      # se il maptool del comando attuale se non é attivo
-      if self.plugIn.canvas.mapTool() != self.actualCommand.getPointMapTool():
-         self.actualCommand.setMapTool(self.actualCommand.getPointMapTool())
-      return self.actualCommand.getPointMapTool().tmpPoint
+      return pointMapTool.tmpPoint
       
 
    #============================================================================
    # refreshCommandMapToolSnapType
    #============================================================================
    def refreshCommandMapToolSnapType(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshSnapType()
+      pointMapTool.refreshSnapType()
       
       
    #============================================================================
    # refreshCommandMapToolOrthoMode
    #============================================================================
    def refreshCommandMapToolOrthoMode(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshOrthoMode()
+      pointMapTool.refreshOrthoMode()
       
       
    #============================================================================
    # refreshCommandMapToolAutoSnap
    #============================================================================
    def refreshCommandMapToolAutoSnap(self):
-      # se non c'é alcun comando attivo
-      if self.actualCommand is None:
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
          return
-      # se non c'é un maptool attivo del comando attuale
-      if self.actualCommand.getPointMapTool() is None:
-         return
-      self.actualCommand.getPointMapTool().refreshAutoSnap()
+      pointMapTool.refreshAutoSnap()
 
 
 
@@ -544,7 +539,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
          msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
          self.showErr(msg.format(command))
          return False
-      self.plugIn.updateHistoryfromTxtWindow(cmdName)
+      self.plugIn.updateCmdsHistory(cmdName)
       return True
 
             

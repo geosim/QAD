@@ -96,6 +96,13 @@ class QadMEASURECommandClass(QadCommandClass):
          return QadCommandClass.getPointMapTool(self, drawMode)
       
 
+   def getCurrentContextualMenu(self):
+      if self.step == QadMEASURECommandClassStepEnum.ASK_SEGMENT_LENGTH: # quando si é in fase di richiesta distanza
+         return self.GetDistClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
+
+
    #============================================================================
    # waitForEntsel
    #============================================================================

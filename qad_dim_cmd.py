@@ -121,7 +121,8 @@ class QadDIMLINEARCommandClass(QadCommandClass):
          del self.entSelClass
       if self.GetAngleClass is not None:
          del self.GetAngleClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 2: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
@@ -135,6 +136,16 @@ class QadDIMLINEARCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 2: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == 6 or self.step == 7:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
    
    #============================================================================
@@ -495,7 +506,8 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
          del self.entSelClass
       if self.GetAngleClass is not None:
          del self.GetAngleClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == 2: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
@@ -509,6 +521,16 @@ class QadDIMALIGNEDCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == 2: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == 6:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
    
    #============================================================================
@@ -843,7 +865,8 @@ class QadDIMARCCommandClass(QadCommandClass):
          del self.entSelClass
       if self.GetAngleClass is not None:
          del self.GetAngleClass
-      
+
+
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.step == QadDIMARCCommandClassStepEnum.ASK_FOR_ENTSEL: # quando si é in fase di selezione entità
          return self.entSelClass.getPointMapTool(drawMode)
@@ -857,6 +880,16 @@ class QadDIMARCCommandClass(QadCommandClass):
             return self.PointMapTool
          else:
             return None
+
+
+   def getCurrentContextualMenu(self):
+      if self.step == QadDIMARCCommandClassStepEnum.ASK_FOR_ENTSEL: # quando si é in fase di selezione entità
+         return self.entSelClass.getCurrentContextualMenu()
+      # quando si é in fase di richiesta rotazione
+      elif self.step == QadDIMARCCommandClassStepEnum.ASK_FOR_TEXT_ROT:
+         return self.GetAngleClass.getCurrentContextualMenu()
+      else:
+         return self.contextualMenu
 
 
    #============================================================================
