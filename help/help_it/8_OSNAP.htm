@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 25 March 2009), see www.w3.org">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="Generator" content="Microsoft Word 14 (filtered)">
+<link rel="stylesheet" type="text/css" href="embeddedstyles.css">
+<title>OSNAP</title>
+<meta name="generator" content="chmProcessor">
+</head>
+<body lang="IT">
+<div class="WordSection1">
+<h2><a name="node7" id="node7"></a>OSNAP</h2>
+<p class="MsoNormal">Con il tasto F3 si attiva/disattiva la
+modalità di osnap.</p>
+<p class="MsoNormal">Per modificare la modalità di osnap:</p>
+<ol style='margin-top:0cm' start="1" type="1">
+<li class="MsoNormal">Durante la richiesta di un punto premere
+CTRL+tasto dx del mouse per scegliere una modalità di snap diversa
+dalla corrente.</li>
+<li class="MsoNormal">Durante la richiesta di un punto digitare
+nella riga di testo:<br>
+"NES" = nessuno snap<br>
+"FIN" = punti finali di ogni segmento<br>
+"FIN_PL" = punti finali dell'intera polilinea<br>
+"MED" = punto medio<br>
+"CEN" = centro (centroide)<br>
+"NOD" = oggetto punto<br>
+"QUA" = punto quadrante<br>
+"INT" = intersezione<br>
+"INS" = punto di inserimento<br>
+"PER" = punto perpendicolare<br>
+"TAN" = tangente<br>
+"VIC" = punto più vicino<br>
+"APP" = intersezione apparente<br>
+"EST" = Estensione<br>
+"PAR" = Parallelo<br>
+"EST_INT" = intersezione su estensione<br>
+"PR" = distanza progressiva (può essere seguito da un numero per
+impostare una distanza progressiva diversa dal default)</li>
+<li class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;text-autospace:none'>
+Con il comando MODIVAR impostare la variabile OSMODE con una
+combinazione a bit usando lo schema seguente:<br>
+0 = nessuno<br>
+1 = punto finale<br>
+2 = punto medio<br>
+4 = centro (centroide)<br>
+8 = oggetto punto<br>
+16 = punto quadrante<br>
+32 = intersezione<br>
+64 = punto di inserimento<br>
+128 = punto perpendicolare<br>
+256 = tangente<br>
+512 = punto più vicino<br>
+1024 = pulisci all object snaps<br>
+2048 = intersezione apparente<br>
+4096 = Estensione<br>
+8192 = Parallelo<br>
+16384 = osnap disattivato<br>
+65536 = distanza progressiva<br>
+131072 = intersezione sull'estensione<br>
+2097152 = punti finali dell'intera polilinea</li>
+<li class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;text-autospace:none'>
+Lanciare il comando IMPOSTADIS</li>
+</ol>
+<b><span style=
+'font-size:13.0pt;line-height:115%;font-family:"Cambria","serif"; color:#4F81BD'><br clear="all"
+style='page-break-before:always'></span></b></div>
+</body>
+</html>

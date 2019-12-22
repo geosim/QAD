@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 25 March 2009), see www.w3.org">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="Generator" content="Microsoft Word 14 (filtered)">
+<link rel="stylesheet" type="text/css" href="embeddedstyles.css">
+<title>Modello del layer lineare per la quotatura:</title>
+<meta name="generator" content="chmProcessor">
+</head>
+<body lang="IT">
+<div class="WordSection1">
+<h3><a name="node15" id="node15"></a>Modello del layer lineare per
+la quotatura:</h3>
+<p class="MsoNormal">Gli elementi lineari di una quota (linea di
+quota, linee di estensione …) devono essere memorizzati in un layer
+lineare con i seguenti campi:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">Nessun campo obbligatorio</li>
+</ul>
+<p class="MsoNormal">Campi opzionali:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">un campo carattere per memorizzare il colore
+delle linee di quota</li>
+<li class="MsoNormal">un campo carattere per memorizzare il
+tipolinea delle linee di quota</li>
+<li class="MsoNormal">un campo carattere (2 caratteri) per
+memorizzare il tipo di oggetto lineare che compone la quota secondo
+il seguente schema:<br>
+"D1" = linea di quota 1 ("Dimension line 1")<br>
+"D2" = linea di quota 2 ("Dimension line 2")<br>
+“X1” = estensione della linea di quota 1<br>
+“X2” = estensione della linea di quota 2<br>
+"E1" = prima linea di estensione ("Extension line 1")<br>
+"E2" = seconda linea di estensione ("Extension line 2")<br>
+"L" = linea porta quota usata quando il testo é fuori dalla quota
+("Leader")<br>
+“CL” = Linea che definisce il marcatore del centro di un arco o di
+un cerchio<br>
+<br>
+(necessario se si desidera usare le funzioni di modifica di una
+quota esistente)</li>
+<li class="MsoNormal">un campo numerico intero per memorizzare il
+codice identificativo univoco della quota (necessario se si
+desidera raggruppare gli elementi di una stessa quotatura e quindi
+usare le funzioni di cancellazione e modifica di una quota
+esistente)</li>
+</ul>
+<p class="MsoNormal">Un esempio di SQL per generare la tabella
+PostGIS e i relativi indici per le linee delle quotature:</p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; line_type character
+varying(50),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; type character varying(2)
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id_parent bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(LineString,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT dim_line_pkey
+PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_line_id_parent</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (id_parent);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_line_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_line</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Il layer lineare deve essere definito con lo
+stile impostato come segue:</p>
+<p class="MsoNormal">Impostazioni opzionali:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">Il colore può essere letto da un campo
+carattere che memorizza il colore delle linee della quota</li>
+<li class="MsoNormal">Il tipolinea può essere letto da un campo
+carattere che memorizza il tipolinea delle linee della quota</li>
+</ul>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I comandi di quotatura fanno riferimento allo
+stile di quotatura corrente. Per impostare lo stile di quotatura
+corrente lanciare il comando DIMSTILE.</p>
+<b><span style=
+'font-size:13.0pt;line-height:115%;font-family:"Cambria","serif"; color:#4F81BD'><br clear="all"
+style='page-break-before:always'></span></b></div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
+
+# This file should be included when you package your plugin.
+
+# Mandatory items:
+
+[general]
+name=QAD
+email=
+author=geosim
+qgisMinimumVersion=3.0
+description=Quantum Aided Design: cad like commands in QGIS
+about=Quantum Aided Design: cad like commands in QGIS
+version=3.0
+tracker=https://github.com/geosim/QAD/issues
+repository=https://github.com/geosim/QAD
+
+# end of mandatory metadata
+
+# Optional items:
+
+category=Vector
+
+# tags are comma separated with spaces allowed
+tags=cad,circle,digitizing,dimensioning,ellipse,polygon,polyline,rectangle,snap,vector
+
+homepage=https://github.com/geosim/QAD
+icon=icons/qad.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version
+deprecated=False
+
+qgisMaximumVersion=3.99
+
+# Uncomment the following line and add your changelog entries:
+changelog=
+   * 2018-10-11 Fixed bug on offset command when custom coordinate reference system is used (reported by Dave Burkholder)
+   * 2018-10-11 Added <ELLIPSE> command
+   * 2018-10-11 Added right click control in options dialog
+   * 2018-10-11 Added <SHORTCUTMENU>, <SHORTCUTMENUDURATION> system variables
