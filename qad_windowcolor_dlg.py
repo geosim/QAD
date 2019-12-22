@@ -24,20 +24,19 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import *
+from qgis.gui import QgsColorButton
 from qgis.core import QgsApplication
-from qgis.utils import *
-from qgis.gui import *
 
 
-import qad_windowcolor_ui
+from . import qad_windowcolor_ui
 
 
-from qad_variables import *
-from qad_msg import QadMsg, qadShowPluginHelp
-import qad_utils
+from .qad_variables import QadVariables
+from .qad_msg import QadMsg, qadShowPluginHelp
+from . import qad_utils
 
 
 #===============================================================================
@@ -65,6 +64,10 @@ class QadColorElementEnum():
    COMMAND_OPTION_KEYWORD     =  9 # Parola chiave opzione di comando
    COMMAND_OPTION_BACKGROUND  = 10 # Sfondo opzione di comando
    COMMAND_OPTION_HIGHLIGHTED = 11 # Opzione di comando evidenziata
+   DI_AUTOTRECK_VECTOR        = 12 # Dynamic input - Linne di quota dinamiche
+   DI_COMMAND_DESCR           = 13 # Dynamic input - Descrizione comando
+   DI_COMMAND_DESCR_BACKGROUND = 14 # Dynamic input - Sfondo descrizione comando
+   DI_COMMAND_DESCR_BORDER    = 15 # Dynamic input - Bordo descrizione comando
    
 
 #######################################################################################
@@ -117,13 +120,13 @@ class QadWindowColorDialog(QDialog, QObject, qad_windowcolor_ui.Ui_WindowColor_D
    #============================================================================
    def setupUi(self, Dialog):
       qad_windowcolor_ui.Ui_WindowColor_Dialog.setupUi(self, self)
-      # aggiungo il bottone di qgis QgsColorButtonV2 chiamato buttonColor 
+      # aggiungo il bottone di qgis QgsColorButton chiamato buttonColor 
       # che eredita la posizione di Button_ColorDummy (che viene nascosto)
       self.Button_ColorDummy.setHidden(True)
-      self.buttonColor = QgsColorButtonV2(self.Button_ColorDummy.parent())
+      self.buttonColor = QgsColorButton(self.Button_ColorDummy.parent())
       self.buttonColor.setGeometry(self.Button_ColorDummy.geometry())
       self.buttonColor.setObjectName("buttonColor")
-      QObject.connect(self.buttonColor, SIGNAL("colorChanged(QColor)"), self.colorChanged)
+      self.buttonColor.colorChanged.connect(self.colorChanged)
 
       # aggiungo il QWidget chiamato QadPreview
       # che eredita la posizione di widget_Preview (che viene nascosto)
@@ -169,9 +172,30 @@ class QadWindowColorDialog(QDialog, QObject, qad_windowcolor_ui.Ui_WindowColor_D
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Autosnap marker") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "AUTOSNAPCOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "AUTOSNAPCOLOR") # x lupdate
       elementList[QadColorElementEnum.AUTOSNAP_MARKER] = [elementDescr, elementVarName]
 
+      # description, system variable
+      elementDescr = QadMsg.translate("WindowColor_Dialog", "Dynamic dimension lines") # x lupdate
+      elementVarName = QadMsg.translate("Environment variables", "DYNTRECKINGVECTORCOLOR") # x lupdate
+      elementList[QadColorElementEnum.DI_AUTOTRECK_VECTOR] = [elementDescr, elementVarName]
+      
+      # description, system variable
+      elementDescr = QadMsg.translate("WindowColor_Dialog", "Drafting tool tip") # x lupdate
+      elementVarName = QadMsg.translate("Environment variables", "DYNEDITFORECOLOR") # x lupdate
+      elementList[QadColorElementEnum.DI_COMMAND_DESCR] = [elementDescr, elementVarName]
+      
+      # description, system variable
+      elementDescr = QadMsg.translate("WindowColor_Dialog", "Drafting tool tip contour") # x lupdate
+      elementVarName = QadMsg.translate("Environment variables", "DYNEDITBORDERCOLOR") # x lupdate
+      elementList[QadColorElementEnum.DI_COMMAND_DESCR_BACKGROUND] = [elementDescr, elementVarName]
+      
+      # description, system variable
+      elementDescr = QadMsg.translate("WindowColor_Dialog", "Drafting tool tip background") # x lupdate
+      elementVarName = QadMsg.translate("Environment variables", "DYNEDITBACKCOLOR") # x lupdate
+      elementList[QadColorElementEnum.DI_COMMAND_DESCR_BORDER] = [elementDescr, elementVarName]
+      
+      
       return elementList
 
 
@@ -188,32 +212,32 @@ class QadWindowColorDialog(QDialog, QObject, qad_windowcolor_ui.Ui_WindowColor_D
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Command history text") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDHISTORYFORECOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDHISTORYFORECOLOR") # x lupdate    
       elementList[QadColorElementEnum.COMMAND_HISTORY_TEXT] = [elementDescr, elementVarName]
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Active prompt background") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDLINEBACKCOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDLINEBACKCOLOR") # x lupdate
       elementList[QadColorElementEnum.PROMPT_BACKGROUND] = [elementDescr, elementVarName]
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Active prompt text") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDLINEFORECOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDLINEFORECOLOR") # x lupdate
       elementList[QadColorElementEnum.PROMPT_TEXT] = [elementDescr, elementVarName]
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Command option keyword") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTCOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTCOLOR") # x lupdate
       elementList[QadColorElementEnum.COMMAND_OPTION_KEYWORD] = [elementDescr, elementVarName]
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Command option keyword background") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTBACKCOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTBACKCOLOR") # x lupdate
       elementList[QadColorElementEnum.COMMAND_OPTION_BACKGROUND] = [elementDescr, elementVarName]
 
       # description, system variable
       elementDescr = QadMsg.translate("WindowColor_Dialog", "Command option highlighted") # x lupdate
-      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTHIGHLIGHTEDCOLOR") # x lupdate da fare
+      elementVarName = QadMsg.translate("Environment variables", "CMDLINEOPTHIGHLIGHTEDCOLOR") # x lupdate
       elementList[QadColorElementEnum.COMMAND_OPTION_HIGHLIGHTED] = [elementDescr, elementVarName]
 
       return elementList
@@ -446,6 +470,32 @@ class QadPreview(QWidget):
       painter.setPen(QPen(color, 2, Qt.SolidLine))
       painter.drawRect(x1 - pickSize, y1 - pickSize, 2 * pickSize, 2 * pickSize)
 
+      # DYNAMIC INPUT
+      x1 = rect.width() / 3
+      y1 = rect.height() - rect.height() / 3
+      cursorSize = 20
+      fMetrics = painter.fontMetrics()
+      msg1 = "12.3456"
+      sz1 = fMetrics.size(Qt.TextSingleLine, msg1 + "__")
+      dynInputRect1 = QRectF(x1 + cursorSize, y1 + cursorSize, sz1.width(), sz1.height() + 2) 
+      msg2 = "78.9012"
+      sz2 = fMetrics.size(Qt.TextSingleLine, msg2 + "__")
+      dynInputRect2 = QRectF(dynInputRect1.right() + sz1.height() / 3, dynInputRect1.top(), sz2.width(), sz2.height() + 2) 
+      # DYNAMIC INPUT COMMAND DESCR BACKGROUND
+      color = QColor(self.tempQadVariables.get(QadMsg.translate("Environment variables", "DYNEDITBACKCOLOR")))
+      painter.fillRect(dynInputRect1, color)
+      painter.fillRect(dynInputRect2, color)
+      # DYNAMIC INPUT COMMAND DESCR BORDER
+      color = QColor(self.tempQadVariables.get(QadMsg.translate("Environment variables", "DYNEDITBORDERCOLOR")))
+      painter.setPen(QPen(color, 1, Qt.SolidLine))
+      painter.drawRect(dynInputRect1)
+      painter.drawRect(dynInputRect2)
+      # DYNAMIC INPUT COMMAND DESCR FOREGROUND
+      color = QColor(self.tempQadVariables.get(QadMsg.translate("Environment variables", "DYNEDITFORECOLOR")))
+      painter.setPen(QPen(color, 1, Qt.SolidLine))
+      painter.drawText(dynInputRect1, msg1)
+      painter.drawText(dynInputRect2, msg2)
+      
 
    def paint_COMMAND_LINE(self):
       rect = self.rect()

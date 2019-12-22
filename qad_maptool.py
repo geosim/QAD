@@ -23,30 +23,37 @@
 """
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QgsMapLayer, QgsPointXY
+from qgis.gui import QgsMapTool
+from qgis.PyQt.QtCore import Qt, QTimer, QPoint
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QAction, QMenu
+
+import datetime
 
 
-import qad_utils
-from qad_variables import *
-from qad_rubberband import *
-from qad_getpoint import *
-from qad_generic_cmd import QadCommandClass
-from qad_entity import *
-from qad_ssget_cmd import QadSSGetClass
-from qad_grip import *
-from qad_stretch_cmd import QadGRIPSTRETCHCommandClass
-from qad_move_cmd import QadGRIPMOVECommandClass
-from qad_rotate_cmd import QadGRIPROTATECommandClass
-from qad_scale_cmd import QadGRIPSCALECommandClass
-from qad_mirror_cmd import QadGRIPMIRRORCommandClass
-from qad_arc_cmd import QadGRIPCHANGEARCRADIUSCommandClass
-from qad_lengthen_cmd import QadGRIPLENGTHENCommandClass
-from qad_pedit_cmd import QadGRIPINSERTREMOVEVERTEXCommandClass, QadGRIPARCLINECONVERTCommandClass
+from . import qad_utils
+from .qad_variables import QadVariables
+from .qad_rubberband import QadCursorRubberBand, QadCursorTypeEnum
+from .qad_getpoint import QadGetPointDrawModeEnum
+from .qad_entity import QadEntitySet, QadEntity
+from .qad_grip import QadEntitySetGripPoints, QadGripStatusEnum
+from .qad_dynamicinput import QadDynamicCmdInput, QadDynamicInputContextEnum
 
-from qad_msg import QadMsg
+from .cmd.qad_generic_cmd import QadCommandClass
+from .cmd.qad_ssget_cmd import QadSSGetClass
+from .cmd.qad_arc_cmd import QadGRIPCHANGEARCRADIUSCommandClass
+from .cmd.qad_generic_cmd import QadCommandClass
+from .cmd.qad_lengthen_cmd import QadGRIPLENGTHENCommandClass
+from .cmd.qad_mirror_cmd import QadGRIPMIRRORCommandClass
+from .cmd.qad_move_cmd import QadGRIPMOVECommandClass
+from .cmd.qad_pedit_cmd import QadGRIPINSERTREMOVEVERTEXCommandClass, QadGRIPARCLINECONVERTCommandClass
+from .cmd.qad_rotate_cmd import QadGRIPROTATECommandClass
+from .cmd.qad_scale_cmd import QadGRIPSCALECommandClass
+from .cmd.qad_ssget_cmd import QadSSGetClass
+from .cmd.qad_stretch_cmd import QadGRIPSTRETCHCommandClass
+from .qad_dim import QadDimStyles
+from .qad_msg import QadMsg
 
 
 # Main Map Tool class.
@@ -65,6 +72,12 @@ class QadMapTool(QgsMapTool):
       self.gripPopupMenu = None
       self.timerForGripMenu = QTimer()
       self.timerForGripMenu.setSingleShot(True)
+      
+      self.startDateTimeForRightClick = 0
+      
+      # input dinamico
+      self.dynamicCmdInput = QadDynamicCmdInput(plugIn)
+      
 
    def __del__(self):
       self.removeItems()
@@ -77,23 +90,50 @@ class QadMapTool(QgsMapTool):
          __csrRubberBand = None
       self.entitySet.clear()
       self.entitySetGripPoints.removeItems()
+      
+      if self.dynamicCmdInput is not None:
+         self.dynamicCmdInput.removeItems()
+         del self.dynamicCmdInput
+         self.dynamicCmdInput = None
 
 
+   #============================================================================
+   # getDynamicInput
+   #============================================================================
+   def getDynamicInput(self):
+      return self.dynamicCmdInput
+
+
+   #============================================================================
+   # UpdatedVariablesEvent
+   #============================================================================
    def UpdatedVariablesEvent(self):
       # aggiorna in base alle nuove impostazioni delle variabili
       self.removeItems() 
       self.__csrRubberBand = QadCursorRubberBand(self.canvas, QadCursorTypeEnum.BOX | QadCursorTypeEnum.CROSS)
+      if self.dynamicCmdInput is not None:
+         del self.dynamicCmdInput
+      self.dynamicCmdInput = QadDynamicCmdInput(self.plugIn)
 
 
+   #============================================================================
+   # clearEntitySet
+   #============================================================================
    def clearEntitySet(self):
       self.entitySet.deselectOnLayer()
       self.entitySet.clear()
 
 
+   #============================================================================
+   # clearEntityGripPoints
+   #============================================================================
    def clearEntityGripPoints(self):
       self.entitySetGripPoints.removeItems() # svuoto la lista
 
 
+   #============================================================================
+   # refreshEntityGripPoints
+   #============================================================================
    def refreshEntityGripPoints(self, entitySet = None):
       if entitySet is None:
          entitySet = self.entitySet
@@ -130,18 +170,19 @@ class QadMapTool(QgsMapTool):
    #============================================================================
 
    
+   #============================================================================
+   # canvasPressEvent
+   #============================================================================
    def canvasPressEvent(self, event):
-      # volevo mettere questo evento nel canvasReleaseEvent
-      # ma il tasto destro non genera quel tipo di evento
       if event.button() == Qt.RightButton:
-         self.displayPopupMenuOnQuiescentState(event.pos())
+         self.startDateTimeForRightClick = datetime.datetime.now()
       elif event.button() == Qt.LeftButton:
          # verifico se tasto shift premuto
          shiftKey = True if event.modifiers() & Qt.ShiftModifier else False
          # posizione corrente del mouse
          point = self.toMapCoordinates(event.pos())
          # leggo il punto grip che si interseca alla posizione del mouse
-         entityGripPoint = self.entitySetGripPoints.isIntersecting(point)
+         entityGripPoints, entityGripPoint = self.entitySetGripPoints.isIntersecting(point)
          if entityGripPoint is not None:
             if shiftKey == False: # lancio il comando
                selectedEntityGripPoints = self.entitySetGripPoints.getSelectedEntityGripPoints()
@@ -177,22 +218,39 @@ class QadMapTool(QgsMapTool):
                self.plugIn.runCommand("QadVirtualSelCommandClass", point)
                
 
+   #============================================================================
+   # canvasDoubleClickEvent
+   #============================================================================
    def canvasDoubleClickEvent(self,event):
       pass
 
 
+   #============================================================================
+   # canvasMoveEvent
+   #============================================================================
    def canvasMoveEvent(self, event):
       self.timerForGripMenu.stop()
       point = self.toMapCoordinates(event.pos())
       self.__csrRubberBand.moveEvent(point)
+      
+      if self.dynamicCmdInput.prevPart is not None or self.dynamicCmdInput.nextPart is not None:
+         changedPart = True
+      else:
+         changedPart = False
+      self.dynamicCmdInput.setPrevPart(None)
+      self.dynamicCmdInput.setNextPart(None)
+
       # hover grip points
       if self.entitySetGripPoints.hoverIntersectingGripPoints(point) == 1:
-         # Specifica i metodi di accesso per le opzioni dei grip multifunzionali.
-         # se > 1 devono essere mostrati i menu dinamici 
-         if QadVariables.get(QadMsg.translate("Environment variables", "GRIPMULTIFUNCTIONAL")) > 1:
-            for entityGripPoint in self.entitySetGripPoints.entityGripPoints:
-               for gripPoint in entityGripPoint.gripPoints:
-                  if gripPoint.isIntersecting(point) and gripPoint.getStatus() == QadGripStatusEnum.HOVER:
+         for entityGripPoint in self.entitySetGripPoints.entityGripPoints:
+            for gripPoint in entityGripPoint.gripPoints:
+               if gripPoint.isIntersecting(point) and gripPoint.getStatus() == QadGripStatusEnum.HOVER:
+                  self.dynamicCmdInput.setPrevNextPart(entityGripPoint.entity, gripPoint)
+                  self.dynamicCmdInput.show(True, self.canvas.mouseLastXY())
+
+                  # Specifica i metodi di accesso per le opzioni dei grip multifunzionali.
+                  # se > 1 devono essere mostrati i menu dinamici 
+                  if QadVariables.get(QadMsg.translate("Environment variables", "GRIPMULTIFUNCTIONAL")) > 1:
                      pos = QPoint(event.pos().x(), event.pos().y())
                      shot = lambda: self.displayPopupMenuOnGrip(pos, entityGripPoint.entity, gripPoint)
                      
@@ -200,21 +258,52 @@ class QadMapTool(QgsMapTool):
                      self.timerForGripMenu = QTimer()
                      self.timerForGripMenu.setSingleShot(True)
                      self.timerForGripMenu.timeout.connect(shot)
-                     self.timerForGripMenu.start(1000) # 1 sec
+                     self.timerForGripMenu.start(1000) # 1 sec tempo per il grip
                      return
-   
-#          # se non ci sono grip point selezionati
-#          if len(self.entitySetGripPoints.getSelectedEntityGripPoints()) == 0:
-#             # leggo il punto grip che si interseca alla posizione del mouse
-#             entityGripPoint = self.entitySetGripPoints.isIntersecting(point)
-#             if entityGripPoint is not None:               
-#                # leggo il primo punto di grip che interseca point (in map coordinate)
-#                gripPoint = entityGripPoint.isIntersecting(point)
+      else:
+         if changedPart == True:
+            self.dynamicCmdInput.show(True, self.canvas.mouseLastXY())
+         else:
+            self.dynamicCmdInput.mouseMoveEvent(event.pos())
                
 
+   #============================================================================
+   # canvasReleaseEvent
+   #============================================================================
    def canvasReleaseEvent(self, event):
-      pass
-
+      if event.button() == Qt.RightButton:
+         shortCutMenu = QadVariables.get(QadMsg.translate("Environment variables", "SHORTCUTMENU"))
+         if shortCutMenu == 0:
+            # equivale a premere INVIO
+            return self.plugIn.showEvaluateMsg(None)
+         else:
+            if self.entitySet.count() == 0: # nessun oggetto selezionato (modalità Default)
+               # 16 = Enables the display of a shortcut menu when the right button on the pointing device is held down long enough
+               if shortCutMenu & 16:
+                  now = datetime.datetime.now()
+                  value = QadVariables.get(QadMsg.translate("Environment variables", "SHORTCUTMENUDURATION"))
+                  shortCutMenuDuration = datetime.timedelta(0, 0, 0, value)
+                  # se supera il numero di millisecondi impostato da SHORTCUTMENUDURATION
+                  if now - self.startDateTimeForRightClick > shortCutMenuDuration:
+                     return self.displayPopupMenuOnQuiescentState(event.pos())
+                  else:
+                     # se click veloce equivale a premere INVIO
+                     return self.plugIn.showEvaluateMsg(None)
+               else:
+                  # 1 = Enables Default mode shortcut menus
+                  if shortCutMenu & 1:
+                     return self.displayPopupMenuOnQuiescentState(event.pos())
+                  else:
+                     # equivale a premere INVIO
+                     return self.plugIn.showEvaluateMsg(None)
+            else: # ci sono degli oggetti selezionati
+               # 2 = Enables Edit mode shortcut menus
+               if shortCutMenu & 2: 
+                  return self.displayPopupMenuOnQuiescentState(event.pos())
+               else:
+                  # equivale a premere INVIO
+                  return self.plugIn.showEvaluateMsg(None)
+               
    
    #============================================================================
    # FINE - eventi per il mouse
@@ -222,12 +311,17 @@ class QadMapTool(QgsMapTool):
    #============================================================================
 
 
-   def keyPressEvent(self, event):
-      self.plugIn.keyPressEvent(event)
-
-
-   def keyReleaseEvent(self, event):
-      pass
+   #============================================================================
+   # keyPressEvent
+   #============================================================================
+   def keyPressEvent(self, e):
+      if self.plugIn.shortCutManagement(e): # se è stata gestita una sequenza di tasti scorciatoia
+         return
+      
+      if e.text() != "" and self.dynamicCmdInput.show(True, self.canvas.mouseLastXY(), self.dynamicCmdInput.getPrompt()) == True:
+         self.dynamicCmdInput.keyPressEvent(e)
+      else:      
+         self.plugIn.keyPressEvent(e)
 
 
    #============================================================================
@@ -236,6 +330,9 @@ class QadMapTool(QgsMapTool):
    #============================================================================
 
 
+   #============================================================================
+   # wheelEvent
+   #============================================================================
    def wheelEvent(self, event):
       QgsMapTool.wheelEvent(self, event)
       self.__csrRubberBand.moveEvent(self.toMapCoordinates(event.pos()))
@@ -246,6 +343,9 @@ class QadMapTool(QgsMapTool):
    #============================================================================
 
    
+   #============================================================================
+   # activate
+   #============================================================================
    def activate(self):
       self.canvas.setToolTip("")
       self.canvas.setCursor(self.cursor)
@@ -256,14 +356,34 @@ class QadMapTool(QgsMapTool):
       self.refreshEntityGripPoints(self.entitySet)
 
       self.plugIn.QadCommands.continueCommandFromMapTool()
-   
+      #self.plugIn.enableShortcut()
+      
+      self.dynamicCmdInput.setPrevPart(None)
+      self.dynamicCmdInput.setNextPart(None)
+      self.dynamicCmdInput.show(True, self.canvas.mouseLastXY())
+      
+
+   #============================================================================
+   # deactivate
+   #============================================================================
    def deactivate(self):
       self.__csrRubberBand.hide()
       self.timerForGripMenu.stop()
+      #self.plugIn.disableShortcut()
       
+      self.dynamicCmdInput.show(False)
+
+
+   #============================================================================
+   # isTransient
+   #============================================================================
    def isTransient(self):
       return False # questo tool non fa zoom o pan
 
+
+   #============================================================================
+   # isEditTool
+   #============================================================================
    def isEditTool(self):
       return False # questo tool non fa editing
 
@@ -349,62 +469,80 @@ class QadMapTool(QgsMapTool):
       found = False
       
       # verifico se l'entità appartiene ad uno stile di quotatura
-      if entity.isDimensionComponent():
+      if QadDimStyles.isDimEntity(entity):
          pass
       else:
-         entityType = entity.getEntityType(gripPoint.atGeom, gripPoint.atSubGeom)
-         if entityType == QadEntityGeomTypeEnum.ARC:
-            arc = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
+         qadGeom = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
+         qadGeomType = qadGeom.whatIs()
+         if qadGeomType == "ARC":
+            qadGeom = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
             
             # se punti finali
-            if gripPoint.isIntersecting(arc.getStartPt()) or gripPoint.isIntersecting(arc.getEndPt()):
+            if gripPoint.isIntersecting(qadGeom.getStartPt()) or gripPoint.isIntersecting(qadGeom.getEndPt()):
                found = True
                msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
                action = QAction(msg, popupMenu)
                f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
-               QObject.connect(action, SIGNAL("triggered()"), f)
+               action.triggered.connect(f)
                popupMenu.addAction(action)
 
                msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
                action = QAction(msg, popupMenu)
                f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
-               QObject.connect(action, SIGNAL("triggered()"), f)
+               action.triggered.connect(f)
                popupMenu.addAction(action)
             # se punto medio
-            elif gripPoint.isIntersecting(entity.qadGeom.getMiddlePt()):
+            elif gripPoint.isIntersecting(qadGeom.getMiddlePt()):
                found = True
                msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
                action = QAction(msg, popupMenu)
                f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
-               QObject.connect(action, SIGNAL("triggered()"), f)
+               action.triggered.connect(f)
                popupMenu.addAction(action)
                
                msg = QadMsg.translate("Popup_menu_grip_window", "Radius")
                action = QAction(msg, popupMenu)
                f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.CHANGE_RADIUS, gripPoint)
-               QObject.connect(action, SIGNAL("triggered()"), f)
+               action.triggered.connect(f)
                popupMenu.addAction(action)
             
                msg = QadMsg.translate("Popup_menu_grip_window", "Convert to line")
                action = QAction(msg, popupMenu)
                f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ARC_TO_LINE, gripPoint)
-               QObject.connect(action, SIGNAL("triggered()"), f)
+               action.triggered.connect(f)
+               popupMenu.addAction(action)
+
+         if qadGeomType == "LINE":
+            qadGeom = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
+            
+            # se punti finali
+            if gripPoint.isIntersecting(qadGeom.getStartPt()) or gripPoint.isIntersecting(qadGeom.getEndPt()):
+               found = True
+               msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
+               action.triggered.connect(f)
+               popupMenu.addAction(action)
+
+               msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
+               action = QAction(msg, popupMenu)
+               f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
+               action.triggered.connect(f)
                popupMenu.addAction(action)
                
-         elif entityType == QadEntityGeomTypeEnum.LINESTRING:
-            linearObjectList = entity.getQadGeom(gripPoint.atGeom, gripPoint.atSubGeom)
-            isClosed = linearObjectList.isClosed()
+         elif qadGeomType == "POLYLINE":
+            isClosed = qadGeom.isClosed()
             nVertex = 0
             found = False
-            while nVertex < linearObjectList.qty():
-               linearObject = linearObjectList.getLinearObjectAt(nVertex)
+            while nVertex < qadGeom.qty():
+               linearObject = qadGeom.getLinearObjectAt(nVertex)
 
                if gripPoint.isIntersecting(linearObject.getStartPt()):
                   found = True
                   msg = QadMsg.translate("Popup_menu_grip_window", "Stretch vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
                   
                   # punto iniziale
@@ -412,19 +550,19 @@ class QadMapTool(QgsMapTool):
                      msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
                      action = QAction(msg, popupMenu)
                      f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
-                     QObject.connect(action, SIGNAL("triggered()"), f)
+                     action.triggered.connect(f)
                      popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
                   break
                
@@ -434,36 +572,37 @@ class QadMapTool(QgsMapTool):
                   msg = QadMsg.translate("Popup_menu_grip_window", "Stretch")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
                   
-                  if linearObject.isSegment(): # linea
+                  gType = linearObject.whatIs()
+                  if gType == "LINE":
                      msg = QadMsg.translate("Popup_menu_grip_window", "Convert to arc")
                      action = QAction(msg, popupMenu)
                      f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LINE_TO_ARC, gripPoint)
-                  else: # arco
+                  elif gType == "ARC":
                      msg = QadMsg.translate("Popup_menu_grip_window", "Convert to line")
                      action = QAction(msg, popupMenu)
                      f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ARC_TO_LINE, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
                   break
                
                nVertex = nVertex + 1
                
-            linearObject = linearObjectList.getLinearObjectAt(-1) # ultima parte
+            linearObject = qadGeom.getLinearObjectAt(-1) # ultima parte
             if not found and isClosed == False:
                # punto finale
                if gripPoint.isIntersecting(linearObject.getEndPt()):
@@ -471,42 +610,42 @@ class QadMapTool(QgsMapTool):
                   msg = QadMsg.translate("Popup_menu_grip_window", "Stretch vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.STRECTH, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Lengthen")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.LENGTHEN, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
                   msg = QadMsg.translate("Popup_menu_grip_window", "Add vertex before")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.ADD_VERTEX_BEFORE, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
 
             if isClosed == False: # polyline
                # ci devono essere almeno 2 parti
-               if linearObjectList.qty() >= 2:
+               if qadGeom.qty() >= 2:
                   msg = QadMsg.translate("Popup_menu_grip_window", "Remove vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.REMOVE_VERTEX, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
             else: # polygon
                # ci devono essere almeno 4 parti
-               if linearObjectList.qty() >= 4:
+               if qadGeom.qty() >= 4:
                   msg = QadMsg.translate("Popup_menu_grip_window", "Remove vertex")
                   action = QAction(msg, popupMenu)
                   f = lambda : self.runCmdFromPopupMenuOnGrip(QadVirtualGripCommandsEnum.REMOVE_VERTEX, gripPoint)
-                  QObject.connect(action, SIGNAL("triggered()"), f)
+                  action.triggered.connect(f)
                   popupMenu.addAction(action)
                      
       if found: # menu non vuoto
@@ -516,11 +655,18 @@ class QadMapTool(QgsMapTool):
       return None
 
 
+#============================================================================
+# QadGripPopupMenu
+#============================================================================
 class QadGripPopupMenu(QMenu):
    def __init__(self, parent):
       QMenu.__init__(self, parent)
       self.offset = 0
 
+
+   #============================================================================
+   # popup
+   #============================================================================
    def popup(self, pos, action = None):
       newPos = QPoint(pos.x() + self.offset, pos.y() + self.offset)
       QMenu.popup(self, newPos, action)
@@ -530,6 +676,10 @@ class QadGripPopupMenu(QMenu):
 #          self.hide()
      #self.hide()
 
+
+   #============================================================================
+   # mouseMoveEvent
+   #============================================================================
    def mouseMoveEvent(self, event):
       x = event.pos().x()
       y = event.pos().y()
@@ -539,21 +689,31 @@ class QadGripPopupMenu(QMenu):
       else:
          QMenu.mouseMoveEvent(self, event)
 
-#             newPos = self.parentWidget().mapFromGlobal(event.globalPos())
-#             newMouseEvent = QMouseEvent(QEvent.MouseMove, newPos, Qt.NoButton, event.buttons(), event.modifiers())
-#             self.parentWidget().mouseMoveEvent(newMouseEvent)
 
-
+#============================================================================
+# QadVirtualSelCommandClass
 # Classe che gestisce il comando di selezione quando QAD è in stato di quiete
+#============================================================================
 class QadVirtualSelCommandClass(QadCommandClass):
 
+   #============================================================================
+   # instantiateNewCmd
+   #============================================================================
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
       return QadVirtualSelCommandClass(self.plugIn)
    
+
+   #============================================================================
+   # getName
+   #============================================================================
    def getName(self):
       return "QadVirtualSelCommandClass"
 
+
+   #============================================================================
+   # __init__
+   #============================================================================
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
       self.SSGetClass = QadSSGetClass(plugIn)
@@ -561,13 +721,25 @@ class QadVirtualSelCommandClass(QadCommandClass):
       self.SSGetClass.exitAfterSelection = True
       self.SSGetClass.step = 1
    
+
+   #============================================================================
+   # __del__
+   #============================================================================
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.SSGetClass
       
+
+   #============================================================================
+   # getPointMapTool
+   #============================================================================
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       return self.SSGetClass.getPointMapTool(drawMode)
 
+
+   #============================================================================
+   # run
+   #============================================================================
    def run(self, msgMapTool = False, msg = None):
       res = self.SSGetClass.run(msgMapTool, msg)
       if res == True:
@@ -595,28 +767,49 @@ class QadVirtualGripCommandsEnum():
    ADD_VERTEX_BEFORE = 12
 
 
+#============================================================================
+# QadVirtualGripCommandsClass
+#============================================================================
 # Classe che gestisce i comando disponibili sui grip quando QAD è in stato di quiete
 class QadVirtualGripCommandsClass(QadCommandClass):
 
+   #============================================================================
+   # instantiateNewCmd
+   #============================================================================
    def instantiateNewCmd(self):
       """ istanzia un nuovo comando dello stesso tipo """
       return QadVirtualGripCommandsClass(self.plugIn)
    
+
+   #============================================================================
+   # getName
+   #============================================================================
    def getName(self):
       return "QadVirtualGripCommandsClass"
 
+
+   #============================================================================
+   # __init__
+   #============================================================================
    def __init__(self, plugIn):      
       QadCommandClass.__init__(self, plugIn)
       self.commandNum = QadVirtualGripCommandsEnum.NONE
       self.currentCommand = None
       self.entitySetGripPoints = None
-      self.basePt = QgsPoint()
+      self.basePt = QgsPointXY()
+
    
+   #============================================================================
+   # __del__
+   #============================================================================
    def __del__(self):
       QadCommandClass.__del__(self)
       del self.currentCommand
 
       
+   #============================================================================
+   # getPointMapTool
+   #============================================================================
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
       if self.currentCommand is not None:
          return self.currentCommand.getPointMapTool(drawMode)
@@ -624,6 +817,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          return None
 
 
+   #============================================================================
+   # getCurrentContextualMenu
+   #============================================================================
    def getCurrentContextualMenu(self):
       if self.currentCommand is not None:
          return self.currentCommand.getCurrentContextualMenu()
@@ -631,6 +827,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          return None
 
 
+   #============================================================================
+   # getCommand
+   #============================================================================
    def getCommand(self):
       if self.commandNum == QadVirtualGripCommandsEnum.STRECTH:
          return QadGRIPSTRETCHCommandClass(self.plugIn)
@@ -670,6 +869,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
       return None
 
 
+   #============================================================================
+   # initStartCommand
+   #============================================================================
    def initStartCommand(self, commandNum):
       if self.currentCommand is not None:
          del self.currentCommand
@@ -686,6 +888,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          return False
 
 
+   #============================================================================
+   # initNextCommand
+   #============================================================================
    def initNextCommand(self):
       if self.currentCommand is not None:
          del self.currentCommand
@@ -719,6 +924,9 @@ class QadVirtualGripCommandsClass(QadCommandClass):
          return False
          
          
+   #============================================================================
+   # run
+   #============================================================================
    def run(self, msgMapTool = False, msg = None):
       if self.currentCommand is None:
          return True

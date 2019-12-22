@@ -66,7 +66,7 @@
     </size>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="DisplayTab">
     <attribute name="title">
@@ -243,7 +243,7 @@
        <rect>
         <x>20</x>
         <y>160</y>
-        <width>211</width>
+        <width>221</width>
         <height>17</height>
        </rect>
       </property>
@@ -261,7 +261,7 @@
        <x>270</x>
        <y>10</y>
        <width>281</width>
-       <height>121</height>
+       <height>221</height>
       </rect>
      </property>
      <property name="title">
@@ -271,8 +271,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
-        <width>31</width>
+        <y>50</y>
+        <width>41</width>
         <height>20</height>
        </rect>
       </property>
@@ -283,9 +283,9 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>30</y>
-        <width>221</width>
+        <x>60</x>
+        <y>50</y>
+        <width>211</width>
         <height>21</height>
        </rect>
       </property>
@@ -299,9 +299,9 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>60</y>
-        <width>221</width>
+        <x>60</x>
+        <y>80</y>
+        <width>211</width>
         <height>21</height>
        </rect>
       </property>
@@ -319,8 +319,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>60</y>
-        <width>31</width>
+        <y>80</y>
+        <width>41</width>
         <height>20</height>
        </rect>
       </property>
@@ -332,8 +332,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
-        <width>31</width>
+        <y>170</y>
+        <width>41</width>
         <height>20</height>
        </rect>
       </property>
@@ -344,14 +344,104 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>80</y>
-        <width>221</width>
-        <height>41</height>
+        <x>60</x>
+        <y>160</y>
+        <width>211</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
        <string>Maximun admitted error between a real curve and the aproximated, segmented curve</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_ELLIPSEMINSEGMENTQTY">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate an ellipse (system variable ELLIPSEMINSEGMENTQTY).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>140</y>
+        <width>211</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate an ellipse (system variable ELLIPSEMINSEGMENTQTY).</string>
+      </property>
+      <property name="text">
+       <string>Minimum number of segments in an ellipse</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_TOLERANCE2COINCIDENT">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Proximity (tolerance) within 2 point are to be considered coincident (system variable TOLERANCE2COINCIDENT).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>20</y>
+        <width>211</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tolerance for coincident points</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_ELLIPSEARCMINSEGMENTQTY">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Minimum number of segments to approximate an arc (system variable ARCMINSEGMENTQTY).</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>100</y>
+        <width>211</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Minimum number of segments in an arc of ellipse</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -362,9 +452,9 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>140</y>
+       <y>250</y>
        <width>281</width>
-       <height>61</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="title">
@@ -397,6 +487,56 @@
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="UserPreferencesTab">
+    <attribute name="title">
+     <string>User Preferences</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_12">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>281</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Windows Standard Behavior</string>
+     </property>
+     <widget class="QCheckBox" name="checkBox_shortcutmenu">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>261</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Controls whether Default, Edit, and Command mode shortcut menus are available in the drawing area. ( SHORTCUTMENU system variable)</string>
+      </property>
+      <property name="text">
+       <string>Shortcut menus in drawing area</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="button_rightclick">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>261</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Right-Click Customization dialog box. This dialog box provides further definition for the Shortcut Menus in Drawing Area option. ( SHORTCUTMENU system variable)</string>
+      </property>
+      <property name="text">
+       <string>Right-click customization...</string>
       </property>
      </widget>
     </widget>
@@ -502,9 +642,9 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
     <widget class="QGroupBox" name="groupBox_5">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>280</x>
        <y>10</y>
-       <width>261</width>
+       <width>271</width>
        <height>71</height>
       </rect>
      </property>
@@ -586,9 +726,9 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
     <widget class="QGroupBox" name="groupBox_7">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>280</x>
        <y>160</y>
-       <width>261</width>
+       <width>271</width>
        <height>81</height>
       </rect>
      </property>
@@ -621,6 +761,22 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
        </rect>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="button_DraftingTootipSettings">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>250</y>
+       <width>271</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Displays the Drafting Tooltip dialog box. </string>
+     </property>
+     <property name="text">
+      <string>Drafting Tooltip settings...</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="SelectionTab">
@@ -922,8 +1078,8 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
    <slot>horizontalSlider_CURSORSIZE_moved()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>443</x>
-     <y>251</y>
+     <x>449</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
@@ -938,8 +1094,8 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
    <slot>lineEdit_CURSORSIZE_textChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>301</x>
-     <y>249</y>
+     <x>307</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -954,8 +1110,8 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
    <slot>horizontalSlider_CURSORSIZE_moved()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>485</x>
-     <y>252</y>
+     <x>491</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
      <x>587</x>
@@ -1091,6 +1247,54 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>button_DraftingTootipSettings</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>button_DraftingTooltipSettings_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>547</x>
+     <y>291</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>582</x>
+     <y>341</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>button_rightclick</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>button_rightclick_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_shortcutmenu</sender>
+   <signal>clicked()</signal>
+   <receiver>Options_Dialog</receiver>
+   <slot>checkBox_shortcutmenu_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>89</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>ButtonBOX_Accepted()</slot>
@@ -1107,5 +1311,8 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
   <slot>button_GripColor_clicked()</slot>
   <slot>Button_TextWindowColor_clicked()</slot>
   <slot>Button_AutoSnapWindowColor_clicked()</slot>
+  <slot>button_DraftingTooltipSettings_clicked()</slot>
+  <slot>button_rightclick_clicked()</slot>
+  <slot>checkBox_shortcutmenu_clicked()</slot>
  </slots>
 </ui>

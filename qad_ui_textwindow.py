@@ -21,10 +21,10 @@
 """
 
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
+from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout
 
-
-from qad_msg import QadMsg
+from .qad_msg import QadMsg
 
 
 class Ui_QadTextWindow(object):
@@ -47,9 +47,9 @@ class Ui_QadCmdSuggestWindow(object):
         QadCmdSuggestWindow.setObjectName("QadCmdsListWindow")
         QadCmdSuggestWindow.setWindowModality(QtCore.Qt.NonModal)
         QadCmdSuggestWindow.setEnabled(True)
-        self.dockWidgetContents = QtGui.QWidget()
+        self.dockWidgetContents = QWidget()
         self.dockWidgetContents.setObjectName("QadCmdsListWindowDockWidgetContents")
-        self.vboxlayout = QtGui.QVBoxLayout(self.dockWidgetContents)
+        self.vboxlayout = QVBoxLayout(self.dockWidgetContents)
         self.vboxlayout.setObjectName("QadCmdsListWindowVBoxLayout")
         self.vboxlayout.setMargin(0)
         QadCmdSuggestWindow.setLayout(self.vboxlayout)        

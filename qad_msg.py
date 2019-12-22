@@ -23,11 +23,12 @@
 """
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import * # for QDesktopServices
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import * # for QDesktopServices
 import os.path
+import sys
 
-import urllib
+import urllib.parse
 import platform
 
 
@@ -42,7 +43,7 @@ class QadMsgClass():
    #============================================================================
    # translate
    #============================================================================
-   def translate(self, context, sourceText, disambiguation = None, encoding = QCoreApplication.UnicodeUTF8, n = -1):
+   def translate(self, context, sourceText, disambiguation = None, n = -1):
       # da usare in una riga senza accoppiarla ad altre chiamate ad esempio (per lupdate.exe che altrimenti non le trova):
       # NON VA BENE
       #     proplist["blockScale"] = [QadMsg.translate("Dimension", "Scala frecce"), \
@@ -62,7 +63,7 @@ class QadMsgClass():
       # "Dimension" per le quotature
       # "Environment variables" per i nomi delle variabili di ambiente
       # "Help" per i titoli dei capitoli del manuale che servono da section nel file html di help
-      return QCoreApplication.translate(context, sourceText, disambiguation, encoding, n)
+      return QCoreApplication.translate(context, sourceText, disambiguation, n)
 
 
 #===============================================================================
@@ -78,8 +79,7 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    try:
       source = ""
       if packageName is None:
-         import inspect
-         source = inspect.currentframe().f_back.f_code.co_filename
+         source = sys.modules["Qad"].__file__
       else:
          source = sys.modules[packageName].__file__
    except:
@@ -105,16 +105,19 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
       url = "file:///"+helpfile
 
       if section != "":
-         url = url + "#" + urllib.quote(section.encode('utf-8'))
+         url = url + "#" + urllib.parse.quote(section.encode('utf-8'))
 
       # la funzione QDesktopServices.openUrl in windows non apre la sezione
       if platform.system() == "Windows":
          import subprocess
-         from _winreg import HKEY_CURRENT_USER, OpenKey, QueryValue
-         # In Py3, this module is called winreg without the underscore
+         from winreg import HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, OpenKey, QueryValue
          
-         with OpenKey(HKEY_CURRENT_USER, r"Software\Classes\http\shell\open\command") as key:
-            cmd = QueryValue(key, None)
+         try: # provo a livello di utente
+            with OpenKey(HKEY_CURRENT_USER, r"Software\Classes\http\shell\open\command") as key:
+               cmd = QueryValue(key, None)
+         except: # se non c'era a livello di utente provo a livello di macchina
+            with OpenKey(HKEY_LOCAL_MACHINE, r"Software\Classes\http\shell\open\command") as key:
+               cmd = QueryValue(key, None)
    
          if cmd.find("\"%1\"") >= 0:
             subprocess.Popen(cmd.replace("%1", url))

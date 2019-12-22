@@ -701,6 +701,222 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Dynamic Input</string>
+    </attribute>
+    <widget class="QCheckBox" name="checkBox_DI_EnableInputPointer">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>221</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Turns on pointer input. When pointer input and dimensional input are both turned on, dimensional input supersedes pointer input when it is available. (DYNMODE system variable)</string>
+     </property>
+     <property name="text">
+      <string>Enable Pointer Input</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_DI_EnableDimPointer">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>10</y>
+       <width>221</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Turns on dimensional input. Dimensional input is not available for some commands that prompt for a second point. (DYNMODE system variable)</string>
+     </property>
+     <property name="text">
+      <string>Enable Dimension Input where possible</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>221</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Pointer Input</string>
+     </property>
+     <widget class="QPushButton" name="pushButton_DI_PointerInputSettings">
+      <property name="geometry">
+       <rect>
+        <x>54</x>
+        <y>110</y>
+        <width>111</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Pointer Input Settings dialog box.</string>
+      </property>
+      <property name="text">
+       <string>Settings...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>201</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="qad_dsettings.qrc">:/plugins/qad/icons/dsettings/pointer_input.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>30</y>
+       <width>221</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Dimension Input</string>
+     </property>
+     <widget class="QPushButton" name="pushButton_DI_DimensionInputSettings">
+      <property name="geometry">
+       <rect>
+        <x>54</x>
+        <y>110</y>
+        <width>111</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Displays the Dimension Input Settings dialog box.</string>
+      </property>
+      <property name="text">
+       <string>Settings...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_15">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>201</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="qad_dsettings.qrc">:/plugins/qad/icons/dsettings/dimension_input.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>451</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Dynamic Prompts</string>
+     </property>
+     <widget class="QCheckBox" name="checkBox_DI_ShowPrompt">
+      <property name="geometry">
+       <rect>
+        <x>219</x>
+        <y>20</y>
+        <width>221</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string>Displays prompts in Dynamic Input tooltips. (DYNPROMPT system variable)</string>
+      </property>
+      <property name="text">
+       <string>Show command prompting and 
+command input near the crosshairs</string>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>201</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="qad_dsettings.qrc">:/plugins/qad/icons/dsettings/dynamic_prompts.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="pushButton_DI_TootipAppearance">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>320</y>
+       <width>311</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Displays the Tooltip Appearance dialog box.</string>
+     </property>
+     <property name="text">
+      <string>Drafting Tooltip Appearence...</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -747,7 +963,7 @@ p, li { white-space: pre-wrap; }
    <slot>ButtonDeselectALL_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>305</x>
+     <x>357</x>
      <y>385</y>
     </hint>
     <hint type="destinationlabel">
@@ -779,8 +995,8 @@ p, li { white-space: pre-wrap; }
    <slot>ButtonHELP_Pressed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>391</x>
-     <y>439</y>
+     <x>487</x>
+     <y>440</y>
     </hint>
     <hint type="destinationlabel">
      <x>372</x>
@@ -795,8 +1011,8 @@ p, li { white-space: pre-wrap; }
    <slot>ButtonBOX_Accepted()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>64</x>
-     <y>433</y>
+     <x>251</x>
+     <y>434</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -811,12 +1027,60 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>428</y>
+     <x>332</x>
+     <y>429</y>
     </hint>
     <hint type="destinationlabel">
      <x>136</x>
      <y>413</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_DI_PointerInputSettings</sender>
+   <signal>clicked()</signal>
+   <receiver>DSettings_Dialog</receiver>
+   <slot>Button_DI_PointerInputSettings_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>186</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_DI_DimensionInputSettings</sender>
+   <signal>clicked()</signal>
+   <receiver>DSettings_Dialog</receiver>
+   <slot>Button_DI_DimensionInputSettings_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>494</x>
+     <y>192</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_DI_TootipAppearance</sender>
+   <signal>clicked()</signal>
+   <receiver>DSettings_Dialog</receiver>
+   <slot>Button_DI_TootipAppearance_Pressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>287</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>494</x>
+     <y>360</y>
     </hint>
    </hints>
   </connection>
@@ -830,5 +1094,8 @@ p, li { white-space: pre-wrap; }
   <slot>ContextMenu_Activated_ENDP()</slot>
   <slot>MainTabChanged()</slot>
   <slot>ButtonHELP_Pressed()</slot>
+  <slot>Button_DI_PointerInputSettings_Pressed()</slot>
+  <slot>Button_DI_DimensionInputSettings_Pressed()</slot>
+  <slot>Button_DI_TootipAppearance_Pressed()</slot>
  </slots>
 </ui>

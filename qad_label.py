@@ -24,8 +24,8 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
 
@@ -103,15 +103,20 @@ def get_activeDataDefinedPropertyFieldNames(layer, dataDefinedProperty):
    result = []
 
    if (dataDefinedProperty is not None) and dataDefinedProperty.isActive():    
-      if dataDefinedProperty.useExpression():
+      if len(dataDefinedProperty.expressionString()) > 0:
          # estraggo i token
          tokenList = getTokenListFromLblFieldName(dataDefinedProperty.expressionString())
-                  
-         fields = layer.label().fields()
-         for field in fields:
-            if field.name() in tokenList:
-               if field.name() not in result: # evito duplicati
-                  result.append(field.name())
+         
+         labeling = layer.labeling()
+         if labeling is not None:
+            if type(labeling) == QgsVectorLayerSimpleLabeling:
+               palLayerSettings = labeling.settings() 
+               fields = layer.fields() 
+            
+               for field in fields:
+                  if field.name() in tokenList:
+                     if field.name() not in result: # evito duplicati
+                        result.append(field.name())
       else:
          result.append(dataDefinedProperty.field())
           
@@ -127,22 +132,24 @@ def get_labelFieldNames(layer):
    """
    result = []
       
-   if layer.type() == QgsMapLayer.VectorLayer:
-      palyr = QgsPalLayerSettings()
-      palyr.readFromLayer(layer)
-      if palyr.enabled:
-         lblFieldName = palyr.fieldName
-         if palyr.isExpression: # Is this label made from a expression string eg FieldName || 'mm'.   
-            # estraggo i token
-            tokenList = getTokenListFromLblFieldName(lblFieldName)
-                     
-            fields = layer.label().fields()
-            for field in fields:
-               if field.name() in tokenList:
-                  if field.name() not in result: # evito duplicati
-                     result.append(field.name())
-         else:
-            result.append(lblFieldName)         
+   if layer.type() == QgsMapLayer.VectorLayer and layer.labeling() is not None:
+      palyr = layer.labeling().settings()
+      lblFieldName = palyr.fieldName
+      if palyr.isExpression: # Is this label made from a expression string eg FieldName || 'mm'.   
+         # estraggo i token
+         tokenList = getTokenListFromLblFieldName(lblFieldName)
+                  
+         labeling = layer.labeling()
+         if labeling is not None:
+            if type(labeling) == QgsVectorLayerSimpleLabeling:
+               palLayerSettings = labeling.settings() 
+               fields = palLayerSettings.mCurFields 
+               for field in fields:
+                  if field.name() in tokenList:
+                     if field.name() not in result: # evito duplicati
+                        result.append(field.name())
+      else:
+         result.append(lblFieldName)         
                
    return result
 
@@ -154,10 +161,9 @@ def get_labelRotationFieldNames(layer):
    """
    ritorna la lista dei campi che concorrono a formare la rotazione dell'etichetta 
    """
-   if layer.type() == QgsMapLayer.VectorLayer:
-      palyr = QgsPalLayerSettings()
-      palyr.readFromLayer(layer)
-      dataDefined = palyr.dataDefinedProperty(QgsPalLayerSettings.Rotation)
+   if layer.type() == QgsMapLayer.VectorLayer and layer.labeling() is not None:
+      palyr = layer.labeling().settings()
+      dataDefined = palyr.dataDefinedProperties().property(QgsPalLayerSettings.LabelRotation)
       return get_activeDataDefinedPropertyFieldNames(layer, dataDefined)
           
    return []
@@ -170,10 +176,9 @@ def get_labelSizeFieldNames(layer):
    """
    ritorna la lista dei campi che concorrono a formare la dimensione del testo dell'etichetta 
    """
-   if layer.type() == QgsMapLayer.VectorLayer:
-      palyr = QgsPalLayerSettings()
-      palyr.readFromLayer(layer)
-      dataDefined = palyr.dataDefinedProperty(QgsPalLayerSettings.Size)
+   if layer.type() == QgsMapLayer.VectorLayer and layer.labeling() is not None:
+      palyr = layer.labeling().settings()
+      dataDefined = palyr.dataDefinedProperties().property(QgsPalLayerSettings.Size)
       return get_activeDataDefinedPropertyFieldNames(layer, dataDefined)
           
    return []
@@ -186,10 +191,9 @@ def get_labelFontFamilyFieldNames(layer):
    """
    ritorna la lista dei campi che concorrono a formare il nome del font dell'etichetta 
    """
-   if layer.type() == QgsMapLayer.VectorLayer:
-      palyr = QgsPalLayerSettings()
-      palyr.readFromLayer(layer)
-      dataDefined = palyr.dataDefinedProperty(QgsPalLayerSettings.Family)
+   if layer.type() == QgsMapLayer.VectorLayer and layer.labeling() is not None:
+      palyr = layer.labeling().settings()
+      dataDefined = palyr.dataDefinedProperties().property(QgsPalLayerSettings.Family)
       return get_activeDataDefinedPropertyFieldNames(layer, dataDefined)
           
    return []
@@ -222,15 +226,17 @@ def get_labelFontSize(palLayerSettings, feature):
    restituisce la dimensione del font dell'etichetta 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Size)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Size)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.pointSize() # Returns the point size of the font
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().pointSize() # Returns the point size of the font
    
    return val
 
@@ -243,15 +249,17 @@ def get_labelFontFamily(palLayerSettings, feature):
    restituisce il nome del font dell'etichetta 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Family)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Family)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.family()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().family()
    
    return val
 
@@ -264,9 +272,9 @@ def get_labelFontTextNamedStyle(palLayerSettings, feature):
    restituisce il nome dello stile del font dell'etichetta 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.FontStyle)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.FontStyle)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
@@ -285,15 +293,17 @@ def get_labelIsBold(palLayerSettings, feature):
    restituisce se il font dell'etichetta é grassetto 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Bold)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Bold)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.bold()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().bold()
    
    return val
 
@@ -306,15 +316,17 @@ def get_labelIsItalic(palLayerSettings, feature):
    restituisce se il font dell'etichetta é italico 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Italic)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Italic)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.italic()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().italic()
    
    return val
 
@@ -327,15 +339,17 @@ def get_labelIsUnderline(palLayerSettings, feature):
    restituisce se il font dell'etichetta é sottolineato 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Underline)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Underline)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.underline()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().underline()
    
    return val
 
@@ -348,15 +362,17 @@ def get_labelIsStrikeOut(palLayerSettings, feature):
    restituisce se il font dell'etichetta é barrato 
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Strikeout)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.Strikeout)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.strikeOut()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().strikeOut()
    
    return val
 
@@ -374,15 +390,17 @@ def get_labelFontCase(palLayerSettings, feature):
    QFont::Capitalize   4   This alters the text to be rendered with the first character of each word as an uppercase character.   
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.FontCase)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.FontCase)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
          val = feature.attribute(dataDefined.field())
    else:
-      val = palLayerSettings.textFont.capitalization()
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = fmt.font().capitalization()
    
    return val
 
@@ -395,15 +413,17 @@ def get_labelFontSizeInMapUnits(palLayerSettings, feature):
    restituisce se l'unità del font dell'etichetta é in unità mappa
    """
    val = None
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.FontSizeUnit)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.FontSizeUnit)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
-         val = True if expr.evaluate(feature) == QgsPalLayerSettings.MapUnits else False
+         val = True if expr.evaluate(feature) == QgsUnitTypes.RenderMapUnits else False
       else:
-         val = True if feature.attribute(dataDefined.field()) == QgsPalLayerSettings.MapUnits else False
+         val = True if feature.attribute(dataDefined.field()) == QgsUnitTypes.RenderMapUnits else False
    else:
-      val = palLayerSettings.fontSizeInMapUnits
+      # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+      fmt = palLayerSettings.format() 
+      val = True if fmt.sizeUnit() == QgsUnitTypes.RenderMapUnits else False
    
    return val
 
@@ -416,9 +436,9 @@ def get_labelRot(palLayerSettings, feature):
    restituisce la rotazione dell'etichetta 
    """
    val = 0
-   dataDefined = palLayerSettings.dataDefinedProperty(QgsPalLayerSettings.Rotation)
+   dataDefined = palLayerSettings.dataDefinedProperties().property(QgsPalLayerSettings.LabelRotation)
    if (dataDefined is not None) and dataDefined.isActive():
-      if dataDefined.useExpression():
+      if len(dataDefined.expressionString()) > 0:
          expr = QgsExpression(dataDefined.expressionString())
          val = expr.evaluate(feature)
       else:
@@ -434,33 +454,33 @@ def calculateLabelSize(layer, feature, canvas):
    """
    return size for label in map units
    """
-   if layer.type() != QgsMapLayer.VectorLayer:
+   if layer.type() != QgsMapLayer.VectorLayer and layer.labeling() is not None:
       return None, None
-   palyr = QgsPalLayerSettings()
-   palyr.readFromLayer(layer)
+   palyr = layer.labeling().settings()
+   # Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+   fmt = palyr.format() 
+   font = fmt.font()
 
    text = get_labelText(palyr, feature)
-         
-   font = QFont(palyr.textFont)
-         
+                  
    fontName = get_labelFontFamily(palyr, feature)
    if fontName is not None:
       font.setFamily(fontName)
             
    fontBold = get_labelIsBold(palyr, feature)
-   if fontBold is not None:
+   if fontBold is not None and fontBold:
       font.setBold(fontBold)
 
    fontItalic = get_labelIsItalic(palyr, feature)
-   if fontItalic is not None:
+   if fontItalic is not None and fontItalic:
       font.setItalic(fontItalic)
 
    fontUnderline = get_labelIsUnderline(palyr, feature)
-   if fontUnderline is not None:
+   if fontUnderline is not None and fontUnderline:
       font.setUnderline(fontUnderline)
 
    fontStrikeOut = get_labelIsStrikeOut(palyr, feature)
-   if fontStrikeOut is not None:
+   if fontStrikeOut is not None and fontStrikeOut:
       font.setStrikeOut(fontStrikeOut)
 
    fontCase = get_labelFontCase(palyr, feature)

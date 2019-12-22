@@ -1,3 +1,45 @@
+version 2.14.5:
+---------------------------
+
+* 2018-10-11 Fixed bug on offset command when custom coordinate reference system is used (reported by Dave Burkholder)
+
+* 2018-10-11 Added <ELLIPSE> command
+
+* 2018-10-11 Added right click control in options dialog
+
+* 2018-10-11 Added <SHORTCUTMENU>, <SHORTCUTMENUDURATION> system variables
+
+
+version 2.14.4:
+---------------------------
+
+* 2018-05-11 Added French localization (by dobriseb)
+
+* 2018-05-11 Added Dynamic Input
+
+* 2018-05-11 Added <DYNMODE>, <DYNPROMPT>, <DYNDIVIS>, <DYNDIGRIP>, <DYNPIFORMAT>, <DYNPICOORDS>, <DYNPIVIS>, <DYNTOOLTIPS> system variables
+
+* 2017-03-01 Fixed bug "If you want to draw a circle with a given diameter it draws instead a circle with the radius specified as diameter"  (reported by Mazur93)
+
+* 2017-03-01 F2 key to toggle the text command windows visibility
+
+* 2017-02-08 Added <DIMARC> command (inspired by Simon Haufe)
+
+* 2017-02-08 Added <Extend beyond ticks> property for DIM commands (inspired by Simon Haufe)
+
+If you want to draw a circle with a given diameter it draws instead a circle with the radius specified as diameter
+
+
+version 2.14.2:
+---------------------------
+
+* 2017-07-24 Fixed bug on offset algorithm (reported by peter-shr)
+
+* 2017-05-08 Fixed bug on duplicating dimension layers (reported by Benni5K)
+
+* 2017-04-28 Fixed error on traceback when moving circle in a linestring layer (reported by Benni5K)
+
+
 version 2.14.1:
 ---------------------------
 

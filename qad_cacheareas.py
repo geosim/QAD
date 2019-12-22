@@ -23,10 +23,13 @@
 """
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
+
+
+from .qad_layer import createMemoryLayer
 
 
 #===============================================================================
@@ -56,14 +59,9 @@ class QadLayerCacheGeoms():
    def __create_internal_layer(self):
       if self.cacheLayer is not None:
          del self.cacheLayer
-      
-      str = getStrLayerGeomType(self.layer)
-      str = str + "?crs="
-      #str = str + self.layer.crs().authid()
-      str = str + self.layer.crs().toWkt()
-      str = str + "&index=yes"
       # creo un layer temporaneo in memoria
-      self.cacheLayer = QgsVectorLayer(str, "QadLayerCacheArea", "memory")
+      self.cacheLayer = createMemoryLayer("QadLayerCacheArea", getStrLayerGeomType(self.layer), self.layer.crs())
+      
       provider = self.cacheLayer.dataProvider()
       provider.addAttributes([QgsField("index", QVariant.Int, "Int")])
       self.cacheLayer.updateFields()
@@ -128,12 +126,17 @@ class QadLayerCacheGeoms():
             continue
          newFeature.setAttribute(0, feature.id())
          newFeature.setGeometry(geom)
-         self.cacheLayer.addFeature(newFeature)
+         if self.cacheLayer.addFeature(newFeature) == False:
+            self.cacheLayer.rollBack()
+            return False
 
+      
       if self.cacheLayer.commitChanges():
          self.IsEmpty = False
          return True
       else:
+         # prova a vedere i messaggi di errore con il debug self.cacheLayer.commitErrors()
+         self.cacheLayer.rollBack()
          return False
 
 
@@ -284,7 +287,7 @@ class QadLayerCacheGeomsDict():
    #============================================================================
    def insertFeatures(self, layer, features):
       if len(features) == 0:
-         return
+         return True
       # inserisce questa feature nella cache
       layerId = layer.id()
       # verifica se layer esiste già nel dizionario
@@ -293,7 +296,7 @@ class QadLayerCacheGeomsDict():
          self.layerCacheAreaDict[layerId] = cacheArea
       else:
          cacheArea = self.layerCacheAreaDict[layerId]
-      cacheArea.insertFeatures(features)
+      return cacheArea.insertFeatures(features)
 
 
    #============================================================================
@@ -311,7 +314,7 @@ class QadLayerCacheGeomsDict():
       onlyEditableLayers = per cercare solo nei layer modificabili
       """
       if self.canvas is None:
-         return
+         return False
       
       self.layersToCheck = layersToCheck
       self.checkPointLayer = checkPointLayer
@@ -320,7 +323,7 @@ class QadLayerCacheGeomsDict():
       self.onlyEditableLayers = onlyEditableLayers
       
       if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
-         return
+         return True
 
       boundBox = self.canvas.extent() # in map coordinate
 
@@ -334,23 +337,22 @@ class QadLayerCacheGeomsDict():
       for layer in _layers: # ciclo sui layer
          # considero solo i layer vettoriali che sono filtrati per tipo
          if (layer.type() == QgsMapLayer.VectorLayer) and \
-             ((layer.geometryType() == QGis.Point and checkPointLayer == True) or \
-              (layer.geometryType() == QGis.Line and checkLineLayer == True) or \
-              (layer.geometryType() == QGis.Polygon and checkPolygonLayer == True)) and \
+             ((layer.geometryType() == QgsWkbTypes.PointGeometry and checkPointLayer == True) or \
+              (layer.geometryType() == QgsWkbTypes.LineGeometry and checkLineLayer == True) or \
+              (layer.geometryType() == QgsWkbTypes.PolygonGeometry and checkPolygonLayer == True)) and \
               (onlyEditableLayers == False or layer.isEditable()):                      
 
             # se il layer non è visibile a questa scala
             if layer.hasScaleBasedVisibility() and \
                (self.canvas.mapSettings().scale() < layer.minimumScale() or self.canvas.mapSettings().scale() > layer.maximumScale()):
                continue
-               
-            point1 = QgsPoint(boundBox.xMinimum(), boundBox.yMinimum())
-            point1 = self.canvas.mapSettings().mapToLayerCoordinates(layer, point1) # map to layer coordinate
-            point2 = QgsPoint(boundBox.xMaximum(), boundBox.yMaximum())
-            point2 = self.canvas.mapSettings().mapToLayerCoordinates(layer, point2) # map to layer coordinate
 
-            rect = QgsRectangle(point1, point2)
-            self.refreshOnRectOnLayer(layer, rect)
+            rect = self.canvas.mapSettings().mapToLayerCoordinates(layer, boundBox) # map to layer coordinate
+               
+            if self.refreshOnRectOnLayer(layer, rect) == False:
+               return False
+            
+      return True
 
 
    #===============================================================================
@@ -427,17 +429,32 @@ def getFeatureRequest(rect, SubsetOfAttribute):
 #===============================================================================
 def getStrLayerGeomType(layer):
    wkbType = layer.wkbType()
-   if wkbType == QGis.WKBPoint:
+   # WKBPointM = 2001, WKBPointZM = 3001
+   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
+      wkbType == QgsWkbTypes.PointM or wkbType == QgsWkbTypes.PointZM:
       return "Point"
-   elif wkbType == QGis.WKBMultiPoint:
+   # WKBMultiPointM = 2004, WKBMultiPointZM = 3004
+   elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D or \
+        wkbType == QgsWkbTypes.MultiPointM or wkbType == QgsWkbTypes.MultiPointZM :
       return "MultiPoint"
-   elif wkbType == QGis.WKBLineString:
+   
+   # WKBLineStringM = 2002, WKBLineStringZM = 3002
+   elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D or \
+        wkbType == QgsWkbTypes.LineStringM or wkbType == QgsWkbTypes.LineStringZM:
       return "LineString"
-   elif wkbType == QGis.WKBMultiLineString:
+   # MultiLineStringM = 2005, MultiLineStringZM = 3005
+   elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D or \
+        wkbType == QgsWkbTypes.MultiLineStringM or wkbType == QgsWkbTypes.MultiLineStringZM:
       return "MultiLineString"
-   elif wkbType == QGis.WKBPolygon:
+   
+   # PolygonM = 2003, PolygonZM = 3003
+   elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D or \
+        wkbType == QgsWkbTypes.PolygonM or wkbType == QgsWkbTypes.PolygonZM:
       return "Polygon"
-   elif wkbType == QGis.WKBMultiPolygon:
+   # MultiPolygonM = 2006, MultiPolygonZM = 3006
+   elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D or \
+        wkbType == QgsWkbTypes.MultiPolygonM or wkbType == QgsWkbTypes.MultiPolygonZM:
       return "MultiPolygon"
 
-   
+   elif wkbType == QgsWkbTypes.NoGeometry:
+      return "NoGeometry"

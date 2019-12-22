@@ -23,20 +23,21 @@
 """
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from qgis.PyQt.QtCore import Qt, QTimer, QPoint
+from qgis.PyQt.QtGui import QIcon, QColor, QTextCursor, QTextCharFormat, QFont, \
+                        QFontMetrics, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QDockWidget, QListView, QAbstractItemView, QApplication, QWidget, QTextEdit
+from qgis.core import QgsPointXY
 import sys
 import string
 import difflib
 
 
-from qad_ui_textwindow import Ui_QadTextWindow, Ui_QadCmdSuggestWindow
-from qad_msg import QadMsg
-import qad_utils
-from qad_snapper import *
-from qad_variables import QadVariables, QadINPUTSEARCHOPTIONSEnum
+from .qad_ui_textwindow import Ui_QadTextWindow, Ui_QadCmdSuggestWindow
+from .qad_msg import QadMsg
+from . import qad_utils
+from .qad_snapper import str2snapTypeEnum, str2snapParams
+from .qad_variables import QadVariables, QadINPUTSEARCHOPTIONSEnum
 
 
 #===============================================================================
@@ -90,12 +91,12 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def __init__(self, plugin):
       """The constructor."""
 
-      QDockWidget.__init__(self, None)
+      QDockWidget.__init__(self, plugin.iface.mainWindow())
       self.setupUi(self)
       self.setAllowedAreas(Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea)
       self.plugin = plugin
       self.cmdSuggestWindow = None
-      self.connect(self, SIGNAL("topLevelChanged(bool)"), self.topLevelChanged)
+      self.topLevelChanged['bool'].connect(self.onTopLevelChanged)
 
       title = self.windowTitle()
       self.setWindowTitle(title + " - " + plugin.version())
@@ -128,7 +129,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
          var = QadVariables.getVariable(varName)
          infoVars.append([varName, "", icon, var.descr])
 
-      self.cmdSuggestWindow = QadCmdSuggestWindow(self, infoCmds, infoVars)
+      self.cmdSuggestWindow = QadCmdSuggestWindow(self, self.edit, infoCmds, infoVars)
       self.cmdSuggestWindow.initGui()
       self.cmdSuggestWindow.show(False)
 
@@ -162,9 +163,12 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
    def keyPressEvent(self, e):
       self.edit.keyPressEvent(e)
 
-   def topLevelChanged(self, topLevel):
+   def onTopLevelChanged(self, topLevel):
       self.resizeEdits
       self.setFocus()
+
+   def hideEvent(self, e):
+      self.showCmdSuggestWindow(False)
       
    def toggleShow(self):
       if self.isVisible():
@@ -185,26 +189,77 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       # perché lupdate.exe non lo riesce ad interpretare
       self.edit.showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
+
    def showErr(self, err):
-      self.showMsg(err, True) # ripete il prompt
+      self.edit.showErr(err)
+         
 
    def showMsgOnChronologyEdit(self, msg):
       if self.chronologyEdit is not None:
          self.chronologyEdit.insertText(msg)
 
+   def isVisibleCmdSuggestWindow(self):
+      if self.cmdSuggestWindow is None:
+         return False
+      return self.cmdSuggestWindow.isVisible()
+   
+   
    def showCmdSuggestWindow(self, mode = True, filter = ""):
-      if self.cmdSuggestWindow is not None:
-         inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
-         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
-         # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST = Displays a list of suggestions as keystrokes are entered
-         if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST:
-            self.cmdSuggestWindow.show(mode, filter)
-         else:
-            self.cmdSuggestWindow.show(False)
+      if self.cmdSuggestWindow is None:
+         return
+      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST = Displays a list of suggestions as keystrokes are entered
+      if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_LIST:
+         if mode == True:
+            if self.cmdSuggestWindow.setFilter(filter) == 0:
+               self.cmdSuggestWindow.show(False)
+               return
+            
+            dataHeight = self.cmdSuggestWindow.getDataHeight()
+            if dataHeight > 0:
+               self.cmdSuggestWindow.cmdNamesListView.setMinimumHeight(self.cmdSuggestWindow.cmdNamesListView.sizeHintForRow(0))
+                        
+            if self.isFloating():
+               ptUp = self.edit.mapToGlobal(QPoint(0,0))
+               spaceUp = ptUp.y() if ptUp.y() - dataHeight < 0 else dataHeight
+                  
+               ptDown = QPoint(ptUp.x(), ptUp.y() + self.edit.height())
+               rect = QApplication.desktop().screenGeometry()
+               spaceDown = rect.height() - ptDown.y() if ptDown.y() + dataHeight > rect.height() else dataHeight
+      
+               # verifico se c'è più spazio sopra o sotto la finestra
+               if spaceUp > spaceDown:
+                  pt = QPoint(ptUp.x(), ptUp.y() - spaceUp)
+                  dataHeight = spaceUp
+               else:
+                  pt = QPoint(ptDown.x(), ptDown.y())
+                  dataHeight = spaceDown
+            elif self.getDockWidgetArea() == Qt.BottomDockWidgetArea:
+               pt = self.edit.mapToGlobal(QPoint(0,0))
+               if pt.y() - dataHeight < 0:
+                  dataHeight = pt.y()
+               pt.setY(pt.y() - dataHeight)
+            elif self.getDockWidgetArea() == Qt.TopDockWidgetArea:
+               pt = self.edit.mapToGlobal(QPoint(0,0))
+               pt.setY(pt.y() + self.edit.height())
+               rect = QApplication.desktop().screenGeometry()
+               if pt.y() + dataHeight > rect.height():
+                  dataHeight = rect.height() - pt.y()
+      
+            if pt.x() < 0:
+               pt.setX(0)
+         
+            self.cmdSuggestWindow.move(pt)
+            self.cmdSuggestWindow.resize(200, dataHeight)
+         
+         self.cmdSuggestWindow.show(mode)
+      else:
+         self.cmdSuggestWindow.show(False)
 
   
-   def showEvaluateMsg(self, msg = None):
-      self.edit.showEvaluateMsg(msg)
+   def showEvaluateMsg(self, msg = None, append = True):
+      self.edit.showEvaluateMsg(msg, append)
 
    def getCurrMsg(self):
       return self.edit.getCurrMsg()
@@ -240,7 +295,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       return self.plugin.forceCommandMapToolSnapTypeOnce(snapType, snapParams)      
 
    def toggleOsMode(self):
-      return self.plugin.toggleOsMode()      
+      return self.plugin.toggleOsMode()
 
    def toggleOrthoMode(self):
       return self.plugin.toggleOrthoMode()      
@@ -364,8 +419,6 @@ class QadEdit(QTextEdit):
       self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
       self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
    
-      self.buffer = []
-   
       self.historyIndex = 0
 
       # stringa contenente le parole chiave separate da "/".
@@ -389,7 +442,7 @@ class QadEdit(QTextEdit):
       self.set_keyWordColors()
 
       self.setMouseTracking(True)
-      QObject.connect(self, SIGNAL("textChanged()"), self.onTextChanged)
+      self.textChanged.connect(self.onTextChanged)
       
       self.timerForCmdSuggestWindow = QTimer()
       self.timerForCmdSuggestWindow.setSingleShot(True)
@@ -512,34 +565,34 @@ class QadEdit(QTextEdit):
    def showCmdAutoComplete(self, filter = ""):
       # autocompletamento
       self.timerForCmdAutoComplete.stop()
-      
-      # autocompletamento
-      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
+
       filterLen = len(filter)
       if filterLen < 2:
          return
       
+      # autocompletamento
+      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
+      
       # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
       # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.AUTOCOMPLETE = Automatically appends suggestions as each keystroke is entered after the second keystroke.
       if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.AUTOCOMPLETE:
-         if filterLen >= 2:
-            cmdName, qty = self.parentWidget().plugin.getMoreUsedCmd(filter)
-         else:
-            cmdName = ""
-
+         cmdName, qty = self.parentWidget().plugin.getMoreUsedCmd(filter)
+         self.appendCmdTextForAutoComplete(cmdName, filterLen)
+      
+   
+   def appendCmdTextForAutoComplete(self, cmdName, filterLen):
          cursor = self.textCursor()
-         cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
+         #cursor.movePosition(QTextCursor.End, QTextCursor.KeepAnchor)
          self.setTextCursor(cursor)
          if filterLen < len(cmdName): # se c'è qualcosa da aggiungere
             self.insertPlainText(cmdName[filterLen:])
          else:
             self.insertPlainText("")
-         #cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
          cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
          cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, len(cmdName) - filterLen)
          self.setTextCursor(cursor)
       
-
+   
    def showMsg(self, msg, displayPromptAfterMsg = False, append = True):
       if len(msg) > 0:
          cursor = self.textCursor()
@@ -574,6 +627,14 @@ class QadEdit(QTextEdit):
          self.displayPrompt() # ripete il prompt
 
 
+   def showErr(self, err):
+      self.showMsg(err, True) # ripete il prompt
+      # se esiste un maptool con l'input dinamico attivo
+      mt = self.parentWidget().plugin.getCurrentMapTool()
+      if (mt is not None) and mt.getDynamicInput().isVisible:
+         mt.getDynamicInput().showErr(err)
+
+
    def displayPrompt(self, prompt = None):
       if prompt is not None:
          self.currentPrompt = prompt        
@@ -588,7 +649,7 @@ class QadEdit(QTextEdit):
       self.showMsg("\n" + self.currentPrompt)
 
       
-   def showNext(self):
+   def showNextCmd(self):
       # mostra il comando successivo nella lista dei comandi usati
       cmdsHistory = self.parentWidget().plugin.cmdsHistory
       cmdsHistoryLen = len(cmdsHistory)
@@ -599,7 +660,7 @@ class QadEdit(QTextEdit):
             self.showMsg(cmdsHistory[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
 
                          
-   def showPrevious(self):
+   def showPreviousCmd(self):
       # mostra il comando precedente nella lista dei comandi usati
       cmdsHistory = self.parentWidget().plugin.cmdsHistory
       cmdsHistoryLen = len(cmdsHistory)
@@ -610,7 +671,7 @@ class QadEdit(QTextEdit):
             self.showMsg(cmdsHistory[self.historyIndex], False, False) # sostituisce il testo dopo il prompt
 
                
-   def showLast(self):
+   def showLastCmd(self):
       # mostra e ritorna l'ultimo comando nella lista dei comandi usati
       cmdsHistory = self.parentWidget().plugin.cmdsHistory
       cmdsHistoryLen = len(cmdsHistory)
@@ -645,7 +706,13 @@ class QadEdit(QTextEdit):
          self.displayKeyWordsPrompt(inputMsg)
       else:
         self.displayPrompt(inputMsg)
-                  
+
+      # se esiste un maptool con l'input dinamico attivo
+      mt = self.parentWidget().plugin.getCurrentMapTool()
+      if (mt is not None) and inputType != QadInputTypeEnum.COMMAND:
+         # context va inizializzato prima dal comando
+         mt.getDynamicInput().showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
+
       return
 
 
@@ -700,7 +767,7 @@ class QadEdit(QTextEdit):
       if self.isCursorInEditionZone(pos):
          QTextEdit.mouseDoubleClickEvent(self, event)
 
-      
+
    def mousePressEvent(self, event):
       cursor = self.cursorForPosition(event.pos())
       pos = cursor.position()
@@ -717,7 +784,7 @@ class QadEdit(QTextEdit):
             if cmdOptionPos is not None:
                # estraggo la parte maiuscola della parola chiave
                # questo serve per evitare che ad es. l'opzione "End" si confonda con osnap "end"
-               upperPart = self.__extractUpperCaseSubstr(cmdOptionPos.name)
+               upperPart = qad_utils.extractUpperCaseSubstr(cmdOptionPos.name)
                self.showEvaluateMsg(upperPart, False)
 
 
@@ -727,52 +794,24 @@ class QadEdit(QTextEdit):
       self.historyIndex = len(cmdsHistory)
 
 
-   def keyPressEvent(self, e):
+   def keyPressEvent(self, e):      
+      if self.parentWidget().plugin.shortCutManagement(e): # se è stata gestita una sequenza di tasti scorciatoia
+         return
+
       cursor = self.textCursor()
 
-      if self.inputType & QadInputTypeEnum.COMMAND: # nascondo la finestra di suggerimento
-         self.showCmdSuggestWindow(False)
+      if self.inputType & QadInputTypeEnum.COMMAND:
+         # if Up or Down is pressed
+         if self.parentWidget().isVisibleCmdSuggestWindow() and \
+            (e.key() == Qt.Key_Down or e.key() == Qt.Key_Up or e.key() == Qt.Key_PageDown or e.key() == Qt.Key_PageUp or
+             e.key() == Qt.Key_End or e.key() == Qt.Key_Home):
+            self.parentWidget().cmdSuggestWindow.keyPressEvent(e)
+            return
+         else:  # nascondo la finestra di suggerimento
+            self.showCmdSuggestWindow(False)
 
       #QMessageBox.warning(self.plugIn.TextWindow, "titolo" , 'msg')
 
-      # Se é stato premuto il tasto CTRL (o META) + 9
-      if ((e.modifiers() & Qt.ControlModifier) or (e.modifiers() & Qt.MetaModifier)) and \
-         e.key() == Qt.Key_9:
-         # Accendo o spengo la finestra di testo
-         self.parentWidget().toggleShow()
-         return
-
-      # Se é stato premuto il tasto F3
-      if e.key() == Qt.Key_F3:
-         # Attivo o disattivo lo snap
-         self.parentWidget().toggleOsMode()
-         return
-
-      # Se é stato premuto il tasto F8
-      if e.key() == Qt.Key_F8:
-         # Attivo o disattivo la modalità ortogonale
-         self.parentWidget().toggleOrthoMode()
-         return
-      
-      if e.key() == Qt.Key_Escape:
-         self.parentWidget().abortCommand()
-         self.parentWidget().clearCurrentObjsSelection()
-         
-         cmdsHistory = self.parentWidget().plugin.cmdsHistory
-         self.historyIndex = len(cmdsHistory)
-         return
-
-      # Se é stato premuto il tasto F10
-      if e.key() == Qt.Key_F10:
-         # Attivo o disattivo il modo polare
-         self.parentWidget().togglePolarMode()
-         return
-
-      # Se é stato premuto il tasto F11
-      if e.key() == Qt.Key_F11:
-         # Attivo o disattivo il puntamento snap ad oggetto
-         self.parentWidget().toggleObjectSnapTracking()
-         return
       
       # if the cursor isn't in the edit zone, don't do anything except Ctrl+C
       if not self.isCursorInEditionZone():
@@ -789,18 +828,19 @@ class QadEdit(QTextEdit):
          self.ensureCursorVisible()
       else:
          # if Return is pressed, then perform the commands
-         if e.key() == Qt.Key_Return:
+         if e.key() == Qt.Key_Return or e.key == Qt.Key_Enter:
             self.entered()
          # if Space is pressed during command request or value not string request
          elif e.key() == Qt.Key_Space and \
               (self.inputType & QadInputTypeEnum.COMMAND or not(self.inputType & QadInputTypeEnum.STRING)):
-            self.entered()          
+            self.entered()
+            return
          # if Up or Down is pressed
          elif e.key() == Qt.Key_Down:
-            self.showNext()
+            self.showNextCmd()
             return # per non far comparire la finestra di suggerimento
          elif e.key() == Qt.Key_Up:
-            self.showPrevious()
+            self.showPreviousCmd()
             return # per non far comparire la finestra di suggerimento
          # if backspace is pressed, delete until we get to the prompt
          elif e.key() == Qt.Key_Backspace:
@@ -868,7 +908,8 @@ class QadEdit(QTextEdit):
       cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
       self.setTextCursor(cursor)
       self.evaluate(unicode(self.currentCommand()))
-      
+
+
    def showEvaluateMsg(self, msg = None, append = True):
       """
       mostra e valuta il messaggio msg se diverso da None altrimenti usa il messaggio corrente
@@ -922,59 +963,6 @@ class QadEdit(QTextEdit):
          return ""
 
 
-   def __extractUpperCaseSubstr(self, str):
-      # estraggo la parte maiuscola della stringa
-      upperPart = ""
-      for letter in str:
-         if letter.isupper():
-            upperPart = upperPart + letter
-         elif len(upperPart) > 0:
-            break
-      return upperPart
-
-
-   def __evaluateKeyWords(self, cmd, keyWordList):
-      # The required portion of the keyword is specified in uppercase characters, 
-      # and the remainder of the keyword is specified in lowercase characters.
-      # The uppercase abbreviation can be anywhere in the keyword
-      if cmd == "": # se cmd = "" la funzione find ritorna 0 (no comment)
-         return None
-      upperCmd = cmd.upper()
-      selectedKeyWords = []
-      for keyWord in keyWordList:
-         # estraggo la parte maiuscola della parola chiave
-         upperPart = self.__extractUpperCaseSubstr(keyWord)
-         
-         if upperPart.find(upperCmd) == 0: # se la parte maiuscola della parola chiave inizia per upperCmd
-            if upperPart == upperCmd: # Se uguale
-               return keyWord
-            else:
-               selectedKeyWords.append(keyWord)
-         elif keyWord.upper().find(upperCmd) == 0: # se la parola chiave inizia per cmd (insensitive)
-            if keyWord.upper() == upperCmd: # Se uguale
-               return keyWord
-            else:
-               selectedKeyWords.append(keyWord)
-
-      selectedKeyWordsLen = len(selectedKeyWords)
-      if selectedKeyWordsLen == 0:
-         return None
-      elif selectedKeyWordsLen == 1:
-         return selectedKeyWords[0]
-      else:
-         self.showMsg(QadMsg.translate("QAD", "\nAmbiguous answer: specify with more clarity...\n"))
-         Msg = ""         
-         for keyWord in selectedKeyWords:
-            if Msg == "":
-               Msg = keyWord
-            else:
-               Msg = Msg + QadMsg.translate("QAD", " or ") + keyWord
-
-         Msg = Msg + QadMsg.translate("QAD", " ?\n")
-         self.showMsg(Msg)            
-         
-      return None
-
    def evaluateKeyWords(self, cmd):
       # The required portion of the keyword is specified in uppercase characters, 
       # and the remainder of the keyword is specified in lowercase characters.
@@ -983,8 +971,10 @@ class QadEdit(QTextEdit):
          return None
       
       if cmd[0] == "_": # versione inglese
-         keyWord = self.__evaluateKeyWords(cmd[1:], self.englishKeyWords)
+         keyWord, Msg = qad_utils.evaluateCmdKeyWords(cmd[1:], self.englishKeyWords)
          if keyWord is None:
+            if Msg is not None:
+               self.showMsg(Msg)
             return None
          # cerco la corrispondente parola chiave in lingua locale
          i = 0
@@ -994,7 +984,11 @@ class QadEdit(QTextEdit):
             i = i + 1
          return None
       else:
-         return self.__evaluateKeyWords(cmd, self.keyWords)
+         keyWord, Msg = qad_utils.evaluateCmdKeyWords(cmd, self.keyWords)
+         if keyWord is None:
+            if Msg is not None:
+               self.showMsg(Msg)
+         return keyWord
       
    
    def evaluate(self, cmd):      
@@ -1003,7 +997,7 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.COMMAND:
          if cmd == "":
-            cmd = unicode(self.showLast()) # ripeto ultimo comando
+            cmd = unicode(self.showLastCmd()) # ripeto ultimo comando
             if cmd == "":
                return
          
@@ -1012,18 +1006,18 @@ class QadEdit(QTextEdit):
             self.parentWidget().runCommand(cmd)
          else:
             msg = QadMsg.translate("QAD", "\nInvalid command \"{0}\".")
-            self.showMsg(msg.format(cmd.encode('ascii','ignore')), True) # ripete il prompt
+            self.showErr(msg.format(cmd.encode('ascii','ignore'))) # ripete il prompt
          return
 
       if cmd == "":
          if self.default is not None:
-            if type(self.default) == QgsPoint:
+            if type(self.default) == QgsPointXY:
                cmd = self.default.toString()
             else:
                cmd = unicode(self.default)              
                
          if cmd == "" and \
-            not (self.inputMode & QadInputModeEnum.NOT_NULL): # permesso input nullo              
+            not (self.inputMode & QadInputModeEnum.NOT_NULL): # permesso input nullo
             self.parentWidget().continueCommand(None)         
             return
                        
@@ -1076,7 +1070,7 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------
       # una stringa
       #------------------------------------------------------------------------------ 
-      if self.inputType & QadInputTypeEnum.STRING:            
+      if self.inputType & QadInputTypeEnum.STRING:
          if cmd is not None:            
             self.parentWidget().continueCommand(cmd)
             return       
@@ -1126,10 +1120,7 @@ class QadEdit(QTextEdit):
             num = None
             
          if num is not None:
-            if self.inputType & QadInputTypeEnum.ANGLE: # se é un angolo in gradi
-               # i gradi vanno convertiti in radianti
-               num = qad_utils.toRadians(num)            
-            self.parentWidget().continueCommand(float(num))         
+            self.parentWidget().continueCommand(num)
             return       
 
       #------------------------------------------------------------------------------
@@ -1168,14 +1159,16 @@ class QadEdit(QTextEdit):
 #===============================================================================
 class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
          
-   def __init__(self, parent, infoCmds, infoVars):
+   def __init__(self, parent, editWidget, infoCmds, infoVars):
       # lista composta da elementi con:
       # <nome locale comando>, <nome inglese comando>, <icona>, <note>
-      QWidget.__init__(self, parent, Qt.Popup) # test
-      #QWidget.__init__(self, parent, Qt.Widget) # test
+      QWidget.__init__(self, parent, Qt.ToolTip)
+
+      self.editWidget = editWidget 
       self.setupUi(self)
       self.infoCmds = infoCmds[:] # copio la lista comandi
       self.infoVars = infoVars[:] # copio la lista variabili ambiente
+      self.filter = ""
                  
    def initGui(self):
       self.cmdNamesListView = QadCmdSuggestListView(self)
@@ -1196,14 +1189,14 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       return False
 
 
-   def getFilteredInfoList(self, infoList, filter = ""):
+   def getFilteredInfoList(self, infoList):
       inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
       # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
       # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_ICON = Displays the icon of the command or system variable, if available.
       dispIcons = inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.DISPLAY_ICON
 
       filteredInfoList = []
-      upperFilter = filter.strip().upper()
+      upperFilter = self.filter
       if len(upperFilter) > 0:
          if filter == "*": # se incomincia per * significa tutti i comandi in lingua locale
             # lista composta da elementi con:
@@ -1218,7 +1211,7 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
                # <nome locale comando>, <nome inglese comando>, <icona>, <note>
                for info in infoList:
                    # se "incomincia per" o se "abbastanza simile"
-                  if string.find(info[1].upper(), upperFilter) == 0 or \
+                  if info[1].upper().find(upperFilter) == 0 or \
                      difflib.SequenceMatcher(None, info[1].upper(), upperFilter).ratio() > 0.6:
                      if not self.inFilteredInfoList(filteredInfoList, "_" + info[1]):
                         filteredInfoList.append(["_" + info[1], info[2] if dispIcons else None, info[3]])
@@ -1227,7 +1220,7 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
                # <nome locale comando>, <nome inglese comando>, <icona>, <note>
                for info in infoList:
                    # se "incomincia per" o se "abbastanza simile"
-                  if string.find(info[0].upper(), upperFilter) == 0 or \
+                  if info[0].upper().find(upperFilter) == 0 or \
                      difflib.SequenceMatcher(None, info[0].upper(), upperFilter).ratio() > 0.6:
                      if not self.inFilteredInfoList(filteredInfoList, info[0]):
                         filteredInfoList.append([info[0], info[2] if dispIcons else None, info[3]])
@@ -1235,31 +1228,43 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       return filteredInfoList
    
 
-   def show(self, mode = True, filter = ""):
-      if mode == True:
-         itemList = []
-         itemList.extend(self.infoCmds)
+   def setFilter(self, filter = ""):
+      itemList = []
+      itemList.extend(self.infoCmds)
          
+      inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
+      # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR = Excludes the display of system variables
+      if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and (not inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR):
+          itemList.extend(self.infoVars)
+
+      self.filter = filter.strip().upper()
+
+      # filtro i nomi
+      filteredInfo = self.getFilteredInfoList(itemList)
+      
+      l = len(filteredInfo)
+      if l > 0:
+         self.cmdNamesListView.set(filteredInfo)
+         # seleziono il primo che incomincia per filter
+         items = self.cmdNamesListView.model.findItems(filter, Qt.MatchStartsWith)
+         if len(items) > 0:
+            self.cmdNamesListView.setCurrentIndex(self.cmdNamesListView.model.indexFromItem(items[0]))
+      
+      return l
+   
+
+   def show(self, mode = True):
+      if mode == True:
          inputSearchOptions = QadVariables.get(QadMsg.translate("Environment variables", "INPUTSEARCHOPTIONS"))
          # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON = Turns on all automated keyboard features when typing at the Command prompt
          # inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR = Excludes the display of system variables
          if inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.ON and (not inputSearchOptions & QadINPUTSEARCHOPTIONSEnum.EXCLUDE_SYS_VAR):
-            itemList.extend(self.infoVars)
-
-         # filtro i nomi
-         filteredInfo = self.getFilteredInfoList(itemList, filter)
-
-         if len(filteredInfo) == 0:
-            self.setVisible(False)
-         else:
-            self.cmdNamesListView.set(filteredInfo)
-            # seleziono il primo che incomincia per filter
-            items = self.cmdNamesListView.model.findItems(filter, Qt.MatchStartsWith)
-            if len(items) > 0:
-               self.cmdNamesListView.setCurrentIndex(self.cmdNamesListView.model.indexFromItem(items[0]))
-            
-            self.moveAndResize()
             self.setVisible(True)
+            cmdName = self.cmdNamesListView.selectionModel().currentIndex().data()
+            if cmdName is not None:
+               self.appendCmdTextForAutoComplete(cmdName)
+               #self.showMsg(cmdName)
       else:
          self.setVisible(False)
 
@@ -1272,63 +1277,31 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
       return self.cmdNamesListView.sizeHintForRow(0) * n + OffSet
       
 
-   def moveAndResize(self):
-      dataHeight = self.getDataHeight()
-      if dataHeight > 0:
-         self.cmdNamesListView.setMinimumHeight(self.cmdNamesListView.sizeHintForRow(0))
-                  
-      if self.parentWidget().isFloating():
-         ptUp = self.parentWidget().edit.mapToGlobal(QPoint(0,0))
-         spaceUp = ptUp.y() if ptUp.y() - dataHeight < 0 else dataHeight
-            
-         ptDown = QPoint(ptUp.x(), ptUp.y() + self.parentWidget().edit.height())
-         rect = QApplication.desktop().screenGeometry()
-         spaceDown = rect.height() - ptDown.y() if ptDown.y() + dataHeight > rect.height() else dataHeight
-
-         # verifico se c'è più spazio sopra o sotto la finestra
-         if spaceUp > spaceDown:
-            pt = QPoint(ptUp.x(), ptUp.y() - spaceUp)
-            dataHeight = spaceUp
-         else:
-            pt = QPoint(ptDown.x(), ptDown.y())
-            dataHeight = spaceDown
-      elif self.parentWidget().getDockWidgetArea() == Qt.BottomDockWidgetArea:
-         pt = self.parentWidget().edit.mapToGlobal(QPoint(0,0))
-         if pt.y() - dataHeight < 0:
-            dataHeight = pt.y()
-         pt.setY(pt.y() - dataHeight)
-      elif self.parentWidget().getDockWidgetArea() == Qt.TopDockWidgetArea:
-         pt = self.parentWidget().edit.mapToGlobal(QPoint(0,0))
-         pt.setY(pt.y() + self.parentWidget().edit.height())
-         rect = QApplication.desktop().screenGeometry()
-         if pt.y() + dataHeight > rect.height():
-            dataHeight = rect.height() - pt.y()
-
-      if pt.x() < 0:
-         pt.setX(0)
-      
-      self.move(pt)
-      self.resize(200, dataHeight)
-
-   def showEvaluateMsg(self, cmd = None):
+   def showEvaluateMsg(self, cmd = None, append = True):
       self.show(False)
-      self.parentWidget().setFocus()
-      self.parentWidget().showEvaluateMsg(cmd)
+      self.editWidget.setFocus()
+      self.editWidget.showEvaluateMsg(cmd, append)
 
    def showMsg(self, cmd):
       # sostituisco il testo con il nuovo comando e riporto il cursore nella posizione di prima
       parent = self.parentWidget()
-      cursor = parent.edit.textCursor()
+      cursor = self.editWidget.textCursor()
       prevPos = cursor.position()
-      parent.showMsg(cmd, False, False)
+      self.editWidget.showMsg(cmd, False, False)
       cursor.setPosition(prevPos)
-      parent.edit.setTextCursor(cursor)
-      parent.edit.setFocus()
-      self.parentWidget().setFocus()
+      self.editWidget.setTextCursor(cursor)
+      self.editWidget.setFocus()
 
    def keyPressEventToParent(self, e):
-      self.parentWidget().keyPressEvent(e)
+      self.editWidget.keyPressEvent(e)
 
+
+   def appendCmdTextForAutoComplete(self, cmdName):
+      if self.filter == "*":
+         self.editWidget.appendCmdTextForAutoComplete(cmdName, 0)
+      else:
+         self.editWidget.appendCmdTextForAutoComplete(cmdName, len(self.filter))
+      
 
 #===============================================================================
 # QadCmdListView
@@ -1337,12 +1310,13 @@ class QadCmdSuggestListView(QListView):
 
    def __init__(self, parent):
       QListView.__init__(self, parent)
-
+      
       self.setViewMode(QListView.ListMode)
       self.setSelectionBehavior(QAbstractItemView.SelectItems)
       self.setUniformItemSizes(True)
       self.model = QStandardItemModel()
       self.setModel(self.model)
+      self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             
    def set(self, filteredCmdNames):
       # lista composta da elementi con <nome comando>, <icona>, <note>     
@@ -1369,10 +1343,12 @@ class QadCmdSuggestListView(QListView):
    def keyPressEvent(self, e):
       if e.key() == Qt.Key_Up or e.key() == Qt.Key_Down or \
          e.key() == Qt.Key_PageUp or e.key() == Qt.Key_PageDown or \
-         e.key() == Qt.Key_End or e.key() == Qt.Key_Home:
-         QListView.keyPressEvent(self, e)            
+         e.key() == Qt.Key_End or e.key() == Qt.Key_Home:         
+         QListView.keyPressEvent(self, e)
+         cmdName = self.selectionModel().currentIndex().data()
+         self.parentWidget().showMsg(cmdName)
       # if Return is pressed, then perform the commands
-      elif e.key() == Qt.Key_Return:
+      elif e.key() == Qt.Key_Return or e.key == Qt.Key_Enter:
          cmd = self.selectionModel().currentIndex().data()
          if cmd is not None:
             self.parentWidget().showMsg(cmd)
@@ -1383,6 +1359,7 @@ class QadCmdSuggestListView(QListView):
       
    def mouseReleaseEvent(self, e):
       cmd = self.selectionModel().currentIndex().data()
-      self.parentWidget().showMsg(cmd)
-      self.parentWidget().showEvaluateMsg()
+#       self.parentWidget().showMsg(cmd)
+#       self.parentWidget().showEvaluateMsg()
+      self.parentWidget().showEvaluateMsg(cmd, False)
       

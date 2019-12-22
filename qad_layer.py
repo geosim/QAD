@@ -24,17 +24,14 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
 import re # regular expression
 
 
-from qad_msg import QadMsg
-import qad_utils
-
-
+from .qad_msg import QadMsg
 
 
 #===============================================================================
@@ -51,11 +48,11 @@ def layerGeometryTypeToStr(geomType):
             msg = msg + ", " 
          msg = msg + layerGeometryTypeToStr(gType)
    else:
-      if geomType == QGis.Point:
+      if geomType == QgsWkbTypes.PointGeometry:
          msg = QadMsg.translate("QAD", "point") 
-      elif geomType == QGis.Line:      
+      elif geomType == QgsWkbTypes.LineGeometry:      
          msg = QadMsg.translate("QAD", "line") 
-      elif geomType == QGis.Polygon:      
+      elif geomType == QgsWkbTypes.PolygonGeometry:      
          msg = QadMsg.translate("QAD", "polygon") 
 
    return msg
@@ -118,9 +115,9 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
    
    if transform:
       transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
-      g = QgsGeometry.fromPoint(transformedPoint)
+      g = QgsGeometry.fromPointXY(transformedPoint)
    else:
-      g = QgsGeometry.fromPoint(point)
+      g = QgsGeometry.fromPointXY(point)
 
    if check_validity:
       if not g.isGeosValid():
@@ -129,7 +126,7 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   fields = layer.pendingFields()
+   fields = layer.fields()
    f.setFields(fields)
 
    # assegno i valori di default
@@ -141,7 +138,7 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
-   if layer.addFeature(f, False):
+   if layer.addFeature(f):
       if refresh == True:
          plugIn.endEditCommand()
       plugIn.setLastEntity(layer, f.id())
@@ -173,9 +170,9 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
       for point in points:
          transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
          layerPoints.append(transformedPoint)    
-      g = QgsGeometry.fromPolyline(layerPoints)
+      g = QgsGeometry.fromPolylineXY(layerPoints)
    else:
-      g = QgsGeometry.fromPolyline(points)
+      g = QgsGeometry.fromPolylineXY(points)
 
    if check_validity:
       if not g.isGeosValid():
@@ -184,7 +181,7 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   fields = layer.pendingFields()
+   fields = layer.fields()
    f.setFields(fields)
 
    # assegno i valori di default
@@ -196,7 +193,7 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
-   if layer.addFeature(f, False):
+   if layer.addFeature(f):
       if refresh == True:
          plugIn.endEditCommand()
       plugIn.setLastEntity(layer, f.id())
@@ -228,9 +225,9 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
       for point in points:
          transformedPoint = plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point)
          layerPoints.append(transformedPoint)      
-      g = QgsGeometry.fromPolygon([layerPoints])
+      g = QgsGeometry.fromPolygonXY([layerPoints])
    else:
-      g = QgsGeometry.fromPolygon([points])
+      g = QgsGeometry.fromPolygonXY([points])
 
    if check_validity:
       if not g.isGeosValid():
@@ -239,7 +236,7 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   fields = layer.pendingFields()
+   fields = layer.fields()
    f.setFields(fields)
 
    # assegno i valori di default
@@ -251,7 +248,7 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
-   if layer.addFeature(f, False):
+   if layer.addFeature(f):
       if refresh == True:
          plugIn.endEditCommand()
       plugIn.setLastEntity(layer, f.id())
@@ -286,7 +283,7 @@ def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, c
    f.setGeometry(g)
    
    # Add attributefields to feature.
-   fields = layer.pendingFields()
+   fields = layer.fields()
    f.setFields(fields)
 
    # assegno i valori di default
@@ -298,7 +295,7 @@ def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, c
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
-   if layer.addFeature(f, False):
+   if layer.addFeature(f):
       if refresh == True:
          plugIn.endEditCommand()
       plugIn.setLastEntity(layer, f.id())
@@ -359,8 +356,8 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
 
    # use default value for primary key fields if it's NOT NULL
    provider = layer.dataProvider()
-   pkAttrList = layer.pendingPkAttributesList()
-   count = layer.pendingFields().count()
+   pkAttrList = layer.primaryKeyAttributes()
+   count = layer.fields().count()
    i = 0
    while i < count:
       if i in pkAttrList:
@@ -369,9 +366,10 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
             f[i] = provider.defaultValue(i)         
       i = i + 1
  
-   if layer.addFeature(f, False):
+   if layer.addFeature(f):
       if refresh == True:
          plugIn.endEditCommand()
+         layer.triggerRepaint()
          
       plugIn.setLastEntity(layer, f.id())
       result = True
@@ -518,7 +516,7 @@ def getLayersByName(regularExprName):
    """
    result = []
    regExprCompiled = re.compile(regularExprName)
-   for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+   for layer in QgsProject.instance().mapLayers().values():
       if re.match(regExprCompiled, layer.name()):
          if layer.isValid():
             result.append(layer)
@@ -533,7 +531,7 @@ def getLayerById(id):
    """
    Ritorna il layer con id noto
    """
-   for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+   for layer in QgsProject.instance().mapLayers().values():
       if layer.id() == id:
          return layer
    return None
@@ -546,11 +544,11 @@ def get_symbolRotationFieldName(layer):
    """
    return rotation field name (or empty string if not set or not supported by renderer) 
    """
-   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
+   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QgsWkbTypes.PointGeometry):
       return ""
 
    try:
-      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.rendererV2().rotationField())
+      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.renderer().rotationField())
       columns = expr.referencedColumns()
       return columns[0] if len(columns) == 1 else ""
    except:
@@ -564,11 +562,11 @@ def get_symbolScaleFieldName(layer):
    """
    return symbol scale field name (or empty string if not set or not supported by renderer) 
    """
-   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
+   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QgsWkbTypes.PointGeometry):
       return ""
    
    try:
-      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.rendererV2().sizeScaleField())
+      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.renderer().sizeScaleField())
       columns = expr.referencedColumns()
       return columns[0] if len(columns) == 1 else ""
    except:
@@ -584,16 +582,18 @@ def isTextLayer(layer):
    return True se il layer é di tipo testo 
    """
    # deve essere un VectorLayer di tipo puntuale
-   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
+   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QgsWkbTypes.PointGeometry):
       return False
+   renderer = layer.renderer()
+   if renderer is None: return False
+   
+   context = QgsRenderContext()
    # deve avere il-i simbolo-i trasparenti almeno entro il 10% 
-   for symbol in layer.rendererV2().symbols():
-      if symbol.alpha() > 0.1: # Get alpha transparency 1 for opaque, 0 for invisible
+   for symbol in renderer.symbols(context):
+      if symbol.opacity() > 0.1: # 1 for opaque, 0 for invisible
          return False
    # deve avere etichette
-   palyr = QgsPalLayerSettings()
-   palyr.readFromLayer(layer)
-   if palyr.enabled == False:
+   if layer.labeling() is None:
       return False
          
    return True
@@ -607,7 +607,7 @@ def isSymbolLayer(layer):
    return True se il layer é di tipo simbolo 
    """   
    # deve essere un VectorLayer di tipo puntuale
-   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QGis.Point):
+   if (layer.type() != QgsMapLayer.VectorLayer) or (layer.geometryType() != QgsWkbTypes.PointGeometry):
       return False
    # se la rotazione é letta da un campo ricordarsi che per i simboli la rotazione é in senso orario
    # quindi usare l'espressione 360 - <campo rotazione>
@@ -631,34 +631,54 @@ def createQADTempLayer(plugIn, GeomType):
    <epsg> = the authority identifier for this srs    
    """
    layer = None
-   epsg = plugIn.iface.mapCanvas().mapSettings().destinationCrs().authid()
+   crs = plugIn.iface.mapCanvas().mapSettings().destinationCrs()
    
-   if GeomType == QGis.Point:
+   if GeomType == QgsWkbTypes.PointGeometry:
       layerName = QadMsg.translate("QAD", "QAD - Temporary points")
-      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+      layerList = QgsProject.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
-         layer = QgsVectorLayer("Point?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+         layer = createMemoryLayer(layerName, "Point", crs)
+         QgsProject.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
-   elif GeomType == QGis.Line:
+   elif GeomType == QgsWkbTypes.LineGeometry:
       layerName = QadMsg.translate("QAD", "QAD - Temporary lines") 
-      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+      layerList = QgsProject.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
-         layer = QgsVectorLayer("LineString?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+         layer = createMemoryLayer(layerName, "LineString", crs)
+         QgsProject.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
-   elif GeomType == QGis.Polygon:
+   elif GeomType == QgsWkbTypes.PolygonGeometry:
       layerName = QadMsg.translate("QAD", "QAD - Temporary polygons") 
-      layerList = QgsMapLayerRegistry.instance().mapLayersByName(layerName)
+      layerList = QgsProject.instance().mapLayersByName(layerName)
       if len(layerList) == 0:
-         layer = QgsVectorLayer("Polygon?crs=%s&index=yes" % epsg, layerName, "memory")
-         QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+         layer = createMemoryLayer(layerName, "Polygon", crs)
+         QgsProject.instance().addMapLayers([layer], True)
       else:
          layer = layerList[0]
 
    layer.startEditing()
+   return layer
+
+
+#===============================================================================
+# createMemoryLayer
+#===============================================================================
+def createMemoryLayer(layerName, geomType, crs):
+   """
+   Crea un layer in memoria con indice spaziale.
+   <layerName> = nome del layer    
+   <geomType> = stringa rappresentante il tiipo di geometria:
+   "LineString", "Polygon", "MultiPoint", "MultiLineString", or "MultiPolygon"
+   <crs> = oggetto QgsCoordinateReferenceSystem che rappresenta il sistema di coordinate
+   """   
+   # prima creo un layer con un crs sicuramente valido
+   # poi setto il sistema di coordinate corretto
+   # faccio così perchè se il nome del sistema di coordinate contiene caratteri strani
+   # allora il costruttore di QgsVectorLayer fa casino (a volta fa casino ad es. con "USER:100004")
+   layer = QgsVectorLayer(geomType + "?crs=epsg:3003&index=yes", layerName, "memory")
+   layer.setCrs(crs, False)
    return layer
 
    
@@ -673,7 +693,7 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
    deve essere passato il parametro <csr> che definisce il sistema di coordinate delle geometrie.
    """   
    if pointGeoms is not None and len(pointGeoms) > 0:
-      layer = createQADTempLayer(plugIn, QGis.Point)
+      layer = createQADTempLayer(plugIn, QgsWkbTypes.PointGeometry)
       if layer is None:
          return False
       if crs is None:
@@ -682,12 +702,12 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
       else:
          # plugIn, layer, geoms, coordTransform , refresh, check_validity
-         if addGeomsToLayer(plugIn, layer, pointGeoms, QgsCoordinateTransform(crs, layer.crs()), \
+         if addGeomsToLayer(plugIn, layer, pointGeoms, QgsCoordinateTransform(crs, layer.crs(), QgsProject.instance()), \
                             refresh, False) == False:
             return False
       
    if lineGeoms is not None and len(lineGeoms) > 0:
-      layer = createQADTempLayer(plugIn, QGis.Line)
+      layer = createQADTempLayer(plugIn, QgsWkbTypes.LineGeometry)
       if layer is None:
          return False
       if crs is None:
@@ -696,12 +716,12 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
       else:
          # plugIn, layer, geoms, coordTransform , refresh, check_validity
-         if addGeomsToLayer(plugIn, layer, lineGeoms, QgsCoordinateTransform(crs, layer.crs()), \
+         if addGeomsToLayer(plugIn, layer, lineGeoms, QgsCoordinateTransform(crs, layer.crs(), QgsProject.instance()), \
                             refresh, False) == False:
             return False
       
    if polygonGeoms is not None and len(polygonGeoms) > 0:
-      layer = createQADTempLayer(plugIn, QGis.Polygon)
+      layer = createQADTempLayer(plugIn, QgsWkbTypes.PolygonGeometry)
       if layer is None:
          return False
       if crs is None:
@@ -710,7 +730,7 @@ def addGeometriesToQADTempLayers(plugIn, pointGeoms = None, lineGeoms = None, po
             return False
       else:
          # plugIn, layer, geoms, coordTransform , refresh, check_validity
-         if addGeomsToLayer(plugIn, layer, polygonGeoms, QgsCoordinateTransform(crs, layer.crs()), \
+         if addGeomsToLayer(plugIn, layer, polygonGeoms, QgsCoordinateTransform(crs, layer.crs(), QgsProject.instance()), \
                             refresh, False) == False:
             return False
         

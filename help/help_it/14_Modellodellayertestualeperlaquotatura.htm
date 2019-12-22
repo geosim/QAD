@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 25 March 2009), see www.w3.org">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="Generator" content="Microsoft Word 14 (filtered)">
+<link rel="stylesheet" type="text/css" href="embeddedstyles.css">
+<title>Modello del layer testuale per la quotatura:</title>
+<meta name="generator" content="chmProcessor">
+</head>
+<body lang="IT">
+<div class="WordSection1">
+<h3><a name="node13" id="node13"></a>Modello del layer testuale per
+la quotatura:</h3>
+<p class="MsoNormal">L’elemento principale di una quota è il testo
+il cui layer testuale deve avere i seguenti campi:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">un campo carattere per memorizzare il testo
+della quota</li>
+<li class="MsoNormal">un campo carattere per memorizzare il font
+del testo della quota</li>
+<li class="MsoNormal">un campo numerico reale per memorizzare
+l’altezza del testo della quota (in unità di mappa)</li>
+<li class="MsoNormal">un campo numerico reale per memorizzare la
+rotazione del testo della quota (gradi in senso antiorario dove lo
+zero = orizzontale a dx)</li>
+</ul>
+<p class="MsoNormal">Campi opzionali:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">un campo numerico intero per memorizzare il
+codice identificativo univoco della quota.<br>
+Questo campo è necessario se si desidera raggruppare gli elementi
+di una stessa quotatura e quindi usare le funzioni di cancellazione
+e modifica di una quota esistente. Poiché deve essere un campo con
+valori univoci, attualmente è supportato solo per tabelle in
+PostGIS in cui deve essere stato creato un campo di tipo serial non
+nullo che deve essere chiave primaria della tabella (es.”id”).
+Oltre a questo campo deve esistere un altro campo di tipo bigint
+gestito da QAD allo scopo di memorizzare il codice identificativo
+della quota (es. dim_id”). I files shape non consentono il
+raggruppamento degli oggetti di una stessa quota quindi, dopo aver
+disegnato una quota, ogni oggetto sarà indipendente dagli
+altri.</li>
+<li class="MsoNormal">un campo carattere per memorizzare il colore
+del testo della quota</li>
+<li class="MsoNormal">un campo carattere per memorizzare il nome
+dello stile di quotatura (necessario se si desidera usare le
+funzioni di modifica di una quota esistente)</li>
+<li class="MsoNormal">un campo carattere (2 caratteri) per
+memorizzare il tipo dello stile di quotatura (allineata, lineare …)
+secondo il seguente schema:<br>
+"AL" = quota lineare allineata ai punti di origine delle linee di
+estensione<br>
+"AN" = quota angolare, misura l'angolo tra i 3 punti o tra gli
+oggetti selezionati<br>
+"BL" = quota lineare, angolare o coordinata a partire dalla linea
+di base della quota precedente o di una quota selezionata<br>
+"DI" = quota per il diametro di un cerchio o di un arco<br>
+"LD" = crea una linea che consente di collegare un'annotazione ad
+una lavorazione<br>
+"LI" = quota lineare con una linea di quota orizzontale o
+verticale<br>
+"RA" = quota radiale, misura il raggio di un cerchio o di un arco
+selezionato e visualizza il testo di quota con un simbolo di raggio
+davanti<br>
+"AR" = quota per la lunghezza di un cerchio o di un arco<br>
+<br>
+(necessario se si desidera usare le funzioni di modifica di una
+quota esistente)</li>
+</ul>
+<p class="MsoNormal">Un esempio di SQL per generare la tabella
+PostGIS e i relativi indici per i testi delle quotature:</p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE TABLE
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>(</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; id serial NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; text character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; font character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; h_text double precision
+NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; rot double precision NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; color character
+varying(10) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_style character
+varying(50) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_type character
+varying(2) NOT NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; geom
+geometry(Point,3003),</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; dim_id bigint NOT
+NULL,</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; CONSTRAINT dim_text_pkey
+PRIMARY KEY (id)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>)</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>WITH (</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; OIDS=FALSE</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+dim_text_dim_id</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING btree</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; (dim_id);</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>CREATE INDEX
+sidx_dim_text_geom</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; ON
+qad_dimension.dim_text</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp; USING gist</span></p>
+<p class="MsoNormal" style=
+'margin-bottom:0cm;margin-bottom:.0001pt'><span lang="EN-US" style=
+'font-size:8.0pt;line-height:115%'>&nbsp;</span> <span style=
+'font-size:8.0pt;line-height:115%'>(geom);</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Il layer testuale deve essere definito con le
+etichette impostate come segue:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">Il font deve essere letto da un apposito
+campo carattere che memorizza il font del testo della quota (scheda
+&lt;etichette&gt;-&lt;testo&gt;-&lt;Carattere&gt;)</li>
+<li class="MsoNormal">Ia dimensione deve essere letta da un campo
+numerico reale che memorizza l’altezza del testo della quota (in
+unità di mappa, scheda &lt;etichette&gt;-&lt;testo&gt;)</li>
+<li class="MsoNormal">Ia rotazione deve essere letta da un campo
+numerico reale che memorizza la rotazione del testo della quota
+(gradi in senso antiorario dove lo zero = orizzontale a dx),
+opzione &lt;Mantieni i valori di rotazione&gt; attivata (scheda
+&lt;etichette&gt;-&lt;Posizionamento&gt;)</li>
+<li class="MsoNormal">Posizionamento &lt;Intorno al punto&gt; con
+distanza = 0 (scheda &lt; etichette
+&gt;-&lt;Posizionamento&gt;)</li>
+<li class="MsoNormal">Opzione &lt;Mostra tutte le etichette&gt;
+attivata (scheda &lt;etichette&gt;-&lt;Visualizzazione&gt;)</li>
+<li class="MsoNormal">Opzione &lt;Mostra le etichette capovolte&gt;
+con valore &lt;sempre&gt; (scheda &lt; etichette
+&gt;-&lt;Visualizzazione&gt;)</li>
+<li class="MsoNormal">Opzione &lt;Evita che le etichette si
+sovrappongano alle geometrie&gt; disattivata (scheda &lt; Etichette
+&gt;-&lt;Visualizzazione&gt;)</li>
+</ul>
+<p class="MsoNormal">Impostazioni opzionali:</p>
+<ul style='margin-top:0cm' type="disc">
+<li class="MsoNormal">Il colore può essere letto da un campo
+carattere che memorizza il colore del testo della quota (scheda
+&lt;Etichette&gt;-&lt;testo&gt;)</li>
+</ul>
+</div>
+</body>
+</html>

@@ -28,6 +28,7 @@
         <file>icons/dimAligned.png</file>
         <file>icons/dimArc.png</file>
         <file>icons/dimLinear.png</file>
+        <file>icons/dimRadius.png</file>
         <file>icons/dimStyle.png</file>
         <file>icons/divide.png</file>
         <file>icons/disjoin.png</file>
@@ -51,16 +52,16 @@
         <file>icons/osnap_cen.png</file>
         <file>icons/osnap_disable.png</file>
         <file>icons/osnap_end.png</file>
-		<file>icons/osnap_endLine.png</file>
+	     <file>icons/osnap_endLine.png</file>
         <file>icons/osnap_ext.png</file>
-		<file>icons/osnap_extInt.png</file>
+	     <file>icons/osnap_extInt.png</file>
         <file>icons/osnap_int.png</file>
         <file>icons/osnap_mid.png</file>
         <file>icons/osnap_nea.png</file>
         <file>icons/osnap_nod.png</file>
         <file>icons/osnap_par.png</file>
         <file>icons/osnap_per.png</file>
-		<file>icons/osnap_pr.png</file>
+	     <file>icons/osnap_pr.png</file>
         <file>icons/osnap_qua.png</file>
         <file>icons/osnap_tan.png</file>
         <file>icons/pedit.png</file>
@@ -79,5 +80,16 @@
         <file>icons/u.png</file>
         <file>icons/undo.png</file>
         <file>icons/variable.png</file>
+        <file>icons/locked.png</file>
+        <file>icons/down_key.png</file>
+        <file>icons/ellipse.png</file>
+        <file>icons/ellipseArc.png</file>
+        <file>icons/ellipseBy4Points.png</file>
+        <file>icons/ellipseByAxis1Point.png</file>
+        <file>icons/ellipseByCenter2Points.png</file>
+        <file>icons/ellipseByCenter3Points.png</file>
+        <file>icons/ellipseByExtent.png</file>
+        <file>icons/ellipseByFociPoint.png</file>
+        <file>icons/ellipseFromCenter.png</file>
     </qresource>    
 </RCC>

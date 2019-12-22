@@ -24,17 +24,15 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtWidgets import QDialog, QHeaderView, QTableWidgetItem, QApplication
 from qgis.utils import *
 
-import qad_dimstyle_diff_ui
+from . import qad_dimstyle_diff_ui
 
-from qad_dim import *
-from qad_msg import QadMsg, qadShowPluginHelp
-import qad_utils
+from .qad_dim import QadDimStyles
+from .qad_msg import QadMsg, qadShowPluginHelp
+from . import qad_utils
 
 
 #######################################################################################
@@ -99,7 +97,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
    def showAllProps(self, dimStyle):
       if self.tableWidget.model() is not None:
          # Pulisce la tabella
-         self.tableWidget.model().reset()
+         self.tableWidget.clearContents()
          self.tableWidget.setRowCount(0)
          
       self.tableWidget.setColumnCount(2)
@@ -119,8 +117,8 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
 
       self.tableWidget.sortItems(0)
 
-      self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
-      self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Interactive)
+      self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+      self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Interactive)
            
       self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "All properties of dimension style: ") + dimStyle.name)
 
@@ -128,7 +126,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
    def showDiffProps(self, dimStyle1, dimStyle2):
       if self.tableWidget.model() is not None:
          # Pulisce la tabella
-         self.tableWidget.model().reset()
+         self.tableWidget.clearContents()
          self.tableWidget.setRowCount(0)
          
       self.tableWidget.setColumnCount(3)
@@ -157,9 +155,9 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
 
       self.tableWidget.sortItems(0)
 
-      self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
-      self.tableWidget.horizontalHeader().setResizeMode(2, QHeaderView.Interactive)
-      self.tableWidget.horizontalHeader().setResizeMode(3, QHeaderView.Interactive)
+      self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+      self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Interactive)
+      self.tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.Interactive)
            
       self.msg.setText(QadMsg.translate("DimStyle_Diff_Dialog", "Found {0} differences: ").format(str(self.count)))
 
@@ -201,15 +199,15 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       buffer = ""
       
       # intestazione
-      for col in xrange(0, self.tableWidget.columnCount(), 1):
+      for col in range(0, self.tableWidget.columnCount(), 1):
          if col > 0:
             buffer += '\t' # aggiungo un TAB
          buffer += self.tableWidget.horizontalHeaderItem(col).text()
       buffer += '\n' # vado a capo
       
       # valori delle righe
-      for row in xrange(0, self.tableWidget.rowCount(), 1):
-         for col in xrange(0, self.tableWidget.columnCount(), 1):
+      for row in range(0, self.tableWidget.rowCount(), 1):
+         for col in range(0, self.tableWidget.columnCount(), 1):
             if col > 0:
                buffer += '\t' # aggiungo un TAB
             buffer += self.tableWidget.item(row, col).text()

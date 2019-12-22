@@ -24,20 +24,25 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.core import QgsApplication
-from qgis.utils import *
+from qgis.core import QgsMapLayer, QgsWkbTypes, QgsProject, QgsPointXY
 from qgis.gui import *
+import qgis.utils
 
-import qad_dimstyle_details_ui
+from qgis.PyQt.QtCore import Qt, QObject, QVariant, QSettings
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
-from qad_variables import *
-from qad_dim import *
-from qad_msg import QadMsg, qadShowPluginHelp
-import qad_layer
-import qad_utils
+from . import qad_dimstyle_details_ui
+
+from .qad_variables import QadVariables
+from .qad_dim import QadDimStyle, QadDimStyleArcSymbolPosEnum, \
+                     QadDimStyleTxtVerticalPosEnum, QadDimStyleTxtHorizontalPosEnum, \
+                     QadDimStyleTxtDirectionEnum, QadDimStyleTxtRotModeEnum, \
+                     QadDimStyleTextBlocksAdjustEnum, QadDimStyleAlignmentEnum
+from .qad_msg import QadMsg, qadShowPluginHelp
+from . import qad_layer
+from . import qad_utils
+from .qad_arc import QadArc
 
 
 #===============================================================================
@@ -85,29 +90,29 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
         
    def setupUi(self, Dialog):
       qad_dimstyle_details_ui.Ui_DimStyle_Details_Dialog.setupUi(self, self)
-      # aggiungo il bottone di qgis QgsColorButtonV2 chiamato dimLineColor 
+      # aggiungo il bottone di qgis QgsColorButton chiamato dimLineColor 
       # che eredita la posizione di dimLineColorDummy (che viene nascosto)
       self.dimLineColorDummy.setHidden(True)
-      self.dimLineColor = QgsColorButtonV2(self.dimLineColorDummy.parent())      
+      self.dimLineColor = QgsColorButton(self.dimLineColorDummy.parent())      
       self.dimLineColor.setGeometry(self.dimLineColorDummy.geometry())
       self.dimLineColor.setObjectName("dimLineColor")
-      QObject.connect(self.dimLineColor, SIGNAL("colorChanged(QColor)"), self.dimLineColorChanged)
+      self.dimLineColor.colorChanged.connect(self.dimLineColorChanged)
       
-      # aggiungo il bottone di qgis QgsColorButtonV2 chiamato extLineColor 
+      # aggiungo il bottone di qgis QgsColorButton chiamato extLineColor 
       # che eredita la posizione di extLineColorDummy (che viene nascosto)      
       self.extLineColorDummy.setHidden(True)
-      self.extLineColor = QgsColorButtonV2(self.extLineColorDummy.parent())      
+      self.extLineColor = QgsColorButton(self.extLineColorDummy.parent())      
       self.extLineColor.setGeometry(self.extLineColorDummy.geometry())
       self.extLineColor.setObjectName("extLineColor")
-      QObject.connect(self.extLineColor, SIGNAL("colorChanged(QColor)"), self.extLineColorChanged)
+      self.extLineColor.colorChanged.connect(self.extLineColorChanged)
       
-      # aggiungo il bottone di qgis QgsColorButtonV2 chiamato textColor 
+      # aggiungo il bottone di qgis QgsColorButton chiamato textColor 
       # che eredita la posizione di textColorDummy (che viene nascosto)      
       self.textColorDummy.setHidden(True)
-      self.textColor = QgsColorButtonV2(self.textColorDummy.parent())      
+      self.textColor = QgsColorButton(self.textColorDummy.parent())      
       self.textColor.setGeometry(self.textColorDummy.geometry())
       self.textColor.setObjectName("textColor")
-      QObject.connect(self.textColor, SIGNAL("colorChanged(QColor)"), self.textColorChanged)
+      self.textColor.colorChanged.connect(self.textColorChanged)
 
       # aggiungo il canvans di preview della quota chiamato QadPreviewDim 
       # che eredita la posizione di previewDummy (che viene nascosto)      
@@ -130,8 +135,8 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
    def init_db_tab(self):
       self.onInit = True 
       # layer linee
-      for index, layer in enumerate(self.plugIn.iface.legendInterface().layers()):      
-         if (layer.type() == QgsMapLayer.VectorLayer) and layer.geometryType() == QGis.Line:
+      for index, layer in enumerate(QgsProject.instance().mapLayers().values()):      
+         if (layer.type() == QgsMapLayer.VectorLayer) and layer.geometryType() == QgsWkbTypes.LineGeometry:
             self.linearLayerName.addItem(layer.name(), index)      
       # seleziono un elemento della lista
       if self.dimStyle.linearLayerName is not None:
@@ -140,7 +145,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.linearLayerNameChanged(index)
       
       # layer simboli
-      for index, layer in enumerate(self.plugIn.iface.legendInterface().layers()):      
+      for index, layer in enumerate(QgsProject.instance().mapLayers().values()):      
          if qad_layer.isSymbolLayer(layer):
             self.symbolLayerName.addItem(layer.name(), index)
       # seleziono un elemento della lista
@@ -150,7 +155,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.symbolLayerNameChanged(index)
       
       # layer testi
-      for index, layer in enumerate(self.plugIn.iface.legendInterface().layers()):      
+      for index, layer in enumerate(QgsProject.instance().mapLayers().values()):      
          if qad_layer.isTextLayer(layer):
             self.textualLayerName.addItem(layer.name(), index)
       # seleziono un elemento della lista
@@ -213,12 +218,12 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          return
       # leggo l'elemento selezionato
       legendIndex = self.linearLayerName.itemData(index)
-      layer = iface.legendInterface().layers()[legendIndex]
+      layer = list(QgsProject.instance().mapLayers().values())[legendIndex]
       if layer is not None:
          self.lineTypeFieldName.clear() # remove all items and add an empty row (optional parameter)
          self.lineTypeFieldName.addItem("")
 
-         for field in layer.pendingFields():
+         for field in layer.fields():
             if field.type() == QVariant.String:
                self.lineTypeFieldName.addItem(field.name(), field)
 
@@ -242,7 +247,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          return
       # leggo l'elemento selezionato
       legendIndex = self.symbolLayerName.itemData(index)
-      layer = iface.legendInterface().layers()[legendIndex]
+      layer = list(QgsProject.instance().mapLayers().values())[legendIndex]
       if layer is not None:
          self.symbolFieldName.clear() # remove all items and add an empty row (optional parameter)
          self.symbolFieldName.addItem("")
@@ -255,7 +260,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.idParentFieldName.clear() # remove all items and add an empty row (optional parameter)
          self.idParentFieldName.addItem("")
          
-         for field in layer.pendingFields():
+         for field in layer.fields():
             if field.type() == QVariant.String:
                self.symbolFieldName.addItem(field.name(), field)               
                self.componentFieldName.addItem(field.name(), field)
@@ -288,7 +293,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          return
       # leggo l'elemento selezionato
       legendIndex = self.textualLayerName.itemData(index)
-      layer = iface.legendInterface().layers()[legendIndex]
+      layer = list(QgsProject.instance().mapLayers().values())[legendIndex]
       if layer is not None:
          self.idFieldName.clear() # remove all items and add an empty row (optional parameter)
          self.idFieldName.addItem("")
@@ -299,7 +304,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
          self.colorFieldName.clear() # remove all items and add an empty row (optional parameter)
          self.colorFieldName.addItem("")
          
-         for field in layer.pendingFields():
+         for field in layer.fields():
             if field.type() == QVariant.String:
                self.dimStyleFieldName.addItem(field.name(), field)
                self.dimTypeFieldName.addItem(field.name(), field)
@@ -332,6 +337,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.onInit = True 
       self.dimLineColor.setColor(QColor(self.dimStyle.dimLineColor))
       self.dimLineLineType.setText(self.dimStyle.dimLineLineType)
+      self.dimLineOffsetExtLine.setValue(self.dimStyle.dimLineOffsetExtLine)
       self.dimLine1Hide.setChecked(not self.dimStyle.dimLine1Show)
       self.dimLine2Hide.setChecked(not self.dimStyle.dimLine2Show)
       
@@ -350,6 +356,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
    def accept_lines_tab(self):     
       self.dimStyle.dimLineColor = self.dimLineColor.color().name()
       self.dimStyle.dimLineLineType = self.dimLineLineType.text()
+      self.dimStyle.dimLineOffsetExtLine = self.dimLineOffsetExtLine.value()
       self.dimStyle.dimLine1Show = not self.dimLine1Hide.isChecked()
       self.dimStyle.dimLine2Show = not self.dimLine2Hide.isChecked()
 
@@ -379,6 +386,9 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.redrawDimOnLinesTabChanged()
 
    def dimLineLineTypeChanged(self, value):
+      self.redrawDimOnLinesTabChanged()
+
+   def dimLineOffsetExtLineChanged(self, value):
       self.redrawDimOnLinesTabChanged()
 
    def extLineColorChanged(self, value):
@@ -425,10 +435,21 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.blockLeaderName.setText(self.dimStyle.blockLeaderName)
       self.blockWidth.setValue(self.dimStyle.blockWidth)
       self.blockScale.setValue(self.dimStyle.blockScale)
+
+      # centerMarkSize 0 = niente, > 0 dimensione marcatore di centro, < 0 dimensione linee d'asse
+      if self.dimStyle.centerMarkSize == 0:
+         self.centerMarkNone.setChecked(True)
+         self.centerMarkLength.setValue(self.dimStyle.centerMarkSize)
+      elif self.dimStyle.centerMarkSize > 0:
+         self.centerMarkMark.setChecked(True)
+         self.centerMarkLength.setValue(self.dimStyle.centerMarkSize)
+      elif self.dimStyle.centerMarkSize < 0:
+         self.centerMarkLine.setChecked(True)
+         self.centerMarkLength.setValue(-self.dimStyle.centerMarkSize)
       
       # arcSymbPos
       if self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.BEFORE_TEXT:
-         self.arcSymbolPreceding.setChecked(True)         
+         self.arcSymbolPreceding.setChecked(True)
       elif self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.ABOVE_TEXT:
          self.arcSymbolAbove.setChecked(True)
       elif self.dimStyle.arcSymbPos == QadDimStyleArcSymbolPosEnum.NONE:
@@ -443,6 +464,14 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.dimStyle.blockWidth = self.blockWidth.value()      
       self.dimStyle.blockScale = self.blockScale.value()      
 
+      # centerMarkSize 0 = niente, > 0 dimensione marcatore di centro, < 0 dimensione linee d'asse
+      if self.centerMarkNone.isChecked():
+         self.dimStyle.centerMarkSize = 0
+      elif self.centerMarkMark.isChecked():
+         self.dimStyle.centerMarkSize = self.centerMarkLength.value()
+      elif self.centerMarkLine.isChecked():
+         self.dimStyle.centerMarkSize = -self.centerMarkLength.value()
+         
       # textForcedRot
       if self.arcSymbolPreceding.isChecked():
          self.dimStyle.arcSymbPos = QadDimStyleArcSymbolPosEnum.BEFORE_TEXT
@@ -473,6 +502,27 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.redrawDimOnSymbolsTabChanged()
 
    def blockScaleChanged(self, value):
+      self.redrawDimOnSymbolsTabChanged()
+
+   def centerMarkNoneChanged(self, value):
+      self.centerMarkMark.setChecked(False)
+      self.centerMarkLine.setChecked(False)
+      self.centerMarkLength.setEnabled(False)
+      self.redrawDimOnSymbolsTabChanged()
+
+   def centerMarkMarkChanged(self, value):
+      self.centerMarkNone.setChecked(False)
+      self.centerMarkLine.setChecked(False)
+      self.centerMarkLength.setEnabled(True)
+      self.redrawDimOnSymbolsTabChanged()
+
+   def centerMarkLineChanged(self, value):
+      self.centerMarkNone.setChecked(False)
+      self.centerMarkMark.setChecked(False)
+      self.centerMarkLength.setEnabled(True)
+      self.redrawDimOnSymbolsTabChanged()
+
+   def centerMarkLengthChanged(self, value):
       self.redrawDimOnSymbolsTabChanged()
 
    def arcSymbolPrecedingToggled(self, value):
@@ -830,20 +880,11 @@ class QadPreviewDim(QgsMapCanvas):
    def setupUi(self):
       self.setObjectName("QadPreviewCanvas")
 
-      settings = QSettings()
-      red = settings.value("/qgis/default_canvas_color_red", 255, type=int)
-      green = settings.value("/qgis/default_canvas_color_green", 255, type=int)
-      blue = settings.value("/qgis/default_canvas_color_blue", 255, type=int)
-      self.setCanvasColor(QColor(red, green, blue))
-      self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ))
-      self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", False, type=bool ))
-      action = settings.value( "/qgis/wheel_action", 0, type=int)
-      zoomFactor = settings.value( "/qgis/zoom_factor", 2.0, type=float )
-      self.setWheelAction( QgsMapCanvas.WheelAction(action), zoomFactor )
+      self.setCanvasColor(qgis.utils.iface.mapCanvas().canvasColor())
+      self.enableAntiAliasing(qgis.utils.iface.mapCanvas().antiAliasingEnabled())
 
       self.onExtentsChanged()
       self.onCrsChanged()
-      self.onCrsTransformEnabled( self.iface.mapCanvas().hasCrsTransformEnabled() )
 
 
    def onExtentsChanged(self):
@@ -858,28 +899,20 @@ class QadPreviewDim(QgsMapCanvas):
       self.setRenderFlag( False )     
       mapSettings = self.iface.mapCanvas().mapSettings()
       self.mapSettings().setDestinationCrs(mapSettings.destinationCrs())
-      self.mapSettings().setMapUnits(mapSettings.mapUnits())
       self.setRenderFlag( prevFlag )
 
 
-   def onCrsTransformEnabled(self, enabled):
-      prevFlag = self.renderFlag()
-      self.setRenderFlag( False )
-      self.mapSettings().setCrsTransformEnabled(enabled)
-      self.setRenderFlag( prevFlag )
+   def getLayers(self):
+      return map(lambda x: self._layerId(x), self.canvasLayers)
 
-
-   def getLayerSet(self):
-      return map(lambda x: self._layerId(x.layer()), self.canvasLayers)
-
-   def setLayerSet(self, layerIds=None):
+   def setLayers(self, layerIds=None):
       prevFlag = self.renderFlag()
       self.setRenderFlag( False )
 
       if layerIds == None:
          self.layerId2canvasLayer = {}
          self.canvasLayers = []
-         QgsMapCanvas.setLayerSet(self, [])
+         QgsMapCanvas.setLayers(self, [])
 
       else:
          for lid in layerIds:
@@ -893,7 +926,7 @@ class QadPreviewDim(QgsMapCanvas):
       if layerId == None:
          layer = self.iface.activeLayer()
       else:
-         layer = QgsMapLayerRegistry.instance().mapLayer( layerId )
+         layer = QgsProject.instance().mapLayer( layerId )
 
       if layer == None:
          return
@@ -904,12 +937,12 @@ class QadPreviewDim(QgsMapCanvas):
       # add the layer to the map canvas layer set
       self.canvasLayers = []
       id2cl_dict = {}
-      for l in self.iface.legendInterface().layers():
+      for l in QgsProject.instance().mapLayers().values():
          lid = self._layerId(l)
-         if self.layerId2canvasLayer.has_key( lid ):   # previously added
+         if lid in self.layerId2canvasLayer:   # previously added
             cl = self.layerId2canvasLayer[ lid ]
          elif l == layer:   # selected layer
-            cl = QgsMapCanvasLayer( layer )
+            cl = layer
          else:
             continue
 
@@ -917,7 +950,7 @@ class QadPreviewDim(QgsMapCanvas):
          self.canvasLayers.append( cl )
 
       self.layerId2canvasLayer = id2cl_dict
-      QgsMapCanvas.setLayerSet(self, self.canvasLayers )
+      QgsMapCanvas.setLayers(self, self.canvasLayers )
 
       self.onExtentsChanged()
       self.setRenderFlag( prevFlag )
@@ -930,7 +963,7 @@ class QadPreviewDim(QgsMapCanvas):
          layerId = self._layerId(layer)
 
       # remove the layer from the map canvas layer set
-      if not self.layerId2canvasLayer.has_key( layerId ):
+      if layerId in self.layerId2canvasLayer == False:
          return
 
       prevFlag = self.renderFlag()
@@ -939,7 +972,7 @@ class QadPreviewDim(QgsMapCanvas):
       cl = self.layerId2canvasLayer[ layerId ]
       del self.layerId2canvasLayer[ layerId ]
       self.canvasLayers.remove( cl )
-      QgsMapCanvas.setLayerSet(self, self.canvasLayers )
+      QgsMapCanvas.setLayers(self, self.canvasLayers )
       del cl
 
       self.onExtentsChanged()
@@ -981,7 +1014,7 @@ class QadPreviewDim(QgsMapCanvas):
       if self.plugIn.insertBookmark() == True:
          self.bookmark = True
 
-      for layerId in self.getLayerSet(): # tolgo tutti i layer
+      for layerId in self.getLayers(): # tolgo tutti i layer
          self.delLayer(layerId)
       # inserisco i layer della quotatura
       self.isEditableTextualLayer = None
@@ -1014,9 +1047,9 @@ class QadPreviewDim(QgsMapCanvas):
 
       ###########################
       # quota lineare orizzontale
-      dimPt1 = QgsPoint(0, 0)
-      dimPt2 = QgsPoint(13.45, 0)
-      linePosPt = QgsPoint(0, 10)
+      dimPt1 = QgsPointXY(0, 0)
+      dimPt2 = QgsPointXY(13.45, 0)
+      linePosPt = QgsPointXY(0, 10)
       
       # calcolo il rettangolo di occupazione della quota
       dimEntity, textOffsetRectGeom = self.dimStyle.getLinearDimFeatures(self.plugIn.canvas, \
@@ -1031,9 +1064,9 @@ class QadPreviewDim(QgsMapCanvas):
       
       ###########################
       # quota lineare verticale
-      dimPt1 = QgsPoint(0, 0)
-      dimPt2 = QgsPoint(0, -15.7)
-      linePosPt = QgsPoint(-9, 0)
+      dimPt1 = QgsPointXY(0, 0)
+      dimPt2 = QgsPointXY(0, -15.7)
+      linePosPt = QgsPointXY(-9, 0)
       
       # calcolo il rettangolo di occupazione della quota
       dimEntity, textOffsetRectGeom = self.dimStyle.getLinearDimFeatures(self.plugIn.canvas, \
@@ -1050,9 +1083,9 @@ class QadPreviewDim(QgsMapCanvas):
 
       ###########################
       # quota allineata obliqua
-      dimPt1 = QgsPoint(13.45, 0)
-      dimPt2 = QgsPoint(23, -20)
-      linePosPt = QgsPoint(23, 0)
+      dimPt1 = QgsPointXY(13.45, 0)
+      dimPt2 = QgsPointXY(23, -20)
+      linePosPt = QgsPointXY(23, 0)
       
       # calcolo il rettangolo di occupazione della quota
       dimEntity, textOffsetRectGeom = self.dimStyle.getAlignedDimFeatures(self.plugIn.canvas, \
@@ -1068,8 +1101,8 @@ class QadPreviewDim(QgsMapCanvas):
       ###########################
       # quota arco
       dimArc = QadArc()
-      dimArc.fromStartSecondEndPts(QgsPoint(23, -20), QgsPoint(10, -15), QgsPoint(0, -15.7))
-      linePosPt = QgsPoint(13, -13)
+      dimArc.fromStartSecondEndPts(QgsPointXY(23, -20), QgsPointXY(10, -15), QgsPointXY(0, -15.7))
+      linePosPt = QgsPointXY(13, -13)
       
       # calcolo il rettangolo di occupazione della quota
       dimEntity, textOffsetRectGeom = self.dimStyle.getArcDimFeatures(self.plugIn.canvas, \
@@ -1089,5 +1122,5 @@ class QadPreviewDim(QgsMapCanvas):
          self.plugIn.undoUntilBookmark()
          self.bookmark = False
       
-      for layerId in self.getLayerSet(): # tolgo tutti i layer
+      for layerId in self.getLayers(): # tolgo tutti i layer
          self.delLayer(layerId)

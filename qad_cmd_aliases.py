@@ -25,13 +25,13 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 import os.path
 import codecs
 from qgis.core import *
 
 
-import qad_utils
+from . import qad_utils
 
 
 # Classe che gestisce gli alias dei comandi di Qad

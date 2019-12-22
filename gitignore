@@ -1,0 +1,16 @@
+# SVN
+*.svn
+
+# ECLIPSE
+*.settings
+*.project
+*.pydevproject
+
+# COMPILED PYTHON
+*.pyc
+
+# debug
+qad_debug.*
+
+Thumbs.db
+*.psproj

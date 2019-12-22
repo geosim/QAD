@@ -23,14 +23,14 @@
 """
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
 
 
-from qad_msg import QadMsg
-from qad_variables import QadVariables
+from .qad_msg import QadMsg
+from .qad_variables import QadVariables
 
 
 #===============================================================================
@@ -72,7 +72,7 @@ class QadVertexMarker(QgsMapCanvasItem):
       self.__canvas = mapCanvas
       self.__iconType = QadVertexmarkerIconTypeEnum.X # icon to be shown
       self.__iconSize = QadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAPSIZE"))
-      self.__center = QgsPoint(0, 0) #  coordinates of the point in the center
+      self.__center = QgsPointXY(0, 0) #  coordinates of the point in the center
       self.__color = QColor(255, 0, 0) # color of the marker
       self.__penWidth = 2 # pen width
 

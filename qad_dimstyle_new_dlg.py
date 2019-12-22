@@ -24,19 +24,16 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.core import QgsApplication
-from qgis.utils import *
+from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
-import qad_dimstyle_new_ui
-from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog
+from . import qad_dimstyle_new_ui
+from .qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog
 
-from qad_variables import *
-from qad_dim import *
-from qad_msg import QadMsg, qadShowPluginHelp
-import qad_utils
+from .qad_variables import QadVariables
+from .qad_dim import QadDimStyle, QadDimStyles
+from .qad_msg import QadMsg, qadShowPluginHelp
+from . import qad_utils
 
 
 #######################################################################################

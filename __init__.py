@@ -4,7 +4,7 @@
                                  A QGIS plugin
  Selezione di layer attraverso gli oggetti grafici
                              -------------------
-        begin                : 2012-01-12
+        begin                : 2019-09-16
         copyright            : iiiii
         email                : hhhhh
         developers           : bbbbb aaaaa ggggg
@@ -22,18 +22,8 @@
 """
 
 
-def name():
-   return "Quantum Aided Design"
-def description():
-   return "Comandi di editazione grafica in stile CAD"
-def version():
-    return "Version 2.0"
-def icon():
-    return ":/plugins/qad/icons/qad.png"
-def qgisMinimumVersion():
-    return "2.0"
 def classFactory(iface):
    
     # load Qad class from file qad
-    from qad import Qad
+    from .qad import Qad
     return Qad(iface)

@@ -24,35 +24,38 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QDialogButtonBox
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
-from qgis.core import QgsApplication
 from qgis.utils import *
 
 
-import qad_options_ui
+from .qad_options_ui import Ui_Options_Dialog
 
 
-from qad_variables import *
-from qad_msg import QadMsg, qadShowPluginHelp
-import qad_utils
-from qad_gripcolor_dlg import QadGripColorDialog
-from qad_windowcolor_dlg import QadColorContextEnum, QadColorElementEnum, QadWindowColorDialog
+from .qad_variables import *
+from .qad_msg import QadMsg, qadShowPluginHelp
+from . import qad_utils
+from .qad_gripcolor_dlg import QadGripColorDialog
+from .qad_windowcolor_dlg import QadColorContextEnum, QadColorElementEnum, QadWindowColorDialog
+from .qad_dsettings_dlg import QadTOOLTIPAPPEARANCEDialog
+from .qad_rightclick_dlg import QadRightClickDialog
 
 
 #===============================================================================
 # QadOPTIONSTabIndexEnum class.
 #===============================================================================
 class QadOPTIONSTabIndexEnum():
-   DISPLAY   = 0
-   DRAFTING  = 1
-   SELECTION = 2
+   DISPLAY          = 0
+   USER_PREFERENCES = 1
+   DRAFTING         = 2
+   SELECTION        = 3
 
 
 #######################################################################################
 # Classe che gestisce l'interfaccia grafica del comando OPTIONS
-class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
+class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
    def __init__(self, plugIn, optionsTabIndex = None):
       self.plugIn = plugIn
       self.iface = self.plugIn.iface.mainWindow()
@@ -70,6 +73,9 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       
       # Inizializzazione del TAB "display"
       self.init_display_tab()
+      
+      # Inizializzazione del TAB "user preferences"
+      self.init_user_preferences_tab()
       
       # Inizializzazione del TAB "drafting"
       self.init_drafting_tab()
@@ -113,6 +119,12 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       self.lineEdit_INPUTSEARCHDELAY.setValidator(QIntValidator(self.lineEdit_INPUTSEARCHDELAY))
       self.lineEdit_INPUTSEARCHDELAY.installEventFilter(self)
 
+      # Memorizzo il valore di TOLERANCE2COINCIDENT
+      tolerance2Coindident = self.tempQadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT"))
+      self.lineEdit_TOLERANCE2COINCIDENT.setText(str(tolerance2Coindident))
+      self.lineEdit_TOLERANCE2COINCIDENT.setValidator(QDoubleValidator(self.lineEdit_TOLERANCE2COINCIDENT))
+      self.lineEdit_TOLERANCE2COINCIDENT.installEventFilter(self)
+
       # Memorizzo il valore di ARCMINSEGMENTQTY
       arcMinSegmentQty = self.tempQadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"))
       self.lineEdit_ARCMINSEGMENTQTY.setText(str(arcMinSegmentQty))
@@ -124,6 +136,18 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       self.lineEdit_CIRCLEMINSEGMENTQTY.setText(str(circleMinSegmentQty))
       self.lineEdit_CIRCLEMINSEGMENTQTY.setValidator(QIntValidator(self.lineEdit_CIRCLEMINSEGMENTQTY))
       self.lineEdit_CIRCLEMINSEGMENTQTY.installEventFilter(self)
+
+      # Memorizzo il valore di ELLIPSEARCMINSEGMENTQTY
+      ellipseArcMinSegmentQty = self.tempQadVariables.get(QadMsg.translate("Environment variables", "ELLIPSEARCMINSEGMENTQTY"))
+      self.lineEdit_ELLIPSEARCMINSEGMENTQTY.setText(str(ellipseArcMinSegmentQty))
+      self.lineEdit_ELLIPSEARCMINSEGMENTQTY.setValidator(QIntValidator(self.lineEdit_ELLIPSEARCMINSEGMENTQTY))
+      self.lineEdit_ELLIPSEARCMINSEGMENTQTY.installEventFilter(self)
+
+      # Memorizzo il valore di ELLIPSEMINSEGMENTQTY
+      circleMinSegmentQty = self.tempQadVariables.get(QadMsg.translate("Environment variables", "ELLIPSEMINSEGMENTQTY"))
+      self.lineEdit_ELLIPSEMINSEGMENTQTY.setText(str(circleMinSegmentQty))
+      self.lineEdit_ELLIPSEMINSEGMENTQTY.setValidator(QIntValidator(self.lineEdit_ELLIPSEMINSEGMENTQTY))
+      self.lineEdit_ELLIPSEMINSEGMENTQTY.installEventFilter(self)
 
       # Memorizzo il valore di TOLERANCE2APPROXCURVE
       tolerance2ApproxCurve = self.tempQadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
@@ -172,6 +196,11 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       InputSearchDelay = qad_utils.str2int(SInputSearchDelay)
       self.tempQadVariables.set(QadMsg.translate("Environment variables", "INPUTSEARCHDELAY"), InputSearchDelay)
 
+      # Memorizzo il valore di TOLERANCE2COINCIDENT
+      STolerance2Coincident = self.lineEdit_TOLERANCE2COINCIDENT.text()
+      Tolerance2Coincident = qad_utils.str2float(STolerance2Coincident)
+      self.tempQadVariables.set(QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT"), Tolerance2Coincident)
+
       # Memorizzo il valore di ARCMINSEGMENTQTY
       SArcMinSegmentQty = self.lineEdit_ARCMINSEGMENTQTY.text()
       ArcMinSegmentQty = qad_utils.str2int(SArcMinSegmentQty)
@@ -182,9 +211,19 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       CircleMinSegmentQty = qad_utils.str2int(SCircleMinSegmentQty)
       self.tempQadVariables.set(QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), CircleMinSegmentQty)
 
+      # Memorizzo il valore di ELLIPSEARCMINSEGMENTQTY
+      SEllipseArcMinSegmentQty = self.lineEdit_ELLIPSEARCMINSEGMENTQTY.text()
+      EllipseArcMinSegmentQty = qad_utils.str2int(SEllipseArcMinSegmentQty)
+      self.tempQadVariables.set(QadMsg.translate("Environment variables", "ELLIPSEARCMINSEGMENTQTY"), EllipseArcMinSegmentQty)
+
+      # Memorizzo il valore di ELLIPSEMINSEGMENTQTY
+      SEllipseMinSegmentQty = self.lineEdit_ELLIPSEMINSEGMENTQTY.text()
+      EllipseMinSegmentQty = qad_utils.str2int(SEllipseMinSegmentQty)
+      self.tempQadVariables.set(QadMsg.translate("Environment variables", "ELLIPSEMINSEGMENTQTY"), EllipseMinSegmentQty)
+
       # Memorizzo il valore di TOLERANCE2APPROXCURVE
       STolerance2ApproxCurve = self.lineEdit_TOLERANCE2APPROXCURVE.text()
-      Tolerance2ApproxCurve = qad_utils.str2int(STolerance2ApproxCurve)
+      Tolerance2ApproxCurve = qad_utils.str2float(STolerance2ApproxCurve)
       self.tempQadVariables.set(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"), Tolerance2ApproxCurve)
 
       # Memorizzo il valore di CURSORSIZE
@@ -213,39 +252,75 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       
       
    def lineEdit_CMDINPUTHISTORYMAX_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_CMDINPUTHISTORYMAX, \
-                                              QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid maximum command history length"))
+      varName = QadMsg.translate("Environment variables", "CMDINPUTHISTORYMAX")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))      
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_CMDINPUTHISTORYMAX, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid maximum command history length"))
 
 
    def lineEdit_INPUTSEARCHDELAY_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_INPUTSEARCHDELAY, \
-                                              QadMsg.translate("Environment variables", "INPUTSEARCHDELAY"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid delay time"))
+      varName = QadMsg.translate("Environment variables", "INPUTSEARCHDELAY")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))      
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_INPUTSEARCHDELAY, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid delay time"))
 
 
+   def lineEdit_TOLERANCE2COINCIDENT_Validation(self):
+      varName = QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))      
+      return qad_utils.floatLineEditWidgetValidation(self.lineEdit_TOLERANCE2COINCIDENT, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid tolerance value"))
+
+   
    def lineEdit_ARCMINSEGMENTQTY_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_ARCMINSEGMENTQTY, \
-                                              QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in an arc"))
+      varName = QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))      
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_ARCMINSEGMENTQTY, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in an arc"))
 
 
    def lineEdit_CIRCLEMINSEGMENTQTY_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_CIRCLEMINSEGMENTQTY, \
-                                              QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in a circle"))
+      varName = QadMsg.translate("Environment variables", "CIRCLEMINSEGMENTQTY")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_CIRCLEMINSEGMENTQTY, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in a circle"))
+
+
+   def lineEdit_ELLIPSEARCMINSEGMENTQTY_Validation(self):
+      varName = QadMsg.translate("Environment variables", "ELLIPSEARCMINSEGMENTQTY")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))      
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_ELLIPSEARCMINSEGMENTQTY, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in an arc of ellipse"))
+
+
+   def lineEdit_ELLIPSEMINSEGMENTQTY_Validation(self):
+      varName = QadMsg.translate("Environment variables", "ELLIPSEMINSEGMENTQTY")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_ELLIPSEMINSEGMENTQTY, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid minimum number of segments in an ellipse"))
 
 
    def lineEdit_TOLERANCE2APPROXCURVE_Validation(self):
-      return self.floatLineEditWidgetValidation(self.lineEdit_TOLERANCE2APPROXCURVE, \
-                                                QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"), \
-                                                QadMsg.translate("Options_Dialog", "Invalid tolerance between real and segmented curve"))
+      varName = QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))
+      return qad_utils.floatLineEditWidgetValidation(self.lineEdit_TOLERANCE2APPROXCURVE, \
+                                                     var, \
+                                                     QadMsg.translate("Options_Dialog", "Invalid tolerance between real and segmented curve"))
 
 
    def lineEdit_CURSORSIZE_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_CURSORSIZE, \
-                                              QadMsg.translate("Environment variables", "CURSORSIZE"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid crosshair size"))
+      varName = QadMsg.translate("Environment variables", "CURSORSIZE")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_CURSORSIZE, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid crosshair size"))
 
 
    def Button_TextWindowColor_clicked(self):
@@ -258,6 +333,42 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
             self.tempQadVariables.set(variable.name, variable.value)
 
          self.refreshPreviewColor()
+
+
+   ######################################
+   # TAB "user preferences"
+   def init_user_preferences_tab(self):
+      # Inizializzazione del TAB "user preferences"
+      
+      # SHORTCUTMENU
+      shortcutmenu = self.tempQadVariables.get(QadMsg.translate("Environment variables", "SHORTCUTMENU"))
+      if shortcutmenu == 0:                                         
+         self.checkBox_shortcutmenu.setChecked(False)
+      else:
+         self.checkBox_shortcutmenu.setChecked(True)
+      self.checkBox_shortcutmenu_clicked()
+
+   def checkBox_shortcutmenu_clicked(self):
+      if self.checkBox_shortcutmenu.checkState() == Qt.Checked:
+         self.button_rightclick.setEnabled(True)
+      else:
+         self.button_rightclick.setEnabled(False)
+
+   
+   def button_rightclick_clicked(self):
+      Form = QadRightClickDialog(self.plugIn, self)
+      if Form.exec_() == QDialog.Accepted:
+         # copio i valori dei colori in self.tempQadVariables
+         variables = Form.getSysVariableList()
+         for variable in variables:
+            self.tempQadVariables.set(variable.name, variable.value)
+
+
+   def accept_user_preferences_tab(self):
+      if self.checkBox_shortcutmenu.checkState() == Qt.Unchecked:
+         self.tempQadVariables.set(QadMsg.translate("Environment variables", "SHORTCUTMENU"), 0)
+      elif self.tempQadVariables.get(QadMsg.translate("Environment variables", "SHORTCUTMENU")) == 0:
+         self.tempQadVariables.set(QadMsg.translate("Environment variables", "SHORTCUTMENU"), 11) # inizializzo questo default
 
 
    ######################################
@@ -314,6 +425,15 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
       self.horizontalSlider_APERTURE.setValue(var.value)
 
 
+   def button_DraftingTooltipSettings_clicked(self):
+      Form = QadTOOLTIPAPPEARANCEDialog(self.plugIn, self)
+      if Form.exec_() == QDialog.Accepted:
+         # copio i valori dei colori in self.tempQadVariables
+         variables = Form.getSysVariableList()
+         for variable in variables:
+            self.tempQadVariables.set(variable.name, variable.value)
+      
+      
    def accept_drafting_tab(self):
       # AUTOSNAP
       autoSnap = self.tempQadVariables.get(QadMsg.translate("Environment variables", "AUTOSNAP"))
@@ -496,9 +616,11 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
 
 
    def lineEdit_GRIPOBJLIMIT_Validation(self):
-      return self.intLineEditWidgetValidation(self.lineEdit_GRIPOBJLIMIT, \
-                                              QadMsg.translate("Environment variables", "GRIPOBJLIMIT"), \
-                                              QadMsg.translate("Options_Dialog", "Invalid object selection limit for display of grips"))
+      varName = QadMsg.translate("Environment variables", "GRIPOBJLIMIT")
+      var = self.tempQadVariables.getVariable(QadMsg.translate("Environment variables", varName))
+      return qad_utils.intLineEditWidgetValidation(self.lineEdit_GRIPOBJLIMIT, \
+                                                   var, \
+                                                   QadMsg.translate("Options_Dialog", "Invalid object selection limit for display of grips"))
 
 
    def button_GripColor_clicked(self):
@@ -590,10 +712,16 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
                return not self.lineEdit_CMDINPUTHISTORYMAX_Validation()
             elif obj == self.lineEdit_INPUTSEARCHDELAY:
                return not self.lineEdit_INPUTSEARCHDELAY_Validation()
+            elif obj == self.lineEdit_TOLERANCE2COINCIDENT:
+               return not self.lineEdit_TOLERANCE2COINCIDENT_Validation()
             elif obj == self.lineEdit_ARCMINSEGMENTQTY:
                return not self.lineEdit_ARCMINSEGMENTQTY_Validation()
             elif obj == self.lineEdit_CIRCLEMINSEGMENTQTY:
                return not self.lineEdit_CIRCLEMINSEGMENTQTY_Validation()
+            elif obj == self.lineEdit_ELLIPSEARCMINSEGMENTQTY:
+               return not self.lineEdit_ELLIPSEARCMINSEGMENTQTY_Validation()
+            elif obj == self.lineEdit_ELLIPSEMINSEGMENTQTY:
+               return not self.lineEdit_ELLIPSEMINSEGMENTQTY_Validation()
             elif obj == self.lineEdit_TOLERANCE2APPROXCURVE:
                return not self.lineEdit_TOLERANCE2APPROXCURVE_Validation()
             elif obj == self.lineEdit_CURSORSIZE:
@@ -621,8 +749,7 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
 
    def ButtonBOX_Accepted(self):
       self.apply()
-      self.close()
-      return True
+      QDialog.accept(self)
 
 
    def ButtonBOX_Apply(self, button):
@@ -636,6 +763,7 @@ class QadOPTIONSDialog(QDialog, QObject, qad_options_ui.Ui_Options_Dialog):
 
    def apply(self):
       self.accept_display_tab()
+      self.accept_user_preferences_tab()
       self.accept_drafting_tab()
       self.accept_selection_tab()
       

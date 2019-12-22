@@ -25,58 +25,57 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from qgis.PyQt.QtCore import QObject
+from qgis.PyQt.QtWidgets import QMessageBox
 
 import sys, traceback
 
-from qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
-from qad_msg import QadMsg
-from qad_cmd_aliases import *
-from qad_variables import QadVariables
+from .qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
+from .qad_msg import QadMsg
+from .qad_cmd_aliases import *
+from .qad_variables import QadVariables
 
-from qad_getpoint import *
-from qad_generic_cmd import QadCommandClass
-from qad_id_cmd import QadIDCommandClass
-from qad_setcurrlayerbygraph_cmd import QadSETCURRLAYERBYGRAPHCommandClass, QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass
-from qad_setvar_cmd import QadSETVARCommandClass
-from qad_pline_cmd import QadPLINECommandClass
-from qad_arc_cmd import QadARCCommandClass
-from qad_circle_cmd import QadCIRCLECommandClass
-from qad_dsettings_cmd import QadDSETTINGSCommandClass
-from qad_line_cmd import QadLINECommandClass
-from qad_erase_cmd import QadERASECommandClass
-from qad_mpolygon_cmd import QadMPOLYGONCommandClass
-from qad_mbuffer_cmd import QadMBUFFERCommandClass
-from qad_rotate_cmd import QadROTATECommandClass
-from qad_move_cmd import QadMOVECommandClass
-from qad_scale_cmd import QadSCALECommandClass
-from qad_copy_cmd import QadCOPYCommandClass
-from qad_offset_cmd import QadOFFSETCommandClass
-from qad_extend_cmd import QadEXTENDCommandClass
-from qad_trim_cmd import QadTRIMCommandClass
-from qad_rectangle_cmd import QadRECTANGLECommandClass
-from qad_mirror_cmd import QadMIRRORCommandClass
-from qad_undoredo_cmd import QadUNDOCommandClass, QadREDOCommandClass
-from qad_insert_cmd import QadINSERTCommandClass
-from qad_text_cmd import QadTEXTCommandClass
-from qad_stretch_cmd import QadSTRETCHCommandClass
-from qad_break_cmd import QadBREAKCommandClass
-from qad_pedit_cmd import QadPEDITCommandClass
-from qad_fillet_cmd import QadFILLETCommandClass
-from qad_polygon_cmd import QadPOLYGONCommandClass
-from qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass, QadDIMARCCommandClass
-from qad_dimstyle_cmd import QadDIMSTYLECommandClass
-from qad_lengthen_cmd import QadLENGTHENCommandClass
-from qad_help_cmd import QadHELPCommandClass
-from qad_options_cmd import QadOPTIONSCommandClass
-from qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
-from qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
-from qad_array_cmd import QadARRAYCommandClass, QadARRAYRECTCommandClass, QadARRAYPATHCommandClass, QadARRAYPOLARCommandClass
-from qad_divide_cmd import QadDIVIDECommandClass
-from qad_measure_cmd import QadMEASURECommandClass
+from .qad_getpoint import *
+from .cmd.qad_generic_cmd import QadCommandClass
+from .cmd.qad_id_cmd import QadIDCommandClass
+from .cmd.qad_setcurrlayerbygraph_cmd import QadSETCURRLAYERBYGRAPHCommandClass, QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass
+from .cmd.qad_setvar_cmd import QadSETVARCommandClass
+from .cmd.qad_pline_cmd import QadPLINECommandClass
+from .cmd.qad_arc_cmd import QadARCCommandClass
+from .cmd.qad_circle_cmd import QadCIRCLECommandClass
+from .cmd.qad_dsettings_cmd import QadDSETTINGSCommandClass
+from .cmd.qad_line_cmd import QadLINECommandClass
+from .cmd.qad_erase_cmd import QadERASECommandClass
+from .cmd.qad_mpolygon_cmd import QadMPOLYGONCommandClass
+from .cmd.qad_mbuffer_cmd import QadMBUFFERCommandClass
+from .cmd.qad_rotate_cmd import QadROTATECommandClass
+from .cmd.qad_move_cmd import QadMOVECommandClass
+from .cmd.qad_scale_cmd import QadSCALECommandClass
+from .cmd.qad_copy_cmd import QadCOPYCommandClass
+from .cmd.qad_offset_cmd import QadOFFSETCommandClass
+from .cmd.qad_extend_cmd import QadEXTENDCommandClass
+from .cmd.qad_trim_cmd import QadTRIMCommandClass
+from .cmd.qad_rectangle_cmd import QadRECTANGLECommandClass
+from .cmd.qad_mirror_cmd import QadMIRRORCommandClass
+from .cmd.qad_undoredo_cmd import QadUNDOCommandClass, QadREDOCommandClass
+from .cmd.qad_insert_cmd import QadINSERTCommandClass
+from .cmd.qad_text_cmd import QadTEXTCommandClass
+from .cmd.qad_stretch_cmd import QadSTRETCHCommandClass
+from .cmd.qad_break_cmd import QadBREAKCommandClass
+from .cmd.qad_pedit_cmd import QadPEDITCommandClass
+from .cmd.qad_fillet_cmd import QadFILLETCommandClass
+from .cmd.qad_polygon_cmd import QadPOLYGONCommandClass
+from .cmd.qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass, QadDIMARCCommandClass, QadDIMRADIUSCommandClass
+from .cmd.qad_dimstyle_cmd import QadDIMSTYLECommandClass
+from .cmd.qad_lengthen_cmd import QadLENGTHENCommandClass
+from .cmd.qad_help_cmd import QadHELPCommandClass
+from .cmd.qad_options_cmd import QadOPTIONSCommandClass
+from .cmd.qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
+from .cmd.qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
+from .cmd.qad_array_cmd import QadARRAYCommandClass, QadARRAYRECTCommandClass, QadARRAYPATHCommandClass, QadARRAYPOLARCommandClass
+from .cmd.qad_divide_cmd import QadDIVIDECommandClass
+from .cmd.qad_measure_cmd import QadMEASURECommandClass
+from .cmd.qad_ellipse_cmd import QadELLIPSECommandClass
 
 
 # Classe che gestisce i comandi di Qad
@@ -124,6 +123,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIMLINEARCommandClass(self.plugIn)) # DIMLINEAR
       self.__cmdObjs.append(QadDIMALIGNEDCommandClass(self.plugIn)) # DIMALIGNED
       self.__cmdObjs.append(QadDIMARCCommandClass(self.plugIn)) # DIMALIGNED
+      self.__cmdObjs.append(QadDIMRADIUSCommandClass(self.plugIn)) # DIMALIGNED
       self.__cmdObjs.append(QadDIMSTYLECommandClass(self.plugIn)) # DIMSTYLE
       self.__cmdObjs.append(QadHELPCommandClass(self.plugIn)) # HELP
       self.__cmdObjs.append(QadLENGTHENCommandClass(self.plugIn)) # LENGTHEN
@@ -137,6 +137,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadARRAYPOLARCommandClass(self.plugIn)) # ARRAYPOLAR
       self.__cmdObjs.append(QadDIVIDECommandClass(self.plugIn)) # DIVIDE
       self.__cmdObjs.append(QadMEASURECommandClass(self.plugIn)) # MEASURE
+      self.__cmdObjs.append(QadELLIPSECommandClass(self.plugIn)) # ELLIPSE
 
       self.actualCommand = None  # Comando in corso di esecuzione
    
@@ -463,6 +464,26 @@ class QadCommandsClass():
       pointMapTool.refreshAutoSnap()
 
 
+   #============================================================================
+   # refreshCommandMapToolDynamicInput
+   #============================================================================
+   def refreshCommandMapToolDynamicInput(self):
+      self.plugIn.tool.getDynamicInput().refreshOnEnvVariables()
+            
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is not None:
+         pointMapTool.getDynamicInput().refreshOnEnvVariables()
+         if pointMapTool.getDynamicInput().isActive() == False:
+            pointMapTool.getDynamicInput().show(False)
+         else:
+            pointMapTool.getDynamicInput().show(True)
+      else:
+         if self.plugIn.tool.getDynamicInput().isActive() == False:
+            self.plugIn.tool.getDynamicInput().show(False)
+         else:
+            if self.plugIn.tool.getDynamicInput().resStr != "": # solo se forniva già un risultato
+               self.plugIn.tool.getDynamicInput().show(True)
+
 
    #============================================================================
    # getMoreUsedCmd
@@ -507,7 +528,7 @@ class QadMacroRunnerCommandClass(QadCommandClass):
       return "MACRO_RUNNER"
 
    def connectQAction(self, action):
-      QObject.connect(action, SIGNAL("triggered()"), self.plugIn.runREDOCommand)
+      action.triggered.connect(self.plugIn.runREDOCommand)
       
    def __init__(self, plugIn):
       QadCommandClass.__init__(self, plugIn)
@@ -525,6 +546,13 @@ class QadMacroRunnerCommandClass(QadCommandClass):
          return self.command.getPointMapTool(drawMode)
       else:
          return QadCommandClass.getPointMapTool(self, drawMode)
+
+
+   def getCurrentContextualMenu(self):
+      if self.command is None:
+         return None
+      else:
+         return self.command.getCurrentContextualMenu()
 
 
    def setCmdAndOptionsToRun(self, CmdAndArglist):
@@ -607,8 +635,10 @@ class QadUsedCmdNamesClass():
 def displayError(exception = None):
    exc_type, exc_value, exc_traceback = sys.exc_info()
    format_exception = traceback.format_exception(exc_type, exc_value, exc_traceback)
-   stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n")
+   stk = ""
    for s in format_exception:
-      stk += s
-   if exception is not None: stk += "\n" + exception.__doc__
+      if s != "Traceback (most recent call last):\n":
+         stk = s + stk
+   if exception is not None: stk = exception.__doc__ + "\n" + stk
+   stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n") + stk
    QMessageBox.critical(None, "QAD", stk)

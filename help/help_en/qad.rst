@@ -31,8 +31,8 @@ Layer
 
 QAD supports all types of vector layers of QGIS with a distinction
 regarding the point layer. In fact, QAD manage layers of QGIS
-distinguishing between symbols layers and text layers. The first display
-symbols while the second display texts.
+distinguishing between symbols layers and text layers. The first
+displays symbols while the second displays texts.
 
 The text layer is a layer that displays labels only. It is a QGIS point
 layer with the following characteristics:
@@ -95,14 +95,23 @@ The symbol layer can be defined with a style set as follows:
    the scale” and <Style>-< Advanced >-<Size scale field >-<Scale
    diameter>, if set than the INSERT command will ask for it)
 
-Arcs and circles
-~~~~~~~~~~~~~~~~
+Arcs, arcs of ellipse, ellipses and circles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-QAD supports approximating arcs and circles in small segments.
+QAD supports approximating arcs, arcs of ellipse, ellipses and circles
+in small segments.
 
 -  For arcs the number of these segments depends on
    TOLERANCE2APPROXCURVE and ARCMINSEGMENTQTY variables (minimum number
    of segments to be used for the approximation)
+
+-  For arcs of ellipse the number of these segments depends on
+   TOLERANCE2APPROXCURVE and ELLIPSEARCMINSEGMENTQTY variables (minimum
+   number of segments to be used for the approximation)
+
+-  For ellipses the number of these segments depends on
+   TOLERANCE2APPROXCURVE and ELLIPSEMINSEGMENTQTY variables (minimum
+   number of segments to be used for the approximation)
 
 -  For circles the number of these segments depends on
    TOLERANCE2APPROXCURVE and CIRCLEMINSEGMENTQTY variables (minimum
@@ -214,7 +223,7 @@ Latitude and Longitude values can be set using the following notations:
 
 -  Degrees, Minutes with Decimal Seconds (DMM) - In this notation,
    decimal precision is set in the 'minutes' coordinate. For example, 49
-   7.0055722"N. (Here, 20.06 seconds above is divided by 3600 to get the
+   7. 3343333"N. (Here, 20.06 seconds above is divided by 60 to get the
    decimal minute value for 20.06 seconds.)
 
 Latitude and Longitude syntax is specified as follows:
@@ -248,6 +257,15 @@ Latitude and Longitude syntax is specified as follows:
    | You can separate pair entries with a space, a comma, or a slash:
      37.7 N 122.2 W or 37.7 N,122.2 W or 37.7 N/122.2 W
 
+DYNAMIC INPUT
+-------------
+
+You can turn off dynamic input temporarily by holding down the F12 key.
+Dynamic input provides a command interface near the cursor in the
+drawing area.
+
+Run DSETTINGS command to set dynamic input properties.
+
 Selecting objects
 -----------------
 
@@ -255,14 +273,14 @@ When a command ask to select the objects (usually with the message
 "select objects") you can type the letter "H" for Help to show all
 options.
 
-The <WCircle> and <CCerchio> options select respectively objects that
-are Inside/intersecting a circle and objects only inside a circle.
+The <WCircle> and <CCircle> options select respectively objects that are
+Inside/intersecting a circle and objects only inside a circle.
 
-The <WObjectsi> e <Cobjectsi> options select respectively objects that
+The <WObjects> and <Cobjects> options select respectively objects that
 are Inside/intersecting existing objects and objects only inside
 existing objects.
 
-The <FBuffer> e <IBuffer> options select respectively objects that are
+The <FBuffer> and <IBuffer> options select respectively objects that are
 Inside/intersecting a buffer and objects only inside a buffer.
 
 Dimensioning
@@ -272,8 +290,8 @@ Dimension style is a set of properties that determine the appearance of
 dimensions. These properties are stored in files with the extension .dim
 and are loaded on QAD startup or on loading a project. Dimension files
 must be saved in the current project folder or in the QAD installation
-folder (i.e. in windows 8 "C:\\users\\*current
-user\\*.qgis2\\python\\plugins\\qad ").
+folder (i.e. in windows 8 " C:\\Users\\\ *current
+user*\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\qad").
 
 QAD stores the elements constituting a dimension in 3 different layers::
 
@@ -506,12 +524,11 @@ The symbol layer must be defined with a style set as follows:
 -  The rotation must be read by a real number field that stores the
    symbol rotation through the formula "360-<field that stores the
    rotation>" (degree counterclockwise where zero = horizontal to the
-   right, <Style>-<Advanced> option "rotation field name"-<Espressione>)
+   right, <Style>- option "rotation"-<Expression>)
 
 -  The scale can be read by a real number field that stores the scale of
-   the symbol (<Style>-<Advanced>-<Size scale field>-“ field that stores
-   the scale” and <Style>-< Advanced >-<Size scale field >-<Scale
-   diameter>)
+   the symbol (<Style>-<Advanced>-option <Size>-“ field that stores the
+   scale”)
 
 The arrow symbol when inserted with rotation = 0 must be horizontal with
 the arrow pointing to the right and its insertion point should be on the
@@ -535,9 +552,12 @@ Optional fields:
      type according to the following scheme:
    | "D1" = Dimension line 1
    | "D2" = Dimension line 2
+   | “X1” = Extension of dimension line 1
+   | “X2” = Extension of dimension line 2
    | "E1" = Extension line 1"
    | "E2" = Extension line 2
    | "L" = leader line when the text is outside the dimension
+   | “CL” = Center line for center marker of an arc or circle
    | (required if you want to use the editing features of an existing
      dimension)
 
@@ -600,9 +620,8 @@ Optional settings:
 -  The linetype can be read from a character field that stores the
    linetype of dimension lines
 
-Dimension commands (DIMLINEAR, DIMALIGNED) refer to the current
-dimension style. To set the current dimension style run DIMSTYLE
-command.
+Dimension commands refer to the current dimension style. To set the
+current dimension style run DIMSTYLE command.
 
 Commands customization
 ----------------------
@@ -692,6 +711,11 @@ DIMLINEAR
 
 Draws a linear dimension.
 
+DIMRADIUS
+~~~~~~~~~
+
+Draws a radial dimension.
+
 DIMSTYLE
 ~~~~~~~~
 
@@ -708,6 +732,11 @@ DSETTINGS
 ~~~~~~~~~
 
 Set some properties to draw.
+
+ELLIPSE
+~~~~~~~
+
+Draws ellipse or arc of ellipse.
 
 ERASE
 ~~~~~
@@ -961,12 +990,12 @@ project name>\_QAD.INI file of the current QGIS project folder.
 APBOX
 ~~~~~
 
-Come i CAD più popolari. Global variable.
+The same as the most popular CAD. Global variable.
 
 APERTURE
 ~~~~~~~~
 
-Come i CAD più popolari. Global variable.
+The same as the most popular CAD. Global variable.
 
 ARCMINSEGMENTQTY
 ~~~~~~~~~~~~~~~~
@@ -1075,10 +1104,89 @@ DIMSTYLE
 
 The same as the most popular CAD. Project variable.
 
+DYNDIGRIP
+~~~~~~~~~
+
+| Turns Dynamic Input features on and off. Global variable.
+| 0 = None.
+| 1 = Resulting dimension.
+| 2 = Length change dimension.
+| 4 = Absolute angle dimension .
+| 8 Angle change dimension.
+
+DYNDIVIS
+~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNEDITFORECOLOR
+~~~~~~~~~~~~~~~~
+
+Set the dynamic input text color (RGB). Global variable.
+
+DYNEDITBACKCOLOR
+~~~~~~~~~~~~~~~~
+
+Set the dynamic input background text color (RGB). Global variable.
+
+DYNEDITBORDERCOLOR
+~~~~~~~~~~~~~~~~~~
+
+Set the dynamic input border color (RGB). Global variable.
+
+DYNMODE
+~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNPICOORDS
+~~~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNPIFORMAT
+~~~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNPIVIS
+~~~~~~~~
+
+| Controls when pointer input is displayed. Global variable.
+| 1 = Automatically at a prompt for a point
+| 2 = Always
+
+DYNPROMPT
+~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNTOOLTIPS
+~~~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+DYNTRECKINGVECTORCOLOR
+~~~~~~~~~~~~~~~~~~~~~~
+
+Set the Autotreck vector color (RGB). Global variable.
+
 EDGEMODE
 ~~~~~~~~
 
 The same as the most popular CAD. Global variable.
+
+ELLIPSEMINSEGMENTQTY
+~~~~~~~~~~~~~~~~~~~~
+
+Minimum number of segments to approximate an ellipse. Valid values from
+8 to 999, integer type, default value 12. Project variable.
+
+ELLIPSEARCMINSEGMENTQTY
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Minimum number of segments to approximate an arc of ellipse. Valid
+values from 8 to 999, integer type, default value 12. Project variable.
 
 FILLETRAD
 ~~~~~~~~~
@@ -1100,8 +1208,8 @@ GRIPHOT
 
 The same as the most popular CAD. Global variable.
 
-GRIPOVER
-~~~~~~~~
+GRIPHOVER
+~~~~~~~~~
 
 The same as the most popular CAD. Global variable.
 
@@ -1212,6 +1320,16 @@ SELECTIONAREAOPACITY
 
 The same as the most popular CAD. Global variable.
 
+SHORTCUTMENU
+~~~~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
+SHORTCUTMENUDURATION
+~~~~~~~~~~~~~~~~~~~~
+
+The same as the most popular CAD. Global variable.
+
 SUPPORTPATH
 ~~~~~~~~~~~
 
@@ -1228,6 +1346,24 @@ TOLERANCE2APPROXCURVE
 
 Maximum error approximating a curve to segments. Valid values from
 0.000001, real type, default value 0.1. Project variable.
+
+TOLERANCE2COINCIDENT
+~~~~~~~~~~~~~~~~~~~~
+
+Maximum error approximating two coincident points. Floating type,
+default 0.0000001. Project variable
+
+TOOLTIPTRANSPARENCY
+~~~~~~~~~~~~~~~~~~~
+
+Sets the transparency for drafting tooltips. Valid values from 0 to 100.
+Global variable.
+
+TOOLTIPSIZE
+~~~~~~~~~~~
+
+Sets the display size for drafting tooltips, and dynamic input text.
+Valid values from -3 to 6. Global variable.
 
 WINDOWAREACOLOR
 ~~~~~~~~~~~~~~~

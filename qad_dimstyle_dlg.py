@@ -24,21 +24,19 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.core import QgsApplication
-from qgis.utils import *
+from qgis.PyQt.QtCore import Qt, QObject, QItemSelectionModel
+from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QInputDialog, QMenu, QAction
 
-import qad_dimstyle_ui
 
-from qad_variables import *
-from qad_dim import *
-from qad_msg import QadMsg, qadShowPluginHelp
-from qad_dimstyle_new_dlg import QadDIMSTYLE_NEW_Dialog
-from qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog, QadPreviewDim
-from qad_dimstyle_diff_dlg import QadDIMSTYLE_DIFF_Dialog
-import qad_utils
+from . import qad_dimstyle_ui
+from .qad_variables import QadVariables
+from .qad_dim import QadDimStyles
+from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_dimstyle_new_dlg import QadDIMSTYLE_NEW_Dialog
+from .qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog, QadPreviewDim
+from .qad_dimstyle_diff_dlg import QadDIMSTYLE_DIFF_Dialog
+from . import qad_utils
 
 
 #######################################################################################
@@ -248,9 +246,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
             self.dimStyleList.edit(index)
 
             
-   def ButtonBOX_Accepted(self):     
-      self.close()
-      return True
+   def ButtonBOX_Accepted(self):
+      QDialog.accept(self)
 
 
    def ButtonHELP_Pressed(self):
@@ -267,22 +264,22 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       popupMenu = QMenu(self)
       action = QAction(QadMsg.translate("DimStyle_Dialog", "Set current"), popupMenu)
       popupMenu.addAction(action)
-      QObject.connect(action, SIGNAL("triggered()"), self.setCurrentStyle)
+      action.triggered.connect(self.setCurrentStyle)
 
       action = QAction(QadMsg.translate("DimStyle_Dialog", "Rename"), popupMenu)
       popupMenu.addAction(action)
-      QObject.connect(action, SIGNAL("triggered()"), self.startEditingItem)
+      action.triggered.connect(self.startEditingItem)
 
       action = QAction(QadMsg.translate("DimStyle_Dialog", "Modify description"), popupMenu)
       popupMenu.addAction(action)
-      QObject.connect(action, SIGNAL("triggered()"), self.updDescrSelectedDimStyle)
+      action.triggered.connect(self.updDescrSelectedDimStyle)
 
       action = QAction(QadMsg.translate("DimStyle_Dialog", "Remove"), popupMenu)
       currDimStyleName = QadVariables.get(QadMsg.translate("Environment variables", "DIMSTYLE"))
       if self.selectedDimStyle.name == currDimStyleName:
          action.setDisabled(True)
       popupMenu.addAction(action)
-      QObject.connect(action, SIGNAL("triggered()"), self.delSelectedDimStyle)
+      action.triggered.connect(self.delSelectedDimStyle)
 
       popupMenu.popup(self.dimStyleList.mapToGlobal(pos))
 

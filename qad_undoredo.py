@@ -24,8 +24,8 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
 
@@ -64,7 +64,7 @@ class QadUndoRecord():
    def layerAt(self, layerId):
       # ritorna la posizione nella lista 0-based), -1 se non trovato
       if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
-         for j in xrange(0, len(self.layerList), 1):
+         for j in range(0, len(self.layerList), 1):
             if self.layerList[j].id() == layerId:
                return j
       return -1
@@ -104,7 +104,7 @@ class QadUndoRecord():
       if self.layerList is not None and self.undoType == QadUndoRecordTypeEnum.COMMAND:
          for layer in self.layerList:
             layer.endEditCommand()
-            #layer.updateExtents() # non serve
+            layer.triggerRepaint()
          canvas.refresh()
   
       
@@ -153,7 +153,7 @@ class QadUndoStack():
 
    def clearByLayer(self, layerId):
       # elimino il layer <layerId> dalla lista dei record di undo
-      for i in xrange(len(self.UndoRecordList) - 1, -1, -1):
+      for i in range(len(self.UndoRecordList) - 1, -1, -1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.COMMAND:
             UndoRecord.clearByLayer(layerId)      
@@ -176,7 +176,7 @@ class QadUndoStack():
       # dalla posizione di fine gruppo <endgroupPos> cerca la posizione di inizio gruppo
       # -1 se non trovato
       openFlag = 0
-      for i in xrange(endGroupPos, -1, -1):
+      for i in range(endGroupPos, -1, -1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN:
             openFlag = openFlag + 1
@@ -191,7 +191,7 @@ class QadUndoStack():
       # dalla posizione di inizio gruppo <endgroupPos> cerca la posizione di inizio gruppo
       # -1 se non trovato
       closeFlag = 0
-      for i in xrange(beginGroupPos, len(self.UndoRecordList), 1):
+      for i in range(beginGroupPos, len(self.UndoRecordList), 1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BEGIN:
             closeFlag = closeFlag - 1
@@ -252,7 +252,7 @@ class QadUndoStack():
       return False 
          
    def undoEditCommand(self, canvas = None, nTimes = 1):
-      for i in xrange(0, nTimes, 1):
+      for i in range(0, nTimes, 1):
          # cerco il primo record in cui ha senso fare UNDO
          if self.moveOnFirstUndoRecord() == False:
             break
@@ -287,7 +287,7 @@ class QadUndoStack():
       return False     
       
    def redoEditCommand(self, canvas = None, nTimes = 1):
-      for i in xrange(0, nTimes, 1):         
+      for i in range(0, nTimes, 1):         
          # cerco il primo record in cui ha senso fare REDO
          if self.moveOnFirstRedoRecord() == False:
             break
@@ -341,7 +341,7 @@ class QadUndoStack():
    def undoUntilBookmark(self, canvas):
       if self.index == -1:
          return
-      for i in xrange(self.index, -1, -1):
+      for i in range(self.index, -1, -1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
             break
@@ -353,7 +353,7 @@ class QadUndoStack():
 
 
    def redoUntilBookmark(self, canvas):
-      for i in xrange(self.index + 1, len(self.UndoRecordList), 1):
+      for i in range(self.index + 1, len(self.UndoRecordList), 1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
             break
@@ -366,7 +366,7 @@ class QadUndoStack():
    def getPrevBookmarkPos(self, pos):
       # dalla posizione <pos> cerca la posizione di bookmark precedente
       # -1 se non trovato
-      for i in xrange(pos - 1, -1, -1):
+      for i in range(pos - 1, -1, -1):
          UndoRecord = self.UndoRecordList[i]
          if UndoRecord.undoType == QadUndoRecordTypeEnum.BOOKMARK:
             return i

@@ -5,15 +5,19 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += ..\
+DEPENDPATH += ..\cmd\
 INCLUDEPATH += ..\
+INCLUDEPATH += ..\cmd\
 
 # Input
 FORMS += ..\*.ui
 RESOURCES += ..\qad.qrc
 SOURCES += ..\*.py
+SOURCES += ..\cmd\*.py
 
 TRANSLATIONS += qad_it.ts \
                 qad_fi.ts \
+                qad_fr.ts \
                 qad_es.ts
 
 CODECFORSRC = UTF-8

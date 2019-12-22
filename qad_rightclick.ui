@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RightClick_Dialog</class>
+ <widget class="QDialog" name="RightClick_Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>424</width>
+    <height>424</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>424</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>424</width>
+    <height>424</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>QAD - Right click customization</string>
+  </property>
+  <property name="toolTip">
+   <string/>
+  </property>
+  <widget class="QCheckBox" name="checkBox_timeSensitive">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>361</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Controls right-click behavior. A quick click is the same as pressing Enter. A longer click displays a shortcut menu. You can set the duration of the longer click in milliseconds.</string>
+   </property>
+   <property name="text">
+    <string>Turn on Time-Sensitive Right-Click</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>30</y>
+     <width>331</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Quick click for ENTER</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>50</y>
+     <width>331</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Longer click to display Shortcut Menu</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_default">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>110</y>
+     <width>401</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Default Mode</string>
+   </property>
+   <widget class="QRadioButton" name="radioButton_default_last_cmd">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Disables the Default shortcut menu. As a result, right-clicking in the drawing area when no objects are selected and no commands are in progress is the same as pressing Enter, which repeats the last issued command.</string>
+    </property>
+    <property name="text">
+     <string>Repeat last command</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_default_shortcut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Enables the Default shortcut menu.</string>
+    </property>
+    <property name="text">
+     <string>Shortcut Menu</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>381</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>If no objects are selected, right click means</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_edit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>401</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Edit Mode</string>
+   </property>
+   <widget class="QRadioButton" name="radioButton_edit_last_cmd">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Disables the Edit shortcut menu. As a result, right-clicking in the drawing area when one or more objects are selected and no commands are in progress is the same as pressing Enter, which repeats the last issued command.</string>
+    </property>
+    <property name="text">
+     <string>Repeat last command</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_edit_shortcut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Enables the Edit shortcut menu.</string>
+    </property>
+    <property name="text">
+     <string>Shortcut Menu</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>381</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>If one or more objects are selected, right click means</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_command">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>270</y>
+     <width>401</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Command Mode</string>
+   </property>
+   <widget class="QRadioButton" name="radioButton_cmd_enter">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Disables the Command shortcut menu. As a result, right-clicking in the drawing area when a command is in progress is the same as pressing Enter.</string>
+    </property>
+    <property name="text">
+     <string>ENTER</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_cmd_shortcut">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Enables the Command shortcut menu.</string>
+    </property>
+    <property name="text">
+     <string>Shortcut Menu: always enabled</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>381</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>If a command is in progress, right click means</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_cmd_shortcut_with_options">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Enables the Command shortcut menu only when command options are available at the Command prompt. If no options are available, a right-click is the same as pressing Enter.</string>
+    </property>
+    <property name="text">
+     <string>Shortcut Menu: enabled when command options are present</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_duration">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>80</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Controls right-click behavior. A quick click is the same as pressing Enter. A longer click displays a shortcut menu. You can set the duration of the longer click in milliseconds.</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>80</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>milliseconds</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Longer click duration:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_Cancel">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>390</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_ApplyClose">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>390</y>
+     <width>121</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply &amp;&amp; Close</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="Button_Help">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>Button_ApplyClose</sender>
+   <signal>clicked()</signal>
+   <receiver>RightClick_Dialog</receiver>
+   <slot>applyClose_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>407</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>9</x>
+     <y>404</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_Cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>RightClick_Dialog</receiver>
+   <slot>cancel_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Button_Help</sender>
+   <signal>clicked()</signal>
+   <receiver>RightClick_Dialog</receiver>
+   <slot>help_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>344</x>
+     <y>395</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_timeSensitive</sender>
+   <signal>clicked()</signal>
+   <receiver>RightClick_Dialog</receiver>
+   <slot>timeSensitive_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>364</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>applyClose_clicked()</slot>
+  <slot>cancel_clicked()</slot>
+  <slot>help_clicked()</slot>
+  <slot>timeSensitive_clicked()</slot>
+ </slots>
+</ui>

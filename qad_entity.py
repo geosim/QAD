@@ -24,32 +24,27 @@
 
 
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 from qgis.core import *
-from qgis.gui import *
 from qgis.utils import iface
 import sys
 
 
-import qad_utils
-from qad_arc import *
-from qad_circle import *
-import qad_layer
-import qad_stretch_fun
-import qad_label
+from . import qad_label
+from . import qad_layer
+from . import qad_stretch_fun
+from . import qad_utils
+from .qad_multi_geom import *
 
 
 #===============================================================================
-# QadEntityGeomTypeEnum class.
+# QadEntityTypeEnum class.
 #===============================================================================
-class QadEntityGeomTypeEnum():
+class QadEntityTypeEnum():
    NONE                = 0
    SYMBOL              = 1
    TEXT                = 2
-   ARC                 = 3
-   CIRCLE              = 4
-   LINESTRING          = 5
+   LINEAROBJ           = 3 # linea, arco, cerchio, arco di ellisse, ellisse, polilinea (e multi) 
+   POLYGON             = 4 # poligono (e multi)
 
 
 #===============================================================================
@@ -58,180 +53,104 @@ class QadEntityGeomTypeEnum():
 class QadEntity():
     
    def __init__(self, entity = None):
-      self.entityType = QadEntityGeomTypeEnum.NONE
-      self.qadGeom = None # in crs del canvas per lavorare con coordinate piane xy
-      self.dimStyle = None
-      self.dimId = None
+      self.entityType = QadEntityTypeEnum.NONE
       
       if entity is not None:
-         self.set(entity.layer, entity.featureId)
+         self.set(entity)
       else:    
          self.layer = None
          self.featureId = None
+         # geometria di qad singola (punto, linea, arco, cerchio, arco di ellisse, ellisse, polilinea, poligono)      
+         # oppure multipla (multipunto, multi oggetto lineare, multi poligono)
+         self.qadGeom = None # in crs del canvas per lavorare con coordinate piane xy
+         self.isTextualLayer = False
+         self.isSymbolLayer = False
+         self.rotFldName = None # campo usato per la rotazione di testi o simboli
 
 
    def whatIs(self):
       return "ENTITY"
 
-   
-   def isDimensionComponent(self):
-      # se entityType non è già stato inizializzato
-      if self.entityType == QadEntityGeomTypeEnum.NONE:
-         self.__initQadInfo()
 
-      return (self.dimStyle is not None) and (self.dimId is not None)
-
-
-   def __fromPoyline(self, pointList): # funzione privata
-      # restituisce entityType, qadGeom
-      arc = QadArc()
-      startEndVertices = arc.fromPolyline(pointList, 0)
-      # se la polilinea è composta solo da un arco
-      if startEndVertices and startEndVertices[0] == 0 and startEndVertices[1] == len(pointList)-1:
-         return QadEntityGeomTypeEnum.ARC, arc # oggetto arco
-      else:
-         circle = QadCircle()
-         if circle.fromPolyline(pointList): # se la polilinea è un cerchio
-            return QadEntityGeomTypeEnum.CIRCLE, circle # oggetto cerchio
-         else:
-            linearObjectList = qad_utils.QadLinearObjectList() # oggetto QadLinearObjectList
-            linearObjectList.fromPolyline(pointList)
-            return QadEntityGeomTypeEnum.LINESTRING, linearObjectList
-      
-      return QadEntityGeomTypeEnum.NONE, None
+   #===============================================================================
+   # set
+   #===============================================================================
+   def set(self, layer_or_entity, featureId = None):
+      self.clear()
+      if type(layer_or_entity) == QgsVectorLayer:
+         self.layer = layer_or_entity # il layer non si può copiare
+         self.featureId = featureId # copio l'identificativo di feature
+      else: # layer è una entità
+         self.layer = layer_or_entity.layer
+         self.featureId = layer_or_entity.featureId
+            
+         self.entityType = layer_or_entity.entityType
+         self.qadGeom = None if layer_or_entity.qadGeom is None else layer_or_entity.qadGeom.copy() # copio la geometria
+         self.isTextualLayer = layer_or_entity.isTextualLayer
+         self.isSymbolLayer = layer_or_entity.isSymbolLayer
+         self.rotFldName = layer_or_entity.rotFldName
+            
+      return self
 
 
    def __initQadInfo(self):
-      # inizializza entityType, qadGeom, dimStyle, dimId
+      # inizializza entityType, qadGeom, dimStyle, dimId, isTextualLayer, isSymbolLayer
+      if self.qadGeom is not None:
+         return self.entityType 
+
       if self.isInitialized() == False:
-         return QadEntityGeomTypeEnum.NONE
+         return QadEntityTypeEnum.NONE
+      
+      self.entityType = QadEntityTypeEnum.NONE
+      self.isTextualLayer = False
+      self.isSymbolLayer = False
+      self.rotFldName = None # campo usato per la rotazione di testi o simboli
 
-      self.dimStyle = None
-      self.dimId = None
+      layerGeomType = self.layer.geometryType()
 
+      if layerGeomType == QgsWkbTypes.PointGeometry:
+         if qad_layer.isTextLayer(self.layer):
+            self.isTextualLayer = True
+            self.entityType = QadEntityTypeEnum.TEXT
+            # se la rotazione dipende da un solo campo
+            rotFldNames = qad_label.get_labelRotationFieldNames(self.layer)
+            if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
+               self.rotFldName = rotFldNames[0]         
+            
+         elif qad_layer.isSymbolLayer(self.layer):
+            self.isSymbolLayer = True
+            self.entityType = QadEntityTypeEnum.SYMBOL
+            self.rotFldName = qad_layer.get_symbolRotationFieldName(self.layer)
+            
+      elif layerGeomType == QgsWkbTypes.LineGeometry:
+            self.entityType = QadEntityTypeEnum.LINEAROBJ
+      elif layerGeomType == QgsWkbTypes.PolygonGeometry:
+            self.entityType = QadEntityTypeEnum.POLYGON
+      
       g = self.getGeometry()
       if g is None:
-         return QadEntityGeomTypeEnum.NONE
+         return QadEntityTypeEnum.NONE
 
-      # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
-      coordTransform = QgsCoordinateTransform(self.layer.crs(), iface.mapCanvas().mapSettings().destinationCrs())
-      g.transform(coordTransform)
-
-      wkbType = g.wkbType()
-      if wkbType == QGis.WKBPoint:
-         from qad_dim import QadDimStyles # to avoid cyclic import
-
-         # verifico se l'entità appartiene ad uno stile di quotatura
-         dimStyle, dimId = QadDimStyles.getDimIdByEntity(self)
-         if (dimStyle is not None) and (dimId is not None):
-            self.dimStyle = dimStyle # stile di quotatura di appartenenza
-            self.dimId = dimId # codice quotatura di appartenenza
-            
-         if qad_layer.isTextLayer(self.layer):
-            self.entityType = QadEntityGeomTypeEnum.TEXT
-         elif qad_layer.isSymbolLayer(self.layer):
-            self.entityType = QadEntityGeomTypeEnum.SYMBOL
-         self.qadGeom = g.asPoint() # un punto
-
-      if wkbType == QGis.WKBMultiPoint:
-         if qad_layer.isTextLayer(self.layer):
-            self.entityType = QadEntityGeomTypeEnum.TEXT
-         elif qad_layer.isSymbolLayer(self.layer):
-            self.entityType = QadEntityGeomTypeEnum.SYMBOL
-         self.qadGeom = g.asMultiPoint() # lista di punti
-
-      elif wkbType == QGis.WKBLineString:
-         from qad_dim import QadDimStyles # to avoid cyclic import
-
-         # verifico se l'entità appartiene ad uno stile di quotatura
-         dimStyle, dimId = QadDimStyles.getDimIdByEntity(self)
-         if (dimStyle is not None) and (dimId is not None):
-            self.entityType = QadEntityGeomTypeEnum.DIMENSION_COMPONENT
-            self.dimStyle = dimStyle # stile di quotatura di appartenenza
-            self.dimId = dimId # codice quotatura di appartenenza
-
-         self.entityType, self.qadGeom = self.__fromPoyline(g.asPolyline())
-
-      elif wkbType == QGis.WKBMultiLineString:         
-         self.entityType = []
-         self.qadGeom = []
-         lineList = g.asMultiPolyline() # vettore di linee
-         for line in lineList:
-            entityType, qadGeom = self.__fromPoyline(g.asPolyline())
-            self.entityType.append(entityType)
-            self.qadGeom.append(qadGeom)
-
-      elif wkbType == QGis.WKBPolygon:
-         self.entityType = []
-         self.qadGeom = []
-         polygon = g.asPolygon() # vettore di linee
-         for line in polygon:
-            entityType, qadGeom = self.__fromPoyline(line)
-            self.entityType.append(entityType)
-            self.qadGeom.append(qadGeom)
-
-      elif wkbType == QGis.WKBMultiPolygon:
-         self.entityType = []
-         self.qadGeom = []
-         polygonList = g.asMultiPolygon() # vettore di poligoni
-         for polygon in polygonList:
-            partialEntityType = []
-            partialQadGeom = []
-            for line in polygon:
-               entityType, qadGeom = self.__fromPoyline(line)
-               partialEntityType.append(entityType)
-               partialQadGeom.append(qadGeom)
-            self.entityType.append(partialEntityType)
-            self.qadGeom.append(partialQadGeom)
-
-
-   def getEntityType(self, atGeom = 0, atSubGeom = 0):
-      # se entityType non è già stato inizializzato
-      if self.entityType == QadEntityGeomTypeEnum.NONE:
-         self.__initQadInfo()
-
-      # se entityType è stato inizializzato
-      if self.entityType != QadEntityGeomTypeEnum.NONE:
-         if type(self.entityType) == list:
-            if atGeom < len(self.entityType):
-               if type(self.entityType[atGeom]) == list:
-                  if atSubGeom < len(self.entityType[atGeom]):
-                     return self.entityType[atGeom][atSubGeom]
-                  else:
-                     return QadEntityGeomTypeEnum.NONE
-               else:
-                  return QadEntityGeomTypeEnum.NONE if atSubGeom != 0 else self.entityType[atGeom]
-            else:
-               return QadEntityGeomTypeEnum.NONE
-         else:
-            return QadEntityGeomTypeEnum.NONE if atGeom != 0 else self.entityType
-      else:
-         return QadEntityGeomTypeEnum.NONE
-
-
-   def getQadGeom(self, atGeom = 0, atSubGeom = 0):
-      # se entityType non è già stato inizializzato
-      if self.qadGeom is None:
-         self.__initQadInfo()
+      self.qadGeom = fromQgsGeomToQadGeom(g, self.layer.crs())
+      if self.qadGeom is None: return QadEntityTypeEnum.NONE
       
-      # se qadGeom è stato inizializzato
-      if self.qadGeom is not None:
-         if type(self.qadGeom) == list:
-            if atGeom < len(self.qadGeom):
-               if type(self.qadGeom[atGeom]) == list:
-                  if atSubGeom < len(self.qadGeom[atGeom]):
-                     return self.qadGeom[atGeom][atSubGeom]
-                  else:
-                     return None
-               else:
-                  return None if atSubGeom != 0 else self.qadGeom[atGeom]
-            else:
-               return None
-         else:
-            return None if atGeom != 0 else self.qadGeom
-      else:
-         return None
+      qadGeomType = self.qadGeom.whatIs()
+      layerGeomType = self.layer.geometryType()
+            
+      return self.entityType
 
+
+   def getEntityType(self):
+      return self.entityType
+   
+
+   def getQadGeom(self, atGeom = None, atSubGeom = None):
+      self.__initQadInfo()
+      if atGeom is None and atSubGeom is None:
+         return self.qadGeom
+      else:
+         return getQadGeomAt(self.qadGeom, atGeom, atSubGeom)
+      
 
    def isInitialized(self):
       if (self.layer is None) or (self.featureId is None):
@@ -243,10 +162,11 @@ class QadEntity():
    def clear(self):
       self.layer = None
       self.featureId = None
-      self.entityType = QadEntityGeomTypeEnum.NONE
+      self.entityType = QadEntityTypeEnum.NONE
       self.qadGeom = None
-      self.dimStyle = None
-      self.dimId = None
+      self.isTextualLayer = False
+      self.isSymbolLayer = False
+      self.rotFldName = None
       
       
    def __eq__(self, entity):
@@ -283,19 +203,10 @@ class QadEntity():
       return self.layer.crs()
 
 
-   def set(self, layer_or_entity, featureId = None):
-      self.clear()
-      if type(layer_or_entity) == QgsVectorLayer:
-         self.layer = layer_or_entity # il layer non si può copiare
-         self.featureId = featureId # copio l'identificativo di feature
-      else: # layer è una entità
-         if layer_or_entity is not None:
-            self.layer = layer_or_entity.layer
-            self.featureId = layer_or_entity.featureId
-
-      return self
-
-
+   def copy(self):
+      return QadEntity(self)
+   
+   
    def getFeature(self):
       if self.isInitialized() == False:
          return None
@@ -310,51 +221,18 @@ class QadEntity():
          return True
 
 
-   def getGeometry(self):
+   def getGeometry(self, destCRS = None):
       feature = self.getFeature()
       if feature is None:
          return None      
-      return QgsGeometry(feature.geometry()) # fa una copia
-
-
-   def __getPtsFromQadGeom(self, qadGeom, tolerance2ApproxCurve):
-      if type(qadGeom) == list: # entità composta da più geometrie
-         res = []
-         for subGeom in qadGeom:
-            res.append(self.__getPtsFromQadGeom(subGeom, tolerance2ApproxCurve))
-         return res
-      else:
-         if type(qadGeom) == QgsPoint:
-            return qadGeom
-         else:
-            return qadGeom.asPolyline(tolerance2ApproxCurve)
-
-
-   def __getGeomFromQadGeom(self, qadGeom, tolerance2ApproxCurve):
-      Pts = self.__getPtsFromQadGeom(qadGeom, tolerance2ApproxCurve)
-      if Pts is None:
-         return None
-      if self.layer.geometryType() == QGis.Point:
-         if type(Pts) == list:
-            g = QgsGeometry.fromMultiPoint(Pts)
-         else:
-            g = QgsGeometry.fromPoint(Pts)
-      if self.layer.geometryType() == QGis.Line:
-         if type(Pts[0]) == list:
-            g = QgsGeometry.fromMultiPolyline(Pts)
-         else:
-            g = QgsGeometry.fromPolyline(Pts)
-      if self.layer.geometryType() == QGis.Polygon:
-         if type(Pts[0][0]) == list:
-            g = QgsGeometry.fromMultiPolygon(Pts)
-         else:
-            g = QgsGeometry.fromPolygon(Pts)
-
-      # trasformo la geometria nel crs del layer
-      coordTransform = QgsCoordinateTransform(iface.mapCanvas().mapSettings().destinationCrs(), self.layer.crs())
-      g.transform(coordTransform)
+      g = QgsGeometry(feature.geometry()) # fa una copia
+      if destCRS is not None and destCRS != self.crs():
+         coordTransform = QgsCoordinateTransform(self.crs(), destCRS, QgsProject.instance()) # trasformo la geometria in destCRS coordinate
+         g.transform(coordTransform)
+         
       return g
-      
+   
+
 
 #    questa funzione non ha senso perchè feature è una variabile locale temporanea a cui viene settata la geometria
 #    ma poi, a fine funzione, viene distrutta.
@@ -399,59 +277,123 @@ class QadEntity():
 
 
 #===============================================================================
-# operazioni geometriche - inizio
-   
-   def gripStretch(self, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
-      # se entityType è già stato inizializzato
-      if self.entityType == QadEntityGeomTypeEnum.NONE:
-         self.__initQadInfo()
-   
-      return qad_stretch_fun.gripStretchQadGeometry(self.qadGeom, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
-
-   def gripGeomStretch(self, basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve):
-      newQadGeom = self.gripStretch(basePt, ptListToStretch, offSetX, offSetY, tolerance2ApproxCurve)
-      if newQadGeom is None:
-         return None
-      return self.__getGeomFromQadGeom(newQadGeom, tolerance2ApproxCurve)
-
-
-   #============================================================================
-   # rotate
-   #============================================================================
-   def rotate(self, basePt, angle):
-      # basePt = punto base espresso in map coordinate
-      # restituisce una feature ruotata
-      canvas = qgis.utils.iface.mapCanvas()
-      destinationCrs = canvas.mapSettings().destinationCrs()
-
-      f = self.getFeature()
-      g = g.geometry()
-      g.transform(QgsCoordinateTransform(self.crs(), destinationCrs))
-      # ruoto la feature
-      g = qad_utils.rotateQgsGeometry(g, basePt, angle)
-      g.transform(QgsCoordinateTransform(destinationCrs, self.crs()))
-      f.setGeometry(g)
-      
-      rotFldName = ""
-      if self.getEntityType() == QadEntityGeomTypeEnum.TEXT:
-         # se la rotazione dipende da un solo campo
-         rotFldNames = qad_label.get_labelRotationFieldNames(self.layer)
-         if len(rotFldNames) == 1 and len(rotFldNames[0]) > 0:
-            rotFldName = rotFldNames[0]         
-      elif self.getEntityType() == QadEntityGeomTypeEnum.SYMBOL:
-         rotFldName = qad_layer.get_symbolRotationFieldName(self.layer)
-      
-      if len(rotFldName) > 0:
-         rotValue = f.attribute(rotFldName)
-         # a volte vale None e a volte null (vai a capire...)
-         rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
-         rotValue = rotValue + angle
-         f.setAttribute(rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
-
-      return f
-   
-# operazioni geometriche - fine
+# QadCacheEntitySetIterator
 #===============================================================================
+class QadCacheEntitySetIterator():
+   # classe per iterare le entità di un QadCacheEntitySet
+   def __init__(self, cacheEntitySet):
+      self.i = 0
+      self.cacheEntitySet = cacheEntitySet
+
+   def __iter__(self):
+      return self
+
+   def __next__(self):
+      if self.i < len(self.cacheEntitySet.entityList):
+         ent = self.cacheEntitySet.entityList[self.i]
+         self.i += 1
+         return ent
+      else:
+         raise StopIteration
+
+
+#===============================================================================
+# QadCacheEntitySet
+#===============================================================================
+class QadCacheEntitySet():
+   """
+   Classe che gestisce una memoria cache per le entità
+   """
+   
+   #============================================================================
+   # __init__
+   #============================================================================
+   def __init__(self):
+      self.entityList = []
+
+
+   #============================================================================
+   # __del__
+   #============================================================================
+   def __del__(self):
+      self.clear()
+
+
+   #============================================================================
+   # clear
+   #============================================================================
+   def clear(self):
+      # svuota la cache
+      for entity in self.entityList: del entity
+      del self.entityList[:]
+
+
+   #============================================================================
+   # isEmpty
+   #============================================================================
+   def isEmpty(self):
+      return True if len(self.entityList) == 0 else False
+
+
+   #============================================================================
+   # getEntity
+   #============================================================================
+   def getEntity(self, layerId, featureId):
+      for entity in self.entityList:
+         if entity.layerId() == layerId and entity.featureId == featureId:
+            return entity
+      return None
+
+
+   #============================================================================
+   # appendEntity
+   #============================================================================
+   def appendEntity(self, entity):
+      clonedEntity = QadEntity(entity)
+      self.entityList.append(clonedEntity) # la copio
+      return clonedEntity
+
+
+   #============================================================================
+   # appendEntitySet
+   #============================================================================
+   def appendEntitySet(self, entitySet):
+      for layerEntitySet in entitySet.layerEntitySetList:
+         entityIterator = QadLayerEntitySetIterator(layerEntitySet)
+         for entity in entityIterator:
+             self.appendEntity(entity)
+
+
+   #============================================================================
+   # getLayerList
+   #============================================================================
+   def getLayerList(self):
+      layerList = []
+      for entity in self.entityList:
+         found = False
+         for layer in layerList:
+            if entity.layer.id() == layer.id():
+               found = True
+               break
+         if found == False:
+            layerList.append(entity.layer)
+            
+      return layerList
+   
+
+   #============================================================================
+   # getBoundingBox
+   #============================================================================
+   def getBoundingBox(self):
+      # ritorna il rettangolo di occupazione delle entità
+      result = None
+      for entity in self.entityList:
+         entBouningBox = entity.getQadGeom().getBoundingBox()
+         if result is None:
+            result = entBouningBox
+         else:
+            result.combineExtentWith(entBouningBox)
+      return result
 
 
 #===============================================================================
@@ -462,14 +404,21 @@ class QadLayerEntitySetIterator():
    def __init__(self, layerEntitySet):
       self.i = 0
       self.layerEntitySet = layerEntitySet
+      self.ent = QadEntity()
 
-   def nextEntity(self, ent):
+   def __iter__(self):
+      return self
+
+   def __next__(self):
       if self.i < len(self.layerEntitySet.featureIds):
-         ent.set(self.layerEntitySet.layer, self.layerEntitySet.featureIds[self.i])
+         self.ent.set(self.layerEntitySet.layer, self.layerEntitySet.featureIds[self.i])
          self.i += 1
-         return True
+         return self.ent
       else:
-         return False
+         raise StopIteration
+      
+   def next(self):
+      return self.__next__()
 
 
 #===============================================================================
@@ -543,7 +492,7 @@ class QadLayerEntitySet():
    def initByCurrentQgsSelectedFeatures(self, layer):
       self.clear()
       self.layer = layer
-      self.featureIds = self.layer.selectedFeaturesIds()
+      self.featureIds = self.layer.selectedFeatureIds()
 
 
    def getFeature(self, featureId):
@@ -568,7 +517,7 @@ class QadLayerEntitySet():
    def getGeometryCollection(self, destCRS = None):
       result = []
       if destCRS is not None:
-         coordTransform = QgsCoordinateTransform(self.layer.crs(), destCRS) # trasformo la geometria
+         coordTransform = QgsCoordinateTransform(self.layer.crs(), destCRS, QgsProject.instance()) # trasformo la geometria
       for featureId in self.featureIds:
          g = self.getGeometry(featureId)
          if g is not None:
@@ -579,17 +528,17 @@ class QadLayerEntitySet():
                # il calcolo dà un risultato sbagliato quando la geometria é nuova o modificata
                # (in cache del layer) e il sistema di coordinate é diverso de quello della mappa corrente 
                wkbType = g.wkbType()
-               if wkbType == QGis.WKBPoint or wkbType == QGis.WKBPoint25D:               
+               if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:               
                   g = QgsGeometry().fromPoint(g.asPoint())
-               elif wkbType == QGis.WKBMultiPoint or wkbType == QGis.WKBMultiPoint25D:
+               elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
                   g = QgsGeometry().fromMultiPoint(g.asMultiPoint())
-               elif wkbType == QGis.WKBLineString or wkbType == QGis.WKBLineString25D:
+               elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
                   g = QgsGeometry().fromPolyline(g.asPolyline())
-               elif wkbType == QGis.WKBMultiLineString or wkbType == QGis.WKBMultiLineString25D:
+               elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
                   g = QgsGeometry().fromMultiPolyline(g.asMultiPolyline())
-               elif wkbType == QGis.WKBPolygon or wkbType == QGis.WKBPolygon25D:
+               elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
                   g = QgsGeometry().fromPolygon(g.asPolygon())
-               elif wkbType == QGis.WKBMultiPolygon or wkbType == QGis.WKBMultiPolygon25D:
+               elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
                   g = QgsGeometry().fromMultiPolygon(g.asMultiPolygon())
                     
             result.append(g)
@@ -772,20 +721,23 @@ class QadEntitySetIterator():
    def __init__(self, entitySet):
       self.i = 0
       self.entitySet = entitySet
-      self.entitySetIterator = None
+      self.layerEntitySetIterator = None
+      self.ent = QadEntity()
 
-   def nextEntity(self, ent):
-      if self.i < len(self.layerEntitySetList):
-         if self.entitySetIterator is None:
-            self.entitySetIterator = QadLayerEntitySetIterator(self.layerEntitySetList[self.i])
-         if self.entitySetIterator.nextEntity(ent):
-            return True
-         self.i += 1
-         del self.entitySetIterator
-         self.entitySetIterator = None
-         return self.nextEntity(ent)
-      else:
-         return False
+   def __iter__(self):
+      return self
+
+   def __next__(self):
+      while self.i < len(self.entitySet.layerEntitySetList):
+         if self.layerEntitySetIterator is None:
+            self.layerEntitySetIterator = QadLayerEntitySetIterator(self.entitySet.layerEntitySetList[self.i])
+         try:
+            return self.layerEntitySetIterator.next()
+         except StopIteration:
+            self.i += 1
+            del self.layerEntitySetIterator
+            self.layerEntitySetIterator = None
+      raise StopIteration
 
 
 #===============================================================================
@@ -885,7 +837,7 @@ class QadEntitySet():
       for layerEntitySet in self.layerEntitySetList:
          layerEntitySet.deselectOnLayer()
 
-
+   
    def containsEntity(self, entity):
       layerEntitySet = self.findLayerEntitySet(entity.layer)
       if layerEntitySet is None: 
@@ -945,7 +897,7 @@ class QadEntitySet():
    def intersect(self, entitySet):
       if entitySet is None:
          return
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
+      for i in range(len(self.layerEntitySetList) - 1, -1, -1):
          _layerEntitySet = self.layerEntitySetList[i]
          layerEntitySet = entitySet.findLayerEntitySet(_layerEntitySet)
          if layerEntitySet is None:
@@ -969,14 +921,14 @@ class QadEntitySet():
 
 
    def removeNotEditable(self):
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
+      for i in range(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.layer.isEditable() == False:
             del self.layerEntitySetList[i]
                   
 
    def removeGeomType(self, type):
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
+      for i in range(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.layer.geometryType() == type:
             del self.layerEntitySetList[i]
@@ -984,7 +936,7 @@ class QadEntitySet():
 
    def purge(self):
       # rimuove i layer con zero oggetti
-      for i in xrange(len(self.layerEntitySetList) - 1, -1, -1):
+      for i in range(len(self.layerEntitySetList) - 1, -1, -1):
          layerEntitySet = self.layerEntitySetList[i]
          if layerEntitySet.count() == 0:
             del self.layerEntitySetList[i]
@@ -996,7 +948,7 @@ class QadEntitySet():
       for layerEntitySet in self.layerEntitySetList:
          partial = layerEntitySet.boundingBox()
          if partial is not None:
-            coordTransform = QgsCoordinateTransform(layerEntitySet.crs(), destCRS) # trasformo la geometria
+            coordTransform = QgsCoordinateTransform(layerEntitySet.crs(), destCRS, QgsProject.instance()) # trasformo la geometria
             if result is None:
                result = QgsRectangle(coordTransform.transform(partial.xMinimum(), partial.yMinimum()), \
                                      coordTransform.transform(partial.xMaximum(), partial.yMaximum()))
@@ -1004,3 +956,185 @@ class QadEntitySet():
                result.combineExtentWith(QgsRectangle(coordTransform.transform(partial.xMinimum(), partial.yMinimum()), \
                                         coordTransform.transform(partial.xMaximum(), partial.yMaximum())))
       return result
+
+
+#===============================================================================
+# getSelSet
+#===============================================================================
+def getSelSet(mode, mQgsMapTool, points = None, \
+              layersToCheck = None, checkPointLayer = True, checkLineLayer = True, checkPolygonLayer = True,
+              onlyEditableLayers = False):
+   """
+   dato un QgsMapTool, una modalità di selezione e una lista opzionale di punti (in map coordinates),
+   la funzione cerca le entità.
+   mode = "C"  -> Crossing selection (inside and crossing)
+          "CP" -> Crossing polygon (inside and crossing)
+          "F"  -> Fence selection (crossing)
+          "W"  -> Window selection (inside)
+          "WP" -> Windows polygon (inside)
+          "X"  -> all          
+   layer = opzionale, lista dei layer in cui cercare
+   checkPointLayer = opzionale, considera i layer di tipo punto
+   checkLineLayer = opzionale, considera i layer di tipo linea
+   checkPolygonLayer = opzionale, considera i layer di tipo poligono
+   onlyEditableLayers = opzionale, considera i layer editabili
+   Restituisce un QadEntitySet in caso di successo altrimenti None 
+   """
+        
+   if checkPointLayer == False and checkLineLayer == False and checkPolygonLayer == False:
+      return None
+   
+   entity = QadEntity()
+   result = QadEntitySet()
+   feature = QgsFeature()
+   
+   #QApplication.setOverrideCursor(Qt.WaitCursor)
+   
+   if layersToCheck is None:
+      # Tutti i layer visibili
+      _layers = qad_utils.getVisibleVectorLayers(mQgsMapTool.canvas) # Tutti i layer vettoriali visibili
+   else:
+      # solo la lista passata come parametro
+      _layers = layersToCheck
+      
+   for layer in _layers: # ciclo sui layer
+      # considero solo i layer vettoriali che sono filtrati per tipo
+      if (layer.type() == QgsMapLayer.VectorLayer) and \
+          ((layer.geometryType() == QgsWkbTypes.PointGeometry and checkPointLayer == True) or \
+           (layer.geometryType() == QgsWkbTypes.LineGeometry and checkLineLayer == True) or \
+           (layer.geometryType() == QgsWkbTypes.PolygonGeometry and checkPolygonLayer == True)) and \
+           (onlyEditableLayers == False or layer.isEditable()):
+         provider = layer.dataProvider()  
+
+         if mode.upper() == "X": # take all features
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True,  None, False)):
+               entity.set(layer, feature.id())
+               result.addEntity(entity)
+         elif mode.upper() == "C": # crossing selection
+            p1 = mQgsMapTool.toLayerCoordinates(layer, points[0])
+            p2 = mQgsMapTool.toLayerCoordinates(layer, points[1])
+            selectRect = QgsRectangle(p1, p2)
+            # Select features in rectangle
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, selectRect, True)):
+               entity.set(layer, feature.id())
+               result.addEntity(entity)
+         elif mode.upper() == "W": # window selection
+            p1 = mQgsMapTool.toLayerCoordinates(layer, points[0])
+            p2 = mQgsMapTool.toLayerCoordinates(layer, points[1])
+            selectRect = QgsRectangle(p1, p2)
+            g = QgsGeometry.fromRect(selectRect)
+            # Select features in rectangle
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, selectRect, True)):            
+               # solo le feature completamente interne al rettangolo
+               if g.contains(feature.geometry()):
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+         elif mode.upper() == "CP": # crossing polygon
+            polyline = []      
+            for point in points:
+               polyline.append(mQgsMapTool.toLayerCoordinates(layer, point))
+            
+            g = QgsGeometry.fromPolygonXY([polyline])
+            # Select features in the polygon bounding box
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, g.boundingBox(), True)):            
+               # solo le feature intersecanti il poligono
+               if g.intersects(feature.geometry()):                     
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+         elif mode.upper() == "WP": # windows polygon
+            polyline = []      
+            for point in points:
+               polyline.append(mQgsMapTool.toLayerCoordinates(layer, point))
+            
+            g = QgsGeometry.fromPolygonXY([polyline])
+            # Select features in the polygon bounding box
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, g.boundingBox(), True)):
+               # solo le feature completamente interne al poligono
+               if g.contains(feature.geometry()):                     
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+         elif mode.upper() == "CO": # crossing object
+            # points é in questo caso un QgsGeometry  
+            g = QgsGeometry(points)
+            if mQgsMapTool.canvas.mapSettings().destinationCrs() != layer.crs():       
+               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapSettings().destinationCrs(), \
+                                                       layer.crs(), \
+                                                       QgsProject.instance()) # trasformo la geometria
+               g.transform(coordTransform)
+                        
+            # Select features in the object bounding box
+            wkbType = g.wkbType()            
+            if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:   
+               Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
+               ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
+                                                                      mQgsMapTool.canvas.mapSettings(), \
+                                                                      QgsTolerance.Pixels)
+      
+               pt = g.asPoint()
+               # QgsRectangle (double xmin=0, double ymin=0, double xmax=0, double ymax=0)
+               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.y() - ToleranceInMapUnits, \
+                                         pt.x() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
+               # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+               request = qad_utils.getFeatureRequest([], True, selectRect, True)
+            else:
+               # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+               request = qad_utils.getFeatureRequest([], True, g.boundingBox(), True)
+               
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect
+            for feature in layer.getFeatures(request):
+               # solo le feature intersecanti l'oggetto
+               if g.intersects(feature.geometry()):
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+         elif mode.upper() == "WO": # windows object
+            # points é in questo caso un QgsGeometry  
+            g = QgsGeometry(points)
+            if mQgsMapTool.canvas.mapSettings().destinationCrs() != layer.crs():       
+               coordTransform = QgsCoordinateTransform(mQgsMapTool.canvas.mapSettings().destinationCrs(), \
+                                                       layer.crs(), \
+                                                       QgsProject.instance()) # trasformo la geometria
+               g.transform(coordTransform)
+
+            # Select features in the object bounding box
+            wkbType = g.wkbType()            
+            if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:   
+               Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
+               ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
+                                                                      mQgsMapTool.canvas.mapSettings(), \
+                                                                      QgsTolerance.Pixels)
+      
+               pt = g.asPoint()
+               selectRect = QgsRectangle(pt.x() - ToleranceInMapUnits, pt.y() - ToleranceInMapUnits, \
+                                         pt.x() + ToleranceInMapUnits, pt.y() + ToleranceInMapUnits)
+               # fetchAttributes, fetchGeometry, rectangle, useIntersect             
+               request = qad_utils.getFeatureRequest([], True, selectRect, True)
+            else:
+               # fetchAttributes, fetchGeometry, rectangle, useIntersect
+               request = qad_utils.getFeatureRequest([], True, g.boundingBox(), True)
+            
+            # solo le feature completamente interne all'oggetto
+            for feature in layer.getFeatures(request):                           
+               if g.contains(feature.geometry()):                     
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+         elif mode.upper() == "F": # fence
+            polyline = []      
+            for point in points:
+               polyline.append(mQgsMapTool.toLayerCoordinates(layer, point))
+               
+            g = QgsGeometry.fromPolylineXY(polyline)
+            # Select features in the polyline bounding box
+            # fetchAttributes, fetchGeometry, rectangle, useIntersect
+            for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, g.boundingBox(), True)):                       
+               # solo le feature che intersecano la polyline
+               if g.intersects(feature.geometry()):                     
+                  entity.set(layer, feature.id())
+                  result.addEntity(entity)
+            
+   #QApplication.restoreOverrideCursor()
+   return result
