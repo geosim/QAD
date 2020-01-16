@@ -4223,13 +4223,14 @@ def getQadGeomClosestPart(qadGeom, pt):
       result = QadMinDistance.fromPointToBasicGeomObject(pt, qadGeom)
       dist = result[0]
       minDistPoint = result[1]
-      result.extend((0, 0, 0))
       
       if geomType == "LINE" or geomType == "ARC" or geomType == "ELLIPSE_ARC":
          # <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
          leftOf = qadGeom.leftOf(pt)
-      else: # cerchio o ellisse
+      elif geomType == "CIRCLE" or geomType == "ELLIPSE_ARC" or geomType == "ELLIPSE": # cerchio o ellisse
          leftOf = qadGeom.whereIsPt(pt) # -1 interno, 0 sulla circonferenza, 1 esterno
+      else:
+         leftOf = None
          
       return (dist, minDistPoint, 0, 0, 0, leftOf)
    
