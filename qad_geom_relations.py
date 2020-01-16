@@ -316,7 +316,7 @@ class QadIntersections():
       La funzione ritorna i punti di intersezione tra un segmento e un'ellisse.
       """
       result = []
-      intPtList = QadIntersections.infinityLineWithEllipse(ellipse, line)
+      intPtList = QadIntersections.infinityLineWithEllipse(line, ellipse)
       for intPt in intPtList:
          if line.containsPt(intPt):
             result.append(intPt)
@@ -910,7 +910,7 @@ class QadIntersections():
             result.extend(QadIntersections.twoGeomObjects(linearObj, object2, object2GeomBoundingBoxCache))
             
       elif geomType1 == "POLYGON":
-         for subGeomAt in range(0, object1.qty()):
+         for geomAt in range(0, object1.qty()):
             closedObj = object1.getClosedObjectAt(geomAt)
             result.extend(QadIntersections.twoGeomObjects(closedObj, object2, object2GeomBoundingBoxCache))
          
