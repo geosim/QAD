@@ -76,7 +76,6 @@ class QadCOPYCommandClass(QadCommandClass):
       self.adjust = False
       self.copyMode = QadVariables.get(QadMsg.translate("Environment variables", "COPYMODE"))
       
-      self.featureCache = [] # lista di (layer, feature)
       self.nOperationsToUndo = 0
 
    def __del__(self):
@@ -226,7 +225,7 @@ class QadCOPYCommandClass(QadCommandClass):
       self.getPointMapTool().seriesLen = 0
       self.getPointMapTool().setMode(Qad_copy_maptool_ModeEnum.BASE_PT_KNOWN_ASK_FOR_COPY_PT)
                                       
-      if len(self.featureCache) > 0:
+      if self.nOperationsToUndo > 0:
          keyWords = QadMsg.translate("Command_COPY", "Array") + "/" + \
                     QadMsg.translate("Command_COPY", "Exit") + "/" + \
                     QadMsg.translate("Command_COPY", "Undo")
@@ -391,7 +390,7 @@ class QadCOPYCommandClass(QadCommandClass):
             # abbia selezionato un punto            
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
-                  if len(self.featureCache) > 0:
+                  if self.nOperationsToUndo > 0:
                      value = QadMsg.translate("Command_COPY", "Exit")
                   else:
                      value = None
@@ -404,7 +403,7 @@ class QadCOPYCommandClass(QadCommandClass):
             value = msg
 
          if value is None:
-            if len(self.featureCache) > 0:
+            if self.nOperationsToUndo > 0:
                value = QadMsg.translate("Command_COPY", "Exit")
             else:               
                # utilizzare il primo punto come spostamento
