@@ -61,7 +61,7 @@ def doMoveAndRotateGeom(plugIn, entity, offsetX, offsetY, angle, basePt, addToLa
          if entity.rotFldName is not None:
             rotValue = newF.attribute(entity.rotFldName)
             # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue is not None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             newF.setAttribute(entity.rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
          

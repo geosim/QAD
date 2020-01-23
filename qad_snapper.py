@@ -778,7 +778,7 @@ class QadSnapper():
 
       geomType = geom.whatIs()
       if geomType == "POINT":
-         self.__appendUniquePoint(result, geom) # aggiungo senza duplicazione
+         self.__appendUniquePoint(result, QgsPointXY(geom)) # aggiungo senza duplicazione
       elif geomType == "MULTI_POINT":
          i = 0
          while i < geom.qty():

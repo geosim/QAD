@@ -639,6 +639,7 @@ def displayError(exception = None):
    for s in format_exception:
       if s != "Traceback (most recent call last):\n":
          stk = s + stk
-   if exception is not None: stk = exception.__doc__ + "\n" + stk
+   if exception is not None and exception.__doc__ is not None: 
+      stk = exception.__doc__ + "\n" + stk
    stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n") + stk
    QMessageBox.critical(None, "QAD", stk)

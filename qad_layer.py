@@ -362,7 +362,7 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
    while i < count:
       if i in pkAttrList:
          defVal = provider.defaultValue(i)
-         if not isinstance(defVal, QPyNullVariant) or layer.providerType() == "spatialite":
+         if defVal is not None or layer.providerType() == "spatialite":
             f[i] = provider.defaultValue(i)         
       i = i + 1
  
