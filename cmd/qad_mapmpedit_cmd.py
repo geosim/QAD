@@ -37,7 +37,6 @@ from .. import qad_utils
 from .. import qad_layer
 from .qad_entsel_cmd import QadEntSelClass
 from ..qad_geom_relations import getQadGeomClosestVertex
-from future.backports.test.pystone import FALSE
 
 
 #===============================================================================
