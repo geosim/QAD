@@ -27,6 +27,7 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui  import *
 from qgis.core import *
 from qgis.gui import *
+
 import math
 
 from . import qad_utils

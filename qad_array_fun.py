@@ -30,6 +30,7 @@ from qgis.core import *
 from qgis.gui import *
 import qgis.utils
 
+import math
 
 from . import qad_utils
 from . import qad_arc

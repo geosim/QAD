@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton
 from qgis.core import QgsPointXY, QgsProject, QgsMapLayer
 # Initialize Qt resources from file qad_rc.py
 from .qad_rc import *
+
 import os
 import math
 

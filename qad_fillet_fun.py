@@ -28,6 +28,8 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui  import *
 from qgis.core import *
 
+import math
+
 from .qad_arc import QadArc
 from .qad_multi_geom import *
 from .qad_geom_relations import *

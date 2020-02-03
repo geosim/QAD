@@ -30,6 +30,8 @@ from qgis.core import *
 from qgis.gui import *
 import qgis.utils
 
+import math
+
 from . import qad_utils
 from .qad_geom_relations import *
 from .qad_join_fun import selfJoinPolyline

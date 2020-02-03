@@ -30,6 +30,7 @@ from qgis.PyQt.QtCore import Qt, QTimer, QPoint
 from qgis.PyQt.QtGui import QColor, QFontMetrics, QTextCursor, QIcon, QPixmap
 from qgis.PyQt.QtWidgets import QTextEdit, QSizePolicy, QApplication, QLabel, QWidget
 
+import math
 
 from . import qad_utils
 from .qad_arc import QadArc

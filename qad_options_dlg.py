@@ -362,6 +362,7 @@ class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
          variables = Form.getSysVariableList()
          for variable in variables:
             self.tempQadVariables.set(variable.name, variable.value)
+         self.init_user_preferences_tab()
 
 
    def accept_user_preferences_tab(self):
