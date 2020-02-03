@@ -28,6 +28,9 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsPointXY
 
 
+import math
+
+
 from .. import qad_array_fun
 from .. import qad_layer
 from .. import qad_utils
@@ -1054,7 +1057,7 @@ class QadARRAYCommandClass(QadCommandClass):
       #=========================================================================
       # RICHIESTA SELEZIONE OGGETTI
       if self.step == QadARRAYCommandClassStepEnum.ASK_FOR_SELSET: # inizio del comando
-         if self.cacheEntitySet.count() > 0: # se era già stato impostato da codice tramite "self.setEntitySet"
+         if self.cacheEntitySet.isEmpty() == False: # se era già stato impostato da codice tramite "self.setEntitySet"
             self.waitForArrayType()
             return False
             

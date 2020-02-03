@@ -29,7 +29,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .qad_generic_cmd import QadCommandClass
 from ..qad_msg import QadMsg
-from ..qad_variables import QadVariables
+from ..qad_variables import QadVariables, QadVariableTypeEnum
 
 
 # Classe che gestisce il comando SETVAR
@@ -87,21 +87,22 @@ class QadSETVARCommandClass(QadCommandClass):
             else:
                varValue = variable.value
                varDescr = variable.descr
-               varType = str(type(varValue))
+               varType  = variable.typeValue
+               
                if len(varDescr) > 0:
                   self.showMsg("\n" + varDescr)
                
                msg = QadMsg.translate("Command_SETVAR", "Enter new value for variable {0} <{1}>: ")
-               if varType == "<type 'str'>":
+               if varType == QadVariableTypeEnum.STRING:
                   # si appresta ad attendere una stringa
                   self.waitForString(msg.format(self.varName, varValue), varValue)
-               elif varType == "<type 'int'>":
+               elif varType == QadVariableTypeEnum.INT:
                   # si appresta ad attendere un numero intero
                   self.waitForInt(msg.format(self.varName, varValue), varValue)
-               elif varType == "<type 'float'>":
+               elif varType == QadVariableTypeEnum.FLOAT:
                   # si appresta ad attendere un numero reale
                   self.waitForFloat(msg.format(self.varName, varValue), varValue)
-               elif varType == "<type 'bool'>":
+               elif varType == QadVariableTypeEnum.BOOL:
                   # si appresta ad attendere un numero reale
                   self.waitForBool(msg.format(self.varName, varValue), varValue)
                self.step = 2
