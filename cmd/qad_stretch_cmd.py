@@ -28,6 +28,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsPointXY, QgsCoordinateTransform, QgsGeometry, QgsRectangle
 
 
+from ..qad_line import QadLine
 from .qad_stretch_maptool import Qad_stretch_maptool, Qad_stretch_maptool_ModeEnum, Qad_gripStretch_maptool
 from ..qad_getpoint import QadGetPointDrawModeEnum
 from ..qad_textwindow import QadInputTypeEnum, QadInputModeEnum
