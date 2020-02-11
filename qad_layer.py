@@ -32,6 +32,7 @@ import re # regular expression
 
 
 from .qad_msg import QadMsg
+from .qad_label import get_labelFieldNames
 
 
 #===============================================================================
@@ -594,6 +595,11 @@ def isTextLayer(layer):
          return False
    # deve avere etichette
    if layer.labeling() is None:
+      return False
+   
+   # verifico che ci sia almeno un campo come etichetta
+   labelFieldNames = get_labelFieldNames(layer)
+   if len(labelFieldNames) == 0:
       return False
          
    return True

@@ -146,7 +146,7 @@ class QadLine():
    #===============================================================================
    def getMiddlePt(self):
       """
-      la funzione ritorna il punto medio della linea
+      la funzione ritorna il punto medio della linea (QgsPointXY)
       """
       x = (self.pt1.x() + self.pt2.x()) / 2
       y = (self.pt1.y() + self.pt2.y()) / 2

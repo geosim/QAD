@@ -725,12 +725,12 @@ class QadSnapper():
 
       geomType = geom.whatIs()
       if geomType == "LINE" or geomType == "ARC" or geomType == "ELLIPSE_ARC":
-         self.__appendUniquePoint(result, geom.getMiddlePt()) # aggiungo senza duplicazione
+         self.__appendUniquePoint(result, QgsPointXY(geom.getMiddlePt())) # aggiungo senza duplicazione
       elif geomType == "POLYLINE":
          i = 0
          while i < geom.qty():
             linearObject = self.getLinearObjectAt(i)
-            self.__appendUniquePoint(result, linearObject.getMiddlePt()) # aggiungo senza duplicazione
+            self.__appendUniquePoint(result, QgsPointXY(linearObject.getMiddlePt())) # aggiungo senza duplicazione
             i = i + 1
             
       return result
