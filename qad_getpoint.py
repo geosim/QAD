@@ -23,8 +23,8 @@
 """
 
 
-from qgis.PyQt.QtCore import Qt, QTimer
-from qgis.PyQt.QtGui import QColor, QCursor, QIcon
+from qgis.PyQt.QtCore import Qt, QTimer, QEvent
+from qgis.PyQt.QtGui import QColor, QCursor, QIcon, QKeyEvent
 from qgis.PyQt.QtWidgets import QAction, QMenu
 from qgis.core import QgsWkbTypes, QgsGeometry, QgsCoordinateTransform, QgsPointXY, QgsProject
 from qgis.gui import QgsMapTool
@@ -1006,7 +1006,6 @@ class QadGetPoint(QgsMapTool):
                contextualMenu.popup(self.canvas.mapToGlobal(event.pos()))
                return # esco qui per non contiuare il comando dal maptool
             else:
-               # se click veloce equivale a premere INVIO
                return self.plugIn.showEvaluateMsg(None)
          else:
             # 4 = Enables Command mode shortcut menus whenever a command is active. 
@@ -1019,7 +1018,7 @@ class QadGetPoint(QgsMapTool):
                   contextualMenu.popup(self.canvas.mapToGlobal(event.pos()))
                else:
                   # equivale a premere INVIO
-                  return self.plugIn.showEvaluateMsg(None)               
+                  return self.plugIn.showEvaluateMsg(None)
       
       # se l'obiettivo é selezionare un rettangolo
       if self.getDrawMode() == QadGetPointDrawModeEnum.ELASTIC_RECTANGLE:                 
@@ -1068,7 +1067,13 @@ class QadGetPoint(QgsMapTool):
    # keyPressEvent
    #============================================================================
    def keyPressEvent(self, event):
-      self.plugIn.keyPressEvent(event)
+      # if Key_AltGr is pressed, then perform the as return
+      if event.key() == Qt.Key_AltGr:
+         myEvent = QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier)
+      else:
+         myEvent = event
+      
+      self.plugIn.keyPressEvent(myEvent)
 
 
    #============================================================================

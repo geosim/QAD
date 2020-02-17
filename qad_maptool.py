@@ -25,8 +25,8 @@
 
 from qgis.core import QgsMapLayer, QgsPointXY
 from qgis.gui import QgsMapTool
-from qgis.PyQt.QtCore import Qt, QTimer, QPoint
-from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import Qt, QTimer, QPoint, QEvent
+from qgis.PyQt.QtGui import QCursor, QKeyEvent
 from qgis.PyQt.QtWidgets import QAction, QMenu
 
 import datetime
@@ -315,13 +315,19 @@ class QadMapTool(QgsMapTool):
    # keyPressEvent
    #============================================================================
    def keyPressEvent(self, e):
-      if self.plugIn.shortCutManagement(e): # se è stata gestita una sequenza di tasti scorciatoia
+      # if Key_AltGr is pressed, then perform the as return
+      if e.key() == Qt.Key_AltGr:
+         myEvent = QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier)
+      else:
+         myEvent = e
+         
+      if self.plugIn.shortCutManagement(myEvent): # se è stata gestita una sequenza di tasti scorciatoia
          return
       
-      if e.text() != "" and self.dynamicCmdInput.show(True, self.canvas.mouseLastXY(), self.dynamicCmdInput.getPrompt()) == True:
-         self.dynamicCmdInput.keyPressEvent(e)
+      if myEvent.text() != "" and self.dynamicCmdInput.show(True, self.canvas.mouseLastXY(), self.dynamicCmdInput.getPrompt()) == True:
+         self.dynamicCmdInput.keyPressEvent(myEvent)
       else:      
-         self.plugIn.keyPressEvent(e)
+         self.plugIn.keyPressEvent(myEvent)
 
 
    #============================================================================
