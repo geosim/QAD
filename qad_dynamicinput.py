@@ -44,6 +44,7 @@ from .qad_variables import *
 from .qad_variables import QadVariables, QadINPUTSEARCHOPTIONSEnum
 from .qad_vertexmarker import *
 from .qad_dim import QadDimStyles
+from future.backports.test.pystone import TRUE
 
 
 #===============================================================================
@@ -1045,6 +1046,12 @@ class QadDynamicInput(QWidget):
    
    def isPromptActive(self):
       return True if self.isActive() and self.dynPrompt == 1 else False
+
+
+   def hasFocus(self): # ritorna True se uno widget di input ha il fuoco
+      for edit in self.edits:
+         if edit.hasFocus(): return True
+      return False
 
   
    #============================================================================
@@ -2372,7 +2379,10 @@ class QadDynamicEditInput(QadDynamicInput):
            self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
          # se si tratta di un numero
          if type(self.default) == int or type(self.default) == long or type(self.default) == float:
-            self.edits[QadDynamicInputEditEnum.EDIT].showMsg(qad_utils.numToStringFmt(self.default))
+            if self.inputType & QadInputTypeEnum.ANGLE:
+               self.edits[QadDynamicInputEditEnum.EDIT].showMsg(qad_utils.numToStringFmt(qad_utils.toDegrees(self.default)))
+            else:
+               self.edits[QadDynamicInputEditEnum.EDIT].showMsg(qad_utils.numToStringFmt(self.default))
          # se si tratta di un punto
          elif type(self.default) == QgsPointXY:
             self.edits[QadDynamicInputEditEnum.EDIT].showMsg(qad_utils.pointToStringFmt(self.default))

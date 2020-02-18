@@ -1066,12 +1066,14 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    # keyPressEvent
    #============================================================================
-   def keyPressEvent(self, event):
-      # if Key_AltGr is pressed, then perform the as return
-      if event.key() == Qt.Key_AltGr:
-         myEvent = QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier)
-      else:
-         myEvent = event
+   def keyPressEvent(self, e):
+      myEvent = e
+      # ALTGR non si può usare perchè è usato per indicare le coordinate
+#       # if Key_AltGr is pressed, then perform the as return
+#       if e.key() == Qt.Key_AltGr:
+#          myEvent = QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier)
+#       else:
+#          myEvent = e
       
       self.plugIn.keyPressEvent(myEvent)
 
