@@ -37,6 +37,7 @@ from ..qad_textwindow import QadInputModeEnum, QadInputTypeEnum
 from ..qad_getpoint import QadGetPointDrawModeEnum, QadGetPoint
 from ..qad_dynamicinput import QadDynamicInputContextEnum
 from ..qad_dsettings_dlg import QadDSETTINGSDialog, QadDSETTINGSTabIndexEnum
+from ..qad_snapper import QadSnapTypeEnum, snapTypeEnum2Str
 
 
 # Classe che gestisce un comando generico

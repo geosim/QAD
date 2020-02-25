@@ -481,8 +481,8 @@ class QadARRAYCommandClass(QadCommandClass):
       # imposto il map tool
       self.getPointMapTool().setMode(Qad_array_maptool_ModeEnum.NONE)
 
-      self.defaultValue = self.pathItemsNumber
       if self.arrayType == QadARRAYCommandClassSeriesTypeEnum.PATH:
+         self.defaultValue = self.pathItemsNumber
          if self.pathMethod == QadARRAYCommandClassPathMethodTypeEnum.MEASURE:
             keyWords = QadMsg.translate("Command_ARRAY", "Fill entire path")
             englishKeyWords = "Fill entire path"
@@ -495,6 +495,7 @@ class QadARRAYCommandClass(QadCommandClass):
             prompt = QadMsg.translate("Command_ARRAY", "Number of Items to Array <{0}>: ").format(str(self.defaultValue))
             inputType = QadInputTypeEnum.INT
       elif self.arrayType == QadARRAYCommandClassSeriesTypeEnum.POLAR:
+         self.defaultValue = self.polarItemsNumber
          # si appresta ad attendere un numero intero
          keyWords = ""
          prompt = QadMsg.translate("Command_ARRAY", "Number of Items to Array <{0}>: ").format(str(self.defaultValue))
