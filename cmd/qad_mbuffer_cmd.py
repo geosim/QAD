@@ -119,7 +119,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
             bufferedQadGeom = buffer(entity.getQadGeom(), self.width)
             if bufferedQadGeom is not None:
                # trasformo la geometria nel crs del layer
-               bufferGeoms.append(fromQadGeomToQgsGeom(bufferedQadGeom, entity.crs()))
+               bufferGeoms.append(fromQadGeomToQgsGeom(bufferedQadGeom, currLayer.crs()))
 
       self.plugIn.beginEditCommand("Feature buffered", currLayer)
       
@@ -163,7 +163,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
       # trasformo la geometria in quella dei layer temporanei 
       # plugIn, pointGeoms, lineGeoms, polygonGeoms, coord, refresh
       if qad_layer.addGeometriesToQADTempLayers(self.plugIn, pointGeoms, lineGeoms, polygonGeoms, \
-                                                None, False) == False:
+                                                currLayer.crs(), False) == False:
          self.plugIn.destroyEditCommand()
          return
 
