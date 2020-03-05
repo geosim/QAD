@@ -80,7 +80,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
 
    def __del__(self):
       QadCommandClass.__del__(self)
-      del SSGetClass
+      del self.SSGetClass
 
 
    def getPointMapTool(self, drawMode = QadGetPointDrawModeEnum.NONE):
