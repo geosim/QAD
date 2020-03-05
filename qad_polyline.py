@@ -418,7 +418,7 @@ class QadPolyline():
             else: # allora è una linea
                line.set(points[i], points[i + 1])
                self.append(line)
-         i = i + 1
+               i = i + 1
    
       if self.qty() == 0: return False
    

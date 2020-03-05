@@ -637,10 +637,11 @@ class QadEllipseArc(QadEllipse):
       if startClockWise: # se è in senso orario
          self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], startClockWise)
          self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], startClockWise)
+         self.reversed = True
       else:
          self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], startClockWise)
          self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], startClockWise)
-      self.reversed = False
+         self.reversed = False
 
       # traslo la geometria per riportarla alla sua posizione originale
       self.move(dx, dy)
