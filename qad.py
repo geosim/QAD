@@ -634,7 +634,7 @@ class Qad(QObject):
 
       # aggiunge la toolbar per la quotatura 
       self.dimToolBar = self.createDimToolBar()
-      
+           
       # Inizializzo la finestra di testo
       self.TextWindow = QadTextWindow(self)
       self.TextWindow.initGui()

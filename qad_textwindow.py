@@ -81,10 +81,11 @@ class QadCmdOptionPos():
       return True if pos >= self.initialPos and pos <= self.finalPos else False
 
 
+
 #===============================================================================
 # QadTextWindow
 #===============================================================================
-class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
+class QadTextWindow(QDockWidget, Ui_QadTextWindow):
    """This class 
    """
     
@@ -100,6 +101,13 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
 
       title = self.windowTitle()
       self.setWindowTitle(title + " - " + plugin.version())
+
+
+   def __del__(self):
+      """The destructor."""
+
+      self.topLevelChanged['bool'].disconnect(self.onTopLevelChanged)
+      QDockWidget.__del__(self)
 
 
    def initGui(self):
@@ -349,6 +357,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow, object):
       if self:
          self.resizeEdits()
          self.cmdSuggestWindow.resizeEvent(e)
+
         
 #===============================================================================
 # QadChronologyEdit
@@ -1080,48 +1089,51 @@ class QadEdit(QTextEdit):
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.INT:
          num = qad_utils.str2int(cmd)
-         if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
-            num = None
-         elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
-            num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
-            num = None
-               
          if num is not None:
-            self.parentWidget().continueCommand(int(num))
-            return       
+            if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
+               num = None
+            elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
+               num = None
+            elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
+               num = None
+                  
+            if num is not None:
+               self.parentWidget().continueCommand(int(num))
+               return       
                      
       #------------------------------------------------------------------------------
       # un numero lungo
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.LONG:
          num = qad_utils.str2long(cmd)
-         if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
-            num = None
-         elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
-            num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
-            num = None
-            
          if num is not None:
-            self.parentWidget().continueCommand(long(num))
-            return       
+            if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
+               num = None
+            elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
+               num = None
+            elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
+               num = None
+            
+            if num is not None:
+               self.parentWidget().continueCommand(long(num))
+               return       
                      
       #------------------------------------------------------------------------------
       # un numero reale
       #------------------------------------------------------------------------------ 
       if self.inputType & QadInputTypeEnum.FLOAT or self.inputType & QadInputTypeEnum.ANGLE:
          num = qad_utils.str2float(cmd)
-         if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
-            num = None
-         elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
-            num = None
-         elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
-            num = None
-            
          if num is not None:
-            self.parentWidget().continueCommand(num)
-            return       
+            if num == 0 and (self.inputMode & QadInputModeEnum.NOT_ZERO): # non permesso valore = 0              
+               num = None
+            elif num < 0 and (self.inputMode & QadInputModeEnum.NOT_NEGATIVE): # non permesso valore < 0              
+               num = None
+            elif num > 0 and (self.inputMode & QadInputModeEnum.NOT_POSITIVE): # non permesso valore > 0              
+               num = None
+               
+            if num is not None:
+               self.parentWidget().continueCommand(num)
+               return       
 
       #------------------------------------------------------------------------------
       # un valore booleano

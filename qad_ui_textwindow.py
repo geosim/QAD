@@ -29,7 +29,7 @@ from .qad_msg import QadMsg
 
 class Ui_QadTextWindow(object):
     def setupUi(self, QadTextWindow):
-        QadTextWindow.setObjectName("QadTextWindow")
+        #QadTextWindow.setObjectName("QadTextWindow")
         QadTextWindow.setWindowModality(QtCore.Qt.NonModal)
         QadTextWindow.setEnabled(True)
         QadTextWindow.resize(642, 193)
