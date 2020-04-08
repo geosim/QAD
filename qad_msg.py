@@ -77,11 +77,11 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
    """   
    try:
-      source = ""
+      basepath = ""
       if packageName is None:
-         source = sys.modules["Qad"].__file__
+         basepath = os.path.dirname(os.path.realpath(__file__))
       else:
-         source = sys.modules[packageName].__file__
+         basepath = os.path.dirname(os.path.realpath(sys.modules[packageName].__file__))
    except:
       return
 
@@ -90,7 +90,7 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
    language = userLocaleList[0]
    region = userLocaleList[1] if len(userLocaleList) > 1 else ""
 
-   path = QDir.cleanPath(os.path.dirname(source) + "/help/help")
+   path = QDir.cleanPath(basepath + "/help/help")
    helpPath = path + "_" + language + "_" + region # provo a caricare la lingua e la regione selezionate
    
    if not os.path.exists(helpPath):
