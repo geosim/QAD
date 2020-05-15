@@ -25,9 +25,10 @@
 # Import the PyQt and QGIS libraries
 
 from qgis.PyQt.QtCore import Qt, QObject, QTranslator, qVersion, QCoreApplication, QSettings
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton
+from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QShortcut
 from qgis.core import QgsPointXY, QgsProject, QgsMapLayer
+from qgis.gui import QgsGui
 # Initialize Qt resources from file qad_rc.py
 from .qad_rc import *
 
@@ -36,6 +37,7 @@ import math
 
 
 from .qad_msg import QadMsg
+from .qad_shortcuts import QadShortcuts
 from .qad_utils import getAngleBy2Pts, normalizeAngle
 from .qad_layer import getLayerById, QadLayerStatusEnum, QadLayerStatusListClass
 from .qad_maptool import QadMapTool
@@ -169,13 +171,15 @@ class Qad(QObject):
 
    cmdsHistory = [] # lista della storia degli ultimi comandi usati
    ptsHistory = [] # lista della storia degli ultimi punti usati
+   
+   shortcuts = QadShortcuts()
+   
 
    #============================================================================
    # version
    #============================================================================
    def version(self):
-      # questa versione di QAD funziona con le versioni QGIS 2.14 e successive
-      return "3.0.0" # allinea con metadata.txt alla sez [general] voce "version"
+      return "3.0.1" # allinea con metadata.txt alla sez [general] voce "version"
    
    
    def setLastPointAndSegmentAng(self, point, segmentAng = None):
@@ -427,42 +431,16 @@ class Qad(QObject):
    #============================================================================
    # INIZIO - gestione shortcut perchè certi tasti premuti nel mapcanvas non arrivano ...
    #============================================================================
+   
+      
    def enableShortcut(self):
-      # test
-      # “a”, “c”, “d”, “p”, “x”, “y” keys
-      self.key_a_shortcut = QShortcut(QKeySequence(Qt.Key_A), self.canvas, self.send_a_toTxtWindow, self.send_a_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_A_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_A), self.canvas, self.send_A_toTxtWindow, self.send_A_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_c_shortcut = QShortcut(QKeySequence(Qt.Key_C), self.canvas, self.send_c_toTxtWindow, self.send_c_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_C_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_C), self.canvas, self.send_C_toTxtWindow, self.send_C_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_d_shortcut = QShortcut(QKeySequence(Qt.Key_D), self.canvas, self.send_d_toTxtWindow, self.send_d_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_D_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_D), self.canvas, self.send_D_toTxtWindow, self.send_D_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_p_shortcut = QShortcut(QKeySequence(Qt.Key_P), self.canvas, self.send_p_toTxtWindow, self.send_p_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_P_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_P), self.canvas, self.send_P_toTxtWindow, self.send_P_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_x_shortcut = QShortcut(QKeySequence(Qt.Key_X), self.canvas, self.send_x_toTxtWindow, self.send_x_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_X_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_X), self.canvas, self.send_X_toTxtWindow, self.send_X_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_y_shortcut = QShortcut(QKeySequence(Qt.Key_Y), self.canvas, self.send_y_toTxtWindow, self.send_y_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_Y_shortcut = QShortcut(QKeySequence(Qt.SHIFT + Qt.Key_Y), self.canvas, self.send_Y_toTxtWindow, self.send_Y_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_F3_shortcut = QShortcut(QKeySequence(Qt.Key_F3), self.canvas, self.send_F3_toTxtWindow, self.send_F3_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_Backspace_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self.canvas, self.send_Backspace_toTxtWindow, self.send_Backspace_toTxtWindow, Qt.WidgetWithChildrenShortcut)
-      self.key_Delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self.canvas, self.send_Delete_toTxtWindow, self.send_Delete_toTxtWindow, Qt.WidgetWithChildrenShortcut)
+      self.shortcuts.registerForPrintableAndQadFKeys()
+      return
 
 
    def disableShortcut(self):
-      del self.key_a_shortcut
-      del self.key_A_shortcut
-      del self.key_c_shortcut
-      del self.key_C_shortcut
-      del self.key_d_shortcut
-      del self.key_D_shortcut
-      del self.key_p_shortcut
-      del self.key_P_shortcut
-      del self.key_x_shortcut
-      del self.key_X_shortcut
-      del self.key_y_shortcut
-      del self.key_Y_shortcut
-      del self.key_F3_shortcut
-      del self.key_Backspace_shortcut
-      del self.key_Delete_shortcut
+      self.shortcuts.unregisterForPrintableAndQadFKeys()
+      return
 
    
    def getCurrentMapTool(self):
@@ -1577,12 +1555,7 @@ class Qad(QObject):
       self.TextWindow.showErr(err)
 
    def showInputMsg(self, inputMsg = None, inputType = QadInputTypeEnum.COMMAND, \
-                    default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):
-      # il valore di default del parametro di una funzione non può essere una traduzione
-      # perché lupdate.exe non lo riesce ad interpretare
-      if inputMsg is None: 
-         inputMsg = QadMsg.translate("QAD", "Command: ")
-      
+                    default = None, keyWords = "", inputMode = QadInputModeEnum.NONE):      
       self.TextWindow.showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
    
@@ -2127,6 +2100,8 @@ class Qad(QObject):
          self.abortCommand()
          self.clearCurrentObjsSelection()
          self.TextWindow.showCmdSuggestWindow(False)
+         self.getCurrentMapTool().getDynamicInput().abort()   
+
          return True
 
       # Se é stato premuto il tasto F10

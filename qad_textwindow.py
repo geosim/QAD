@@ -718,9 +718,10 @@ class QadEdit(QTextEdit):
 
       # se esiste un maptool con l'input dinamico attivo
       mt = self.parentWidget().plugin.getCurrentMapTool()
-      if (mt is not None) and inputType != QadInputTypeEnum.COMMAND:
-         # context va inizializzato prima dal comando
-         mt.getDynamicInput().showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
+      if (mt is not None):
+         if inputType != QadInputTypeEnum.COMMAND:
+            # context va inizializzato prima dal comando
+            mt.getDynamicInput().showInputMsg(inputMsg, inputType, default, keyWords, inputMode)
 
       return
 

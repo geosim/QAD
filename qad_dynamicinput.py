@@ -44,7 +44,6 @@ from .qad_variables import *
 from .qad_variables import QadVariables, QadINPUTSEARCHOPTIONSEnum
 from .qad_vertexmarker import *
 from .qad_dim import QadDimStyles
-from future.backports.test.pystone import TRUE
 
 
 #===============================================================================
@@ -301,8 +300,9 @@ class QadDynamicInputCmdLineEdit(QadDynamicEdit):
       
       foregroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEFORECOLOR")))
       backGroundColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "CMDLINEBACKCOLOR")))
+      borderColor = QColor(QadVariables.get(QadMsg.translate("Environment variables", "DYNEDITBORDERCOLOR")))
       opacity = 100 - QadVariables.get(QadMsg.translate("Environment variables", "TOOLTIPTRANSPARENCY"))
-      self.setColors(foregroundColor, backGroundColor, "", backGroundColor, foregroundColor, opacity) # senza bordo
+      self.setColors(foregroundColor, backGroundColor, borderColor, backGroundColor, foregroundColor, opacity)
       self.show(False)
 
 
@@ -494,6 +494,7 @@ class QadDynamicInputCmdLineEdit(QadDynamicEdit):
    # keyPressEvent
    #============================================================================
    def keyPressEvent(self, e):
+      
       if self.plugIn.shortCutManagement(e): # se è stata gestita una sequenza di tasti scorciatoia
          return
       
@@ -512,7 +513,7 @@ class QadDynamicInputCmdLineEdit(QadDynamicEdit):
          self.historyIndex = len(cmdsHistory)
          self.QadDynamicInputObj.abort()
          return
-
+      
       # if Return or Space is pressed, then perform the commands
       if e.key() == Qt.Key_Return or e.key() == Qt.Key_Space or e.key == Qt.Key_Enter:
          self.entered()
@@ -1439,9 +1440,14 @@ class QadDynamicInput(QWidget):
    # abort
    #============================================================================
    def abort(self):
+      self.isVisible = False
+      for edit in self.edits:
+         edit.show(False)
+
       self.show(False)
       self.plugIn.abortCommand()
       self.plugIn.clearCurrentObjsSelection()
+      self.canvas.setFocus()
 
 
 
@@ -1485,6 +1491,8 @@ class QadDynamicCmdInput(QadDynamicInput):
       # se esiste un valore di default lo imposto
       if default is not None:
          self.setDefault(default)
+
+      self.plugIn.clearCurrentObjsSelection()
 
 
    #============================================================================

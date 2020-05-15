@@ -365,7 +365,8 @@ class QadCommandsClass():
       # se non c'é alcun comando attivo
       if self.actualCommand is None:
          self.showCommandPrompt() # visualizza prompt standard per richiesta comando 
-         self.plugIn.setStandardMapTool()               
+         self.plugIn.setStandardMapTool()
+         self.plugIn.getCurrentMapTool() 
       else:
          self.showMsg(QadMsg.translate("QAD", "*Canceled*"))
          self.clearCommand()

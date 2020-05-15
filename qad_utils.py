@@ -2313,11 +2313,12 @@ def getAdjustedRubberBandVertex(vertexBefore, vertex):
    # per un baco non ancora capito in QGIS: se la linea ha solo 2 vertici e 
    # hanno la stessa x o y (linea orizzontale o verticale) 
    # la linea non viene disegnata perciò sposto un pochino la x o la y
-   # del secondo vertice         
+   # del secondo vertice
+   # 1.e-7 è derivato dal fatto che l'operatore == di QgsPointXY ha una tolleranza di 1E-8      
    if vertexBefore.x() == vertex.x():
-      adjustedVertex.setX(vertex.x() + 1.e-9)
+      adjustedVertex.setX(vertex.x() + 1.e-7)
    if vertexBefore.y() == vertex.y():
-      adjustedVertex.setY(vertex.y() + 1.e-9)
+      adjustedVertex.setY(vertex.y() + 1.e-7)
       
    return adjustedVertex
 

@@ -316,16 +316,10 @@ class QadMapTool(QgsMapTool):
    #============================================================================
    def keyPressEvent(self, e):
       myEvent = e
-      # ALTGR non si può usare perchè è usato per indicare le coordinate
-#       # if Key_AltGr is pressed, then perform the as return
-#       if e.key() == Qt.Key_AltGr:
-#          myEvent = QKeyEvent(QEvent.KeyPress, Qt.Key_Return, Qt.NoModifier)
-#       else:
-#          myEvent = e
-         
+      
       if self.plugIn.shortCutManagement(myEvent): # se è stata gestita una sequenza di tasti scorciatoia
          return
-      
+       
       if myEvent.text() != "" and self.dynamicCmdInput.show(True, self.canvas.mouseLastXY(), self.dynamicCmdInput.getPrompt()) == True:
          self.dynamicCmdInput.keyPressEvent(myEvent)
       else:      
@@ -364,7 +358,7 @@ class QadMapTool(QgsMapTool):
       self.refreshEntityGripPoints(self.entitySet)
 
       self.plugIn.QadCommands.continueCommandFromMapTool()
-      #self.plugIn.enableShortcut()
+      self.plugIn.disableShortcut()
       
       self.dynamicCmdInput.setPrevPart(None)
       self.dynamicCmdInput.setNextPart(None)
@@ -377,7 +371,7 @@ class QadMapTool(QgsMapTool):
    def deactivate(self):
       self.__csrRubberBand.hide()
       self.timerForGripMenu.stop()
-      #self.plugIn.disableShortcut()
+      self.plugIn.enableShortcut()
       
       self.dynamicCmdInput.show(False)
 

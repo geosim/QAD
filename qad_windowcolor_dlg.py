@@ -24,7 +24,7 @@
 
 
 # Import the PyQt and QGIS libraries
-from qgis.PyQt.QtCore import Qt, QObject
+from qgis.PyQt.QtCore import Qt, QObject, QItemSelectionModel, QRectF
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
 from qgis.gui import QgsColorButton
@@ -34,7 +34,7 @@ from qgis.core import QgsApplication
 from . import qad_windowcolor_ui
 
 
-from .qad_variables import QadVariables
+from .qad_variables import QadVariables, QadVariablesClass
 from .qad_msg import QadMsg, qadShowPluginHelp
 from . import qad_utils
 

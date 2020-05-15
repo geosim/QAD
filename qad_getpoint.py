@@ -1106,7 +1106,7 @@ class QadGetPoint(QgsMapTool):
       self.rightButton = False
       self.canvas.setCursor(self.__cursor)
       self.showPointMapToolMarkers()
-      #self.plugIn.enableShortcut()
+      self.plugIn.disableShortcut()
       
       self.dynamicEditInput.show(True)
 
@@ -1119,7 +1119,7 @@ class QadGetPoint(QgsMapTool):
          if self.__csrRubberBand is not None:
             self.__csrRubberBand.hide()
          self.hidePointMapToolMarkers()
-         #self.plugIn.disableShortcut()
+         self.plugIn.enableShortcut()
          
          self.dynamicEditInput.show(False)
       except:
