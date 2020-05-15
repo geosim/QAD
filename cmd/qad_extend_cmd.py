@@ -42,8 +42,9 @@ from ..qad_variables import QadVariables
 from .qad_ssget_cmd import QadSSGetClass
 from ..qad_dim import QadDimStyles
 from ..qad_extend_trim_fun import extendQadGeometry, trimQadGeometry
-from ..qad_geom_relations import getQadGeomClosestPart
+from ..qad_geom_relations import getQadGeomClosestPart, QadIntersections
 from ..qad_multi_geom import fromQadGeomToQgsGeom, setQadGeomAt
+
 
 # Classe che gestisce il comando EXTEND
 class QadEXTENDCommandClass(QadCommandClass):

@@ -43,7 +43,7 @@ from ..qad_extend_trim_fun import extendQadGeometry, trimQadGeometry
 from ..qad_entity import QadEntitySet, getSelSet, QadLayerEntitySetIterator
 from ..qad_variables import QadVariables
 from ..qad_multi_geom import fromQadGeomToQgsGeom, setQadGeomAt
-from ..qad_geom_relations import getQadGeomClosestPart
+from ..qad_geom_relations import getQadGeomClosestPart, QadIntersections
 
 
 # Classe che gestisce il comando TRIM

@@ -43,7 +43,7 @@ from .qad_getangle_cmd import QadGetAngleClass
 from ..qad_variables import QadVariables
 from .. import qad_utils
 from ..qad_multi_geom import getQadGeomAt
-from ..qad_geom_relations import getQadGeomClosestPart, QadPerpendicularity
+from ..qad_geom_relations import getQadGeomClosestPart, QadPerpendicularity, QadIntersections
 
 #============================================================================
 # FUNZIONI GENERICHE - INIZIO
