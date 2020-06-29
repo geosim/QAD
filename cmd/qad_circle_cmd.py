@@ -35,6 +35,7 @@ from .qad_generic_cmd import QadCommandClass
 from ..qad_msg import QadMsg
 from ..qad_textwindow import QadInputModeEnum, QadInputTypeEnum
 from ..qad_geom_relations import *
+from ..qad_multi_geom import *
 from ..qad_circle_fun import *
 from ..qad_getpoint import QadGetPointDrawModeEnum
 from ..qad_snapper import QadSnapTypeEnum
