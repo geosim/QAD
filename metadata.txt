@@ -14,7 +14,7 @@ author=gam17
 qgisMinimumVersion=3.0
 description=Quantum Aided Design: cad like commands in QGIS
 about=Quantum Aided Design: cad like commands in QGIS
-version=3.0.1
+version=3.0.3
 tracker=https://github.com/gam17/QAD/issues
 repository=https://github.com/gam17/QAD
 
@@ -39,4 +39,6 @@ qgisMaximumVersion=3.99
 
 # Uncomment the following line and add your changelog entries:
 changelog=
+   * 2020-15-05 Fixed bug on TRIM command
    * 2020-03-05 Fixed bug on MBUFFER command
+   
