@@ -1492,7 +1492,8 @@ class QadDynamicCmdInput(QadDynamicInput):
       if default is not None:
          self.setDefault(default)
 
-      self.plugIn.clearCurrentObjsSelection()
+      # commentato perchè crea problemi quando si seleziona un oggetto e si va con il mouse un un punto di grip (deseleziona l'oggetto)
+      #self.plugIn.clearCurrentObjsSelection() 
 
 
    #============================================================================

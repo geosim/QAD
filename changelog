@@ -1,6 +1,8 @@
 version 3.0.3
 ---------------------------
 
+* 2020-08-12 Fixed bug when changing drafting tool config (e.g. colors, etc.) (reported by sdnxgr)
+* 2020-08-12 Fixed bug on selected object which gets deselected when the mouse moves on any vertex of that object (reported by reancris)
 * 2020-06-29 Fixed bug on <DIMLINEAR> and <DIMALIGNED> command (reported by Gabriel De Luca)
 
 

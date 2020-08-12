@@ -37,7 +37,7 @@ from . import qad_pointerinput_settings_ui
 from . import qad_tooltip_appearance_ui
 
 
-from .qad_variables import QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum
+from .qad_variables import QadVariable, QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum
 from .qad_snapper import QadSnapTypeEnum
 from .qad_msg import QadMsg, qadShowPluginHelp
 from . import qad_utils

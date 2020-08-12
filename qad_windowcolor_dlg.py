@@ -34,7 +34,7 @@ from qgis.core import QgsApplication
 from . import qad_windowcolor_ui
 
 
-from .qad_variables import QadVariables, QadVariablesClass
+from .qad_variables import QadVariable, QadVariableTypeEnum, QadVariables, QadVariablesClass
 from .qad_msg import QadMsg, qadShowPluginHelp
 from . import qad_utils
 
