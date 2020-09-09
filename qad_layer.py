@@ -549,9 +549,15 @@ def get_symbolRotationFieldName(layer):
       return ""
 
    try:
-      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.renderer().rotationField())
+      renderer = layer.renderer()
+      expr = renderer.symbol().dataDefinedAngle().asExpression()
+      expr = QgsSymbolLayerUtils.fieldOrExpressionToExpression(expr)
       columns = expr.referencedColumns()
-      return columns[0] if len(columns) == 1 else ""
+      if len(columns) == 1:
+         for column in columns:
+            return column
+      else:
+         return ""
    except:
       return ""
 
@@ -567,9 +573,16 @@ def get_symbolScaleFieldName(layer):
       return ""
    
    try:
-      expr = QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(layer.renderer().sizeScaleField())
+      renderer = layer.renderer()
+      expr = renderer.symbol().dataDefinedSize().asExpression()
+      expr = QgsSymbolLayerUtils.fieldOrExpressionToExpression(expr)
       columns = expr.referencedColumns()
-      return columns[0] if len(columns) == 1 else ""
+      if len(columns) == 1:
+         for column in columns:
+            return column
+      else:
+         return ""
+      
    except:
       return ""
    

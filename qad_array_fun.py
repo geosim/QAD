@@ -59,10 +59,10 @@ def doMoveAndRotateGeom(plugIn, entity, offsetX, offsetY, angle, basePt, addToLa
          newF = QgsFeature(entity.getFeature()) # la copio perchè altrimenti qgis si incarta
          newF.setGeometry(g)
          
-         if entity.rotFldName is not None:
+         if len(entity.rotFldName) > 0:
             rotValue = newF.attribute(entity.rotFldName)
             # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or rotValue is not None else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue == NULL else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             newF.setAttribute(entity.rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
          

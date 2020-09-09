@@ -65,7 +65,7 @@ class QadEntity():
          self.qadGeom = None # in crs del canvas per lavorare con coordinate piane xy
          self.isTextualLayer = False
          self.isSymbolLayer = False
-         self.rotFldName = None # campo usato per la rotazione di testi o simboli
+         self.rotFldName = "" # campo usato per la rotazione di testi o simboli
 
 
    def whatIs(self):
@@ -104,7 +104,7 @@ class QadEntity():
       self.entityType = QadEntityTypeEnum.NONE
       self.isTextualLayer = False
       self.isSymbolLayer = False
-      self.rotFldName = None # campo usato per la rotazione di testi o simboli
+      self.rotFldName = "" # campo usato per la rotazione di testi o simboli
 
       layerGeomType = self.layer.geometryType()
 
@@ -166,7 +166,7 @@ class QadEntity():
       self.qadGeom = None
       self.isTextualLayer = False
       self.isSymbolLayer = False
-      self.rotFldName = None
+      self.rotFldName = ""
       
       
    def __eq__(self, entity):
