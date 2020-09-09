@@ -24,7 +24,7 @@
 
 
 # Import the PyQt and QGIS libraries
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY, NULL
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
@@ -113,10 +113,9 @@ class QadROTATECommandClass(QadCommandClass):
          f = entity.getFeature()
          f.setGeometry(fromQadGeomToQgsGeom(qadGeom, entity.crs()))
 
-         if entity.rotFldName is not None:
+         if len(entity.rotFldName) > 0:
             rotValue = f.attribute(entity.rotFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue == NULL else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             f.setAttribute(entity.rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
 
@@ -535,10 +534,9 @@ class QadGRIPROTATECommandClass(QadCommandClass):
          f = entity.getFeature()
          f.setGeometry(fromQadGeomToQgsGeom(qadGeom, entity.crs()))
 
-         if entity.rotFldName is not None:
+         if len(entity.rotFldName) > 0 is not None:
             rotValue = f.attribute(entity.rotFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue == NULL else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             rotValue = rotValue + angle
             f.setAttribute(entity.rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
 

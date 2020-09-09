@@ -24,7 +24,7 @@
 
 
 # Import the PyQt and QGIS libraries
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY, NULL
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
@@ -127,8 +127,7 @@ class QadSCALECommandClass(QadCommandClass):
          
          if sizeFldName is not None:
             sizeValue = f.attribute(sizeFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            if sizeValue is None or isinstance(sizeValue, QPyNullVariant):
+            if sizeValue is None or sizeValue == NULL:
                sizeValue = 1
             sizeValue = sizeValue * scale
             f.setAttribute(sizeFldName, sizeValue)                           
@@ -591,8 +590,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
          
          if sizeFldName is not None:
             sizeValue = f.attribute(sizeFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            if sizeValue is None or isinstance(sizeValue, QPyNullVariant):
+            if sizeValue is None or sizeValue == NULL:
                sizeValue = 1
             sizeValue = sizeValue * scale
             f.setAttribute(sizeFldName, sizeValue)                           

@@ -25,7 +25,7 @@
 
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY, NULL
 
 
 from .. import qad_label
@@ -110,10 +110,9 @@ class QadMIRRORCommandClass(QadCommandClass):
          f = entity.getFeature()
          f.setGeometry(fromQadGeomToQgsGeom(qadGeom, entity.crs()))
 
-         if entity.rotFldName is not None:
+         if len(entity.rotFldName) > 0:
             rotValue = f.attribute(entity.rotFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue == NULL else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             ptDummy = qad_utils.getPolarPointByPtAngle(mirrorPt, rotValue, 1)
             ptDummy = qad_utils.mirrorPoint(ptDummy, mirrorPt, angle)
             rotValue = qad_utils.getAngleBy2Pts(mirrorPt, ptDummy)
@@ -367,10 +366,9 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
          f = entity.getFeature()
          f.setGeometry(fromQadGeomToQgsGeom(qadGeom, entity.crs()))
 
-         if entity.rotFldName is not None:
+         if len(entity.rotFldName) > 0 is not None:
             rotValue = f.attribute(entity.rotFldName)
-            # a volte vale None e a volte null (vai a capire...)
-            rotValue = 0 if rotValue is None or isinstance(rotValue, QPyNullVariant) else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
+            rotValue = 0 if rotValue is None or rotValue == NULL else qad_utils.toRadians(rotValue) # la rotazione é in gradi nel campo della feature
             ptDummy = qad_utils.getPolarPointByPtAngle(mirrorPt, rotValue, 1)
             ptDummy = qad_utils.mirrorPoint(ptDummy, mirrorPt, angle)
             rotValue = qad_utils.getAngleBy2Pts(mirrorPt, ptDummy)
