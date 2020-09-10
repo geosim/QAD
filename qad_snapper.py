@@ -467,35 +467,41 @@ class QadSnapper():
       g = None
       gPart = None
       
-      if geomEntity is not None:
+      if geomEntity is not None:         
          cacheEntity = None
+         qadGeom = None
          if type(geomEntity) == QgsGeometry: # se è una geometria di QGIS
             qadGeom = fromQgsGeomToQadGeom(geomEntity)
          else: # è un'entità di QAD
-            # uso la cache delle entità di QAD
-            cacheEntity = self.__cacheEntitySet.getEntity(geomEntity.layerId(), geomEntity.featureId)
-            if cacheEntity is None:
-               cacheEntity = self.__cacheEntitySet.appendEntity(geomEntity) # la aggiungo alla cache
-            qadGeom = cacheEntity.getQadGeom()
-            
-         # la funzione ritorna una lista con 
-         # (<minima distanza>
-         #  <punto più vicino>
-         #  <indice della geometria più vicina>
-         #  <indice della sotto-geometria più vicina>
-         #   se geometria chiusa è tipo polyline la lista contiene anche
-         #  <indice della parte della sotto-geometria più vicina>
-         #  <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
-         # )
-         result = getQadGeomClosestPart(qadGeom, point)
-         atGeom = result[2]
-         atSubGeom = result[3]
-         g = getQadGeomAt(qadGeom, atGeom, atSubGeom)
-         if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
-            gPart = getQadGeomPartAt(qadGeom, atGeom, atSubGeom, result[4])
+            # la geometria deve essere in un layer abilitato allo snapping
+            if geomEntity.layer in self.__snapLayers:
+               # uso la cache delle entità di QAD
+               cacheEntity = self.__cacheEntitySet.getEntity(geomEntity.layerId(), geomEntity.featureId)
+               if cacheEntity is None:
+                  cacheEntity = self.__cacheEntitySet.appendEntity(geomEntity) # la aggiungo alla cache
+               qadGeom = cacheEntity.getQadGeom()
 
-         # snap statici
-         staticSnapPoints = self.getStaticSnapPoints(g, gPart, isTemporaryGeom)
+         if qadGeom is not None:         
+            # la funzione ritorna una lista con 
+            # (<minima distanza>
+            #  <punto più vicino>
+            #  <indice della geometria più vicina>
+            #  <indice della sotto-geometria più vicina>
+            #   se geometria chiusa è tipo polyline la lista contiene anche
+            #  <indice della parte della sotto-geometria più vicina>
+            #  <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+            # )
+            result = getQadGeomClosestPart(qadGeom, point)
+            atGeom = result[2]
+            atSubGeom = result[3]
+            g = getQadGeomAt(qadGeom, atGeom, atSubGeom)
+            if self.__snapMode == QadSnapModeEnum.ONE_RESULT:
+               gPart = getQadGeomPartAt(qadGeom, atGeom, atSubGeom, result[4])
+   
+            # snap statici
+            staticSnapPoints = self.getStaticSnapPoints(g, gPart, isTemporaryGeom)
+         else:
+            staticSnapPoints = dict()
       else:
          staticSnapPoints = dict()
       

@@ -906,6 +906,32 @@ def getVisibleVectorLayers(canvas):
 
 
 #===============================================================================
+# getSnappableVectorLayers
+#===============================================================================
+def getSnappableVectorLayers(canvas):
+   # make QAD honor QGIS's snap settings (ALL LAYERS, ACTIVE LAYER, ADVANCED).
+   # by Oliver Dalang
+   enabled = canvas.snappingUtils().config().enabled()
+   mode = canvas.snappingUtils().config().mode()
+
+   if enabled and mode == QgsSnappingConfig.ActiveLayer:
+      layers = [qgis.utils.iface.activeLayer()]
+   elif enabled and mode == QgsSnappingConfig.AdvancedConfiguration:
+      layers = list(cfg.layer for cfg in canvas.snappingUtils().layers())
+   else: # mode == QgsSnappingConfig.AllLayers:
+      layers = canvas.layers()
+         
+   # Solo i layer vettoriali visibili
+   for i in range(len(layers) - 1, -1, -1):
+      # se il layer non è vettoriale o non è visibile a questa scala
+      if layers[i].type() != QgsMapLayer.VectorLayer or \
+         layers[i].hasScaleBasedVisibility() and \
+         (canvas.mapSettings().scale() < layers[i].minimumScale() or canvas.mapSettings().scale() > layers[i].maximumScale()):
+         del layers[i]         
+   return layers
+
+
+#===============================================================================
 # getEntSel
 #===============================================================================
 def getEntSel(point, mQgsMapTool, boxSize, \

@@ -1,3 +1,10 @@
+version 3.0.4
+---------------------------
+
+* 2020-09-10 Fixed bug when rotating, scaling or mirroring symbol entities (reported by Camilo Corredor)
+* 2020-09-10 Now QAD honors QGIS's snap settings (ALL LAYERS, ACTIVE LAYER, ADVANCED) (by Olivier Dalang)
+
+
 version 3.0.3
 ---------------------------
 
