@@ -118,7 +118,10 @@ class QadGetPoint(QgsMapTool):
       self.__QadSnapper.setSnapMode(QadSnapModeEnum.ONE_RESULT) # Viene restituito solo il punto più vicino
       # Tutti i layer vettoriali visibili secondo le impostazioni QGIS
       # (solo layer corrente, un set di layer, tutti i layer)
-      self.__QadSnapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.canvas))
+      self.setSnapLayersFromQgis()
+      self.canvas.snappingUtils().configChanged.connect(self.setSnapLayersFromQgis) # update snap layers whenever QGIS snap settings change
+
+      
       self.__QadSnapper.setProgressDistance(QadVariables.get(QadMsg.translate("Environment variables", "OSPROGRDISTANCE")))
       self.setSnapType(QadVariables.get(QadMsg.translate("Environment variables", "OSMODE")))
             
@@ -164,6 +167,7 @@ class QadGetPoint(QgsMapTool):
 
    def __del__(self):
       self.removeItems()
+      self.canvas.snappingUtils().configChanged.disconnect(self.setSnapLayersFromQgis) # update snap layers whenever QGIS snap settings change
 
  
    def removeItems(self):
@@ -407,6 +411,19 @@ class QadGetPoint(QgsMapTool):
          self.appendTmpGeometry(g, CRS)
       
 
+   #============================================================================
+   # SnapType
+   #============================================================================
+   def setSnapLayersFromQgis(self):
+      """
+      Sets the layers to be snapped to from QGIS's settings
+      """
+      # Tutti i layer vettoriali visibili secondo le impostazioni QGIS
+      # (solo layer corrente, un set di layer, tutti i layer)
+      if self.__QadSnapper is not None:
+         self.__QadSnapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.canvas))
+      
+      
    #============================================================================
    # SnapType
    #============================================================================

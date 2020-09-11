@@ -670,6 +670,8 @@ class Qad(QObject):
          
          self.tool.removeItems()
          del self.tool
+         
+         del self.QadCommands
 
 
    def onProjectLoaded(self):
