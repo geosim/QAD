@@ -40,11 +40,12 @@ from . import qad_utils
 from .qad_line import getBoundingPtsOnOnInfinityLine, QadLine
 from .qad_arc import QadArc
 from .qad_geom_relations import *
-from .import qad_stretch_fun
-from .import qad_layer
+from . import qad_stretch_fun
+from . import qad_layer
 from . import qad_label
 from .qad_entity import *
 from .qad_variables import QadVariables
+from .qad_multi_geom import fromQgsGeomToQadGeom
 
 
 """

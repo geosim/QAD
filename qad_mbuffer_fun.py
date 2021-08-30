@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-ok
  QAD Quantum Aided Design plugin
 
  funzioni per stirare oggetti grafici
