@@ -24,8 +24,9 @@
 
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsWkbTypes, QgsPointXY, QgsCoordinateTransform, QgsProject
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import *
+import qgis.utils
 
 from ..qad_getpoint import QadGetPointDrawModeEnum
 from .qad_generic_cmd import QadCommandClass
@@ -44,9 +45,9 @@ from ..qad_dim import QadDimStyles
 from .. import qad_join_fun
 from .. import qad_grip
 from ..qad_entity import QadEntity, QadEntitySet, QadLayerEntitySetIterator
-from ..qad_multi_geom import isLinearQadGeom, getQadGeomAt, convertToPolyline, setQadGeomAt, fromQadGeomToQgsGeom
+from ..qad_multi_geom import *
 from ..qad_geom_relations import getQadGeomClosestVertex
-
+from ..qad_layer import createMemoryLayer
 
 # Classe che gestisce il comando PEDIT
 class QadPEDITCommandClass(QadCommandClass):

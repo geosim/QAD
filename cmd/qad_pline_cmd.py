@@ -41,7 +41,7 @@ from .. import qad_utils
 from .. import qad_layer
 from ..qad_rubberband import createRubberBand
 from ..qad_dim import QadDimStyles
-from ..qad_multi_geom import getQadGeomAt
+from ..qad_multi_geom import getQadGeomAt, fromQgsGeomToQadGeom
 
 
 # Classe che gestisce il comando PLINE
