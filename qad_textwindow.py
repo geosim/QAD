@@ -1160,7 +1160,7 @@ class QadEdit(QTextEdit):
       pixelsWidth = fm.width(QadMsg.translate("QAD", "Command: "))
       pixelsHeight = fm.height()
       # + 8 perché la QTextEdit ha un offset verticale sopra e sotto il testo
-      return max(self.document().size().height(), pixelsHeight + 8)
+      return max(int(self.document().size().height()), pixelsHeight + 8)
       
    def onTextChanged(self):
       self.parentWidget().resizeEdits()
