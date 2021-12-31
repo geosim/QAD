@@ -789,8 +789,8 @@ class QadPreview(QWidget):
       width2 = fm.width(self.edit2.toPlainText() + "__") + 2
       self.edit2.resize(width2, height)
       
-      offset = height / 3
-      x = (rect.width() - (width1 + offset + width2)) / 2
-      y = (rect.height() - height) / 2
+      offset = int(height / 3)
+      x = int((rect.width() - (width1 + offset + width2)) / 2)
+      y = int((rect.height() - height) / 2)
       self.edit1.move(x, y)
       self.edit2.move(x + width1 + offset, y)

@@ -1319,8 +1319,7 @@ class QadDynamicInput(QWidget):
       y = editPt.y() - (editHeight / 2)
       
       x, y = self.adjustEditPosition(x, y, editWidth, editHeight)
-      editPt.setX(x)
-      editPt.setY(y)
+      editPt = QPoint(x, y);
             
       pt1Corner = qad_utils.getPolarPointByPtAngle(pt1, angle, offset)
       pt2Corner = qad_utils.getPolarPointByPtAngle(pt2, angle, offset)
@@ -1374,8 +1373,7 @@ class QadDynamicInput(QWidget):
       y = editPt.y() - (editHeight / 2)
       
       x, y = self.adjustEditPosition(x, y, editWidth, editHeight)
-      editPt.setX(x)
-      editPt.setY(y)
+      editPt = QPoint(x, y)
       
       return editPt, arc.asPolyline()
 
@@ -1407,7 +1405,7 @@ class QadDynamicInput(QWidget):
             else:
                y = self.mousePos.y() + offsetY
       
-      return x, y
+      return int(x), int(y)
 
 
    #============================================================================
