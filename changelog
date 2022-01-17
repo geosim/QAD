@@ -1,6 +1,7 @@
 version 3.0.5
 ---------------------------
 
+* 2022-01-16 Fixed bug on grip on circle belonging to a polygon
 * 2021-08-30 Fixed bug on pedit -> join option
 
 
