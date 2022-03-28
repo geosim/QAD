@@ -900,7 +900,7 @@ def getVisibleVectorLayers(canvas):
       # se il layer non è vettoriale o non è visibile a questa scala
       if layers[i].type() != QgsMapLayer.VectorLayer or \
          layers[i].hasScaleBasedVisibility() and \
-         (canvas.mapSettings().scale() < layers[i].minimumScale() or canvas.mapSettings().scale() > layers[i].maximumScale()):
+         (canvas.mapSettings().scale() > layers[i].minimumScale() or canvas.mapSettings().scale() < layers[i].maximumScale()):
          del layers[i]
    return layers
 
@@ -926,7 +926,7 @@ def getSnappableVectorLayers(canvas):
       # se il layer non è vettoriale o non è visibile a questa scala
       if layers[i].type() != QgsMapLayer.VectorLayer or \
          layers[i].hasScaleBasedVisibility() and \
-         (canvas.mapSettings().scale() < layers[i].minimumScale() or canvas.mapSettings().scale() > layers[i].maximumScale()):
+         (canvas.mapSettings().scale() > layers[i].minimumScale() or canvas.mapSettings().scale() < layers[i].maximumScale()):
          del layers[i]         
    return layers
 
@@ -974,7 +974,7 @@ def getEntSel(point, mQgsMapTool, boxSize, \
       if firstLayerToCheck.type() == QgsMapLayer.VectorLayer and \
          (onlyEditableLayers == False or firstLayerToCheck.isEditable()) and \
          (firstLayerToCheck.hasScaleBasedVisibility() == False or \
-          (mQgsMapTool.canvas.mapSettings().scale() >= firstLayerToCheck.minimumScale() and mQgsMapTool.canvas.mapSettings().scale() <= firstLayerToCheck.maximumScale())) and \
+          (mQgsMapTool.canvas.mapSettings().scale() <= firstLayerToCheck.minimumScale() and mQgsMapTool.canvas.mapSettings().scale() >= firstLayerToCheck.maximumScale())) and \
          ((firstLayerToCheck.geometryType() == QgsWkbTypes.PointGeometry and checkPointLayer == True) or \
           (firstLayerToCheck.geometryType() == QgsWkbTypes.LineGeometry and checkLineLayer == True) or \
           (firstLayerToCheck.geometryType() == QgsWkbTypes.PolygonGeometry and checkPolygonLayer == True)):

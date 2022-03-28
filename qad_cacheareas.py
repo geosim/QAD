@@ -344,7 +344,7 @@ class QadLayerCacheGeomsDict():
 
             # se il layer non è visibile a questa scala
             if layer.hasScaleBasedVisibility() and \
-               (self.canvas.mapSettings().scale() < layer.minimumScale() or self.canvas.mapSettings().scale() > layer.maximumScale()):
+               (self.canvas.mapSettings().scale() > layer.minimumScale() or self.canvas.mapSettings().scale() < layer.maximumScale()):
                continue
 
             rect = self.canvas.mapSettings().mapToLayerCoordinates(layer, boundBox) # map to layer coordinate
