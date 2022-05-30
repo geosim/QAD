@@ -101,22 +101,16 @@ class QadCircle():
 
 
    #===============================================================================
-   # getCentroid
-   #===============================================================================
-   def getCentroid(self):
-      """
-      la funzione ritorna il centro del cerchio
-      """
-      return self.center
-
-
-   #===============================================================================
    # getBoundingBox
    #===============================================================================
    def getBoundingBox(self):
       """
       la funzione ritorna il rettangolo che racchiude il cerchio.
       """
+      return QgsRectangle(self.center.x() - self.radius,
+                          self.center.y() - self.radius,
+                          self.center.x() + self.radius,
+                          self.center.y() + self.radius)
 
 
    #===============================================================================
