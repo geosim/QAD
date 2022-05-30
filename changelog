@@ -2,6 +2,7 @@ version 3.0.6
 ---------------------------
 
 * 2022-03-28 Fixed bug on problems using vector layers having a "scale based" visibility (reported by TheLooka)
+* 2022-05-29 Fixed bug on Trimming a circle into an arc (reported by Jopie01)
 
 version 3.0.5
 ---------------------------

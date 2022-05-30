@@ -60,6 +60,9 @@ class QadLinearObject():
       cerchio ed ellisse (impropriamente) perchè possono esistere in layer LINESTRING
       """
       tot_points = len(points)
+      if tot_points == 0:
+         return None
+      
       if tot_points == 2:
          line = QadLine()
          line.set(points[0], points[1])

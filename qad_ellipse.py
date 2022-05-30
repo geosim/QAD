@@ -129,16 +129,6 @@ class QadEllipse():
    #============================================================================
    def getRotation(self):
       return qad_utils.getAngleBy2Pts(self.center, self.majorAxisFinalPt)
-   
-   
-   #===============================================================================
-   # getCentroid
-   #===============================================================================
-   def getCentroid(self):
-      """
-      la funzione ritorna il centro dell'ellisse
-      """
-      return self.center
 
 
    #===============================================================================

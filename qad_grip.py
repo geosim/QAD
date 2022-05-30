@@ -495,32 +495,20 @@ class QadEntityGripPoints(QgsMapCanvasItem):
       elif gType == "POLYGON":
          for atSubGeom in range(0, g.qty()):
             closedObj = g.getClosedObjectAt(atSubGeom)
-            subGeomType = closedObj.whatIs()
-            if subGeomType == "CIRCLE":
-               result.extend(self.getGripPointsFromQadCircle(closedObj, atSubGeom, 0))
-            elif subGeomType == "ELLIPSE":
-               result.extend(self.getGripPointsFromQadEllipse(closedObj, atSubGeom, 0))
-            elif subGeomType == "POLYLINE":   
-               result.extend(self.getGripPointsFromPolyline(closedObj, 0, atSubGeom, grips))               
-               # aggiungo il centroide
-               gp = QadEntityGripPoint(self.mapCanvas, closedObj.getCentroid(), QadGripPointTypeEnum.CENTER, 0, atSubGeom)
-               result.append(gp)
+            result.extend(self.getGripPointsFromPolyline(closedObj, 0, atSubGeom, grips))
+            # aggiungo il centroide
+            gp = QadEntityGripPoint(self.mapCanvas, closedObj.getCentroid(), QadGripPointTypeEnum.CENTER, 0, atSubGeom)
+            result.append(gp)
          
       elif gType == "MULTI_POLYGON":
          for atGeom in range(0, g.qty()):
             polygon = g.getPolygonAt(atGeom)
             for atSubGeom in range(0, polygon.qty()):
                closedObj = polygon.getClosedObjectAt(atSubGeom)
-               subGeomType = closedObj.whatIs()
-               if subGeomType == "CIRCLE":
-                  result.extend(self.getGripPointsFromQadCircle(closedObj, atGeom, atSubGeom))
-               elif subGeomType == "ELLIPSE":
-                  result.extend(self.getGripPointsFromQadEllipse(closedObj, atGeom, atSubGeom))
-               elif subGeomType == "POLYLINE":                              
-                  result.extend(self.getGripPointsFromPolyline(closedObj, atGeom, atSubGeom, grips))                  
-                  # aggiungo il centroide
-                  gp = QadEntityGripPoint(self.mapCanvas, closedObj.getCentroid(), QadGripPointTypeEnum.CENTER, atGeom, atSubGeom)
-                  result.append(gp)
+               result.extend(self.getGripPointsFromPolyline(closedObj, atGeom, atSubGeom, grips))
+               # aggiungo il centroide
+               gp = QadEntityGripPoint(self.mapCanvas, closedObj.getCentroid(), QadGripPointTypeEnum.CENTER, atGeom, atSubGeom)
+               result.append(gp)
                
                atSubGeom = atSubGeom + 1
             atGeom = atGeom + 1

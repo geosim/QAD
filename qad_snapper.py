@@ -647,10 +647,15 @@ class QadSnapper():
          result[QadSnapTypeEnum.PAR] = self.getParPoints(point)
          
       if self.__snapType & QadSnapTypeEnum.PR:
-         if gPart is None: 
-            result[QadSnapTypeEnum.PR] = self.getProgressPoint(geom, point)[0]
+         if geom is not None: 
+            geomType = geom.whatIs()
          else:
+            geomType = "";
+         # se la geometria principale è multi... devo considerare la parte selezionata   
+         if geomType == "MULTI_LINEAR_OBJ" or geomType == "MULTI_POLYGON":
             result[QadSnapTypeEnum.PR] = self.getProgressPoint(gPart, point)[0]
+         else:         
+            result[QadSnapTypeEnum.PR] = self.getProgressPoint(geom, point)[0]
          
       if self.__snapType & QadSnapTypeEnum.EXT_INT:
          result[QadSnapTypeEnum.EXT_INT] = self.getIntExtPoint(geom, point)

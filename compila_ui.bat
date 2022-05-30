@@ -1,4 +1,4 @@
-set OSGEO4W_ROOT=C:\Program Files\QGIS 3.4
+set OSGEO4W_ROOT=C:\Program Files\QGIS 3.10
 
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 call "%OSGEO4W_ROOT%\bin\qt5_env.bat"

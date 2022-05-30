@@ -579,7 +579,8 @@ class QadEllipseArc(QadEllipse):
       center = QgsPointXY(center[0] + baryC[0], center[1] + baryC[1])
       
       testEllipse = QadEllipse()
-      testEllipse.set(center, majorAxisFinalPt, axisRatio)
+      if testEllipse.set(center, majorAxisFinalPt, axisRatio) is None:
+         return None
       foci = testEllipse.getFocus()
       if len(foci) == 0: return None
       dist1 = qad_utils.getDistance(foci[0], testEllipse.majorAxisFinalPt)

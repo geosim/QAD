@@ -31,6 +31,8 @@ from qgis.core import *
 from .qad_multi_geom import *
 from .qad_geom_relations import *
 from .qad_entity import *
+from .qad_arc import *
+from .qad_ellipse_arc import *
 
 
 #===============================================================================
@@ -222,18 +224,36 @@ def trimQadGeometry(qadGeom, pt, limitEntitySet, edgeMode):
    if subGeomType == "CIRCLE" or subGeomType == "ELLIPSE":
       if len(intPtSortedList) < 2: return None
       distFromStart = qad_utils.getAngleBy2Pts(subGeom.center, nearPt)
+      if subGeomType == "ELLIPSE":
+         ellipseAngle = qad_utils.getAngleBy2Pts(subGeom.center, subGeom.majorAxisFinalPt)
 
-      if qad_utils.isAngleBetweenAngles(distFromStartList[0], distFromStartList[1], distFromStart):
-         firstAngle = distFromStartList[0]
-         secondAngle = distFromStartList[1]
-      else:
-         firstAngle = distFromStartList[1]
-         secondAngle = distFromStartList[0]
+      # cerco gli angoli che contengono il punto selezionato      
+      i = 0
+      while i < len(distFromStartSortedList) - 1:
+         if qad_utils.isAngleBetweenAngles(distFromStartSortedList[i], distFromStartSortedList[i + 1], distFromStart):
+            if subGeomType == "CIRCLE":
+               return [QadArc().set(subGeom.center, subGeom.radius, distFromStartSortedList[i + 1], distFromStartSortedList[i]), None, atGeom, atSubGeom]
+            else:
+               return [QadEllipseArc().set(subGeom.center, subGeom.majorAxisFinalPt, subGeom.axisRatio, distFromStartSortedList[i + 1] - ellipseAngle, distFromStartSortedList[i] - ellipseAngle), None, atGeom, atSubGeom]
+         i = i + 1
+      
+      if qad_utils.isAngleBetweenAngles(distFromStartSortedList[-1], distFromStartSortedList[0], distFromStart):
+         if subGeomType == "CIRCLE":
+            return [QadArc().set(subGeom.center, subGeom.radius, distFromStartSortedList[0], distFromStartSortedList[-1]), None, atGeom, atSubGeom]
+         else:
+            return [QadEllipseArc().set(subGeom.center, subGeom.majorAxisFinalPt, subGeom.axisRatio, distFromStartSortedList[0] - ellipseAngle, distFromStartSortedList[-1] - ellipseAngle), None, atGeom, atSubGeom]
          
-      if subGeomType == "CIRCLE":
-         return [QadArc().set(subGeom.center, subGeom.radius, secondAngle, firstAngle), None, atGeom, atSubGeom]
-      else:
-         return [QadEllipseArc().set(subGeom.center, subGeom.majorAxisFinalPt, subGeom.axisRatio, secondAngle, firstAngle), None, atGeom, atSubGeom]
+#       if qad_utils.isAngleBetweenAngles(distFromStartList[0], distFromStartList[1], distFromStart):
+#          firstAngle = distFromStartList[0]
+#          secondAngle = distFromStartList[1]
+#       else:
+#          firstAngle = distFromStartList[1]
+#          secondAngle = distFromStartList[0]
+         
+#       if subGeomType == "CIRCLE":
+#          return [QadArc().set(subGeom.center, subGeom.radius, secondAngle, firstAngle), None, atGeom, atSubGeom]
+#       else:
+#          return [QadEllipseArc().set(subGeom.center, subGeom.majorAxisFinalPt, subGeom.axisRatio, secondAngle, firstAngle), None, atGeom, atSubGeom]
 
    distFromStart = subGeom.getDistanceFromStart(nearPt)
    
@@ -244,6 +264,7 @@ def trimQadGeometry(qadGeom, pt, limitEntitySet, edgeMode):
          break
       firstPt = intPtSortedList[i]
       i = i + 1
+      
    if i < len(distFromStartSortedList):
       secondPt = intPtSortedList[i]
    else:

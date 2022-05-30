@@ -2013,7 +2013,7 @@ class QadMinDistance():
       """
       intPtList = QadIntersections.twoArcs(arc1, arc2)
       if len(intPtList) > 0:
-         return [intPtList[0], intPtList[0], 0]
+         return [0, intPtList[0], intPtList[0]]
       
       StartPtArc1 = arc1.getStartPt()
       EndPtArc1 = arc1.getEndPt()     
