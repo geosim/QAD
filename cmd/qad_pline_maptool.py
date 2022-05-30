@@ -31,6 +31,7 @@ from ..qad_snapper import QadSnapTypeEnum
 from ..qad_getpoint import QadGetPoint, QadGetPointSelectionModeEnum, QadGetPointDrawModeEnum
 from ..qad_rubberband import QadRubberBand
 from ..qad_multi_geom import getQadGeomAt
+from ..qad_geom_relations import getQadGeomClosestPart, getQadGeomBetween2Pts
 
 #===============================================================================
 # Qad_pline_maptool_ModeEnum class.
