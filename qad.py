@@ -192,6 +192,7 @@ class Qad(QObject):
       self.setLastPoint(point)
 
    def setLastPoint(self, point):
+      if point is None: return
       # memorizzo l'ultimo punto selezionato         
       self.lastPoint = QgsPointXY(point)
       self.updatePtsHistory(self.lastPoint)

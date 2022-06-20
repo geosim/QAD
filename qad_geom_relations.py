@@ -366,15 +366,15 @@ class QadIntersections():
       myCircle2.move(-dx, -dy)
       
       # se i punti sono così vicini da essere considerati uguali 
-      if qad_utils.ptNear(circle1.center, circle2.center): # stesso centro
+      if qad_utils.ptNear(myCircle1.center, myCircle2.center): # stesso centro
          return []
-      distFromCenters = qad_utils.getDistance(circle1.center, circle2.center)
-      distFromCirc = distFromCenters - circle1.radius - circle2.radius
+      distFromCenters = qad_utils.getDistance(myCircle1.center, myCircle2.center)
+      distFromCirc = distFromCenters - myCircle1.radius - myCircle2.radius
 
       # se è così vicino allo zero da considerarlo = 0
       if qad_utils.doubleNear(distFromCirc, 0):
-         angle = qad_utils.getAngleBy2Pts(circle1.center, circle2.center)
-         pt = qad_utils.getPolarPointByPtAngle(circle1.center, angle, circle1.radius)
+         angle = qad_utils.getAngleBy2Pts(myCircle1.center, myCircle2.center)
+         pt = qad_utils.getPolarPointByPtAngle(myCircle1.center, angle, myCircle1.radius)
          # traslo il punto per riportarlo alla sua posizione originale
          pt.set(pt.x() + dx, pt.y() + dy)
          result.append(pt)
@@ -383,16 +383,16 @@ class QadIntersections():
       if distFromCirc > 0: # i cerchi sono troppo distanti
          return []
 
-      x2_circle1 = circle1.center.x() * circle1.center.x() # X del centro del cerchio <circle1> al quadrato
-      x2_circle = circle2.center.x() * circle2.center.x() # Y del centro del cerchio <circle2> al quadrato
-      radius2_circle1 = circle1.radius * circle1.radius # raggio del cerchio <circle1> al quadrato
-      radius2_circle = circle2.radius * circle2.radius # raggio del cerchio <circle2> al quadrato
+      x2_myCircle1 = myCircle1.center.x() * myCircle1.center.x() # X del centro del cerchio <myCircle1> al quadrato
+      x2_circle = myCircle2.center.x() * myCircle2.center.x() # Y del centro del cerchio <myCircle2> al quadrato
+      radius2_myCircle1 = myCircle1.radius * myCircle1.radius # raggio del cerchio <myCircle1> al quadrato
+      radius2_circle = myCircle2.radius * myCircle2.radius # raggio del cerchio <myCircle2> al quadrato
       
-      if qad_utils.doubleNear(circle1.center.y(), circle2.center.y()):
-         x1 = x2_circle - x2_circle1 + radius2_circle1 - radius2_circle
-         x1 = x1 / (2 * (circle2.center.x() - circle1.center.x()))
+      if qad_utils.doubleNear(myCircle1.center.y(), myCircle2.center.y()):
+         x1 = x2_circle - x2_myCircle1 + radius2_myCircle1 - radius2_circle
+         x1 = x1 / (2 * (myCircle2.center.x() - myCircle1.center.x()))
          x2 = x1         
-         D = radius2_circle1 - ((x1 - circle1.center.x()) * (x1 - circle1.center.x()))
+         D = radius2_myCircle1 - ((x1 - myCircle1.center.x()) * (x1 - myCircle1.center.x()))
          # se D è così vicino a zero 
          if qad_utils.doubleNear(D, 0.0):
             D = 0
@@ -400,19 +400,19 @@ class QadIntersections():
             return []
          E = math.sqrt(D)
          
-         y1 = circle1.center.y() + E
-         y2 = circle1.center.y() - E
+         y1 = myCircle1.center.y() + E
+         y2 = myCircle1.center.y() - E
       else:
-         y2_circle1 = circle1.center.y() * circle1.center.y() # Y del centro del cerchio <circle1> al quadrato
-         y2_circle = circle2.center.y() * circle2.center.y() # Y del centro del cerchio <circle2> al quadrato
+         y2_myCircle1 = myCircle1.center.y() * myCircle1.center.y() # Y del centro del cerchio <myCircle1> al quadrato
+         y2_circle = myCircle2.center.y() * myCircle2.center.y() # Y del centro del cerchio <myCircle2> al quadrato
          
-         a = (circle1.center.x() - circle2.center.x()) / (circle2.center.y() - circle1.center.y())
-         b = x2_circle - x2_circle1 + y2_circle - y2_circle1 + radius2_circle1 - radius2_circle 
-         b = b / (2 * (circle2.center.y() - circle1.center.y()))
+         a = (myCircle1.center.x() - myCircle2.center.x()) / (myCircle2.center.y() - myCircle1.center.y())
+         b = x2_circle - x2_myCircle1 + y2_circle - y2_myCircle1 + radius2_myCircle1 - radius2_circle 
+         b = b / (2 * (myCircle2.center.y() - myCircle1.center.y()))
          
          A = 1 + (a * a)
-         B = (2 * a * b) - (2 * circle1.center.x()) - (2 * a * circle1.center.y())
-         C = (b * b) - (2 * circle1.center.y() * b) + x2_circle1 + y2_circle1 - radius2_circle1
+         B = (2 * a * b) - (2 * myCircle1.center.x()) - (2 * a * myCircle1.center.y())
+         C = (b * b) - (2 * myCircle1.center.y() * b) + x2_myCircle1 + y2_myCircle1 - radius2_myCircle1
          D = (B * B) - (4 * A * C)
          # se D è così vicino a zero 
          if qad_utils.doubleNear(D, 0.0):
