@@ -25,6 +25,7 @@
 
 # Import the PyQt and QGIS libraries
 
+from qgis.core import QgsPointXY
 
 from .qad_generic_cmd import QadCommandClass
 from ..qad_msg import QadMsg
@@ -75,6 +76,7 @@ class QadIDCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             pt = msg
 
-         self.plugIn.setLastPoint(pt)            
-         self.showMsg("\n" + pt.toString())
+         if type(pt) == QgsPointXY:
+            self.plugIn.setLastPoint(pt)            
+            self.showMsg("\n" + pt.toString())
          return True
