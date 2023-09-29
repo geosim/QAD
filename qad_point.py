@@ -49,6 +49,13 @@ class QadPoint(QgsPointXY):
       return "POINT"
 
    
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return False
+
+   
    def set(self, point):
       QgsPointXY.set(self, point.x(), point.y())
       return self

@@ -36,6 +36,82 @@ from . import qad_utils
 from .qad_geom_relations import *
 from .qad_join_fun import selfJoinPolyline
 from .qad_arc import QadArc
+from .qad_polyline import *
+
+
+#===============================================================================
+# offsetQGSGeom
+#===============================================================================
+def offsetQGSGeom(qgsGeom, offsetDistOrPoint, gapType, forcedOffsetDist = None):
+   """
+   la funzione fa l'offset di una geometria di QGIS
+   
+   secondo una distanza o un punto (da cui calcolare la distanza)
+   - per poligoni un valore positivo è verso l'esterno, negativo è verso l'interno
+   - per linee un valore positivo è verso la sinistra, negativo è verso destra rispetto il verso della linea
+   
+    un modo <gapType>:
+   0 = Estende i segmenti di linea alle relative intersezioni proiettate
+   1 = Raccorda i segmenti di linea in corrispondenza delle relative intersezioni proiettate.
+       Il raggio di ciascun segmento di arco é uguale alla distanza di offset
+   2 = Cima i segmenti di linea in corrispondenza delle intersezioni proiettate.
+       La distanza perpendicolare da ciascuna cima al rispettivo vertice
+       sull'oggetto originale é uguale alla distanza di offset.
+       
+   se <offsetDistOrPoint> è un punto e forcedDist <> None
+   la distanza viene forzata con questo parametro (che deve essere sempre positivo) mentre il lato di offset viene preso dal punto
+   
+   La funzione ritorna una lista di geometrie qgis risultato dell'offset
+   """
+   if type(offsetDistOrPoint) == QgsPointXY:
+      # ritorna una tupla (<The squared cartesian distance>,
+      #                    <minDistPoint>
+      #                    <afterVertex>
+      #                    <leftOf>)
+      dummy = qgsGeom.closestSegmentWithContext(offsetDistOrPoint)
+      if dummy is None or dummy[0] <= 0:
+         return []
+      if forcedOffsetDist is None:
+         offsetDist = math.sqrt(dummy[0])  # radice quadrata
+      else:
+         offsetDist = forcedOffsetDist
+      
+      if offsetDist == 0:
+         return []
+
+      leftOf = dummy[3]
+      if qgsGeom.type() == QgsWkbTypes.LineGeometry:
+         # se leftOf > 0 il punto è a destra della linea quindi offsetDist deve essere negativo
+         if leftOf > 0: 
+            offsetDist = -offsetDist
+      else:
+         # se il punto è interno alla geometria offsetDist deve essere negativo
+         if QgsGeometry.fromPointXY(offsetDistOrPoint).within(qgsGeom) == True:
+            offsetDist = -offsetDist  
+   else:
+      offsetDist = offsetDistOrPoint
+
+   atLeastNSegment = QadVariables.get(QadMsg.translate("Environment variables", "ARCMINSEGMENTQTY"), 12)
+   if gapType == 0:
+      joinStyle = Qgis.JoinStyle.Miter
+   elif gapType == 1:
+      joinStyle = Qgis.JoinStyle.Round
+   elif gapType == 1:
+      joinStyle = Qgis.JoinStyle.Bevel
+      
+   miterLimit= 20
+   if qgsGeom.type() == QgsWkbTypes.LineGeometry:
+      resultGeom = qgsGeom.offsetCurve(offsetDist, atLeastNSegment, joinStyle, miterLimit)
+   else:
+      capStyle = Qgis.EndCapStyle.Round
+      resultGeom = qgsGeom.buffer(offsetDist, atLeastNSegment, capStyle, joinStyle, miterLimit)
+      
+   result = []
+   if resultGeom is not None:
+      for part in resultGeom.parts():
+         result.append(QgsGeometry.fromWkt(part.asWkt())) # se aggiungo direttamente part poi si pianta qgis
+
+   return result
 
 
 #===============================================================================
@@ -93,6 +169,9 @@ def offsetPolyline(qadGeom, offsetDist, offsetSide, gapType):
          polyline.fromPolyline(pts)
          result.append(polyline)
    elif gType == "POLYLINE":
+      # attualmente gli archi di ellisse in una polilinea non sono supportati quindi li trasformo in segmenti
+      if linearObj.segmentizeEllipseArcs() == False:
+         return []
       # ottengo la polilinea di offset non tagliata
       untrimmedOffsetPolyline = getUntrimmedOffSetPolyline(linearObj, offsetDist, offsetSide, gapType)
       # test
@@ -102,6 +181,10 @@ def offsetPolyline(qadGeom, offsetDist, offsetSide, gapType):
       reversedPolyline = linearObj.copy() # duplico la polilinea
       reversedPolyline.reverse()   
       untrimmedReversedOffsetPolyline = getUntrimmedOffSetPolyline(reversedPolyline, offsetDist, offsetSide, gapType)
+
+      # test
+      #return [untrimmedReversedOffsetPolyline]
+            
       # taglio la polilinea dove necessario
       result = getTrimmedOffSetPolyline(linearObj, \
                                         untrimmedOffsetPolyline, \
@@ -126,111 +209,114 @@ def dualClipping(polyline, untrimmedOffsetPolyline, untrimmedReversedOffsetPolyl
    """
    
    # inizio Dual Clipping
-   dualClippedPolyline = QadPolyline()
       
-   # linea spezzata sui self intersection points e 
-   # sui punti di intersezione con untrimmedReversedOffsetPolyline
-   
-   # per ogni parte di untrimmedOffsetPolyline
-   for part in untrimmedOffsetPolyline.defList:
-      # calcola i punti di intersezione di part con untrimmedOffsetPolyline ordinati x distanza
-      # (self intersection points)     
-      dummy = getIntPtListBetweenPartAndPartListOffset(part, untrimmedOffsetPolyline)
-      intPtList = dummy[0]
-
-      if len(intPtList) > 0:
-         # inserisco dividendo part
-         intPt = intPtList[0]
-         newPart = part.copy()
-         newPart.setEndPt(intPt)
-         dualClippedPolyline.append(newPart)
-         i = 1
-         while i < len(intPtList):
-            newPart = part.copy()
-            newPart.setStartPt(intPt)
-            intPt = intPtList[i]
-            newPart.setEndPt(intPt)
-            dualClippedPolyline.append(newPart)
-            i = i + 1
-         newPart = part.copy()
-         newPart.setStartPt(intPt)
-         dualClippedPolyline.append(newPart)            
-      else: # inserisco part intera
-         dualClippedPolyline.append(part)
-   
-   # ciclo per spezzare dualClippedPolyline 
-   # sui punti di intersezione con untrimmedReversedOffsetPolyline
-   i = 0
-   while i < dualClippedPolyline.qty():
-      part = dualClippedPolyline.getLinearObjectAt(i)
-      # calcola i punti di intersezione di part con untrimmedReversedOffsetPolyline ordinati x distanza      
-      dummy = getIntPtListBetweenPartAndPartListOffset(part, untrimmedReversedOffsetPolyline)   
-      intPtList = dummy[0]
-
-      for intPt in intPtList:
-         newPart = part.copy()
-         newPart.setEndPt(intPt)
-         dualClippedPolyline.insert(i + 1, newPart)           
-         newPart = part.copy()
-         newPart.setStartPt(intPt)
-         dualClippedPolyline.insert(i + 2, newPart)
-         dualClippedPolyline.remove(i)
-         i = i + 1
-            
-      i = i + 1
-
-   isClosedPolyline = dualClippedPolyline.isClosed() # verifico se polilinea chiusa
-   splittedParts = QadPolyline()
-   circle = QadCircle()
-   i = 0
-   # per ogni parte
-   while i < dualClippedPolyline.qty():
-      part = dualClippedPolyline.getLinearObjectAt(i)
-      # calcola i punti di intersezione con polyline      
-      dummy = getIntPtListBetweenPartAndPartListOffset(part, polyline)
-      intPtList = dummy[0]
-      partNumberList = dummy[1]
-      
-      if len(intPtList) > 0:
-         if isClosedPolyline:
-            firstOrLastPart = False
-         else:
-            # verifico se tutti i punti di intersezione sono sul primo o sull'ultimo segmento di polyline
-            firstOrLastPart = True
-            for partNumber in partNumberList:
-               if partNumber != 0 and partNumber != polyline.qty() -1:
-                  firstOrLastPart = False
-                  break
+   # Calcolo i punti di intersezione tra <untrimmedOffsetPolyline> e <untrimmedReversedOffsetPolyline>
+   intPtList = getIntersectionPointsWithPolyline(untrimmedOffsetPolyline, untrimmedReversedOffsetPolyline)
+   # Calcolo i punti di self intersection di <untrimmedOffsetPolyline>
+   intSelfPtList = getSelfIntersectionPoints(untrimmedOffsetPolyline)
+   """ 
+      Le 2 funzioni precedenti restituiscono una lista in cui ogni elemento è una sottolista composta da:
+      1) punto di intersezione della polilinea con se stessa
+      2) distanza del punti di intersezione dall'inizio della polilinea
+      3) numero della parte contenente il punto di intersezione
+   """
+   # Aggiungo alla lista di punti di intersezione quelli di tipo self intersection senza duplicare i punti
+   # usando come chiave univoca le coordinate del punto e il numero di parte su cui si trova il punto
+   lenOriginalIntPtList = len(intPtList)
+   for intSelfPt in intSelfPtList:   
+      found = False
+      for i in range(lenOriginalIntPtList):
+         intPt = intPtList[i]
+         # se i punti sono così vicini da essere considerati uguali e si tratta della stessa parte
+         if qad_utils.ptNear(intPt[0], intSelfPt[0]) == True and \
+            intPt[2] == intSelfPt[2]:
+            found = True
          
-         # se tutti i punti di intersezione sono sul primo o sull'ultimo segmento di polyline
-         if firstOrLastPart:
-            splittedParts.removeAll() # pulisco la lista
-            splittedParts.append(part)
-            for intPt in intPtList:
-               j = 0
-               while j < splittedParts.qty():
-                  splittedPart = splittedParts.getLinearObjectAt(j)
-                  # creo un cerchio nel punto di intersezione
-                  circle.set(intPt, offsetDist)
-                  # ottengo le parti esterne al cerchio 
-                  externalPartsOfIntPt = getPartsExternalToCircle(splittedPart, circle)
-                  if externalPartsOfIntPt.qty() > 0:
-                     for externalPartOfIntPt in externalPartsOfIntPt.defList:
-                        splittedParts.insert(j, externalPartOfIntPt)
-                        j = j + 1
-                  splittedParts.remove(j)
-                            
-            # le sostituisco a part
-            for splittedPart in splittedParts.defList:
-               dualClippedPolyline.insert(i, splittedPart)
-               i = i + 1
-            dualClippedPolyline.remove(i)
-         else: # se tutti i punti di intersezione non sono sul primo o sull'ultimo segmento di polyline
-            dualClippedPolyline.remove(i)
-      else:
-         i = i + 1
+      if found == False:   
+         intPtList.append(intSelfPt)
+      
+   # se non ci sono punti di intersezione nè quelli di tipo self intersection
+   if len(intPtList) == 0:
+      return untrimmedOffsetPolyline.defList
    
-   return dualClippedPolyline
+   # ordino i punti di intersezione per distanza dall'inizio di untrimmedOffsetPolyline
+   intPtListOrderedByDistFromStart = []
+   for intPt in intPtList: 
+      insertAt = 0
+      for intPtOrderedByDistFromStart in intPtListOrderedByDistFromStart:
+         if intPtOrderedByDistFromStart[1] < intPt[1]:
+            insertAt = insertAt + 1
+         else:
+            break
+      intPtListOrderedByDistFromStart.insert(insertAt, intPt)
+   
+   # genero una nuova lista con le parti con intersezioni divise in tante sottoparti
+   splittedPolyline = []
+   for iPart in range(len(untrimmedOffsetPolyline.defList)):
+      part = untrimmedOffsetPolyline.getLinearObjectAt(iPart)
+      # verifico se la parte ha delle intersezioni
+      subPartList = []
+      for intPt in intPtListOrderedByDistFromStart:
+         if (intPt[2] == iPart): # se l'intersezione si riferisce alla parte interessata
+            if len(subPartList) == 0: # prima intersezione per questa parte
+               subPartList.append(part.getGeomBetween2Pts(part.getStartPt(), intPt[0]))
+            else: # dalla seconda intersezione in poi
+               subPartList.append(part.getGeomBetween2Pts(lastIntPt[0], intPt[0]))
+            lastIntPt = intPt
+         else:
+            if intPt[2] > iPart: # non continuo con le intersezioni delle parti successive
+               break
+      if len(subPartList) > 0: # se la parte è stata divisa in sotto-parti
+         subPartList.append(part.getGeomBetween2Pts(lastIntPt[0], part.getEndPt()))                  
+         splittedPolyline.extend(subPartList)
+      else:
+         splittedPolyline.append(part)
+         
+   # test
+   #return splittedPolyline
+   
+   dualClippedPartList = []
+   partListForClipByCircle = [] # lista di parti che devono essere sottoposte al taglio con un cerchio
+   #nPenultimaParte = polyline.qty() - 2 # 0-indexed
+   circle = QadCircle()
+   
+   # per tutte le parti di splittedPolyline
+   for part in splittedPolyline:
+      # calcolo le intersezioni della parte con tutte le parti di <polyline> (polilinea orginale)
+      dummyPolyline = QadPolyline()
+      dummyPolyline.append(part)
+      intPtList = getIntersectionPointsWithPolyline(polyline, dummyPolyline)      
+      # se non ci sono punti di intersezione aggiungo questa parte a dualClippedPartList
+      if len(intPtList) == 0:
+         dualClippedPartList.append(part)
+      else: # se esistono punti di intersezione         
+         # verifico se tutti i punti di intersezione non sono sul primo segmento o sul penultimo segmento di <polyline>
+         reject = True
+         for intPt in intPtList:
+            if intPt[2] == 0 or intPt[2] == polyline.qty() - 1: # se almeno un punto di intersezione è sul primo o sull'ultimo segmento
+               reject = False
+               break
+         
+         if reject == False:
+            # attengo le parti di <part> che sono esterne a tutti i cerchi 
+            # con centro = i punti di intersezione e raggio = la distanza di offset
+            partListForClipByCircle = [part]
+            for intPt in intPtList:
+               # Costruisco un cerchio il cui centro è il punto di intersezione e il raggio è la distanza di offset
+               circle.set(intPt[0], offsetDist)
+               
+               i = 0
+               while i < len(partListForClipByCircle):
+                  externalPartsOfIntPt = getPartsExternalToCircle(partListForClipByCircle[i], circle)
+                  del partListForClipByCircle[i]
+                  for externalPartOfIntPt in externalPartsOfIntPt.defList:
+                     partListForClipByCircle.insert(i, externalPartOfIntPt)
+                     i = i + 1
+            
+            for partForClipByCircle in partListForClipByCircle:
+               dualClippedPartList.append(partForClipByCircle)
+      
+   return dualClippedPartList
 
 
 #===============================================================================
@@ -255,34 +341,104 @@ def generalClosedPointPairClipping(polyline, dualClippedPolyline, offsetDist):
    GCPPCList = QadPolyline(dualClippedPolyline) # duplico la lista di parti      
    circle = QadCircle()
   
-   # per ogni parte di polyline
-   for part in polyline.defList:
-      # per ogni parte di GCPPCList
-      i = 0
-      while i < GCPPCList.qty():
-         GCPPCPart = GCPPCList.getLinearObjectAt(i)
-         # verifico quale é il punto di part più vicino a GCPPCPart
-         # la funzione ritorna <distanza minima><punto di distanza minima su object1><punto di distanza minima su object2>
-         # (<punto di distanza minima sulla parte 1><punto di distanza minima sulla parte 2><distanza minima>)
-         MinDistancePts = QadMinDistance.fromTwoBasicGeomObjects(part, GCPPCPart)
-         # se la distanza é inferiore a offsetDist (e non così vicina da essere considerata uguale)
-         if qad_utils.doubleSmaller(MinDistancePts[0], offsetDist):
-            # creo un cerchio nel punto di part più vicino a GCPPCPart
-            circle.set(MinDistancePts[1], offsetDist)
-            # ottengo le parti di GCPPCPart esterne al cerchio 
-            splittedParts = getPartsExternalToCircle(GCPPCPart, circle)
-            # se la splittedParts è composta da una sola parte che è uguale a GCPPCPart
-            # ad es. se GCPPCPart è tangente al cerchio allora non faccio niente
-            if splittedParts.qty() == 1 and splittedParts.getLinearObjectAt(0) == GCPPCPart:
-               i = i + 1
-            else:
-               # le sostituisco a GCPPCPart
-               GCPPCList.remove(i)
-               for splittedPart in splittedParts.defList:
-                  GCPPCList.insert(i, splittedPart)
+#    # per ogni parte di polyline
+#    for part in polyline.defList:
+#       # per ogni parte di GCPPCList
+#       i = 0
+#       while i < GCPPCList.qty():
+#          GCPPCPart = GCPPCList.getLinearObjectAt(i)
+#          # verifico quale é il punto di part più vicino a GCPPCPart
+#          # la funzione ritorna <distanza minima><punto di distanza minima su object1><punto di distanza minima su object2>
+#          MinDistancePts = QadMinDistance.fromTwoBasicGeomObjects(part, GCPPCPart)
+#          # se la distanza é inferiore a offsetDist (e non così vicina da essere considerata uguale)
+#          if qad_utils.doubleSmaller(MinDistancePts[0], offsetDist):
+#             # creo un cerchio nel punto di part più vicino a GCPPCPart
+#             circle.set(MinDistancePts[1], offsetDist)
+#             # ottengo le parti di GCPPCPart esterne al cerchio 
+#             splittedParts = getPartsExternalToCircle(GCPPCPart, circle)
+#             # se la splittedParts è composta da una sola parte che è uguale a GCPPCPart
+#             # ad es. se GCPPCPart è tangente al cerchio allora non faccio niente
+#             if splittedParts.qty() == 1 and splittedParts.getLinearObjectAt(0) == GCPPCPart:
+#                i = i + 1
+#             else:
+#                # le sostituisco a GCPPCPart
+#                GCPPCList.remove(i)
+#                for splittedPart in splittedParts.defList:
+#                   GCPPCList.insert(i, splittedPart)
+#                   i = i + 1
+#          else:
+#             i = i + 1   
+   
+#    GCPPCList = QadPolyline()      
+#    circle = QadCircle()
+#   
+#    # per ogni parte di GCPPCList cerco la coppia dei punti più vicini con <polyline> 
+#    for part in dualClippedPolyline:
+#       """
+#       la funzione ritorna 
+#       <distanza minima>
+#       <punto di distanza minima su object1>
+#       <geomIndex su object1>
+#       <subGeomIndex su object1>
+#       <partIndex su object1>
+#       <punto di distanza minima su object2>
+#       <geomIndex su object2>
+#       <subGeomIndex su object2>
+#       <partIndex su object2>
+#       dei 2 oggetti geometrici.
+#       """
+#       for origPart in polyline.defList:
+#          MinDistancePts = QadMinDistance.fromTwoGeomObjects(part, origPart)
+#          # se la distanza é inferiore a offsetDist (per precisione dei calcoli potrebbe essere molto vicina quindi accetto una tolleranza)
+#          if qad_utils.doubleSmaller(MinDistancePts[0], offsetDist) == True:
+#             # creo un cerchio nel punto di polyline più vicino a part
+#             circle.set(MinDistancePts[5], offsetDist)
+#             # ottengo le parti di part esterne al cerchio 
+#             splittedParts = getPartsExternalToCircle(part, circle)
+#             for splittedPart in splittedParts.defList:
+#                GCPPCList.append(splittedPart)         
+#          else:
+#             GCPPCList.append(part)
+                       
+   GCPPCList = QadPolyline()      
+   circle = QadCircle()
+   
+   # per ogni parte di dualClippedPolyline cerco la coppia dei punti più vicini con <polyline> 
+   for part in dualClippedPolyline:
+      """
+      la funzione ritorna 
+      <distanza minima>
+      <punto di distanza minima su object1>
+      <punto di distanza minima su object2>
+      """
+      splittedParts = [part]
+      for origPart in polyline.defList:
+         while True:
+            i = 0
+            splitted = False
+            while i < len(splittedParts):
+               splittedPart = splittedParts[i]         
+               MinDistancePts = QadMinDistance.fromTwoBasicGeomObjects(splittedPart, origPart)
+               # se la distanza é inferiore a offsetDist (per precisione dei calcoli potrebbe essere molto vicina quindi accetto una tolleranza)
+               if qad_utils.doubleSmaller(MinDistancePts[0], offsetDist) == True:
+                  splitted = True
+                  # creo un cerchio nel punto di polyline più vicino a part
+                  circle.set(MinDistancePts[2], offsetDist)
+                  # ottengo le parti di parti esterne al cerchio 
+                  outsideParts = getPartsExternalToCircle(splittedPart, circle)
+                  # le sostituisco a splittedPart
+                  del splittedParts[i]
+                  for outsidePart in outsideParts.defList:
+                     splittedParts.insert(i, outsidePart)
+                     i = i + 1            
+               else:
                   i = i + 1
-         else:
-            i = i + 1
+                  
+            if splitted == False:
+               break
+      
+      for splittedPart in splittedParts:       
+         GCPPCList.append(splittedPart)                     
                        
    return GCPPCList
 
@@ -293,7 +449,7 @@ def generalClosedPointPairClipping(polyline, dualClippedPolyline, offsetDist):
 def getTrimmedOffSetPolyline(polyline, untrimmedOffsetPolyline, untrimmedReversedOffsetPolyline, \
                              offsetDist):
    """
-   la funzione taglia la polilinea dove necessario.
+   la funzione taglia la polilinea dove necessario usando <dual clipping> e <general Closed Point Pair Clipping>.
    <polyline>: lista delle parti originali della polilinea 
    <untrimmedOffsetPolyline>: lista delle parti non tagliate derivate dall'offset
    <untrimmedReversedOffsetPolyline>: lista delle partinon tagliate derivate dall'offset in senso inverso
@@ -303,14 +459,17 @@ def getTrimmedOffSetPolyline(polyline, untrimmedOffsetPolyline, untrimmedReverse
    """
    
    # faccio il dual clipping
-   dualClippedPolyline = dualClipping(polyline, untrimmedOffsetPolyline, untrimmedReversedOffsetPolyline, offsetDist)
+   dualClippedPolyline = dualClipping(polyline, untrimmedOffsetPolyline, untrimmedReversedOffsetPolyline, offsetDist)   
    # test
+   #return dualClippedPolyline
    #GCPPCList = untrimmedOffsetPolyline
    #GCPPCList = dualClipping(polyline, untrimmedOffsetPolyline, untrimmedReversedOffsetPolyline, offsetDist)
      
    # faccio il general closed point pair clipping
    GCPPCList = generalClosedPointPairClipping(polyline, dualClippedPolyline, offsetDist)
-
+   # test
+   #return GCPPCList.defList
+   
    # faccio il join tra le parti
    return selfJoinPolyline(GCPPCList)
 
@@ -353,7 +512,6 @@ def getUntrimmedOffSetPolyline(polyline, offsetDist, offsetSide, gapType):
          newPart = part.copy()
          if newPart.offset(offsetDist, offsetSide) == True:
             newPolyline.append(newPart)
-         del newPart
       elif gType == "ELLIPSE_ARC": # arco di ellisse
          pts = part.offset(offsetDist, offsetSide)
          if pts is not None:
@@ -364,6 +522,9 @@ def getUntrimmedOffSetPolyline(polyline, offsetDist, offsetSide, gapType):
 
       i = i + 1
       
+   # test fino qui OK
+   # return newPolyline
+         
    # calcolo i punti di intersezione tra parti adiacenti
    # per ottenere una linea di offset non tagliata
    if isClosedPolyline == True:
@@ -434,6 +595,8 @@ def getUntrimmedOffSetPolyline(polyline, offsetDist, offsetSide, gapType):
                         newPart = fillet2PartsOffset(part, nextPart, offsetSide, offsetDist)
                         if newPart is not None:
                            untrimmedOffsetPolyline.append(newPart)
+                     elif IntPointTypeForNextPart == 1: # TIP
+                        untrimmedOffsetPolyline.append(QadLine().set(lastUntrimmedOffsetPt, IntPoint))                           
                   else: # NFIP
                      if IntPointTypeForNextPart == 1: # TIP
                         untrimmedOffsetPolyline.append(QadLine().set(lastUntrimmedOffsetPt, part.getEndPt()))
@@ -577,9 +740,9 @@ def getUntrimmedOffSetPolyline(polyline, offsetDist, offsetSide, gapType):
          untrimmedOffsetPolyline.getLinearObjectAt(0).setStartPt(untrimmedOffsetPolyline.getLinearObjectAt(-1).getEndPt()) # modifico l'inizio
 
    # faccio un pre-clipping sulle parti virtuali
-   return virtualPartClipping(untrimmedOffsetPolyline, virtualPartPositionList)
+   #return virtualPartClipping(untrimmedOffsetPolyline, virtualPartPositionList)
    # test
-   #return untrimmedOffsetPolyline
+   return untrimmedOffsetPolyline
 
 
 #===============================================================================
@@ -662,7 +825,8 @@ def getIntersectionPointInfoOffset(part, nextPart):
    ptIntList = QadIntersections.twoBasicGeomObjectExtensions(part, nextPart)
 
    if len(ptIntList) == 0:
-      if part.getEndPt() == nextPart.getStartPt(): # <nextPart> inizia dove finisce <part>
+      if qad_utils.ptNear(part.getEndPt(), nextPart.getStartPt()) == True:
+      #if part.getEndPt() == nextPart.getStartPt(): # <nextPart> inizia dove finisce <part>
          return [part.getEndPt(), 1, 1] # TIP-TIP
       else:
          return None
@@ -762,9 +926,82 @@ def getIntersectionPointInfoOffset(part, nextPart):
          return [ptInt, intTypePart, intTypeNextPart]
 
 
+#============================================================================
+# getSelfIntersectionPoints
+#============================================================================
+def getSelfIntersectionPoints(polyline):
+   """
+   la funzione restituisce una lista in cui ogni elemento è una sottolista composta da:
+   1) punto di intersezione della polilinea con se stessa
+   2) distanza del punti di intersezione dall'inizio della polilinea
+   3) numero della parte contenente il punto di intersezione      
+   """
+   result = []
+   distFromStartPrevPart = 0    
+   for iPart in range(len(polyline.defList)):
+      part = polyline.defList[iPart]
+      startPtOfPart = part.getStartPt()
+      endPtOfPart = part.getEndPt()
+         
+      # calcolo le intersezioni con tutte le parti ad eccezione di se stessa
+      for jPart in range(len(polyline.defList)):
+         if (iPart == jPart):
+            continue
+         partialIntPtList = QadIntersections.twoBasicGeomObjects(part, polyline.defList[jPart])
+         for partialIntPt in partialIntPtList:
+            # escludo i punti che sono all'inizio-fine di part
+            # se i punti sono così vicini da essere considerati uguali         
+            if qad_utils.ptNear(startPtOfPart, partialIntPt) == False and \
+               qad_utils.ptNear(endPtOfPart, partialIntPt) == False:
+               # inserisco il punto con lar distanza dall'inizio della polilinea e il numero di parte
+               distFromStartPart = part.getDistanceFromStart(partialIntPt)
+               result.append([partialIntPt, distFromStartPart + distFromStartPrevPart, iPart])
+                              
+      distFromStartPrevPart += part.length()
+               
+   return result
+
+
+#============================================================================
+# getIntersectionPointsWithPolyline
+#============================================================================
+def getIntersectionPointsWithPolyline(polyline1, polyline2):
+   """
+   la funzione restituisce una lista in cui ogni elemento è una sottolista composta da:
+   1) punto di intersezione della polilinea con <polyline2>
+   2) distanza del punti di intersezione dall'inizio della polilinea
+   3) numero della parte contenente il punto di intersezione      
+   """
+   result = []
+   distFromStartPrevPart = 0    
+   for iPart in range(len(polyline1.defList)):
+      part = polyline1.defList[iPart]
+      startPtOfPart = part.getStartPt()
+      endPtOfPart = part.getEndPt()
+         
+      # calcolo le intersezioni con tutte le parti di <polyline2>
+      for jPart in range(len(polyline2.defList)):
+         partialIntPtList = QadIntersections.twoBasicGeomObjects(part, polyline2.defList[jPart])
+         for partialIntPt in partialIntPtList:
+            # escludo i punti che sono all'inizio-fine di part
+            # se i punti sono così vicini da essere considerati uguali         
+            if qad_utils.ptNear(startPtOfPart, partialIntPt) == False and \
+               qad_utils.ptNear(endPtOfPart, partialIntPt) == False:
+               # inserisco il punto con lar distanza dall'inizio della polilinea e il numero di parte
+               distFromStartPart = part.getDistanceFromStart(partialIntPt)
+               result.append([partialIntPt, distFromStartPart + distFromStartPrevPart, iPart])
+            
+      distFromStartPrevPart += part.length()
+               
+   return result
+
+
+
 #===============================================================================
 # offsetBridgeTheGapBetweenLines
 #===============================================================================
+
+
 def offsetBridgeTheGapBetweenLines(line1, line2, offset, gapType):
    """   
    la funzione colma il vuoto tra 2 segmenti retti (QadLine) nel comando offset
@@ -918,7 +1155,7 @@ def fillet2PartsOffset(part, nextPart, offsetSide, offsetDist):
             center = qad_utils.getPolarPointByPtAngle(part.center, AngleProjected, part.radius - offsetDist)
          else: # l'offset era verso l'interno
             center = qad_utils.getPolarPointByPtAngle(part.center, AngleProjected, part.radius + offsetDist)
-      else: # l'arco gira verso destrapart
+      else: # l'arco gira verso destra
          if offsetSide == "right": # l'offset era verso l'interno
             center = qad_utils.getPolarPointByPtAngle(part.center, AngleProjected, part.radius + offsetDist)
          else: # l'offset era verso l'esterno
@@ -930,20 +1167,20 @@ def fillet2PartsOffset(part, nextPart, offsetSide, offsetDist):
          if part.reversed == False:
             if newArc.fromStartCenterEndPts(part.getEndPt(), center, nextPart.getStartPt()) == False:
                return None
-            newArc.reversed = part.reversed
+            newArc.reversed = False
          else:
-            if newArc.fromStartCenterEndPts(nextPart.getStartPt(), center, part.getStartPt()) == False:
+            if newArc.fromStartCenterEndPts(nextPart.getStartPt(), center, part.getEndPt()) == False:
                return None
-            newArc.reversed = not part.reversed
+            newArc.reversed = True
       else: # se il centro dell'arco di raccordo é esterno all'arco di offset
          if part.reversed == False:
             if newArc.fromStartCenterEndPts(nextPart.getStartPt(), center, part.getEndPt()) == False:
                return None
-            newArc.reversed = not part.reversed
+            newArc.reversed = True
          else:
-            if newArc.fromStartCenterEndPts(part.getStartPt(), center, nextPart.getStartPt()) == False:
+            if newArc.fromStartCenterEndPts(part.getEndPt(), center, nextPart.getStartPt()) == False:
                return None
-            newArc.reversed = part.reversed
+            newArc.reversed = False
                                                                
       return newArc
 
@@ -1069,7 +1306,7 @@ def virtualPartClipping(untrimmedOffsetPolyline, virtualPartPositionList):
          else:
             prevPart_2 = None
             
-         nextPart_1.set(nextPart)            
+         nextPart_1 = nextPart.copy()
          # se il punto finale della parte non coincide con quella del punto di intersezione
          if not qad_utils.ptNear(ptIntList[0], nextPart.getEndPt()):
             nextPart_1.setEndPt(ptIntList[0]) # modifico la fine 
@@ -1164,7 +1401,7 @@ def getIntPtListBetweenPartAndPartListOffset(part, polyline):
    """
    la funzione restituisce due liste:
    la prima é una lista di punti di intersezione tra la parte <part>
-   e una lista di parti <polyline ordinata per distanza dal punto iniziale
+   e la polilinea <polyline> ordinata per distanza dal punto iniziale
    di part (scarta i doppioni e i punti iniziale-finale di part)
    la seconda é una lista che  contiene, rispettivamente per ogni punto di intersezione,
    il numero della parte (0-based) di <polyline> in cui si trova quel punto.
@@ -1218,7 +1455,7 @@ def getPartsExternalToCircle(linearObj, circle):
    """
    la funzione usa un cerchio per dividere l'oggetto lineare.
    Le parti esterne al cerchio vengono restituite
-   nell'ordine dal punto iniziale a quello finale dell'oggetto linear.
+   nell'ordine dal punto iniziale a quello finale dell'oggetto lineare.
    """
    result = QadPolyline()
 

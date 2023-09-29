@@ -32,6 +32,8 @@ from qgis.gui import *
 
 import math
 import sys
+from networkx.generators import line
+from .qad_line import QadLine
 
 try:
    import numpy
@@ -510,7 +512,7 @@ class QadIntersections():
             if qad_utils.doubleNear(dist, myCircle.radius, 1.e-1): # lo so che fa schifo ma l'approssimazione dei calcoli...
                # traslo e ruoto il punto per riportarlo nella posizione originale (con il centro e la rotazione dell'ellisse originale)
                p = ellipse.translateAndRotatePtForNormalEllipse(p, True)
-               if ellipse.isPtOnEllipseOnlyByAngle(p): qad_utils.appendUniquePointToList(result, p)
+               qad_utils.appendUniquePointToList(result, p)
                
             # verifico l'altra coordinata x
             p = QgsPointXY(-x, y)
@@ -520,7 +522,7 @@ class QadIntersections():
             if qad_utils.doubleNear(dist, myCircle.radius, 1.e-1): # lo so che fa schifo ma l'approssimazione dei calcoli...
                # traslo e ruoto il punto per riportarlo nella posizione originale (con il centro e la rotazione dell'ellisse originale)
                p = ellipse.translateAndRotatePtForNormalEllipse(p, True)
-               if ellipse.isPtOnEllipseOnlyByAngle(p): qad_utils.appendUniquePointToList(result, p)
+               qad_utils.appendUniquePointToList(result, p)
 
       return result
 
@@ -782,7 +784,7 @@ class QadIntersections():
          elif object2.whatIs() == "ELLIPSE_ARC":
             ellipse = QadEllipse()
             ellipse.set(object2.center, object2.majorAxisFinalPt, object2.axisRatio)
-            return QadIntersections.circleWithEllipseArc(object1, ellipse)
+            return QadIntersections.circleWithEllipse(object1, ellipse)
          
       elif object1.whatIs() == "ARC":
          circle = QadCircle()
@@ -803,7 +805,7 @@ class QadIntersections():
          elif object2.whatIs() == "ELLIPSE_ARC":
             ellipse = QadEllipse()
             ellipse.set(object2.center, object2.majorAxisFinalPt, object2.axisRatio)
-            return QadIntersections.ellipseWithEllipseArc(object1, ellipse)
+            return QadIntersections.ellipseWithEllipse(object1, ellipse)
 
       elif object1.whatIs() == "ELLIPSE_ARC":
          ellipse = QadEllipse()
@@ -2265,7 +2267,10 @@ class QadMinDistance():
    @staticmethod   
    def fromTwoBasicGeomObjects(object1, object2):
       """
-      la funzione ritorna <distanza minima><punto di distanza minima su object1><punto di distanza minima su object2>
+      la funzione ritorna 
+      <distanza minima>
+      <punto di distanza minima su object1>
+      <punto di distanza minima su object2>
       dei 2 oggetti geometrici di base: linea, arco, arco di ellisse, cerchio, ellisse.
       """      
       if object1.whatIs() == "LINE":
@@ -2319,7 +2324,7 @@ class QadMinDistance():
 
       elif object1.whatIs() == "ELLIPSE_ARC":
          if object2.whatIs() == "LINE":
-            return QadMinDistance.lineWithEllipseArc(object2, object1)
+            return QadMinDistance.fromLineToEllipseArc(object2, object1)
          elif object2.whatIs() == "CIRCLE":
             return QadMinDistance.fromCircleToEllipseArc(object2, object1)
          elif object2.whatIs() == "ARC":
@@ -2331,6 +2336,139 @@ class QadMinDistance():
    
       return []
 
+
+   #============================================================================
+   # fromTwoGeomObjects
+   #============================================================================
+   @staticmethod   
+   def fromTwoGeomObjects(object1, object2):
+      """
+      la funzione ritorna 
+      <distanza minima>
+      <punto di distanza minima su object1>
+      <geomIndex su object1>
+      <subGeomIndex su object1>
+      <partIndex su object1>
+      <punto di distanza minima su object2>
+      <geomIndex su object2>
+      <subGeomIndex su object2>
+      <partIndex su object2>
+      dei 2 oggetti geometrici.
+      """
+      minDistancePts = None
+      geomType1 = object1.whatIs()
+      
+      if geomType1 == "MULTI_LINEAR_OBJ":
+         for geomAt in range(0, object1.qty()):
+            partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object.getLinearObjectAt(geomAt), object2)
+            if minDistancePts is None:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+            elif partialMinDistancePts[0] < minDistancePts[0]:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+            
+      elif geomType1 == "POLYLINE":
+         for partAt in range(0, object1.qty()):
+            partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object.getLinearObjectAt(partAt), object2)
+            if minDistancePts is None:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[4] = partAt
+            elif partialMinDistancePts[0] < minDistancePts[0]:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[4] = partAt
+            
+      elif geomType1 == "POLYGON":
+         for subGeomAt in range(0, object1.qty()):
+            partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object.getClosedObjectAt(geomAt), object2)
+            if minDistancePts is None:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[3] = subGeomAt
+            elif partialMinDistancePts[0] < minDistancePts[0]:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[3] = subGeomAt
+         
+      elif geomType1 == "MULTI_POLYGON":
+         for geomAt in range(0, object1.qty()):
+            partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object.getPolygonAt(geomAt), object2)
+            if minDistancePts is None:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+            elif partialMinDistancePts[0] < minDistancePts[0]:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+         
+      elif geomType1 == "MULTI_POINT":
+         for geomAt in range(0, object1.qty()):
+            partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object.getPointAt(geomAt), object2)
+            if minDistancePts is None:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+            elif partialMinDistancePts[0] < minDistancePts[0]:
+               minDistancePts = partialMinDistancePts
+               minDistancePts[2] = geomAt
+         
+      # oggetto1 è una geometria base
+      else:
+         geomType2 = object2.whatIs()
+         
+         if geomType2 == "MULTI_LINEAR_OBJ":
+            for geomAt in range(0, object2.qty()):
+               partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object1, object2.getLinearObjectAt(geomAt))
+               if minDistancePts is None:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+               elif partialMinDistancePts[0] < minDistancePts[0]:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+               
+         elif geomType2 == "POLYLINE":
+            for partAt in range(0, object2.qty()):
+               partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object1, object2.getLinearObjectAt(partAt))
+               if minDistancePts is None:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[8] = partAt                  
+               elif partialMinDistancePts[0] < minDistancePts[0]:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[8] = partAt                  
+               
+         elif geomType2 == "POLYGON":
+            for subGeomAt in range(0, object2.qty()):
+               partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object1, object2.getClosedObjectAt(geomAt))
+               if minDistancePts is None:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[7] = subGeomAt                  
+               elif partialMinDistancePts[0] < minDistancePts[0]:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[7] = subGeomAt                  
+            
+         elif geomType2 == "MULTI_POLYGON":
+            for geomAt in range(0, object2.qty()):
+               partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object1, object2.getPolygonAt(geomAt))
+               if minDistancePts is None:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+               elif partialMinDistancePts[0] < minDistancePts[0]:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+            
+         elif geomType2 == "MULTI_POINT":
+            for geomAt in range(0, object2.qty()):
+               partialMinDistancePts = QadMinDistance.fromTwoGeomObjects(object1, object2.getPointAt(geomAt))
+               if minDistancePts is None:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+               elif partialMinDistancePts[0] < minDistancePts[0]:
+                  minDistancePts = partialMinDistancePts
+                  minDistancePts[6] = geomAt
+
+         # oggetto2 è una geometria base (e anche oggetto1 era una geometria base)
+         else:            
+            dummy = QadMinDistance.fromTwoBasicGeomObjects(object1, object2)
+            minDistancePts = [dummy[0], dummy[1], 0, 0, 0, dummy[2], 0, 0, 0,]    
+            
+      return minDistancePts
+      
 
    #============================================================================
    # twoBasicGeomObjectExtensions
@@ -3057,7 +3195,7 @@ class QadTangPerp():
          line.set(pt1, pt2) # primo punto tangente e secondo punto perpendicolare
          lines.append(line) 
          
-      pt1 = getPolarPointByPtAngle(circle1.center, angle, -1 * circle1.radius)
+      pt1 = qad_utils.getPolarPointByPtAngle(circle1.center, angle, -1 * circle1.radius)
       pt2 = QadPerpendicularity.fromPointToInfinityLine(pt1, line2)
       if pt2 is not None:
          line = QadLine()
@@ -3691,7 +3829,7 @@ class QadPerpPerp():
       # linea perpendicolare ad una linea e ad un cerchio
       ptPer1 = QadPerpendicularity.fromPointToInfinityLine(circle2.center, infinityLine1)
       angle = qad_utils.getAngleBy2Pts(circle2.center, ptPer1)
-      ptPer2 = getPolarPointByPtAngle(circle2.center, angle, circle2.radius)
+      ptPer2 = qad_utils.getPolarPointByPtAngle(circle2.center, angle, circle2.radius)
       line = QadLine()
       line.set(ptPer1, ptPer2)
       return line 
@@ -3756,6 +3894,22 @@ class QadPerpPerp():
    # metodi per i segmenti - inizio
    #===============================================================================
 
+   #===============================================================================
+   # lineWithLine
+   #===============================================================================
+   @staticmethod
+   def lineWithLine(line1, perPt1, line2, perPt2):
+      """
+      La funzione ritorna la linea perpendicolare ad un segmento ad un segmento.
+      """
+      ang1 = qad_utils.normalizeAngle(qad_utils.getAngleBy2Pts(line1.getStartPt(), line1.getEndPt()), math.pi)
+      ang2 = qad_utils.normalizeAngle(qad_utils.getAngleBy2Pts(line2.getStartPt(), line2.getEndPt()), math.pi)
+      if qad_utils.TanDirectionNear(ang1, ang2) == True:
+         result = QadLine()
+         result.set(perPt1, perPt2)
+         return result
+
+      return None
 
    #===============================================================================
    # lineWithCircle
@@ -3848,8 +4002,8 @@ class QadPerpPerp():
       La funzione ritorna la linea perpendicolare tra due cerchi
       """
       angle = qad_utils.getAngleBy2Pts(circle1.center, circle2.center)
-      ptPer1 = getPolarPointByPtAngle(circle1.center, angle, circle1.radius)
-      ptPer2 = getPolarPointByPtAngle(circle2.center, angle, -circle2.radius)
+      ptPer1 = qad_utils.getPolarPointByPtAngle(circle1.center, angle, circle1.radius)
+      ptPer2 = qad_utils.getPolarPointByPtAngle(circle2.center, angle, -circle2.radius)
       line = QadLine()
       line.set(ptPer1, ptPer2)
       return line
@@ -4006,10 +4160,20 @@ class QadPerpPerp():
       perPt2 = punto di selezione geometria 2 di perpendicolarità
       """
       if object1.whatIs() == "LINE":
-         if object2.whatIs() == "CIRCLE":
+         if object2.whatIs() == "LINE":
+            return QadPerpPerp.lineWithLine(object1, perPt1, object2, perPt2)         
+         elif object2.whatIs() == "CIRCLE":
             return QadPerpPerp.lineWithCircle(object1, object2)
          elif object2.whatIs() == "ARC":
-            return QadPerpPerp.lineWithArc(object1, object2)
+            result = QadPerpPerp.lineWithArc(object1, object2)
+            if result is not None:
+               pts = QadIntersections.infinityLineWithArc(result, object2)
+               if len(pts) == 2:
+                  if qad_utils.getDistance(perPt2, pts[0]) <= qad_utils.getDistance(perPt2, pts[1]):
+                     result.setEndPt(pts[0])
+                  else:
+                     result.setEndPt(pts[1])
+            return result
          elif object2.whatIs() == "ELLIPSE":
             return getLineWithStartEndPtsClosestToPts(QadPerpPerp.lineWithEllipse(object1, object2), perPt1, perPt2)
          elif object2.whatIs() == "ELLIPSE_ARC":
@@ -4032,6 +4196,14 @@ class QadPerpPerp():
       elif object1.whatIs() == "ARC":
          if object2.whatIs() == "LINE":
             result = QadPerpPerp.lineWithArc(object2, object1)
+            if result is not None:
+               pts = QadIntersections.infinityLineWithArc(result, object1)
+               if len(pts) == 2:
+                  if qad_utils.getDistance(perPt1, pts[0]) <= qad_utils.getDistance(perPt1, pts[1]):
+                     result.setEndPt(pts[0])
+                  else:
+                     result.setEndPt(pts[1])
+
             if result is not None: result.reverse()
             return result
          elif object2.whatIs() == "CIRCLE":
@@ -4226,7 +4398,7 @@ def getQadGeomClosestPart(qadGeom, pt):
       minDistPoint = result[1]
       
       if geomType == "LINE" or geomType == "ARC" or geomType == "ELLIPSE_ARC":
-         # <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+         # < 0 "a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
          leftOf = qadGeom.leftOf(pt)
       elif geomType == "CIRCLE" or geomType == "ELLIPSE_ARC" or geomType == "ELLIPSE": # cerchio o ellisse
          leftOf = qadGeom.whereIsPt(pt) # -1 interno, 0 sulla circonferenza, 1 esterno

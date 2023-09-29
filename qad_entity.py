@@ -533,21 +533,23 @@ class QadLayerEntitySet():
 
                # Per un baco sconosciuto quando trasformo la geometria se poi ne faccio un buffer
                # il calcolo dà un risultato sbagliato quando la geometria é nuova o modificata
-               # (in cache del layer) e il sistema di coordinate é diverso de quello della mappa corrente 
-               wkbType = g.wkbType()
-               if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:               
-                  g = QgsGeometry().fromPoint(g.asPoint())
-               elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-                  g = QgsGeometry().fromMultiPoint(g.asMultiPoint())
-               elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-                  g = QgsGeometry().fromPolyline(g.asPolyline())
-               elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-                  g = QgsGeometry().fromMultiPolyline(g.asMultiPolyline())
-               elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-                  g = QgsGeometry().fromPolygon(g.asPolygon())
-               elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-                  g = QgsGeometry().fromMultiPolygon(g.asMultiPolygon())
-                    
+               # (in cache del layer) e il sistema di coordinate é diverso de quello della mappa corrente
+               gType = g.type()
+               if g.isMultipart() == False:
+                  if gType == QgsWkbTypes.PointGeometry:
+                     g = QgsGeometry().fromPoint(g.asPoint())
+                  elif gType == QgsWkbTypes.LineGeometry:
+                     g = QgsGeometry().fromPolyline(g.asPolyline())
+                  elif gType == QgsWkbTypes.PolygonGeometry:
+                     g = QgsGeometry().fromPolygon(g.asPolygon())
+               else:
+                  if gType == QgsWkbTypes.PointGeometry:
+                     g = QgsGeometry().fromMultiPoint(g.asMultiPoint())
+                  elif gType == QgsWkbTypes.LineGeometry:
+                     g = QgsGeometry().fromMultiPolyline(g.asMultiPolyline())         
+                  elif gType == QgsWkbTypes.PolygonGeometry:
+                     g = QgsGeometry().fromMultiPolygon(g.asMultiPolygon())                     
+                                   
             result.append(g)
       return result
 
@@ -1075,8 +1077,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                g.transform(coordTransform)
                         
             # Select features in the object bounding box
-            wkbType = g.wkbType()            
-            if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:   
+            if g.isMultipart() == False and g.type() == QgsWkbTypes.PointGeometry:            
                Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
                ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
                                                                       mQgsMapTool.canvas.mapSettings(), \
@@ -1108,8 +1109,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                g.transform(coordTransform)
 
             # Select features in the object bounding box
-            wkbType = g.wkbType()            
-            if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:   
+            if g.isMultipart() == False and g.type() == QgsWkbTypes.PointGeometry:            
                Tolerance = QadVariables.get(QadMsg.translate("Environment variables", "PICKBOX")) # leggo la tolleranza
                ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(Tolerance, layer, \
                                                                       mQgsMapTool.canvas.mapSettings(), \

@@ -120,6 +120,13 @@ class QadMultiPoint():
    def whatIs(self):
       return "MULTI_POINT"
 
+   
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return False
+
 
    #============================================================================
    # set
@@ -692,6 +699,13 @@ class QadMultiPolygon():
    def whatIs(self):
       return "MULTI_POLYGON"
 
+   
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return True
+
 
    #============================================================================
    # set
@@ -983,27 +997,26 @@ def fromQgsGeomToQadGeom(QgsGeom, crs = None):
    # commentato perchè se ho un poligono e lo divido in 2 parti diventa non valido ma lo si vuole gestire comunque
    # a volte la trasformazione di coordinate genera oggetti non validi
    #if g.isGeosValid() == False: return None
-   wkbType = g.wkbType()
-
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:
-      qadGeom = QadPoint()
-      if qadGeom.fromGeom(g): return qadGeom
-   elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      qadGeom = QadMultiPoint()
-      if qadGeom.fromGeom(g): return qadGeom
-         
-   elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      return QadLinearObject.fromGeom(g)
-   elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      qadGeom = QadMultiLinearObject()
-      if qadGeom.fromGeom(g): return qadGeom
-         
-   elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      qadGeom = QadPolygon()
-      if qadGeom.fromGeom(g): return qadGeom
-   elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      qadGeom = QadMultiPolygon()
-      if qadGeom.fromGeom(g): return qadGeom
+   gType = g.type()
+   if g.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry:
+         qadGeom = QadPoint()
+         if qadGeom.fromGeom(g): return qadGeom
+      elif gType == QgsWkbTypes.LineGeometry:
+         return QadLinearObject.fromGeom(g)
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         qadGeom = QadPolygon()
+         if qadGeom.fromGeom(g): return qadGeom
+   else:
+      if gType == QgsWkbTypes.PointGeometry:
+         qadGeom = QadMultiPoint()
+         if qadGeom.fromGeom(g): return qadGeom
+      elif gType == QgsWkbTypes.LineGeometry:
+         qadGeom = QadMultiLinearObject()
+         if qadGeom.fromGeom(g): return qadGeom         
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         qadGeom = QadMultiPolygon()
+         if qadGeom.fromGeom(g): return qadGeom      
    
    return None
 

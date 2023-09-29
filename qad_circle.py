@@ -52,6 +52,14 @@ class QadCircle():
       # obbligatoria
       return "CIRCLE"
 
+   
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return True
+      
+
    def set(self, center, radius = None):
       if isinstance(center, QadCircle):
          circle = center
@@ -302,11 +310,7 @@ class QadCircle():
                                                               InfinityLinePerpOnMiddle2[1])
       if center is None: return False # linee parallele
 
-      # per problemi di approssimazione dei calcoli
-      epsilon = 1.e-4  # percentuale del raggio per ottenere max diff. di una distanza con il raggio
-
       radius = center.distance(myPoints[0]) # calcolo il raggio
-      tolerance = radius * epsilon
      
       # se il punto finale dell'arco è a sinistra del
       # segmento che unisce i punti iniziale e intermedio allora il verso è antiorario
@@ -318,10 +322,13 @@ class QadCircle():
          # sposto i punti vicino a 0,0 per migliorare la precisione dei calcoli
          myPoints.append(qad_utils.movePoint(points[i], -dx, -dy))
          
-         # calcolo il presunto raggio e verifico che sia abbastanza simile al raggio originale
-         if qad_utils.doubleNear(radius, center.distance(myPoints[i]), tolerance) == False:
+         # se TOLERANCE2COINCIDENT = 0,001 viene riconosciuto un cerchio di 1000 m
+         # se il punto calcolato non è abbastanza vicino al punto reale
+         # altrimenti trovo problemi con le intersezioni con gli oggetti
+         if qad_utils.ptNear(qad_utils.getPolarPointByPtAngle(center, qad_utils.getAngleBy2Pts(center, myPoints[i]), radius), \
+                             myPoints[i]) == False:
             return False
-         
+                  
          # calcolo il verso dell'arco e l'angolo                 
          clockWise = True if qad_utils.leftOfLine(myPoints[i], myPoints[i - 1], myPoints[i - 2]) < 0 else False
          # il verso deve essere lo stesso di quello originale

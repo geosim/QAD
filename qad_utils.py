@@ -737,10 +737,13 @@ def filterFeaturesByType(features, filterByGeomType):
       if geomType != filterByGeomType:
          if geomType == QgsWkbTypes.PointGeometry:      
             resultPoint.append(QgsGeometry(g))
+            
          elif geomType == QgsWkbTypes.LineGeometry:      
             resultLine.append(QgsGeometry(g))
+            
          elif geomType == QgsWkbTypes.PolygonGeometry:      
             resultPolygon.append(QgsGeometry(g))
+            
          del features[i]
 
    return resultPoint, resultLine, resultPolygon
@@ -768,10 +771,13 @@ def filterGeomsByType(geoms, filterByGeomType):
       if geomType != filterByGeomType:            
          if geomType == QgsWkbTypes.PointGeometry:      
             resultPoint.append(QgsGeometry(g))
+            
          elif geomType == QgsWkbTypes.LineGeometry:      
             resultLine.append(QgsGeometry(g))
+            
          elif geomType == QgsWkbTypes.PolygonGeometry:      
             resultPolygon.append(QgsGeometry(g))
+            
          del geoms[i]
 
    return resultPoint, resultLine, resultPolygon
@@ -867,14 +873,15 @@ def getFeatureRequest(fetchAttributes = [], fetchGeometry = True, \
    if rect is not None:
       r = QgsRectangle(rect)
       
-      # Se il rettangolo é schiacciato in verticale o in orizzontale
-      # risulta una linea e la funzione fa casino, allora in questo caso lo allargo un pochino
-      if doubleNear(r.xMinimum(), r.xMaximum(), 1.e-6):
-         r.setXMaximum(r.xMaximum() + 1.e-6)
-         r.setXMinimum(r.xMinimum() - 1.e-6)
-      if doubleNear(r.yMinimum(), r.yMaximum(), 1.e-6):
-         r.setYMaximum(r.yMaximum() + 1.e-6)
-         r.setYMinimum(r.yMinimum() - 1.e-6)
+        # non serve più
+#       # Se il rettangolo é schiacciato in verticale o in orizzontale
+#       # risulta una linea e la funzione fa casino, allora in questo caso lo allargo un pochino
+#       if doubleNear(r.xMinimum(), r.xMaximum(), 1.e-6):
+#          r.setXMaximum(r.xMaximum() + 1.e-6)
+#          r.setXMinimum(r.xMinimum() - 1.e-6)
+#       if doubleNear(r.yMinimum(), r.yMaximum(), 1.e-6):
+#          r.setYMaximum(r.yMaximum() + 1.e-6)
+#          r.setYMinimum(r.yMinimum() - 1.e-6)
          
       request.setFilterRect(r)
 
@@ -1021,7 +1028,7 @@ def getEntSelOnLayer(point, mQgsMapTool, boxSize, layer, onlyBoundary = True, \
    layerCoords = mQgsMapTool.toLayerCoordinates(layer, point)
    ToleranceInMapUnits = QgsTolerance.toleranceInMapUnits(boxSize, layer, \
                                                           mQgsMapTool.canvas.mapSettings(), \
-                                                          QgsTolerance.Pixels)
+                                                          QgsTolerance.Pixels) / 2
 
    selectRect = QgsRectangle(layerCoords.x() - ToleranceInMapUnits, layerCoords.y() - ToleranceInMapUnits, \
                              layerCoords.x() + ToleranceInMapUnits, layerCoords.y() + ToleranceInMapUnits)
@@ -1415,18 +1422,18 @@ def getMiddlePoint(p1, p2):
 #===============================================================================
 # getAngleBy2Pts
 #===============================================================================
-def getAngleBy2Pts(p1, p2):
+def getAngleBy2Pts(p1, p2, tolerance = None):
    """
    la funzione ritorna l'angolo in radianti della retta passante per p1 e p2
    """
    diffX = p2.x() - p1.x()
    diffY = p2.y() - p1.y()
-   if doubleNear(diffX, 0): # se la retta passante per p1 e p2 é verticale
+   if doubleNear(diffX, 0, tolerance): # se la retta passante per p1 e p2 é verticale
       if p1.y() < p2.y():
          angle = math.pi / 2
       else :
          angle = math.pi * 3 / 2
-   elif doubleNear(diffY, 0): # se la retta passante per p1 e p2 é orizzontale
+   elif doubleNear(diffY, 0, tolerance): # se la retta passante per p1 e p2 é orizzontale
       if p1.x() <= p2.x():
          angle = 0.0
       else:
@@ -1555,7 +1562,7 @@ def getIntersectionPointOn2InfinityLines(line1P1, line1P2, line2P1, line2P2):
    
    if doubleNear(line1DiffX, 0) and doubleNear(line2DiffX, 0): # se la retta1 e la retta2 sono verticale
       return None # sono parallele
-   elif doubleNear(line1DiffY, 0) and doubleNear(line2DiffY, 0): # se la retta1 e la retta2 sono orizzonatali
+   elif doubleNear(line1DiffY, 0) and doubleNear(line2DiffY, 0): # se la retta1 e la retta2 sono orizzontali
       return None # sono parallele
 
    if doubleNear(line1DiffX, 0): # se la retta1 é verticale
@@ -1633,36 +1640,41 @@ def getPolarPointByPtAngle(p1, angle, dist):
 #===============================================================================
 def asPointOrPolyline(geom):
    """
-   la funzione ritorna una lista di geometrie di punti e/o polilinee in cui viene ridotta la geometria. 
+   la funzione ritorna una lista di geometrie di punti e/o polilinee in cui viene trasformata la geometria. 
    """
-   # Riduco le geometrie in point o polyline
+   # Trasformo le geometrie in point o polyline
    result = []
    for g in geom.asGeometryCollection():
-      wkbType = g.wkbType()
-      if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
-         wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-         result.append(g)
-      elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-         pointList = g.asMultiPoint() # vettore di punti
-         for point in pointList:
-            _g = QgsGeometry.fromPointXY(point)
-            result.append(_g)            
-      elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-         lineList = g.asMultiPolyline() # vettore di linee
-         for line in lineList:
-            _g = QgsGeometry.fromPolylineXY(line)
-            result.append(_g)
-      elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-         lineList = g.asPolygon() # vettore di linee    
-         for line in lineList:
-            _g = QgsGeometry.fromPolylineXY(line)
-            result.append(_g)
-      elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-         polygonList = g.asMultiPolygon() # vettore di poligoni
-         for polygon in polygonList:
-            for line in polygon:
+      gType = g.type()
+      if g.isMultipart() == False:
+         if gType == QgsWkbTypes.PointGeometry or gType == QgsWkbTypes.LineGeometry:
+            result.append(g)
+            
+         elif gType == QgsWkbTypes.PolygonGeometry:
+            lineList = g.asPolygon() # vettore di linee    
+            for line in lineList:
                _g = QgsGeometry.fromPolylineXY(line)
+               result.append(_g) 
+                          
+      else: # multi
+         if gType == QgsWkbTypes.PointGeometry:
+            pointList = g.asMultiPoint() # vettore di punti
+            for point in pointList:
+               _g = QgsGeometry.fromPointXY(point)
                result.append(_g)
+               
+         elif gType == QgsWkbTypes.LineGeometry:
+            lineList = g.asMultiPolyline() # vettore di linee
+            for line in lineList:
+               _g = QgsGeometry.fromPolylineXY(line)
+               result.append(_g)   
+                        
+         elif gType == QgsWkbTypes.PolygonGeometry:
+            polygonList = g.asMultiPolygon() # vettore di poligoni
+            for polygon in polygonList:
+               for line in polygon:
+                  _g = QgsGeometry.fromPolylineXY(line)
+                  result.append(_g)
                
    return result
 
@@ -1738,7 +1750,7 @@ def doubleNear(a, b, tolerance = None):
       myTolerance = tolerance
    
    diff = a - b
-   return diff > -myTolerance and diff <= myTolerance
+   return diff >= -myTolerance and diff <= myTolerance
 
 
 #===============================================================================
@@ -1895,112 +1907,85 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
    """
    minDistPoint = QgsPointXY()
    closestSegmentIndex = 0
-   wkbType = geom.wkbType()
    sqrDist = sys.float_info.max
 
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:
-      minDistPoint = geom.asPoint()
-      point.sqrDist(minDistPoint)
-      return (point.sqrDist(minDistPoint), minDistPoint, None, None)
- 
-   if wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      minDistPoint = getNearestPoints(point, geom.asMultiPoint())[0] # vettore di punti
-      return (point.sqrDist(minDistPoint), minDistPoint, None, None)
-
-   if wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      points = geom.asPolyline() # vettore di punti
-      index = 0
-      for pt in points:
-         if index > 0:
-            prevX = thisX
-            prevY = thisY
-           
-         thisX = pt.x()
-         thisY = pt.y()
-
-         if index > 0:
-            result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
-            testdist = result[0]
-            distPoint = result[1] 
-                      
-            if testdist < sqrDist:
-               closestSegmentIndex = index
-               sqrDist = testdist
-               minDistPoint = distPoint
-               
-         index = index + 1
-
-      leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
-      return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
-
-   if wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      lines = geom.asMultiPolyline() # lista di linee
-      pointindex = 0
-      for line in lines:
-         prevX = 0
-         prevY = 0
-        
-         for pt in line: # lista di punti
+   gType = geom.type()
+   if geom.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry:
+         minDistPoint = geom.asPoint()
+         point.sqrDist(minDistPoint)
+         return (point.sqrDist(minDistPoint), minDistPoint, None, None)
+      
+      elif gType == QgsWkbTypes.LineGeometry:
+         points = geom.asPolyline() # vettore di punti
+         index = 0
+         for pt in points:
+            if index > 0:
+               prevX = thisX
+               prevY = thisY
+              
             thisX = pt.x()
             thisY = pt.y()
-          
-            if prevX and prevY:
+   
+            if index > 0:
                result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
                testdist = result[0]
                distPoint = result[1] 
-
-               if testdist < sqrDist:
-                  closestSegmentIndex = pointindex
-                  sqrDist = testdist
-                  minDistPoint = distPoint
-
-            prevX = thisX
-            prevY = thisY
-            pointindex = pointindex + 1
-         
-      leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))         
-      return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
-
-   if wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      lines = geom.asPolygon() # lista di linee    
-      index = 0
-      for line in lines:
-         prevX = 0
-         prevY = 0
-
-         for pt in line: # lista di punti
-            thisX = pt.x()
-            thisY = pt.y()
-
-            if prevX and prevY:
-               result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
-               testdist = result[0]
-               distPoint = result[1] 
-
+                         
                if testdist < sqrDist:
                   closestSegmentIndex = index
                   sqrDist = testdist
                   minDistPoint = distPoint
-
-            prevX = thisX
-            prevY = thisY
+                  
             index = index + 1
-            
-      leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
-      return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
-
-   if wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      polygons = geom.asMultiPolygon() # vettore di poligoni
-      pointindex = 0
-      for polygon in polygons:
-         for line in polygon: # lista di linee
+   
+         leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
+         return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
+      
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         lines = geom.asPolygon() # lista di linee    
+         index = 0
+         for line in lines:
             prevX = 0
             prevY = 0
-         
+   
             for pt in line: # lista di punti
                thisX = pt.x()
                thisY = pt.y()
    
+               if prevX and prevY:
+                  result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
+                  testdist = result[0]
+                  distPoint = result[1] 
+   
+                  if testdist < sqrDist:
+                     closestSegmentIndex = index
+                     sqrDist = testdist
+                     minDistPoint = distPoint
+   
+               prevX = thisX
+               prevY = thisY
+               index = index + 1
+               
+         leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
+         return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
+      
+   else: # multi
+      if gType == QgsWkbTypes.PointGeometry:
+         minDistPoint = getNearestPoints(point, geom.asMultiPoint())[0] # vettore di punti
+         return (point.sqrDist(minDistPoint), minDistPoint, None, None)
+      
+      elif gType == QgsWkbTypes.LineGeometry:
+         lines = geom.asMultiPolyline() # lista di linee
+         pointindex = 0
+         for line in lines:
+            prevX = 0
+            prevY = 0
+           
+            for pt in line: # lista di punti
+               thisX = pt.x()
+               thisY = pt.y()
+             
                if prevX and prevY:
                   result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
                   testdist = result[0]
@@ -2014,9 +1999,38 @@ def closestSegmentWithContext(point, geom, epsilon = 1.e-15):
                prevX = thisX
                prevY = thisY
                pointindex = pointindex + 1
+            
+         leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))         
+         return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
       
-      leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
-      return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         polygons = geom.asMultiPolygon() # vettore di poligoni
+         pointindex = 0
+         for polygon in polygons:
+            for line in polygon: # lista di linee
+               prevX = 0
+               prevY = 0
+            
+               for pt in line: # lista di punti
+                  thisX = pt.x()
+                  thisY = pt.y()
+      
+                  if prevX and prevY:
+                     result = sqrDistToSegment(point, prevX, prevY, thisX, thisY, epsilon)
+                     testdist = result[0]
+                     distPoint = result[1] 
+      
+                     if testdist < sqrDist:
+                        closestSegmentIndex = pointindex
+                        sqrDist = testdist
+                        minDistPoint = distPoint
+      
+                  prevX = thisX
+                  prevY = thisY
+                  pointindex = pointindex + 1
+         
+         leftOf = leftOfLine(point, geom.vertexAt(closestSegmentIndex - 1), geom.vertexAt(closestSegmentIndex))
+         return (sqrDist, minDistPoint, closestSegmentIndex, leftOf)
 
    return (-1, None, None, None)
 
@@ -2071,72 +2085,73 @@ def mirrorPoint(point, mirrorPt, mirrorAngle):
 def getSubGeomAtVertex(geom, atVertex):
    # ritorna la sotto-geometria al vertice <atVertex> e la sua posizione nella geometria (0-based)
    # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
-   wkbType = geom.wkbType()
-   
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D:
-      if atVertex == 0:
-         return QgsGeometry(geom), [0]
-
-   elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      pts = geom.asMultiPoint() # lista di punti
-      if atVertex > len(pts) - 1:
-         return None, None
-      else:
-         return QgsGeometry.fromPointXY(pts[atVertex]), [atVertex]
-
-   elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      pts = geom.asPolyline() # lista di punti
-      if atVertex > len(pts) - 1:
-         return None, None
-      else:
-         return QgsGeometry(geom), [0]
+   gType = geom.type()
+   if geom.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry:
+         if atVertex == 0:
+            return QgsGeometry(geom), [0]
          
-   elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      # cerco in quale linea é il vertice <atVertex>
-      i = 0
-      iLine = 0
-      lines = geom.asMultiPolyline() # lista di linee
-      for line in lines:
-         lineLen = len(line)
-         if atVertex >= i and atVertex < i + lineLen:
-            return QgsGeometry.fromPolylineXY(line), [iLine]
-         i = i + lineLen 
-         iLine = iLine + 1
-      return None, None
-   
-   elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      lines = geom.asPolygon() # lista di linee
-      if len(lines) > 0:
+      elif gType == QgsWkbTypes.LineGeometry:
+         pts = geom.asPolyline() # lista di punti
+         if atVertex > len(pts) - 1:
+            return None, None
+         else:
+            return QgsGeometry(geom), [0]
+         
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         lines = geom.asPolygon() # lista di linee
+         if len(lines) > 0:
+            i = 0
+            iRing = -1
+            for line in lines:
+               lineLen = len(line)
+               if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
+                  if iRing == -1: # si tratta della parte più esterna
+                     return QgsGeometry.fromPolylineXY(line), [0] # parte <0>, ring <0>
+                  else:
+                     return QgsGeometry.fromPolylineXY(line), [0, iRing] # parte <0>, ring <iRing>
+               i = i + lineLen 
+               iRing = iRing + 1
+         return None, None
+      
+   else: # multi
+      if gType == QgsWkbTypes.PointGeometry:
+         pts = geom.asMultiPoint() # lista di punti
+         if atVertex > len(pts) - 1:
+            return None, None
+         else:
+            return QgsGeometry.fromPointXY(pts[atVertex]), [atVertex]
+         
+      elif gType == QgsWkbTypes.LineGeometry:
+         # cerco in quale linea é il vertice <atVertex>
          i = 0
-         iRing = -1
+         iLine = 0
+         lines = geom.asMultiPolyline() # lista di linee
          for line in lines:
             lineLen = len(line)
-            if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
-               if iRing == -1: # si tratta della parte più esterna
-                  return QgsGeometry.fromPolylineXY(line), [0] # parte <0>, ring <0>
-               else:
-                  return QgsGeometry.fromPolylineXY(line), [0, iRing] # parte <0>, ring <iRing>
+            if atVertex >= i and atVertex < i + lineLen:
+               return QgsGeometry.fromPolylineXY(line), [iLine]
             i = i + lineLen 
-            iRing = iRing + 1
-      return None, None
-
-   elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      i = 0
-      iPolygon = 0
-      polygons = geom.asMultiPolygon() # lista di poligoni
-      for polygon in polygons:
-         iRing = -1
-         for line in polygon:
-            lineLen = len(line)
-            if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
-               if iRing == -1: # si tratta della parte più esterna
-                  return QgsGeometry.fromPolylineXY(line), [iPolygon] # parte <iPolygon>
-               else:
-                  return QgsGeometry.fromPolylineXY(line), [iPolygon, iRing] # parte <iPolygon>, ring <iRing>
-            
-            i = i + lineLen 
-            iRing = iRing + 1
-         iPolygon = iPolygon + 1
+            iLine = iLine + 1
+         return None, None
+      
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         i = 0
+         iPolygon = 0
+         polygons = geom.asMultiPolygon() # lista di poligoni
+         for polygon in polygons:
+            iRing = -1
+            for line in polygon:
+               lineLen = len(line)
+               if atVertex >= i and atVertex < i + lineLen: # il numero di vertice ricade in questa linea
+                  if iRing == -1: # si tratta della parte più esterna
+                     return QgsGeometry.fromPolylineXY(line), [iPolygon] # parte <iPolygon>
+                  else:
+                     return QgsGeometry.fromPolylineXY(line), [iPolygon, iRing] # parte <iPolygon>, ring <iRing>
+               
+               i = i + lineLen 
+               iRing = iRing + 1
+            iPolygon = iPolygon + 1   
 
    return None, None
 
@@ -2147,45 +2162,44 @@ def getSubGeomAtVertex(geom, atVertex):
 def getSubGeomAt(geom, atSubGeom):
    # ritorna la sotto-geometria la cui posizione
    # é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
-   wkbType = geom.wkbType()
-   
-   ndx = 0
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
-      wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      if atSubGeom[0] == 0:
-         return QgsGeometry(geom)
-            
-   if wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      nPoint = atSubGeom[0]
-      return QgsGeometry(geom.vertexAt(nPoint))
+   gType = geom.type()
+   if geom.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry or gType == QgsWkbTypes.LineGeometry:
+         if atSubGeom[0] == 0:
+            return QgsGeometry(geom)
       
-   if wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      nLine = atSubGeom[0]
-      lines = geom.asMultiPolyline() # lista di linee
-      if nLine < len(lines):
-         return QgsGeometry.fromPolylineXY(lines[nLine])
-   
-   if wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      if atSubGeom[0] == 0:
-         lines = geom.asPolygon() # lista di linee
-         if len(atSubGeom) == 1: # si tratta della parte più esterna
-            return QgsGeometry.fromPolylineXY(lines[0])
-         else:
-            iRing = atSubGeom[1]
-            if iRing + 1 < len(lines):
-               return QgsGeometry.fromPolylineXY(lines[iRing + 1])
-   
-   if wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      nPolygon = atSubGeom[0]
-      polygons = geom.asMultiPolygon() # lista di poligoni
-      if nPolygon < len(polygons):
-         lines = polygons[nPolygon]
-         if len(atSubGeom) == 1: # si tratta della parte più esterna
-            return QgsGeometry.fromPolylineXY(lines[0])
-         else:
-            iRing = atSubGeom[1]
-            if iRing + 1 < len(lines):
-               return QgsGeometry.fromPolylineXY(lines[iRing + 1])
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         if atSubGeom[0] == 0:
+            lines = geom.asPolygon() # lista di linee
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               return QgsGeometry.fromPolylineXY(lines[0])
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  return QgsGeometry.fromPolylineXY(lines[iRing + 1])
+      
+   else: # multi
+      if gType == QgsWkbTypes.PointGeometry:
+         nPoint = atSubGeom[0]
+         return QgsGeometry(geom.vertexAt(nPoint))
+      
+      elif gType == QgsWkbTypes.LineGeometry:
+         nLine = atSubGeom[0]
+         lines = geom.asMultiPolyline() # lista di linee
+         if nLine < len(lines):
+            return QgsGeometry.fromPolylineXY(lines[nLine])
+      
+      elif gType == QgsWkbTypes.PolygonGeometry:   
+         nPolygon = atSubGeom[0]
+         polygons = geom.asMultiPolygon() # lista di poligoni
+         if nPolygon < len(polygons):
+            lines = polygons[nPolygon]
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               return QgsGeometry.fromPolylineXY(lines[0])
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  return QgsGeometry.fromPolylineXY(lines[iRing + 1])
          
    return None
 
@@ -2193,83 +2207,83 @@ def getSubGeomAt(geom, atSubGeom):
 #===============================================================================
 # setSubGeom
 #===============================================================================
-def setSubGeom(geom, SubGeom, atSubGeom):
+def setSubGeom(geom, subGeom, atSubGeom):
    # restituisce una geometria con la sotto-geometria alla posizione <atSubGeom> 
-   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
-   wkbType = geom.wkbType()
-   subWkbType = SubGeom.wkbType()
-   
+   # sostituita da <subGeom>
+   gType = geom.type()
+   subGType = subGeom.type()
    ndx = 0
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
-      wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      if atSubGeom[0] == 0 and \
-         (subWkbType == QgsWkbTypes.Point or subWkbType == QgsWkbTypes.Point25D or \
-          subWkbType == QgsWkbTypes.LineString or subWkbType == QgsWkbTypes.LineString25D):
-         return QgsGeometry(SubGeom)
-            
-   if wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      nPoint = atSubGeom[0]
-      if subWkbType == QgsWkbTypes.Point or subWkbType == QgsWkbTypes.Point25D:
-         result = QgsGeometry(geom)
-         pt = SubGeom.asPoint()
-         if result.moveVertex(pt.x, pt.y(), nPoint) == True:
-            return result
-      
-   if wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      if subWkbType == QgsWkbTypes.LineString or subWkbType == QgsWkbTypes.LineString25D:
-         nLine = atSubGeom[0]
-         lines = geom.asMultiPolyline() # lista di linee
-         if nLine < len(lines) and nLine >= -len(lines):
-            del lines[nLine]
-            lines.insert(nLine, SubGeom.asPolyline())
-            return QgsGeometry.fromMultiPolylineXY(lines)
 
-   if wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      if subWkbType == QgsWkbTypes.LineString or subWkbType == QgsWkbTypes.LineString25D:
+   if geom.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry or gType == QgsWkbTypes.LineGeometry:
          if atSubGeom[0] == 0:
-            lines = geom.asPolygon() # lista di linee
-            if len(atSubGeom) == 1: # si tratta della parte più esterna
-               del lines[0]
-               lines.insert(0, SubGeom.asPolyline())
-               # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
-               lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
-               return QgsGeometry.fromPolygonXY(lines)
-            else:
-               iRing = atSubGeom[1]
-               if iRing + 1 < len(lines):
-                  del lines[iRing + 1]
-                  lines.insert(iRing + 1, SubGeom.asPolyline())
+            if subGeom.isMultipart() == False and (subGType == QgsWkbTypes.PointGeometry or subGType == QgsWkbTypes.LineGeometry):
+               return QgsGeometry(SubGeom)
+            
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         if subGeom.isMultipart() == False and subGType == QgsWkbTypes.LineGeometry:
+            if atSubGeom[0] == 0:
+               lines = geom.asPolygon() # lista di linee
+               if len(atSubGeom) == 1: # si tratta della parte più esterna
+                  del lines[0]
+                  lines.insert(0, SubGeom.asPolyline())
                   # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
-                  lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                  lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
                   return QgsGeometry.fromPolygonXY(lines)
-
-   if wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      if subWkbType == QgsWkbTypes.LineString or subWkbType == QgsWkbTypes.LineString25D:
-         nPolygon = atSubGeom[0]
-         polygons = geom.asMultiPolygon() # lista di poligoni
-         if nPolygon < len(polygons):
-            lines = polygons[nPolygon]
-            if len(atSubGeom) == 1: # si tratta della parte più esterna
-               del lines[0]
-               lines.insert(0, SubGeom.asPolyline())
-               # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
-               lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
-               return QgsGeometry.fromMultiPolygonXY(polygons)
-            else:
-               iRing = atSubGeom[1]
-               if iRing + 1 < len(lines):
-                  del lines[iRing + 1]
-                  lines.insert(iRing + 1, SubGeom.asPolyline())
+               else:
+                  iRing = atSubGeom[1]
+                  if iRing + 1 < len(lines):
+                     del lines[iRing + 1]
+                     lines.insert(iRing + 1, SubGeom.asPolyline())
+                     # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+                     lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                     return QgsGeometry.fromPolygonXY(lines)
+      
+   else: # multi
+      if gType == QgsWkbTypes.PointGeometry:
+         nPoint = atSubGeom[0]
+         if subGeom.isMultipart() == False and subGType == QgsWkbTypes.PointGeometry:
+            result = QgsGeometry(geom)
+            pt = SubGeom.asPoint()
+            if result.moveVertex(pt.x, pt.y(), nPoint) == True:
+               return result
+      
+      elif gType == QgsWkbTypes.LineGeometry:
+         if subGeom.isMultipart() == False and subGType == QgsWkbTypes.LineGeometry:
+            nLine = atSubGeom[0]
+            lines = geom.asMultiPolyline() # lista di linee
+            if nLine < len(lines) and nLine >= -len(lines):
+               del lines[nLine]
+               lines.insert(nLine, SubGeom.asPolyline())
+               return QgsGeometry.fromMultiPolylineXY(lines)
+      
+      elif gType == QgsWkbTypes.PolygonGeometry:   
+         if subGeom.isMultipart() == False and subGType == QgsWkbTypes.LineGeometry:
+            nPolygon = atSubGeom[0]
+            polygons = geom.asMultiPolygon() # lista di poligoni
+            if nPolygon < len(polygons):
+               lines = polygons[nPolygon]
+               if len(atSubGeom) == 1: # si tratta della parte più esterna
+                  del lines[0]
+                  lines.insert(0, SubGeom.asPolyline())
                   # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
-                  lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                  lines[0][-1].set(lines[0][0].x(), lines[0][0].y())
                   return QgsGeometry.fromMultiPolygonXY(polygons)
-      elif subWkbType == QgsWkbTypes.Polygon or subWkbType == QgsWkbTypes.Polygon25D:
-         nPolygon = atSubGeom[0]
-         polygons = geom.asMultiPolygon() # lista di poligoni
-         if nPolygon < len(polygons):
-            del polygons[nPolygon]
-            polygons.insert(nPolygon, SubGeom.asPolygon())
-            return QgsGeometry.fromMultiPolygonXY(polygons)
+               else:
+                  iRing = atSubGeom[1]
+                  if iRing + 1 < len(lines):
+                     del lines[iRing + 1]
+                     lines.insert(iRing + 1, SubGeom.asPolyline())
+                     # per problemi di approssimazione con LL il primo punto e l'ultimo non sono uguali quindi lo forzo
+                     lines[iRing + 1][-1].set(lines[iRing + 1][0].x(), lines[iRing + 1][0].y())
+                     return QgsGeometry.fromMultiPolygonXY(polygons)
+         elif subGeom.isMultipart() == False and subGType == QgsWkbTypes.PolygonGeometry:
+            nPolygon = atSubGeom[0]
+            polygons = geom.asMultiPolygon() # lista di poligoni
+            if nPolygon < len(polygons):
+               del polygons[nPolygon]
+               polygons.insert(nPolygon, SubGeom.asPolygon())
+               return QgsGeometry.fromMultiPolygonXY(polygons)
          
    return None
 
@@ -2278,54 +2292,52 @@ def setSubGeom(geom, SubGeom, atSubGeom):
 # delSubGeom
 #===============================================================================
 def delSubGeom(geom, atSubGeom):
-   # restituisce una geometria con la sotto-geometria alla posizione <atSubGeom> cancellata
-   # la posizione é espressa con una lista (<index ogg. princ> [<index ogg. sec.>])
-   wkbType = geom.wkbType()
-   
-   ndx = 0
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
-      wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D:
-      return None
+   # Cancella la sotto-geometria alla posizione <atSubGeom> dalla geometria
+   gType = geom.type()
+   if geom.isMultipart() == False:
+      if gType == QgsWkbTypes.PointGeometry or gType == QgsWkbTypes.LineGeometry:
+         return None
             
-   if wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D:
-      nPoint = atSubGeom[0]
-      result = QgsGeometry(geom)
-      pt = SubGeom.asPoint()
-      if result.deleteVertex(nPoint) == True:
-         return result
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         if atSubGeom[0] == 0:
+            lines = geom.asPolygon() # lista di linee
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               del lines[0]
+               return QgsGeometry() # geometria vuota perchè il poligono è stato cancellato
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  del lines[iRing + 1]
+                  return QgsGeometry.fromPolygonXY(lines)
       
-   if wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
-      nLine = atSubGeom[0]
-      lines = geom.asMultiPolyline() # lista di linee
-      if nLine < len(lines) and nLine >= -len(lines):
-         del lines[nLine]
-         return QgsGeometry.fromMultiPolylineXY(lines)
-   
-   if wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
-      if atSubGeom[0] == 0:
-         lines = geom.asPolygon() # lista di linee
-         if len(atSubGeom) == 1: # si tratta della parte più esterna
-            del lines[0]
-            return QgsGeometry() # geometria vuota perchè il poligono è stato cancellato
-         else:
-            iRing = atSubGeom[1]
-            if iRing + 1 < len(lines):
-               del lines[iRing + 1]
-               return QgsGeometry.fromPolygonXY(lines)
-
-   if wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
-      nPolygon = atSubGeom[0]
-      polygons = geom.asMultiPolygon() # lista di poligoni
-      if nPolygon < len(polygons):
-         lines = polygons[nPolygon]
-         if len(atSubGeom) == 1: # si tratta della parte più esterna
-            del polygons[nPolygon]
-            return QgsGeometry.fromMultiPolygonXY(polygons)
-         else:
-            iRing = atSubGeom[1]
-            if iRing + 1 < len(lines):
-               del lines[iRing + 1]
+   else: # multi
+      if gType == QgsWkbTypes.PointGeometry:
+         nPoint = atSubGeom[0]
+         result = QgsGeometry(geom)
+         pt = SubGeom.asPoint()
+         if result.deleteVertex(nPoint) == True:
+            return result
+      
+      elif gType == QgsWkbTypes.LineGeometry:
+         nLine = atSubGeom[0]
+         lines = geom.asMultiPolyline() # lista di linee
+         if nLine < len(lines) and nLine >= -len(lines):
+            del lines[nLine]
+            return QgsGeometry.fromMultiPolylineXY(lines)
+      
+      elif gType == QgsWkbTypes.PolygonGeometry:   
+         nPolygon = atSubGeom[0]
+         polygons = geom.asMultiPolygon() # lista di poligoni
+         if nPolygon < len(polygons):
+            lines = polygons[nPolygon]
+            if len(atSubGeom) == 1: # si tratta della parte più esterna
+               del polygons[nPolygon]
                return QgsGeometry.fromMultiPolygonXY(polygons)
+            else:
+               iRing = atSubGeom[1]
+               if iRing + 1 < len(lines):
+                  del lines[iRing + 1]
+                  return QgsGeometry.fromMultiPolygonXY(polygons)   
 
    return None
 

@@ -59,6 +59,13 @@ class QadArc(QadCircle):
       return "ARC"
    
    
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return False
+   
+   
    def set(self, center, radius=None, startAngle=None, endAngle=None, reversed=False):
       if isinstance(center, QadArc):
          arc = center
@@ -892,11 +899,7 @@ class QadArc(QadCircle):
                                                               InfinityLinePerpOnMiddle2[1])
       if center is None: return None # linee parallele
       
-      # per problemi di approssimazione dei calcoli
-      epsilon = 1.e-4  # percentuale del raggio per ottenere max diff. di una distanza con il raggio
- 
       radius = qad_utils.getDistance(center, myPoints[0])  # calcolo il presunto raggio
-      tolerance = radius * epsilon
        
       # calcolo il verso dell'arco e l'angolo dell'arco
       # se un punto intermedio dell'arco è a sinistra del
@@ -904,14 +907,24 @@ class QadArc(QadCircle):
       startClockWise = True if qad_utils.leftOfLine(myPoints[1], myPoints[0], myPoints[2]) < 0 else False
       angle = qad_utils.getAngleBy3Pts(myPoints[0], center, myPoints[2], startClockWise)
       
+      # uso la distanza TOLERANCE2COINCIDENT / 2 perchè in una polilinea se ci sono 2 archi consecutivi
+      # si vuole essere sicuri che il punto finale del primo arco sia distante dal punto iniziale del
+      # secondo arco non più di TOLERANCE2COINCIDENT perchè siano considerato 2 punti coincidenti
+      myTolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT")) / 2
+      # myTolerance = 0 # test
+      
       i = 3
       while i < totPoints:
          # sposto i punti vicino a 0,0 per migliorare la precisione dei calcoli
          myPoints.append(qad_utils.movePoint(points[i + startVertex], -dx, -dy))
 
-         # se la distanza non è così vicina a quella del raggio
-         if qad_utils.doubleNear(radius, qad_utils.getDistance(center, myPoints[i]), tolerance) == False: break
-               
+         # se TOLERANCE2COINCIDENT = 0,001 viene riconosciuto un arco di 1000 m
+         # se il punto calcolato non è abbastanza vicino al punto reale
+         # altrimenti trovo problemi con le intersezioni con gli oggetti
+         if qad_utils.ptNear(qad_utils.getPolarPointByPtAngle(center, qad_utils.getAngleBy2Pts(center, myPoints[i]), radius), \
+                              myPoints[i], myTolerance) == False:
+             break
+                        
          # calcolo il verso dell'arco e l'angolo                 
          clockWise = True if qad_utils.leftOfLine(myPoints[i - 1], myPoints[i - 2], myPoints[i]) < 0 else False
          if startClockWise != clockWise: break # cambiata la direzione

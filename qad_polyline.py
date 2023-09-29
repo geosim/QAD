@@ -38,6 +38,7 @@ from .qad_arc import QadArc
 from .qad_ellipse_arc import QadEllipseArc
 from .qad_layer import createMemoryLayer
 from .qad_msg import QadMsg
+from .qad_variables import QadVariables
 
 
 #===============================================================================
@@ -65,8 +66,12 @@ class QadPolyline():
    #============================================================================
    def set(self, polyline):
       self.removeAll()
-      for linearObject in polyline.defList:
-         self.append(linearObject)
+      if isinstance(polyline, QadPolyline) == True: # è una polilinea
+         for linearObject in polyline.defList:
+            self.append(linearObject)
+      elif isinstance(polyline, list) == True: # è una lista di parti di polilinea
+         for linearObject in polyline:         
+            self.append(linearObject)
       return self
 
 
@@ -406,13 +411,13 @@ class QadPolyline():
       while i < pointsLen - 1: # fino al penultimo punto
          # verifico se è un arco
          endVertex = arc.fromPolyline(points, i)
-         if endVertex is not None:
+         if endVertex is not None and qad_utils.ptNear(arc.getStartPt(), points[i]) == True:
             self.append(arc)
             i = endVertex
          else:
             # verifico se è un arco di ellisse
             endVertex = ellipseArc.fromPolyline(points, i)
-            if endVertex is not None:
+            if endVertex is not None and qad_utils.ptNear(ellipseArc.getStartPt(), points[i]) == True:
                self.append(ellipseArc)
                i = endVertex
             else: # allora è una linea
@@ -698,6 +703,48 @@ class QadPolyline():
          i = i + 1
          
       return boundingBox
+
+
+   #===============================================================================
+   # isContainingEllipseArcs
+   #===============================================================================
+   def segmentizeEllipseArcs(self, tolerance2ApproxCurve = None):
+      """
+      la funzione trasforma gli archi di ellisse in segmenti
+      """
+      if tolerance2ApproxCurve is None:
+         tolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2APPROXCURVE"))
+      else:
+         tolerance = tolerance2ApproxCurve
+               
+      if self.isClosed() == True:
+         prevPartEndPt = self.defList[-1].getEndPt()
+      else:
+         prevPartEndPt = None
+         
+      partAt = 0
+      while partAt < len(self.defList):
+         linearObject = self.defList[partAt]
+         if linearObject.whatIs() == "ELLIPSE_ARC":
+            points = linearObject.asPolyline(tolerance)
+            if prevPartEndPt is not None:
+               points[0] = prevPartEndPt
+            prevPartEndPt = points[-1]
+            
+            self.remove(partAt)
+            pointsLen = len(points)
+            i = 0
+            while i < pointsLen - 1: # fino al penultimo punto  
+               line = QadLine()          
+               line.set(points[i], points[i + 1])
+               self.insert(partAt, line)
+               partAt = partAt + 1
+               i = i + 1
+         else:
+            prevPartEndPt = self.defList[partAt].getEndPt()
+            partAt = partAt + 1
+         
+      return True
 
 
    #============================================================================

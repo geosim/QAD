@@ -1302,7 +1302,7 @@ class QadDynamicInput(QWidget):
       # avente pt1 come punto iniziale, pt2 come punto finale ma spostata di un offset.
       # La funzione restituisce anche le linee da usare come marker line
       # le coordinate devono essere espresse in map coordinate
-      angle = qad_utils.getAngleBy2Pts(pt1, pt2)
+      angle = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
       if angle >= 0 and angle < math.pi:
          angle = angle + math.pi / 2
       else:
@@ -2643,9 +2643,9 @@ class QadDynamicEditInput(QadDynamicInput):
             # nel caso di coordinate polari EDIT_Y contiene l'angolo
             if self.edits[QadDynamicInputEditEnum.EDIT_Y].isLockedValue() == False:
                if relative:
-                  angle = qad_utils.getAngleBy2Pts(prevPt, self.resPt)
+                  angle = qad_utils.getAngleBy2Pts(prevPt, self.resPt, 0) # senza tolleranza
                else:
-                  angle = qad_utils.getAngleBy2Pts(QgsPointXY(0, 0), self.resPt)
+                  angle = qad_utils.getAngleBy2Pts(QgsPointXY(0, 0), self.resPt, 0) # senza tolleranza
                
                self.edits[QadDynamicInputEditEnum.EDIT_Y].showMsg(qad_utils.numToStringFmt(qad_utils.toDegrees(angle)), False, False, False) # senza aggiornare la posizione dei controlli
 
@@ -2670,12 +2670,12 @@ class QadDynamicEditInput(QadDynamicInput):
       if self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].isVisible() and \
          self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].isLockedValue() == False:
          if self.prevPoint is not None: # si tratta di inserimento di un nuovo punto a fine linea
-            angle = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt)
+            angle = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt, 0) # senza tolleranza
             if angle >= math.pi and angle < 2 * math.pi:
                angle = 2 * math.pi - angle
             self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].showMsg(qad_utils.numToStringFmt(qad_utils.toDegrees(angle)), False, False, False) # senza aggiornare la posizione dei controlli
          elif self.prevPart is not None and self.prevPart.whatIs() == "LINE": # spostamento di un punto di un segmento in modalità grip
-            angle = qad_utils.getAngleBy2Pts(self.prevPart.getStartPt(), self.resPt)
+            angle = qad_utils.getAngleBy2Pts(self.prevPart.getStartPt(), self.resPt, 0) # senza tolleranza
             if angle >= math.pi and angle < 2 * math.pi:
                angle = 2 * math.pi - angle
             self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].showMsg(qad_utils.numToStringFmt(qad_utils.toDegrees(angle)), False, False, False) # senza aggiornare la posizione dei controlli
@@ -2699,8 +2699,8 @@ class QadDynamicEditInput(QadDynamicInput):
          if self.prevPart is not None and self.prevPart.whatIs() == "LINE": # spostamento di un punto di un segmento in modalità grip
             pt1 = self.prevPart.getStartPt()
             pt2 = self.prevPart.getEndPt()
-            anglePart = qad_utils.getAngleBy2Pts(pt1, pt2)
-            angleMouse = qad_utils.getAngleBy2Pts(pt1, self.resPt)
+            anglePart = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
+            angleMouse = qad_utils.getAngleBy2Pts(pt1, self.resPt, 0) # senza tolleranza
             angle = qad_utils.normalizeAngle(angleMouse - anglePart)
             # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
             if angle >= math.pi and angle < (2 * math.pi):
@@ -2736,7 +2736,7 @@ class QadDynamicEditInput(QadDynamicInput):
       if self.edits[QadDynamicInputEditEnum.EDIT_ANG_NEXT_PT].isVisible() and \
          self.edits[QadDynamicInputEditEnum.EDIT_ANG_NEXT_PT].isLockedValue() == False:
          if self.nextPart is not None and self.nextPart.whatIs() == "LINE": # spostamento di un punto di un segmento in modalità grip
-            angle = qad_utils.getAngleBy2Pts(self.nextPart.getEndPt(), self.resPt)
+            angle = qad_utils.getAngleBy2Pts(self.nextPart.getEndPt(), self.resPt, 0) # senza tolleranza
             if angle >= math.pi and angle < 2 * math.pi:
                angle = 2 * math.pi - angle            
             self.edits[QadDynamicInputEditEnum.EDIT_ANG_NEXT_PT].showMsg(qad_utils.numToStringFmt(qad_utils.toDegrees(angle)), False, False, False) # senza aggiornare la posizione dei controlli
@@ -2747,8 +2747,8 @@ class QadDynamicEditInput(QadDynamicInput):
          if self.nextPart is not None and self.nextPart.whatIs() == "LINE": # spostamento di un punto di un segmento in modalità grip
             pt1 = self.nextPart.getEndPt()
             pt2 = self.nextPart.getStartPt()
-            anglePart = qad_utils.getAngleBy2Pts(pt1, pt2)
-            angleMouse = qad_utils.getAngleBy2Pts(pt1, self.resPt)
+            anglePart = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
+            angleMouse = qad_utils.getAngleBy2Pts(pt1, self.resPt, 0) # senza tolleranza
             angle = qad_utils.normalizeAngle(angleMouse - anglePart)
             # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
             if angle >= math.pi and angle < (2 * math.pi):
@@ -2894,7 +2894,7 @@ class QadDynamicEditInput(QadDynamicInput):
             gType = self.prevPart.whatIs()
             if gType == "LINE": # spostamento di un punto di un segmento in modalità grip
                prevCurrentPt = self.prevPart.getEndPt()
-               angle = qad_utils.getAngleBy2Pts(prevPt, point)
+               angle = qad_utils.getAngleBy2Pts(prevPt, point, 0) # senza tolleranza
                pt = qad_utils.getPolarPointByPtAngle(prevPt, angle, self.prevPart.length())
                if self.edits[QadDynamicInputEditEnum.EDIT_REL_DIST_PREV_PT].isVisible():
                   offset = (height * 1) * self.canvas.mapSettings().mapUnitsPerPixel()
@@ -2970,7 +2970,7 @@ class QadDynamicEditInput(QadDynamicInput):
                      del lineMarkers
                   
                prevCurrentPt = self.nextPart.getStartPt()
-               angle = qad_utils.getAngleBy2Pts(nextPt, point)
+               angle = qad_utils.getAngleBy2Pts(nextPt, point, 0) # senza tolleranza
                pt = qad_utils.getPolarPointByPtAngle(nextPt, angle, self.nextPart.length())           
                if self.edits[QadDynamicInputEditEnum.EDIT_REL_DIST_NEXT_PT].isVisible():
                   offset = (height * 1) * self.canvas.mapSettings().mapUnitsPerPixel()
@@ -3121,9 +3121,9 @@ class QadDynamicEditInput(QadDynamicInput):
                if self.edits[QadDynamicInputEditEnum.EDIT_Y].isLockedValue():
                   angle = self.edits[QadDynamicInputEditEnum.EDIT_Y].checkValid() # ritorna il valore se valido
                   if angle is None:
-                     angle = qad_utils.getAngleBy2Pts(prevPt, point)
+                     angle = qad_utils.getAngleBy2Pts(prevPt, point, 0) # senza tolleranza
                else:
-                  angle = qad_utils.getAngleBy2Pts(prevPt, point)
+                  angle = qad_utils.getAngleBy2Pts(prevPt, point, 0) # senza tolleranza
                   
                if relative:
                   pt = qad_utils.getPolarPointByPtAngle(prevPt, angle, dist)
@@ -3146,13 +3146,13 @@ class QadDynamicEditInput(QadDynamicInput):
                   if dist is None: dist = qad_utils.getDistance(self.prevPoint, point)
                               
                if self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].isLockedValue() == False:
-                  angle = qad_utils.getAngleBy2Pts(self.prevPoint, point)
+                  angle = qad_utils.getAngleBy2Pts(self.prevPoint, point, 0) # senza tolleranza
                else:
                   angle = self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].checkValid() # ritorna il valore in radianti se valido               
                   if angle is None:
-                     angle = qad_utils.getAngleBy2Pts(self.prevPoint, point)
+                     angle = qad_utils.getAngleBy2Pts(self.prevPoint, point, 0) # senza tolleranza
                   else: 
-                     angleMouse = qad_utils.getAngleBy2Pts(self.prevPoint, point)
+                     angleMouse = qad_utils.getAngleBy2Pts(self.prevPoint, point, 0) # senza tolleranza
                      # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
                      if angleMouse >= math.pi and angleMouse < 2 * math.pi:
                         angle = (2 * math.pi) - angle
@@ -3171,7 +3171,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   if dist is not None:
                      pt1 = self.prevPart.getStartPt()
                      pt2 = self.prevPart.getEndPt()
-                     angle = qad_utils.getAngleBy2Pts(pt1, pt2)
+                     angle = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
                      pt = qad_utils.getPolarPointByPtAngle(pt1, angle, dist)
                      self.resPt.setX(pt.x())
                      self.resPt.setY(pt.y())
@@ -3186,7 +3186,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   if dist is not None:
                      pt1 = self.nextPart.getEndPt()
                      pt2 = self.nextPart.getStartPt()
-                     angle = qad_utils.getAngleBy2Pts(pt1, pt2)
+                     angle = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
                      pt = qad_utils.getPolarPointByPtAngle(pt1, angle, dist)
                      self.resPt.setX(pt.x())
                      self.resPt.setY(pt.y())
@@ -3200,7 +3200,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   angle = self.edits[QadDynamicInputEditEnum.EDIT_ANG_PREV_PT].checkValid() # ritorna il valore in radianti se valido               
                   if angle is not None:
                      pt1 = self.prevPart.getStartPt()
-                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point)
+                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point, 0) # senza tolleranza
                      # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
                      if angleMouse >= math.pi and angleMouse < 2 * math.pi:
                         angle = (2 * math.pi) - angle                     
@@ -3217,7 +3217,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   angle = self.edits[QadDynamicInputEditEnum.EDIT_ANG_NEXT_PT].checkValid() # ritorna il valore in radianti se valido               
                   if angle is not None:
                      pt1 = self.nextPart.getEndPt()
-                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point)
+                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point, 0) # senza tolleranza
                      # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
                      if angleMouse >= math.pi and angleMouse < 2 * math.pi:
                         angle = (2 * math.pi) - angle                     
@@ -3235,7 +3235,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   if dist is not None:
                      pt1 = self.prevPart.getStartPt()
                      pt2 = self.prevPart.getEndPt()
-                     angle = qad_utils.getAngleBy2Pts(pt1, pt2)
+                     angle = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
                      pt = qad_utils.getPolarPointByPtAngle(pt2, angle, dist)
                      self.resPt.setX(pt.x())
                      self.resPt.setY(pt.y())
@@ -3250,7 +3250,7 @@ class QadDynamicEditInput(QadDynamicInput):
                   if dist is not None:
                      pt1 = self.nextPart.getEndPt()
                      pt2 = self.nextPart.getStartPt()
-                     angle = qad_utils.getAngleBy2Pts(pt1, pt2)
+                     angle = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
                      pt = qad_utils.getPolarPointByPtAngle(pt2, angle, dist)
                      self.resPt.setX(pt.x())
                      self.resPt.setY(pt.y())
@@ -3265,8 +3265,8 @@ class QadDynamicEditInput(QadDynamicInput):
                   if angle is not None:
                      pt1 = self.prevPart.getStartPt()
                      pt2 = self.prevPart.getEndPt()
-                     anglePart = qad_utils.getAngleBy2Pts(pt1, pt2)
-                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point)
+                     anglePart = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
+                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point, 0) # senza tolleranza
                      diffAngle = qad_utils.normalizeAngle(angleMouse - anglePart)
                      # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
                      if diffAngle >= math.pi and diffAngle < (2 * math.pi):
@@ -3286,8 +3286,8 @@ class QadDynamicEditInput(QadDynamicInput):
                   if angle is not None:
                      pt1 = self.nextPart.getEndPt()
                      pt2 = self.nextPart.getStartPt()
-                     anglePart = qad_utils.getAngleBy2Pts(pt1, pt2)
-                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point)
+                     anglePart = qad_utils.getAngleBy2Pts(pt1, pt2, 0) # senza tolleranza
+                     angleMouse = qad_utils.getAngleBy2Pts(pt1, point, 0) # senza tolleranza
                      diffAngle = qad_utils.normalizeAngle(angleMouse - anglePart)
                      # se il mouse forma un angolo tra 180 e 360 allora l'angolo digitato va sottratto a 360 gradi 
                      if diffAngle >= math.pi and diffAngle < (2 * math.pi):
@@ -3311,7 +3311,7 @@ class QadDynamicEditInput(QadDynamicInput):
                self.resPt.setX(point.x())
                self.resPt.setY(point.y())
                self.resStr = self.resPt.toString()
-               self.resValue = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt)
+               self.resValue = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt, 0) # senza tolleranza
                return True
             else:
                dist = qad_utils.getDistance(self.prevPoint, point)
@@ -3332,7 +3332,7 @@ class QadDynamicEditInput(QadDynamicInput):
                self.resValue = qad_utils.getDistance(self.prevPoint, self.resPt)
                return True
             else:
-               angle = qad_utils.getAngleBy2Pts(self.prevPoint, point)
+               angle = qad_utils.getAngleBy2Pts(self.prevPoint, point, 0) # senza tolleranza
                dist = self.edits[QadDynamicInputEditEnum.EDIT].checkValid() # ritorna il valore se valido
                if dist is not None:
                   pt = qad_utils.getPolarPointByPtAngle(self.prevPoint, angle, dist)
@@ -3360,7 +3360,7 @@ class QadDynamicEditInput(QadDynamicInput):
                      self.resStr = unicode(self.resValue)
                   return True
             elif self.inputType & QadInputTypeEnum.ANGLE and self.prevPoint is not None:
-               self.resValue = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt)
+               self.resValue = qad_utils.getAngleBy2Pts(self.prevPoint, self.resPt, 0) # senza tolleranza
                self.resStr = unicode(qad_utils.toDegrees(self.resValue))
                return True
          else:

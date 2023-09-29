@@ -57,6 +57,14 @@ class QadEllipseArc(QadEllipse):
       # obbligatoria
       return "ELLIPSE_ARC"
 
+
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return False
+   
+   
    def set(self, center, majorAxisFinalPt = None, axisRatio = None, startAngle = None, endAngle = None, reversed=False):
       if isinstance(center, QadEllipseArc):
          ellipseArc = center
@@ -583,13 +591,7 @@ class QadEllipseArc(QadEllipse):
          return None
       foci = testEllipse.getFocus()
       if len(foci) == 0: return None
-      dist1 = qad_utils.getDistance(foci[0], testEllipse.majorAxisFinalPt)
-      dist2 = qad_utils.getDistance(foci[1], testEllipse.majorAxisFinalPt)
-      distSumEllipse = dist1 + dist2
-      
-      # per problemi di approssimazione dei calcoli
-      tolerance = distSumEllipse * 1.e-2 # percentuale della somma delle distanze dai fuochi
-     
+           
       myPoints = []
       # sposto i punti vicino a 0,0 per migliorare la precisione dei calcoli
       i = startVertex
@@ -601,16 +603,23 @@ class QadEllipseArc(QadEllipse):
       # segmento che unisce i punti iniziale (points[0]) e finale (points[2]) allora il verso è orario
       startClockWise = False if qad_utils.leftOfLine(myPoints[2], myPoints[0], myPoints[1]) < 0 else True
       angle = 0                                  
-
+      
+      # uso la distanza TOLERANCE2COINCIDENT / 2 perchè in una polilinea se ci sono 2 archi di ellisse consecutivi
+      # si vuole essere sicuri che il punto finale del primo arco di ellisse sia distante dal punto iniziale del
+      # secondo arco di ellisse non più di TOLERANCE2COINCIDENT perchè siano considerato 2 punti coincidenti
+      myTolerance = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT")) / 2
+      
       # verifico che i punti siano sull'ellisse e mi fermo al primo punto fuori da essa
       i = 0
-      while i < totPoints:
-         dist1 = qad_utils.getDistance(foci[0], myPoints[i])
-         dist2 = qad_utils.getDistance(foci[1], myPoints[i])
-         distSum = dist1 + dist2
-         # calcolo la somma delle distanze dai fuochi e verifico che sia abbastanza simile a quella originale
-         if qad_utils.doubleNear(distSumEllipse, distSum, tolerance) == False:
+      while i < totPoints:        
+         # se TOLERANCE2COINCIDENT = 0,001 viene riconosciuto un arco di 1000 m
+         # se il punto calcolato non è abbastanza vicino al punto reale
+         # altrimenti trovo problemi con le intersezioni con gli oggetti       
+         relativeAngle = qad_utils.getAngleBy2Pts(center, myPoints[i]) - testEllipse.getRotation()
+         if qad_utils.ptNear(testEllipse.getPointAt(testEllipse.getParamFromAngle(relativeAngle)), \
+                             myPoints[i], myTolerance) == False:
             break
+                  
          # calcolo il verso dell'arco e l'angolo
          if i < 2:
             clockWise = False if qad_utils.leftOfLine(myPoints[i], myPoints[i + 1], myPoints[i + 2]) < 0 else True
@@ -636,12 +645,12 @@ class QadEllipseArc(QadEllipse):
       self.axisRatio = axisRatio
       
       if startClockWise: # se è in senso orario
-         self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], startClockWise)
-         self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], startClockWise)
+         self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], False)
+         self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], False)
          self.reversed = True
       else:
-         self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], startClockWise)
-         self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], startClockWise)
+         self.startAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[0], False)
+         self.endAngle = qad_utils.getAngleBy3Pts(self.majorAxisFinalPt, self.center, myPoints[i], False)
          self.reversed = False
 
       # traslo la geometria per riportarla alla sua posizione originale

@@ -59,6 +59,14 @@ class QadEllipse():
       # obbligatoria
       return "ELLIPSE"
 
+   
+   #============================================================================
+   # isClosed
+   #============================================================================
+   def isClosed(self):
+      return True
+
+
    def set(self, center, majorAxisFinalPt = None, axisRatio = None):
       if isinstance(center, QadEllipse):
          ellipse = center
@@ -298,10 +306,11 @@ class QadEllipse():
       arctan(a/b * tan(angle)) dove
       a = asse maggiore
       b = asse minore      
-      """
+      """        
       param = math.atan(1.0 / self.axisRatio * math.tan(angle))
       myAngle = angle % (math.pi * 2) # modulo
       if myAngle > math.pi / 2 and myAngle < math.pi * 3 / 2:
+      #if myAngle > math.pi and myAngle < 2 * math.pi:
          param = param + math.pi
       return param
 
@@ -389,7 +398,7 @@ class QadEllipse():
       oltre la tolleranza dalla curva reale dell'ellisse.
       n.b. La funzione non tiene conto se si tratta di un arco di ellisse
       """
-      rot = qad_utils.getAngleBy2Pts(self.center, self.majorAxisFinalPt)
+      #rot = qad_utils.getAngleBy2Pts(self.center, self.majorAxisFinalPt)
       param2 = param1 + angleStep
       pt2 = self.getPointAt(param2)
       paramMiddle = (param1 + param2) / 2 

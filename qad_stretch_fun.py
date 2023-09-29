@@ -395,8 +395,9 @@ def stretchPolyline(polyline, containerGeom, offsetX, offsetY):
       while i < polylineToStretch.qty():
          linearObject = polylineToStretch.getLinearObjectAt(i)
          newLinearObject = stretchQadGeometry(linearObject, containerGeom, offsetX, offsetY)
-         polylineToStretch.insert(i, newLinearObject)
-         polylineToStretch.remove(i + 1)
+         if (newLinearObject is not None):
+            polylineToStretch.insert(i, newLinearObject)
+            polylineToStretch.remove(i + 1)
    
          i = i + 1
 

@@ -105,7 +105,7 @@ class Qad(QObject):
    # tipo di unione (es. editpl->unione)
    joinMode = 1 # 1=Estendi, 2=Aggiungi, 3=Entrambi
    # distanza di approssimazione nell'unione (es. editpl->unione)
-   joinToleranceDist = 0.0
+   joinToleranceDist = QadVariables.get(QadMsg.translate("Environment variables", "TOLERANCE2COINCIDENT"))
    # modalità di raccordo in comando raccordo
    filletMode = 1 # 1=Taglia-estendi, 2=Non taglia-estendi
    # ultimo numero di lati per poligono

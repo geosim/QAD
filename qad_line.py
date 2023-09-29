@@ -351,7 +351,7 @@ class QadLine():
       if dist == 0:
          return None
       angle = qad_utils.getAngleBy2Pts(self.pt1, self.pt2) + math.pi / 2
-      pt2Middle = getPolarPointByPtAngle(ptMiddle, angle, dist)
+      pt2Middle = qad_utils.getPolarPointByPtAngle(ptMiddle, angle, dist)
       line = QadLine()
       line.set(ptMiddle, pt2Middle)
       return line

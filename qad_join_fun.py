@@ -35,6 +35,7 @@ from .qad_msg import QadMsg
 from .qad_variables import QadVariables
 from .qad_geom_relations import *
 from .qad_layer import createMemoryLayer
+from .qad_polyline import *
 
 
 #============================================================================

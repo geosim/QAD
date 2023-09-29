@@ -1,6 +1,11 @@
 version 3.0.6
 ---------------------------
 
+* 2023-09-29 qad offset command now use the native offset function provided by qgis api
+* 2023-04-07 pedit now can join multilinestring if composed by only one part.
+* 2022-07-27 Fixed bug on intersections between circle and ellipse
+* 2022-07-27 Changed algorithm to auto-detect arc and circle
+* 2022-07-27 Fixed bug on delete last vertex of a polyline
 * 2022-06-20 Fixed bug on OFFSET-tool creates wrong calculations with PLINE-vectors (reported by Atol2022)
 * 2022-03-28 Fixed bug on problems using vector layers having a "scale based" visibility (reported by TheLooka)
 * 2022-05-29 Fixed bug on Trimming a circle into an arc (reported by Jopie01)

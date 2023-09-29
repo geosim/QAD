@@ -428,63 +428,24 @@ def getFeatureRequest(rect, SubsetOfAttribute):
 # getStrLayerGeomType
 #===============================================================================
 def getStrLayerGeomType(layer):
-   wkbType = layer.wkbType()
-   # WKBPointM = 2001, WKBPointZM = 3001
-   if wkbType == QgsWkbTypes.Point or wkbType == QgsWkbTypes.Point25D or \
-      wkbType == QgsWkbTypes.PointM or wkbType == QgsWkbTypes.PointZ or wkbType == QgsWkbTypes.PointZM:
-      return "Point"
-   # WKBMultiPointM = 2004, WKBMultiPointZM = 3004
-   elif wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D or \
-        wkbType == QgsWkbTypes.MultiPointM or wkbType == QgsWkbTypes.MultiPointZ or wkbType == QgsWkbTypes.MultiPointZM :
-      return "MultiPoint"
-   
-   # WKBLineStringM = 2002, WKBLineStringZM = 3002
-   elif wkbType == QgsWkbTypes.LineString or wkbType == QgsWkbTypes.LineString25D or \
-        wkbType == QgsWkbTypes.LineStringM or wkbType == QgsWkbTypes.LineStringZ or wkbType == QgsWkbTypes.LineStringZM:
-      return "LineString"
-   # MultiLineStringM = 2005, MultiLineStringZM = 3005
-   elif wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D or \
-        wkbType == QgsWkbTypes.MultiLineStringM or wkbType == QgsWkbTypes.MultiLineStringZ or wkbType == QgsWkbTypes.MultiLineStringZM:
-      return "MultiLineString"
-   
-   # PolygonM = 2003, PolygonZM = 3003
-   elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D or \
-        wkbType == QgsWkbTypes.PolygonM or wkbType == QgsWkbTypes.PolygonZ or wkbType == QgsWkbTypes.PolygonZM:
-      return "Polygon"
-   # MultiPolygonM = 2006, MultiPolygonZM = 3006
-   elif wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D or \
-        wkbType == QgsWkbTypes.MultiPolygonM or wkbType == QgsWkbTypes.MultiPolygonZ or wkbType == QgsWkbTypes.MultiPolygonZM:
-      return "MultiPolygon"
-
-   # MultiSurface
-   elif wkbType == QgsWkbTypes.MultiSurface or wkbType == QgsWkbTypes.MultiSurfaceM or \
-        wkbType == QgsWkbTypes.MultiSurfaceZ or wkbType == QgsWkbTypes.MultiSurfaceZM:
-      return "MultiPolygon"
-
-   # Triangle
-   elif wkbType == QgsWkbTypes.Triangle or wkbType == QgsWkbTypes.TriangleM or \
-        wkbType == QgsWkbTypes.TriangleZ or wkbType == QgsWkbTypes.TriangleZM:
-      return "Polygon"
-
-   # Multicurve
-   elif wkbType == QgsWkbTypes.MultiCurve or wkbType == QgsWkbTypes.MultiCurveM or \
-        wkbType == QgsWkbTypes.MultiCurveZ or wkbType == QgsWkbTypes.MultiCurveZM:
-      return "MultiLineString"
-
-   # Circularstring
-   elif wkbType == QgsWkbTypes.CircularString or wkbType == QgsWkbTypes.CircularStringM or \
-        wkbType == QgsWkbTypes.CircularStringZ or wkbType == QgsWkbTypes.CircularStringZM:
-      return "LineString"
-
-   # CompoundCurve
-   elif wkbType == QgsWkbTypes.CompoundCurve or wkbType == QgsWkbTypes.CompoundCurveM or \
-        wkbType == QgsWkbTypes.CompoundCurveZ or wkbType == QgsWkbTypes.CompoundCurveZM:
-      return "LineString"
-
-   # CurvePolygon
-   elif wkbType == QgsWkbTypes.CurvePolygon or wkbType == QgsWkbTypes.CurvePolygonM or \
-        wkbType == QgsWkbTypes.CurvePolygonZ or wkbType == QgsWkbTypes.CurvePolygonZM:
-      return "Polygon"
-
-   elif wkbType == QgsWkbTypes.NoGeometry:
+   wkbTypeLayer = layer.wkbType()   
+   if wkbTypeLayer == QgsWkbTypes.NoGeometry:
       return "NoGeometry"
+   
+   gType = layer.geometryType()
+   if QgsWkbTypes.isMultiType(wkbTypeLayer) == False:
+      if gType == QgsWkbTypes.PointGeometry:
+         return "Point"
+      elif gType == QgsWkbTypes.LineGeometry:
+         return "LineString"
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         return "Polygon"
+   else:
+      if gType == QgsWkbTypes.PointGeometry:
+         return "MultiPoint"
+      elif gType == QgsWkbTypes.LineGeometry:
+         return "MultiLineString"
+      elif gType == QgsWkbTypes.PolygonGeometry:
+         return "MultiPolygon"
+
+   return "NoGeometry"     

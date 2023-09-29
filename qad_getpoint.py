@@ -1399,7 +1399,13 @@ class QadGetPoint(QgsMapTool):
          return None
       if type(point_geom) == QgsPointXY:
          return self.canvas.mapSettings().mapToLayerCoordinates(layer, point_geom)
-      elif type(point_geom) == QgsGeometry:
+      elif type(point_geom) == QgsGeometry:         
+         fromCrs = self.canvas.mapSettings().destinationCrs()
+         toCrs = layer.crs()
+         
+         if fromCrs == toCrs:
+            return QgsGeometry(point_geom)
+                  
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
          coordTransform = QgsCoordinateTransform(self.canvas.mapSettings().destinationCrs(), \
                                                  layer.crs(), \

@@ -75,7 +75,7 @@ class QadPOLARMODEnum():
                               # if not setted: Measure polar angles based on current UCS (absolute)
    POLAR_TRACKING         = 2 # if setted: Use polar tracking settings in object snap tracking
                               # if not setted: Track orthogonally only
-   SHIFT_TO_ACQUIRE       = 8 # if setted: Press Shift to acquire object snap tracking points, if not setted
+   SHIFT_TO_ACQUIRE       = 8 # if setted: Press Shift to acquire object snap tracking points,
                               # if not setted: Acquire automatically object snap tracking points
 
 
@@ -340,11 +340,11 @@ class QadVariablesClass():
       
       # CROSSINGAREACOLOR (str): Imposta il colore (RGB) dell'area di selezione degli oggetti nel modo intersezione. Variabile globale.
       VariableName = QadMsg.translate("Environment variables", "CROSSINGAREACOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during crossing selection (RGB, #33A02C = green)." + \
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during crossing selection (RGB, #00FF3F = green)." + \
                                        "\nThe SELECTIONAREA system variable must be on.") # x lupdate                                       
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type")
       VariableDescr = VariableDescr + ", " + QadMsg.translate("Environment variables", "global variable") + "."
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#33A02C"), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#00FF3F"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
                                                             VariableDescr, \
@@ -1044,7 +1044,7 @@ class QadVariablesClass():
       VariableDescr = QadMsg.translate("Environment variables", "Maximum error approximating two coincident points.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Real type")
       VariableDescr = VariableDescr + ", " + QadMsg.translate("Environment variables", "project variable") + "."
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.0000001), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, float(0.001), \
                                                             QadVariableTypeEnum.FLOAT, \
                                                             0, 9999, \
                                                             VariableDescr, \
@@ -1078,11 +1078,11 @@ class QadVariablesClass():
 
       # WINDOWAREACOLOR (str): Imposta il colore (RGB) dell'area di selezione degli oggetti nel modo finestra. Variabile globale.
       VariableName = QadMsg.translate("Environment variables", "WINDOWAREACOLOR") # x lupdate
-      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu)." + \
+      VariableDescr = QadMsg.translate("Environment variables", "Controls the color of the transparent selection area during window selection (RGB, #007EFF = blu)." + \
                                        "\nThe SELECTIONAREA system variable must be on.") # x lupdate                                       
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type")
       VariableDescr = VariableDescr + ", " + QadMsg.translate("Environment variables", "global variable") + "."
-      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#1F78B4"), \
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode("#007EFF"), \
                                                             QadVariableTypeEnum.COLOR, \
                                                             None, None, \
                                                             VariableDescr, \
