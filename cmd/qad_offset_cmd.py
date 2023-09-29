@@ -38,7 +38,7 @@ from ..qad_variables import QadVariables
 from .. import qad_utils
 from .. import qad_layer
 from ..qad_rubberband import createRubberBand
-from ..qad_offset_fun import offsetPolyline
+from ..qad_offset_fun import offsetPolyline, offsetQGSGeom
 from ..qad_geom_relations import getQadGeomClosestPart
 from ..qad_multi_geom import getQadGeomAt
 
@@ -108,51 +108,102 @@ class QadOFFSETCommandClass(QadCommandClass):
       layer = self.entity.layer
       f = self.entity.getFeature()
 
-      # la funzione ritorna una lista con 
-      # (<minima distanza>
-      # <punto più vicino>
-      # <indice della geometria più vicina>
-      # <indice della sotto-geometria più vicina>
-      # <indice della parte della sotto-geometria più vicina>
-      # <"a sinistra di" se il punto é alla sinista della parte con i seguenti valori:
-      # -   < 0 = sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
-      # -   > 0 = destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
-      result = getQadGeomClosestPart(self.subGeom, newPt)
-      leftOf = result[5]
+#       # la funzione ritorna una lista con 
+#       # (<minima distanza>
+#       # <punto più vicino>
+#       # <indice della geometria più vicina>
+#       # <indice della sotto-geometria più vicina>
+#       # <indice della parte della sotto-geometria più vicina>
+#       # <"a sinistra di" se il punto é alla sinista della parte con i seguenti valori:
+#       # -   < 0 = sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
+#       # -   > 0 = destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
+#       result = getQadGeomClosestPart(self.subGeom, newPt)
+#       leftOf = result[5]
+# 
+#       if self.offset < 0:
+#          offsetDistance = result[0] # minima distanza
+#       else:        
+#          offsetDistance = self.offset                     
+#          if self.multi == True:
+#             if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
+#                offsetDistance = offsetDistance + self.lastOffSetOnLeftSide
+#                self.lastOffSetOnLeftSide = offsetDistance
+#                self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide
+#             else: # alla destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
+#                offsetDistance = offsetDistance + self.lastOffSetOnRightSide
+#                self.lastOffSetOnRightSide = offsetDistance            
+#                self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
+# 
+#       lines = offsetPolyline(self.subGeom, \
+#                              offsetDistance, \
+#                              "left" if leftOf < 0 else "right", \
+#                              self.gapType)
+#       added = False
+#       for line in lines:
+#          pts = line.asPolyline()
+#          if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+#             if line.isClosed(): # se é una linea chiusa
+#                offsetGeom = QgsGeometry.fromPolygonXY([pts])
+#             else:
+#                offsetGeom = QgsGeometry.fromPolylineXY(pts)
+#          else:
+#             offsetGeom = QgsGeometry.fromPolylineXY(pts)
+# 
+#          if offsetGeom.type() == QgsWkbTypes.LineGeometry or offsetGeom.type() == QgsWkbTypes.PolygonGeometry:           
+#             offsetFeature = QgsFeature(f)
+#             # trasformo la geometria nel crs del layer
+#             offsetFeature.setGeometry(self.mapToLayerCoordinates(layer, offsetGeom))
+#             self.featureCache.append([layer, offsetFeature])
+#             self.addFeatureToRubberBand(layer, offsetFeature)            
+#             added = True           
+# 
+#       if added:      
+#          self.undoFeatureCacheIndexes.append(featureCacheLen)
 
-      if self.offset < 0:
-         offsetDistance = result[0] # minima distanza
-      else:        
+      forcedOffsetDist = None
+      if self.offset > 0:
          offsetDistance = self.offset                     
          if self.multi == True:
-            if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
-               offsetDistance = offsetDistance + self.lastOffSetOnLeftSide
+            # la funzione ritorna una lista con 
+            # (<minima distanza>
+            # <punto più vicino>
+            # <indice della geometria più vicina>
+            # <indice della sotto-geometria più vicina>
+            # <indice della parte della sotto-geometria più vicina>
+            # <"a sinistra di" se il punto é alla sinista della parte con i seguenti valori:
+            # -   < 0 = sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
+            # -   > 0 = destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
+            dummy = getQadGeomClosestPart(self.subGeom, newPt)
+            leftOf = dummy[5]         
+                 
+            if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)            
+               forcedOffsetDist = self.offset + self.lastOffSetOnLeftSide
                self.lastOffSetOnLeftSide = offsetDistance
                self.getPointMapTool().lastOffSetOnLeftSide = self.lastOffSetOnLeftSide
-            else: # alla destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
-               offsetDistance = offsetDistance + self.lastOffSetOnRightSide
+            else: # alla destra
+               forcedOffsetDist = self.offset + self.lastOffSetOnRightSide         
                self.lastOffSetOnRightSide = offsetDistance            
                self.getPointMapTool().lastOffSetOnRightSide = self.lastOffSetOnRightSide
 
-      lines = offsetPolyline(self.subGeom, \
-                             offsetDistance, \
-                             "left" if leftOf < 0 else "right", \
-                             self.gapType)
-      added = False
-      for line in lines:
-         pts = line.asPolyline()
-         if layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            if line.isClosed(): # se é una linea chiusa
-               offsetGeom = QgsGeometry.fromPolygonXY([pts])
-            else:
-               offsetGeom = QgsGeometry.fromPolylineXY(pts)
-         else:
-            offsetGeom = QgsGeometry.fromPolylineXY(pts)
+      # se self.subGeom implementa il metodo isClosed
+      closed = self.subGeom.isClosed() if hasattr(self.subGeom, "isClosed") and callable(getattr(self.subGeom, "isClosed")) else False
 
-         if offsetGeom.type() == QgsWkbTypes.LineGeometry or offsetGeom.type() == QgsWkbTypes.PolygonGeometry:           
+      if layer.geometryType() == QgsWkbTypes.PolygonGeometry or closed == True:
+         qgsGeom = QgsGeometry.fromPolygonXY([self.subGeom.asPolyline()])
+      else:
+         qgsGeom = QgsGeometry.fromPolylineXY(self.subGeom.asPolyline())
+
+      offsetQGSGeomList = offsetQGSGeom(qgsGeom, \
+                                        newPt, \
+                                        self.gapType, \
+                                        forcedOffsetDist)
+
+      added = False
+      for g in offsetQGSGeomList:
+         if g.type() == QgsWkbTypes.LineGeometry or g.type() == QgsWkbTypes.PolygonGeometry:           
             offsetFeature = QgsFeature(f)
             # trasformo la geometria nel crs del layer
-            offsetFeature.setGeometry(self.mapToLayerCoordinates(layer, offsetGeom))
+            offsetFeature.setGeometry(self.mapToLayerCoordinates(layer, g))
             self.featureCache.append([layer, offsetFeature])
             self.addFeatureToRubberBand(layer, offsetFeature)            
             added = True           
@@ -725,18 +776,19 @@ class QadOFFSETCommandClass(QadCommandClass):
          else: # il punto arriva come parametro della funzione
             value = msg
 
-         if value == self.firstPt:
-            self.showMsg(QadMsg.translate("QAD", "\nThe value must be positive and not zero."))
-            # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_OFFSET", "Specify second point: "))
-            return False
-               
-         self.offset = qad_utils.getDistance(self.firstPt, value)
-         self.getPointMapTool().offset = self.offset
-         QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offset)
-         QadVariables.save()
-         # si appresta ad attendere la selezione di un oggetto
-         self.waitForObjectSel()
+         if type(value) == QgsPointXY: # se é stato selezionato un punto
+            if value == self.firstPt:
+               self.showMsg(QadMsg.translate("QAD", "\nThe value must be positive and not zero."))
+               # si appresta ad attendere un punto
+               self.waitForPoint(QadMsg.translate("Command_OFFSET", "Specify second point: "))
+               return False
+                  
+            self.offset = qad_utils.getDistance(self.firstPt, value)
+            self.getPointMapTool().offset = self.offset
+            QadVariables.set(QadMsg.translate("Environment variables", "OFFSETDIST"), self.offset)
+            QadVariables.save()
+            # si appresta ad attendere la selezione di un oggetto
+            self.waitForObjectSel()
 
          return False
                   

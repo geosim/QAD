@@ -979,7 +979,7 @@ class QadPLINECommandClass(QadCommandClass):
                # imposto il map tool
                self.getPointMapTool().setMode(Qad_arc_maptool_ModeEnum.START_CENTER_PT_KNOWN_ASK_FOR_ANGLE)
                # si appresta ad attendere un punto o un numero reale         
-               # msg, inputType, default, keyWords, valori <> 0
+               # msg, inputType, default, keyWords, valori != 0
                self.waitFor(QadMsg.translate("Command_PLINE", "Specify the included angle (hold Ctrl to switch direction): "), \
                             QadInputTypeEnum.POINT2D | QadInputTypeEnum.ANGLE, \
                             None, "", \

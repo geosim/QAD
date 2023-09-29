@@ -195,7 +195,8 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
                # Riduco la geometria in point o polyline
                simplifiedGeoms = qad_utils.asPointOrPolyline(geom)
                # deve essere un poligono senza ring
-               if len(simplifiedGeoms) != 1 or simplifiedGeoms[0].wkbType() != QgsWkbTypes.LineString:
+               if len(simplifiedGeoms) != 1 or \
+                 (simplifiedGeoms[0].isMultipart() == True or simplifiedGeoms[0].type() != QgsWkbTypes.LineGeometry):
                   self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                   return False
                points = simplifiedGeoms[0].asPolyline() # vettore di punti
@@ -332,7 +333,7 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
                # Riduco la geometria in point o polyline
                simplifiedGeoms = qad_utils.asPointOrPolyline(geomToAdd)
                for simplifiedGeom in simplifiedGeoms:
-                  if simplifiedGeom.wkbType() != QgsWkbTypes.LineString:
+                  if simplifiedGeoms.isMultipart() == True or simplifiedGeoms.type() != QgsWkbTypes.LineGeometry:
                      self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                      return False
                   points = simplifiedGeom.asPolyline() # vettore di punti
@@ -401,7 +402,8 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
             # Riduco la geometria in point o polyline
             simplifiedGeoms = qad_utils.asPointOrPolyline(geom)
             for simplifiedGeom in simplifiedGeoms:
-               if simplifiedGeom.wkbType() == QgsWkbTypes.LineString or simplifiedGeom.wkbType() == QgsWkbTypes.LineString25D:
+               gType = simplifiedGeom.type()
+               if simplifiedGeom.isMultipart() == False and simplifiedGeom.isMultipart() == False:
                   pointsForConvexHull.extend(simplifiedGeom.asPolyline())
                else:
                   pointsForConvexHull.append(simplifiedGeom.asPoint())
@@ -450,7 +452,7 @@ class QadMAPMPEDITCommandClass(QadCommandClass):
       splitLineTransformed = self.mapToLayerCoordinates(self.poligonEntity.layer, splitLine)
       f = self.poligonEntity.getFeature()
       oldGeom = f.geometry()
-      result, newGeoms, topologyTestPts = oldGeom.splitGeometry(splitLineTransformed, False)
+      result, newGeoms, topologyTestPts = oldGeom.splitGeometry(splitLineTransformed, False) # Set to true if you want to split a feature, otherwise set to false to split parts
 
       if result != QgsGeometry.Success or len(newGeoms) == 0:
          self.showMsg(QadMsg.translate("QAD", "Invalid object."))

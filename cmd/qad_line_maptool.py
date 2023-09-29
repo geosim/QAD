@@ -88,6 +88,7 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di tangenza si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_TAN_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
+         snapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.canvas))
          snapper.setSnapType(QadSnapTypeEnum.TAN)
          snapper.setStartPoint(self.tmpPoint)
          oSnapPoints = snapper.getSnapPoint(self.entity1, self.tan1)
@@ -100,6 +101,7 @@ class Qad_line_maptool(QadGetPoint):
       # nota l'entita del primo punto di perpendicolarità si richiede il secondo punto
       elif self.mode == Qad_line_maptool_ModeEnum.FIRST_PER_KNOWN_ASK_FOR_SECOND_PT:
          snapper = QadSnapper()
+         snapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.canvas))
          snapper.setSnapType(QadSnapTypeEnum.PER)
          snapper.setStartPoint(self.tmpPoint)
          oSnapPoints = snapper.getSnapPoint(self.entity1, self.per1)

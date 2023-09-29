@@ -46,7 +46,7 @@ from .. import qad_join_fun
 from .. import qad_grip
 from ..qad_entity import QadEntity, QadEntitySet, QadLayerEntitySetIterator
 from ..qad_multi_geom import *
-from ..qad_geom_relations import getQadGeomClosestVertex
+from ..qad_geom_relations import getQadGeomClosestVertex, getQadGeomClosestPart
 from ..qad_layer import createMemoryLayer
 
 # Classe che gestisce il comando PEDIT
@@ -368,13 +368,20 @@ class QadPEDITCommandClass(QadCommandClass):
             return
 
          f = self.entity.getFeature()
-         if f.geometry().wkbType() != QgsWkbTypes.LineString:
+         g = f.geometry()
+         # accetto linestring o multilinestring con una sola linea
+         if g.type() != QgsWkbTypes.LineGeometry:
             return
+         if g.isMultipart() == True:
+            if len(g.asMultiPolyline()) != 1:
+               return
+
          newFeature = QgsFeature()
          newFeature.initAttributes(1)
          newFeature.setAttribute(0, 0)
-         
-         newFeature.setGeometry(self.polyline.asGeom())
+         geom = self.polyline.asGeom()
+         geom.convertToSingleType() # in caso fosse multilinestring la converto in linestring
+         newFeature.setGeometry(geom)
          i = i + 1
          
          if vectorLayer.addFeature(newFeature) == False:
@@ -390,14 +397,21 @@ class QadPEDITCommandClass(QadCommandClass):
             continue
                   
          for f in layerEntitySet.getFeatureCollection():
-            if f.geometry().wkbType() != QgsWkbTypes.LineString:
+            g = f.geometry()
+            # accetto linestring o multilinestring con una sola linea
+            if g.type() != QgsWkbTypes.LineGeometry:
                continue
+            if g.isMultipart() == True:
+               if len(g.asMultiPolyline()) != 1:
+                  continue
+            
             newFeature = QgsFeature()
             newFeature.initAttributes(1)
             newFeature.setAttribute(0, i)
 
             # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
             geom = self.layerToMapCoordinates(layer, f.geometry())
+            geom.convertToSingleType() # in caso fosse multilinestring la converto in linestring
             newFeature.setGeometry(geom)
             i = i + 1
             
@@ -411,10 +425,11 @@ class QadPEDITCommandClass(QadCommandClass):
         
       if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
          provider.createSpatialIndex()
-
+      
       deleteFeatures = []
       if self.entity.isInitialized(): # selezionato solo un oggetto
          featureIdToJoin = newIdFeatureList[0][0]
+          
          #                         featureIdToJoin, vectorLayer, tolerance2ApproxCurve, toleranceDist, mode     
          deleteFeatures.extend(qad_join_fun.joinFeatureInVectorLayer(featureIdToJoin, vectorLayer, \
                                                                      tolerance2ApproxCurve, \
@@ -1582,8 +1597,10 @@ class QadGRIPINSERTREMOVEVERTEXCommandClass(QadCommandClass):
       # faccio una copia locale
       polyline = self.polyline.copy()
       
-      if self.vertexAt == 0 or self.vertexAt == self.polyline.qty():
-         polyline.remove(self.vertexAt) # rimuovo la prima o ultima parte
+      if self.vertexAt == 0:
+         polyline.remove(self.vertexAt) # rimuovo la prima parte
+      elif self.vertexAt == self.polyline.qty():
+         polyline.remove(self.vertexAt - 1) # rimuovo la ultima parte
       else:
          # modifico la parte successiva
          polyline.movePoint(self.vertexAt, polyline.getPointAtVertex(self.vertexAt - 1))

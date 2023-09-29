@@ -279,7 +279,14 @@ class QadCommandClass(QObject): # derivato da QObject per gestire il metodo send
          return None
       if type(point_geom) == QgsPointXY:
          return self.plugIn.canvas.mapSettings().mapToLayerCoordinates(layer, point_geom)
-      elif type(point_geom) == QgsGeometry:
+      
+      fromCrs = self.plugIn.canvas.mapSettings().destinationCrs()
+      toCrs = layer.crs()
+         
+      if type(point_geom) == QgsGeometry:
+         if fromCrs == toCrs:
+            return QgsGeometry(point_geom)
+         
          # trasformo la geometria nel crs del canvas per lavorare con coordinate piane xy
          coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), \
                                                  layer.crs(), \
@@ -288,15 +295,23 @@ class QadCommandClass(QObject): # derivato da QObject per gestire il metodo send
          g.transform(coordTransform)
          return g
       elif (type(point_geom) == list or type(point_geom) == tuple): # lista di punti o di geometrie
+         res = []
+         if fromCrs == toCrs:
+            for pt in point_geom:
+               if type(pt) == QgsPointXY:
+                  res.append(QgsPointXY(pt))
+               elif type(pt) == QgsGeometry:
+                  res.append(QgsGeometry(pt))
+            return res
+            
          coordTransform = QgsCoordinateTransform(self.plugIn.canvas.mapSettings().destinationCrs(), \
                                                  layer.crs(), \
                                                  QgsProject.instance())
-         res = []
          for pt in point_geom:
             if type(pt) == QgsPointXY:
                res.append(coordTransform.transform(pt))
-            elif type(point_geom) == QgsGeometry:
-               g = QgsGeometry(point_geom)
+            elif type(pt) == QgsGeometry:
+               g = QgsGeometry(pt)
                g.transform(coordTransform)
                res.append(g)
          return res

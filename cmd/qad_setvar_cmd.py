@@ -105,6 +105,9 @@ class QadSETVARCommandClass(QadCommandClass):
                elif varType == QadVariableTypeEnum.BOOL:
                   # si appresta ad attendere un numero reale
                   self.waitForBool(msg.format(self.varName, varValue), varValue)
+               elif varType == QadVariableTypeEnum.COLOR:
+                  # si appresta ad attendere un COLORE #RRGGBB
+                  self.waitForString(msg.format(self.varName, varValue), varValue)
                self.step = 2
                return False
       elif self.step == 2: # dopo aver atteso il valore della variabile si riavvia il comando

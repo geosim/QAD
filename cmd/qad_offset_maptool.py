@@ -32,7 +32,7 @@ from ..qad_getpoint import QadGetPoint, QadGetPointDrawModeEnum, QadGetPointSele
 from ..qad_highlight import QadHighlight
 from ..qad_dim import QadDimStyles
 from ..qad_msg import QadMsg
-from ..qad_offset_fun import offsetPolyline
+from ..qad_offset_fun import offsetPolyline, offsetQGSGeom
 from ..qad_geom_relations import getQadGeomClosestPart
 
 
@@ -95,35 +95,71 @@ class Qad_offset_maptool(QadGetPoint):
       # <"a sinistra di" se il punto é alla sinista della parte con i seguenti valori:
       # -   < 0 = sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
       # -   > 0 = destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
-      result = getQadGeomClosestPart(self.subGeom, newPt)
-      leftOf = result[5]
-       
-      if self.offset < 0:
-         offsetDistance = result[0] # minima distanza
-      else:           
-         offsetDistance = self.offset
- 
-         if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
-            offsetDistance = offsetDistance + self.lastOffSetOnLeftSide
+#       result = getQadGeomClosestPart(self.subGeom, newPt)
+#       leftOf = result[5]
+#        
+#       if self.offset < 0:
+#          offsetDistance = result[0] # minima distanza
+#       else:           
+#          offsetDistance = self.offset
+#  
+#          if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)            
+#             offsetDistance = offsetDistance + self.lastOffSetOnLeftSide
+#          else: # alla destra
+#             offsetDistance = offsetDistance + self.lastOffSetOnRightSide         
+      
+      forcedOffsetDist = None
+      if self.offset > 0: # se è stata impostata già una distanza devo solo verificare la direzione dell'offset
+         # la funzione ritorna una lista con 
+         # (<minima distanza>
+         # <punto più vicino>
+         # <indice della geometria più vicina>
+         # <indice della sotto-geometria più vicina>
+         # <indice della parte della sotto-geometria più vicina>
+         # <"a sinistra di" se il punto é alla sinista della parte con i seguenti valori:
+         # -   < 0 = sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)
+         # -   > 0 = destra (per linea, arco o arco di ellisse) o esterno (per cerchi, ellissi)
+         dummy = getQadGeomClosestPart(self.subGeom, newPt)
+         leftOf = dummy[5]         
+              
+         if leftOf < 0: # a sinistra (per linea, arco o arco di ellisse) o interno (per cerchi, ellissi)            
+            forcedOffsetDist = self.offset + self.lastOffSetOnLeftSide
          else: # alla destra
-            offsetDistance = offsetDistance + self.lastOffSetOnRightSide         
-       
-      lines = offsetPolyline(self.subGeom, \
-                             offsetDistance, \
-                             "left" if leftOf < 0 else "right", \
-                             self.gapType)
+            forcedOffsetDist = self.offset + self.lastOffSetOnRightSide         
+      
+      
+      # se self.subGeom implementa il metodo isClosed
+      closed = self.subGeom.isClosed() if hasattr(self.subGeom, "isClosed") and callable(getattr(self.subGeom, "isClosed")) else False
+
+      if self.layer.geometryType() == QgsWkbTypes.PolygonGeometry or closed == True:
+         qgsGeom = QgsGeometry.fromPolygonXY([self.subGeom.asPolyline()])
+      else:
+         qgsGeom = QgsGeometry.fromPolylineXY(self.subGeom.asPolyline())
+
+      offsetQGSGeomList = offsetQGSGeom(qgsGeom, \
+                                        newPt, \
+                                        self.gapType, \
+                                        forcedOffsetDist)
+      
+      for g in offsetQGSGeomList:
+         self.__highlight.addGeometry(self.mapToLayerCoordinates(self.layer, g), self.layer)
+                  
+#       lines = offsetPolyline(self.subGeom, \
+#                              offsetDistance, \
+#                              "left" if leftOf < 0 else "right", \
+#                              self.gapType)      
+#  
+#       for line in lines:
+#          pts = line.asPolyline()
+#          if self.layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+#             if line[0] == line[-1]: # se é una linea chiusa
+#                offsetGeom = QgsGeometry.fromPolygonXY([pts])
+#             else:
+#                offsetGeom = QgsGeometry.fromPolylineXY(pts)
+#          else:
+#             offsetGeom = QgsGeometry.fromPolylineXY(pts)
  
-      for line in lines:
-         pts = line.asPolyline()
-         if self.layer.geometryType() == QgsWkbTypes.PolygonGeometry:
-            if line[0] == line[-1]: # se é una linea chiusa
-               offsetGeom = QgsGeometry.fromPolygonXY([pts])
-            else:
-               offsetGeom = QgsGeometry.fromPolylineXY(pts)
-         else:
-            offsetGeom = QgsGeometry.fromPolylineXY(pts)
- 
-         self.__highlight.addGeometry(self.mapToLayerCoordinates(self.layer, offsetGeom), self.layer)
+#          self.__highlight.addGeometry(self.mapToLayerCoordinates(self.layer, offsetGeom), self.layer)
 
 
    def canvasMoveEvent(self, event):

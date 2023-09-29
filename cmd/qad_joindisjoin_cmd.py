@@ -274,7 +274,8 @@ class QadJOINCommandClass(QadCommandClass):
                # Riduco la geometria in point o polyline
                simplifiedGeoms = qad_utils.asPointOrPolyline(geom)
                # deve essere un poligono senza ring
-               if len(simplifiedGeoms) != 1 or simplifiedGeoms[0].wkbType() != QgsWkbTypes.LineString:
+               if len(simplifiedGeoms) != 1 or \
+                  (simplifiedGeoms[0].isMultipart() == True or simplifiedGeoms[0].type() != QgsWkbTypes.LineGeometry):
                   self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                   return False
                points = simplifiedGeoms[0].asPolyline() # vettore di punti
@@ -505,22 +506,21 @@ class QadDISJOINCommandClass(QadCommandClass):
       ring = self.currAtSubGeom[1] if len(self.currAtSubGeom) == 2 else None
       
       geom = self.entity.getGeometry()
-      wkbType = geom.wkbType()
-      if wkbType == QgsWkbTypes.MultiPoint or wkbType == QgsWkbTypes.MultiPoint25D or \
-         wkbType == QgsWkbTypes.MultiLineString or wkbType == QgsWkbTypes.MultiLineString25D:
+      gType = geom.type()
+      
+      if geom.isMultipart() == True and (gType == QgsWkbTypes.PointGeometry or gType == QgsWkbTypes.LineGeometry):
          if geom.deletePart(part) == False: # disgrego una parte
             self.showMsg(QadMsg.translate("QAD", "Invalid object."))
             return False
          newGeom = self.mapToLayerCoordinates(layer, self.currSubGeom)
-      elif wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D or \
-           wkbType == QgsWkbTypes.MultiPolygon or wkbType == QgsWkbTypes.MultiPolygon25D:
+      elif gType == QgsWkbTypes.PolygonGeometry:
          if ring is not None: # disgrego un'isola 
             if geom.deleteRing(ring + 1, part) == False: # cancello una isola (Ring 0 is outer ring and can't be deleted)
                self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                return False
             newGeom = QgsGeometry.fromPolygonXY([self.mapToLayerCoordinates(layer, self.currSubGeom).asPolyline()])
          else: # disgrego una parte
-            if wkbType == QgsWkbTypes.Polygon or wkbType == QgsWkbTypes.Polygon25D:
+            if geom.isMultipart() == False:
                self.showMsg(QadMsg.translate("QAD", "Invalid object."))
                return False
             

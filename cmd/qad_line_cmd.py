@@ -38,6 +38,8 @@ from ..qad_geom_relations import *
 from .. import qad_layer
 from .. import qad_utils
 from ..qad_rubberband import createRubberBand
+from ..qad_entity import QadEntity
+from ..qad_geom_relations import getQadGeomClosestPart
 
 
 # Classe che gestisce il comando LINE
@@ -70,6 +72,7 @@ class QadLINECommandClass(QadCommandClass):
       self.firstPtTan = None
       self.firstPtPer = None      
       self.firstEntity = None
+      self.firstQadGeomPart = None
       # se questo flag = True il comando serve all'interno di un altro comando per disegnare una linea
       # che non verrà salvata su un layer
       self.virtualCmd = False
@@ -185,7 +188,7 @@ class QadLINECommandClass(QadCommandClass):
 
             snapTypeOnSel = self.getPointMapTool().snapTypeOnSelection
             value = self.getPointMapTool().point
-            entity = self.getPointMapTool().entity
+            entity = self.getPointMapTool().entity           
          else: # il punto arriva come parametro della funzione
             value = msg
             snapTypeOnSel = QadSnapTypeEnum.NONE
@@ -225,7 +228,19 @@ class QadLINECommandClass(QadCommandClass):
                      self.firstPtPer = None
                      self.firstPtTan = value
                      self.firstEntity = QadEntity(entity) # duplico l'entità
-                     self.firstEntity.getQadGeom() # inizializzo la geometria QAD dell'entità
+                     
+                     # la funzione ritorna una lista con 
+                     # (<minima distanza>
+                     #  <punto più vicino>
+                     #  <indice della geometria più vicina>
+                     #  <indice della sotto-geometria più vicina>
+                     #   se geometria chiusa è tipo polyline la lista contiene anche
+                     #  <indice della parte della sotto-geometria più vicina>
+                     #  <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+                     # )
+                     result = getQadGeomClosestPart(self.firstEntity.getQadGeom(), self.firstPtTan)
+                     self.firstQadGeomPart = getQadGeomPartAt(self.firstEntity.getQadGeom(), result[2], result[3], result[4])
+
                      # imposto il map tool
                      self.getPointMapTool().tan1 = self.firstPtTan
                      self.getPointMapTool().entity1 = self.firstEntity
@@ -233,9 +248,12 @@ class QadLINECommandClass(QadCommandClass):
                      
                   # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
-                     tangent = QadTangency.bestTwoBasicGeomObjects(self.firstEntity.getQadGeom(), self.firstPtTan, entity.getQadGeom(), value)
+                     result = getQadGeomClosestPart(entity.getQadGeom(), value)
+                     secondQadGeomPart = getQadGeomPartAt(entity.getQadGeom(), result[2], result[3], result[4])
+                                             
+                     tangent = QadTangency.bestTwoBasicGeomObjects(firstQadGeomPart, self.firstPtTan, secondQadGeomPart, value)
                      if tangent is not None:
-                        # prendo il punto più vicino a value
+                        # prendo il punto più vicino a valueself.firstEntity
                         if qad_utils.getDistance(tangent[0], value) < qad_utils.getDistance(tangent[1], value):                              
                            self.addVertex(tangent[1]) # aggiungo un nuovo vertice
                            self.addVertex(tangent[0]) # aggiungo un nuovo vertice
@@ -251,7 +269,10 @@ class QadLINECommandClass(QadCommandClass):
                         
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
-                     tangent = QadTangPerp.bestTwoBasicGeomObjects(entity.getQadGeom(), value, self.firstEntity.getQadGeom(), self.firstPtPer)
+                     result = getQadGeomClosestPart(entity.getQadGeom(), value)
+                     secondQadGeomPart = getQadGeomPartAt(entity.getQadGeom(), result[2], result[3], result[4])
+                     
+                     tangent = QadTangPerp.bestTwoBasicGeomObjects(secondQadGeomPart, value, firstQadGeomPart, self.firstPtPer)
                      if tangent is not None:
                         # prendo il punto più vicino a value
                         if qad_utils.getDistance(tangent.getStartPt(), value) < qad_utils.getDistance(tangent.getEndPt(), value):                              
@@ -274,7 +295,19 @@ class QadLINECommandClass(QadCommandClass):
                      self.firstPtTan = None
                      self.firstPtPer = value
                      self.firstEntity = QadEntity(entity) # duplico l'entità
-                     self.firstEntity.getQadGeom() # inizializzo la geometria QAD dell'entità
+                     
+                     # la funzione ritorna una lista con 
+                     # (<minima distanza>
+                     #  <punto più vicino>
+                     #  <indice della geometria più vicina>
+                     #  <indice della sotto-geometria più vicina>
+                     #   se geometria chiusa è tipo polyline la lista contiene anche
+                     #  <indice della parte della sotto-geometria più vicina>
+                     #  <"a sinistra di" se il punto é alla sinista della parte (< 0 -> sinistra, > 0 -> destra)
+                     # )
+                     result = getQadGeomClosestPart(self.firstEntity.getQadGeom(), self.firstPtPer)
+                     self.firstQadGeomPart = getQadGeomPartAt(self.firstEntity.getQadGeom(), result[2], result[3], result[4])
+                     
                      # imposto il map tool
                      self.getPointMapTool().per1 = self.firstPtPer
                      self.getPointMapTool().entity1 = self.firstEntity
@@ -282,7 +315,10 @@ class QadLINECommandClass(QadCommandClass):
                                     
                   # se era stato selezionato un punto con la modalità TAN_DEF   
                   elif self.firstPtTan is not None:
-                     tangent = QadTangPerp.bestTwoBasicGeomObjects(self.firstEntity.getQadGeom(), self.firstPtTan, entity.getQadGeom(), value)
+                     result = getQadGeomClosestPart(entity.getQadGeom(), value)
+                     secondQadGeomPart = getQadGeomPartAt(entity.getQadGeom(), result[2], result[3], result[4])
+                     
+                     tangent = QadTangPerp.bestTwoBasicGeomObjects(self.firstQadGeomPart, self.firstPtTan, secondQadGeomPart, value)
                      if tangent is not None:
                         # prendo il punto più vicino a value
                         if qad_utils.getDistance(tangent.getStartPt(), value) < qad_utils.getDistance(tangent.getEndPt(), value):                              
@@ -300,17 +336,20 @@ class QadLINECommandClass(QadCommandClass):
                         
                   # se era stato selezionato un punto con la modalità PER_DEF              
                   elif self.firstPtPer is not None:
-                     line = QadPerpPerp.bestTwoBasicGeomObjects(self.firstEntity.getQadGeom(), self.firstPtPer, entity.getQadGeom(), value)
+                     result = getQadGeomClosestPart(entity.getQadGeom(), value)
+                     secondQadGeomPart = getQadGeomPartAt(entity.getQadGeom(), result[2], result[3], result[4])
+                     
+                     line = QadPerpPerp.bestTwoBasicGeomObjects(self.firstQadGeomPart, self.firstPtPer, secondQadGeomPart, value)
                      if line is not None:
                         # prendo il punto più vicino a value
-                        if qad_utils.getDistance(line[0], value) < qad_utils.getDistance(line[1], value):                              
-                           self.addVertex(line[1]) # aggiungo un nuovo vertice
-                           self.addVertex(line[0]) # aggiungo un nuovo vertice
-                           self.getPointMapTool().firstPt = line[0]
+                        if qad_utils.getDistance(line.getStartPt(), value) < qad_utils.getDistance(line.getEndPt(), value):                              
+                           self.addVertex(line.getEndPt()) # aggiungo un nuovo vertice
+                           self.addVertex(line.getStartPt()) # aggiungo un nuovo vertice
+                           self.getPointMapTool().firstPt = line.getStartPt()
                         else:
-                           self.addVertex(line[0]) # aggiungo un nuovo vertice
-                           self.addVertex(line[1]) # aggiungo un nuovo vertice
-                           self.getPointMapTool().firstPt = line[1]
+                           self.addVertex(line.getStartPt()) # aggiungo un nuovo vertice
+                           self.addVertex(line.getEndPt()) # aggiungo un nuovo vertice
+                           self.getPointMapTool().firstPt = line.getEndPt()
                         # imposto il map tool
                         self.getPointMapTool().setMode(Qad_line_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)         
                      else:
@@ -319,6 +358,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità TAN_DEF
                   if self.firstPtTan is not None:
                      snapper = QadSnapper()
+                     snapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.plugIn.canvas))
                      snapper.setSnapType(QadSnapTypeEnum.TAN)
                      snapper.setStartPoint(value)
                      oSnapPoints = snapper.getSnapPoint(self.firstEntity, self.firstPtTan)
@@ -335,6 +375,7 @@ class QadLINECommandClass(QadCommandClass):
                   # se era stato selezionato un punto con la modalità PER_DEF
                   elif self.firstPtPer is not None:
                      snapper = QadSnapper()
+                     snapper.setSnapLayers(qad_utils.getSnappableVectorLayers(self.plugIn.canvas))
                      snapper.setSnapType(QadSnapTypeEnum.PER)
                      snapper.setStartPoint(value)
                      oSnapPoints = snapper.getSnapPoint(self.firstEntity, self.firstPtPer)
