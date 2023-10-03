@@ -177,7 +177,7 @@ class QadTRIMCommandClass(QadCommandClass):
                            # trasformo la geometria nel crs del layer
                            trimmedFeature2.setGeometry(fromQadGeomToQgsGeom(line2, entity.crs()))
                            # plugIn, layer, feature, coordTransform, refresh, check_validity
-                           if qad_layer.addFeatureToLayer(self.plugIn, layer, trimmedFeature2, None, False, False) == False:
+                           if qad_layer.addFeatureToLayer(self.plugIn, layer, trimmedFeature2, None, False, False, False) == False:
                               self.plugIn.destroyEditCommand()
                               return
                         

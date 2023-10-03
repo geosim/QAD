@@ -105,7 +105,7 @@ class QadCOPYCommandClass(QadCommandClass):
    #============================================================================
    # move
    #============================================================================
-   def move(self, entity, offsetX, offsetY):
+   def move(self, entity, offsetX, offsetY, openForm = True):
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
          # sposto la geometria dell'entità
@@ -114,7 +114,7 @@ class QadCOPYCommandClass(QadCommandClass):
          f = entity.getFeature()
          f.setGeometry(fromQadGeomToQgsGeom(qadGeom, entity.crs()))
          # plugIn, layer, feature, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:  
+         if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False, openForm) == False:  
             return False
       elif entity.whatIs() == "DIMENTITY":
          newDimEntity = QadDimEntity(entity) # la copio
@@ -137,6 +137,8 @@ class QadCOPYCommandClass(QadCommandClass):
 
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 and self.seriesLen <= 2 else False
+      
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -155,13 +157,13 @@ class QadCOPYCommandClass(QadCommandClass):
             deltaY = offsetY
                
             for i in range(1, self.seriesLen, 1):
-               if self.move(entity, deltaX, deltaY) == False:
+               if self.move(entity, deltaX, deltaY, openForm) == False:
                   self.plugIn.destroyEditCommand()
                   return
                deltaX = deltaX + offsetX
                deltaY = deltaY + offsetY     
          else:
-            if self.move(entity, offsetX, offsetY) == False:
+            if self.move(entity, offsetX, offsetY, openForm) == False:
                self.plugIn.destroyEditCommand()
                return
                

@@ -140,7 +140,7 @@ class QadBREAKCommandClass(QadCommandClass):
             # trasformo la geometria nel crs del layer
             brokenFeature2.setGeometry(fromQadGeomToQgsGeom(line2, layer.crs()))
             # plugIn, layer, feature, coordTransform, refresh, check_validity
-            if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False, False) == False:
                self.plugIn.destroyEditCommand()
                return            
       else:

@@ -710,7 +710,7 @@ class QadPEDITCommandClass(QadCommandClass):
          # trasformo la geometria nel crs del layer
          brokenFeature2.setGeometry(fromQadGeomToQgsGeom(g2, self.entity.crs()))
          # plugIn, layer, feature, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False) == False:
+         if qad_layer.addFeatureToLayer(self.plugIn, layer, brokenFeature2, None, False, False, False) == False:
             self.plugIn.destroyEditCommand()
             return            
 
@@ -1575,7 +1575,7 @@ class QadGRIPINSERTREMOVEVERTEXCommandClass(QadCommandClass):
             return False
       else:
          # plugIn, layer, features, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False) == False:
+         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False, False) == False:
             self.plugIn.destroyEditCommand()
             return False
 
@@ -1915,7 +1915,7 @@ class QadGRIPARCLINECONVERTCommandClass(QadCommandClass):
             return False
       else:
          # plugIn, layer, features, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False) == False:
+         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False, False) == False:
             self.plugIn.destroyEditCommand()
             return False
 
@@ -1958,7 +1958,7 @@ class QadGRIPARCLINECONVERTCommandClass(QadCommandClass):
             return False
       else:
          # plugIn, layer, features, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False) == False:
+         if qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, False, False, False) == False:
             self.plugIn.destroyEditCommand()
             return False
 

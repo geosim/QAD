@@ -46,6 +46,7 @@ from ..qad_dim import QadDimStyles, QadDimEntity
 from ..qad_multi_geom import fromQadGeomToQgsGeom
 
 
+
 # Classe che gestisce il comando STRETCH
 class QadSTRETCHCommandClass(QadCommandClass):
 
@@ -104,7 +105,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
          return self.contextualMenu
 
 
-   def stretch(self, entity, containerGeom, offsetX, offsetY, tolerance2ApproxCurve):
+   def stretch(self, entity, containerGeom, offsetX, offsetY, tolerance2ApproxCurve, openForm = True):
       # entity = entità da stirare
       # ptList = lista dei punti da stirare
       # offsetX, offsetY = spostamento da applicare
@@ -154,6 +155,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
       for SSGeom in self.SSGeomList:
          entitySet.unite(SSGeom[0])
       self.plugIn.beginEditCommand("Feature stretched", entitySet.getLayerList())
+      openForm = True if entitySet.count() == 1 else False
       
       dimElaboratedList = [] # lista delle quotature già elaborate
 
@@ -176,7 +178,7 @@ class QadSTRETCHCommandClass(QadCommandClass):
                # verifico se l'entità appartiene ad uno stile di quotatura
                dimEntity = QadDimStyles.getDimEntity(entity)  
                if dimEntity is None:                        
-                  if self.stretch(entity, geomSel, offsetX, offsetY, tolerance2ApproxCurve) == False:
+                  if self.stretch(entity, geomSel, offsetX, offsetY, tolerance2ApproxCurve, openForm) == False:
                      self.plugIn.destroyEditCommand()
                      return
                else:
@@ -660,7 +662,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
    #============================================================================
    # stretch
    #============================================================================
-   def stretch(self, entity, ptList, offsetX, offsetY, tolerance2ApproxCurve):
+   def stretch(self, entity, ptList, offsetX, offsetY, tolerance2ApproxCurve, openForm):
       # entity = entità da stirare
       # ptList = lista dei punti da stirare
       # offsetX, offsetY = spostamento da applicare
@@ -692,7 +694,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                   return False
             else:
                # plugIn, layer, features, coordTransform, refresh, check_validity
-               if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:
+               if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False, openForm) == False:
                   return False
                
       else:
@@ -719,6 +721,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
       for selectedEntity in self.selectedEntityGripPoints:
          entitySet.addEntity(selectedEntity[0])
       self.plugIn.beginEditCommand("Feature stretched", entitySet.getLayerList())
+      openForm = True if len(self.selectedEntityGripPoints) == 1 else False
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       
@@ -734,7 +737,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
          # verifico se l'entità appartiene ad uno stile di quotatura
          dimEntity = QadDimStyles.getDimEntity(entity)
          if dimEntity is None:
-            if self.stretch(entity, ptList, offsetX, offsetY, tolerance2ApproxCurve) == False:
+            if self.stretch(entity, ptList, offsetX, offsetY, tolerance2ApproxCurve, openForm) == False:
                self.plugIn.destroyEditCommand()
                return
          else:
@@ -760,7 +763,7 @@ class QadGRIPSTRETCHCommandClass(QadCommandClass):
                         dimPtlist.extend(self.selectedEntityGripPoints[i][1])
 
                dimElaboratedList.append(dimEntity)
-               if self.stretch(dimEntity, dimPtlist, offsetX, offsetY, tolerance2ApproxCurve) == False:
+               if self.stretch(dimEntity, dimPtlist, offsetX, offsetY, tolerance2ApproxCurve, False) == False:
                   self.plugIn.destroyEditCommand()
                   return
 

@@ -104,7 +104,7 @@ class QadROTATECommandClass(QadCommandClass):
    #============================================================================
    # rotate
    #============================================================================
-   def rotate(self, entity, basePt, angle):
+   def rotate(self, entity, basePt, angle, openForm):
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
          # ruoto la geometria dell'entità
@@ -125,7 +125,7 @@ class QadROTATECommandClass(QadCommandClass):
                return False
          else:             
             # plugIn, layer, features, coordTransform, refresh, check_validity
-            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False, openForm) == False:
                return False
       elif entity.whatIs() == "DIMENTITY":
          newDimEntity = QadDimEntity(entity) # la copio
@@ -145,6 +145,8 @@ class QadROTATECommandClass(QadCommandClass):
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 else False
+      
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -154,7 +156,7 @@ class QadROTATECommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.rotate(entity, self.basePt, angle) == False:  
+         if self.rotate(entity, self.basePt, angle, openForm) == False:  
             self.plugIn.destroyEditCommand()
             return
 

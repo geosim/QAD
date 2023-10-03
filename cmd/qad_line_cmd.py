@@ -133,7 +133,8 @@ class QadLINECommandClass(QadCommandClass):
       i = 1
       while i < len(self.vertices):                     
          qad_layer.addLineToLayer(self.plugIn, layer,
-                                  [self.vertices[i - 1], self.vertices[i]])
+                                  [self.vertices[i - 1], self.vertices[i]], True, True, False, \
+                                  True if len(self.vertices) == 2 else False)
          i = i + 1
 
 

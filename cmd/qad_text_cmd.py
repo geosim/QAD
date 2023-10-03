@@ -137,7 +137,7 @@ class QadTEXTCommandClass(QadCommandClass):
          f.setAttribute(self.labelFields[i].name(), self.labelFieldValues[i])
          i = i + 1
       
-      return qad_layer.addFeatureToLayer(self.plugIn, layer, f)       
+      return qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, True, False, False)       
 
    def initLabelFields(self, layer):
       labelFieldNames = qad_label.get_labelFieldNames(layer)

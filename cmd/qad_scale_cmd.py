@@ -104,7 +104,7 @@ class QadSCALECommandClass(QadCommandClass):
    #============================================================================
    # scale
    #============================================================================
-   def scale(self, entity, basePt, scale):
+   def scale(self, entity, basePt, scale, openForm = True):
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
          # sposto la geometria dell'entità
@@ -139,7 +139,7 @@ class QadSCALECommandClass(QadCommandClass):
                return False
          else:             
             # plugIn, layer, features, coordTransform, refresh, check_validity
-            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False, openForm) == False:
                self.plugIn.destroyEditCommand()
                return False
       elif entity.whatIs() == "DIMENTITY":
@@ -162,6 +162,8 @@ class QadSCALECommandClass(QadCommandClass):
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 else False
+      
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -171,7 +173,7 @@ class QadSCALECommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.scale(entity, self.basePt, scale) == False:  
+         if self.scale(entity, self.basePt, scale, openForm) == False:  
             self.plugIn.destroyEditCommand()
             return
 
@@ -563,7 +565,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
    #============================================================================
    # scale
    #============================================================================
-   def scale(self, entity, basePt, scale, sizeFldName):
+   def scale(self, entity, basePt, scale, sizeFldName, openForm = True):
       # entity = entità da scalare
       # basePt = punto base
       # scale = fattore di scala
@@ -620,6 +622,8 @@ class QadGRIPSCALECommandClass(QadCommandClass):
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 else False
+
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -629,7 +633,7 @@ class QadGRIPSCALECommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.scale(entity, self.basePt, scale) == False:  
+         if self.scale(entity, self.basePt, scale, openForm) == False:  
             self.plugIn.destroyEditCommand()
             return
 

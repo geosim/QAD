@@ -143,7 +143,7 @@ class QadDIVIDECommandClass(QadCommandClass):
    #============================================================================
    # addFeature
    #============================================================================
-   def addFeature(self, layer, insPt, rot):
+   def addFeature(self, layer, insPt, rot, openForm = True):
       transformedPoint = self.mapToLayerCoordinates(layer, insPt)
       g = QgsGeometry.fromPointXY(transformedPoint)
       f = QgsFeature()
@@ -168,7 +168,7 @@ class QadDIVIDECommandClass(QadCommandClass):
       if len(rotFldName) > 0:
          f.setAttribute(rotFldName, qad_utils.toDegrees(rot))
       
-      return qad_layer.addFeatureToLayer(self.plugIn, layer, f)               
+      return qad_layer.addFeatureToLayer(self.plugIn, layer, f, None, True, False, openForm)               
 
 
    #============================================================================
@@ -199,9 +199,10 @@ class QadDIVIDECommandClass(QadCommandClass):
       
       i = 1
       distanceFromStart = distance
+      openForm = True if self.nSegments == 2 else False
       while i < self.nSegments:
          pt, rot = pathPolyline.getPointFromStart(distanceFromStart)
-         if self.addFeature(dstLayer, pt, rot if self.objectAlignment else 0) == False:
+         if self.addFeature(dstLayer, pt, rot if self.objectAlignment else 0, openForm) == False:
             self.plugIn.destroyEditCommand()
             return False
          i = i + 1

@@ -100,7 +100,7 @@ class QadMIRRORCommandClass(QadCommandClass):
    #============================================================================
    # scale
    #============================================================================
-   def mirror(self, entity, mirrorPt, angle):
+   def mirror(self, entity, mirrorPt, angle, openForm):
       
       # verifico se l'entità appartiene ad uno stile di quotatura
       if entity.whatIs() == "ENTITY":
@@ -124,7 +124,7 @@ class QadMIRRORCommandClass(QadCommandClass):
                return False
          else:             
             # plugIn, layer, features, coordTransform, refresh, check_validity
-            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False) == False:
+            if qad_layer.addFeatureToLayer(self.plugIn, entity.layer, f, None, False, False, openForm) == False:
                return False
       else:
          # specchio la quota
@@ -148,6 +148,7 @@ class QadMIRRORCommandClass(QadCommandClass):
       angle = qad_utils.getAngleBy2Pts(self.firstMirrorPt, self.secondMirrorPt)
 
       dimElaboratedList = [] # lista delle quotature già elaborate
+      openForm = True if self.cacheEntitySet.count() == 1 else False
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
@@ -158,7 +159,7 @@ class QadMIRRORCommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.mirror(entity, self.firstMirrorPt, angle) == False:
+         if self.mirror(entity, self.firstMirrorPt, angle, openForm) == False:
             self.plugIn.destroyEditCommand()
             return
 
@@ -405,6 +406,7 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
 
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 else False
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -414,7 +416,7 @@ class QadGRIPMIRRORCommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.mirror(entity, self.firstMirrorPt, angle) == False:
+         if self.mirror(entity, self.firstMirrorPt, angle, openForm) == False:
             self.plugIn.destroyEditCommand()
             return
 
