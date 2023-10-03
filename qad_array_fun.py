@@ -67,7 +67,7 @@ def doMoveAndRotateGeom(plugIn, entity, offsetX, offsetY, angle, basePt, addToLa
             newF.setAttribute(entity.rotFldName, qad_utils.toDegrees(qad_utils.normalizeAngle(rotValue)))               
          
          # plugIn, layer, feature, coordTransform, refresh, check_validity
-         if qad_layer.addFeatureToLayer(plugIn, entity.layer, newF, None, False, False) == False:
+         if qad_layer.addFeatureToLayer(plugIn, entity.layer, newF, None, False, False, False) == False:
             return False
    
       if highlightObj is not None:

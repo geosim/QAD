@@ -687,6 +687,12 @@ class QadLine():
          dummy = self.sqrDist(secondPt)
          mySecondPt = dummy[1]
       
+      # verifico se è il caso di invertire i punti
+      if self.getDistanceFromStart(myFirstPt) > self.getDistanceFromStart(mySecondPt):
+         dummy = myFirstPt
+         myFirstPt = mySecondPt
+         mySecondPt = dummy
+      
       part1 = self.getGeomBetween2Pts(self.getStartPt(), myFirstPt)
       if mySecondPt is None:
          part2 = self.getGeomBetween2Pts(myFirstPt, self.getEndPt())

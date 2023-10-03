@@ -1449,7 +1449,7 @@ class QadDimStyle():
 
       # prima di tutto inserisco il testo di quota
       # plugIn, layer, feature, coordTransform, refresh, check_validity
-      if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, None, False, False) == False:
+      if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), dimEntity.textualFeature, None, False, False, False) == False:
          plugIn.destroyEditCommand()
          return False
       
@@ -1464,7 +1464,7 @@ class QadDimStyle():
       # features puntuali
       self.setDimId(dimId, dimEntity.symbolFeatures, True) # setto id_parent
       # plugIn, layer, features, coordTransform, refresh, check_validity
-      if qad_layer.addFeaturesToLayer(plugIn, self.getSymbolLayer(), dimEntity.symbolFeatures, None, False, False) == False:
+      if qad_layer.addFeaturesToLayer(plugIn, self.getSymbolLayer(), dimEntity.symbolFeatures, None, False, False, False) == False:
          plugIn.destroyEditCommand()
          return False
       
@@ -4866,7 +4866,7 @@ class QadDimEntity():
    def addToLayers(self, plugIn):
       # prima di tutto inserisco il testo di quota per ricodificare la quotatura
       # plugIn, layer, feature, coordTransform, refresh, check_validity
-      if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), self.textualFeature, None, False, False) == False:
+      if qad_layer.addFeatureToLayer(plugIn, self.getTextualLayer(), self.textualFeature, None, False, False, False) == False:
          return False
       newDimId = self.textualFeature.id()
          
@@ -4877,10 +4877,10 @@ class QadDimEntity():
       if qad_layer.updateFeatureToLayer(plugIn, self.getTextualLayer(), self.textualFeature, False, False) == False:
          return False
       # plugIn, layer, features, coordTransform, refresh, check_validity
-      if qad_layer.addFeaturesToLayer(plugIn, self.getLinearLayer(), self.linearFeatures, None, False, False) == False:  
+      if qad_layer.addFeaturesToLayer(plugIn, self.getLinearLayer(), self.linearFeatures, None, False, False, False) == False:  
          return False
       # plugIn, layer, features, coordTransform, refresh, check_validity
-      if qad_layer.addFeaturesToLayer(plugIn, self.getSymbolLayer(), self.symbolFeatures, None, False, False) == False:  
+      if qad_layer.addFeaturesToLayer(plugIn, self.getSymbolLayer(), self.symbolFeatures, None, False, False, False) == False:  
          return False
       
       return True

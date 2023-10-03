@@ -103,7 +103,7 @@ def getCurrLayerEditable(canvas, geomType = None):
 #===============================================================================
 # addPointToLayer
 #===============================================================================
-def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, check_validity = False):
+def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, check_validity = False, openForm = True):
    """
    Aggiunge un punto ad un layer. Se il punto é già 
    nel sistema di coordinate del layer allora non va trasformato se invece é nel
@@ -136,6 +136,11 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
       i = fields.indexFromName(field.name())
       f[field.name()] = provider.defaultValue(i)
 
+   if openForm == True:
+      if get_Disable_enter_attribute_values_dialog() == False:
+         if plugIn.iface.openFeatureForm(layer, f, True) == False:
+            return False
+
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
@@ -155,7 +160,7 @@ def addPointToLayer(plugIn, layer, point, transform = True, refresh = True, chec
 #===============================================================================
 # addLineToLayer
 #===============================================================================
-def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False):
+def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False, openForm = True):
    """
    Aggiunge una linea (lista di punti) ad un layer. Se la lista di punti é già 
    nel sistema di coordinate del layer allora non va trasformata se invece é nel
@@ -191,6 +196,11 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
       i = fields.indexFromName(field.name())
       f[field.name()] = provider.defaultValue(i)
 
+   if openForm == True:
+      if get_Disable_enter_attribute_values_dialog() == False:
+         if plugIn.iface.openFeatureForm(layer, f, True) == False:
+            return False
+      
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
@@ -210,7 +220,7 @@ def addLineToLayer(plugIn, layer, points, transform = True, refresh = True, chec
 #===============================================================================
 # addPolygonToLayer
 #===============================================================================
-def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False):
+def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, check_validity = False, openForm = True):
    """
    Aggiunge un poligono (lista di punti) ad un layer. Se la lista di punti é già 
    nel sistema di coordinate del layer allora non va trasformata se invece é nel
@@ -246,6 +256,11 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
       i = fields.indexFromName(field.name())
       f[field.name()] = provider.defaultValue(i)
 
+   if openForm == True:
+      if get_Disable_enter_attribute_values_dialog() == False:
+         if plugIn.iface.openFeatureForm(layer, f, True) == False:
+            return False
+
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
 
@@ -265,7 +280,7 @@ def addPolygonToLayer(plugIn, layer, points, transform = True, refresh = True, c
 #===============================================================================
 # addGeomToLayer
 #===============================================================================
-def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, check_validity = False):
+def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, check_validity = False, openForm = True):
    """
    Aggiunge una geometria ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
@@ -292,6 +307,11 @@ def addGeomToLayer(plugIn, layer, geom, coordTransform = None, refresh = True, c
    for field in fields.toList():
       i = fields.indexFromName(field.name())
       f[field.name()] = provider.defaultValue(i)
+
+   if openForm == True:
+      if get_Disable_enter_attribute_values_dialog() == False:
+         if plugIn.iface.openFeatureForm(layer, f, True) == False:
+            return False
 
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -336,7 +356,7 @@ def addGeomsToLayer(plugIn, layer, geoms, coordTransform = None, refresh = True,
 #===============================================================================
 # addFeatureToLayer
 #===============================================================================
-def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, check_validity = False):
+def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, check_validity = False, openForm = True):
    """
    Aggiunge una feature ad un layer. Se la geometria é da convertire allora
    deve essere passato il parametro <coordTransform> di tipo QgsCoordinateTransform.
@@ -351,6 +371,11 @@ def addFeatureToLayer(plugIn, layer, f, coordTransform = None, refresh = True, c
    if check_validity:
       if not f.geometry().isGeosValid():
          return False
+
+   if openForm == True:
+      if get_Disable_enter_attribute_values_dialog() == False:
+         if plugIn.iface.openFeatureForm(layer, f, True) == False:
+            return False
          
    if refresh == True:
       plugIn.beginEditCommand("Feature added", layer)
@@ -395,7 +420,7 @@ def addFeaturesToLayer(plugIn, layer, features, coordTransform = None, refresh =
       plugIn.beginEditCommand("Feature added", layer)
       
    for f in features:
-      if addFeatureToLayer(plugIn, layer, f, coordTransform, False, check_validity) == False:
+      if addFeatureToLayer(plugIn, layer, f, coordTransform, False, check_validity, False) == False:
          if refresh == True:
             plugIn.destroyEditCommand()
             return False
@@ -634,6 +659,19 @@ def isSymbolLayer(layer):
    return False if isTextLayer(layer) else True 
 
 
+
+#===============================================================================
+# get_Disable_enter_attribute_values_dialog
+#===============================================================================
+def get_Disable_enter_attribute_values_dialog():
+   value = QSettings().value('/qgis/digitizing/disable_enter_attribute_values_dialog', True)
+   if type(value) == str:
+      return False if value.lower() == 'false' else True
+   elif type(value) == bool:
+      return value
+      
+   return True 
+   
 #============================================================================
 # INIZIO - Gestione layer temporanei di QAD
 #============================================================================
