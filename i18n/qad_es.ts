@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es_ES" sourcelanguage="it_IT">
-<defaultcodec>UTF-8</defaultcodec>
+<TS version="2.1" language="es_ES" sourcelanguage="it_IT">
 <context>
     <name>Command_ARC</name>
     <message>
@@ -237,7 +236,7 @@
     </message>
     <message>
         <source>Specifies the total distance between the start and end columns &lt;{0}&gt;: </source>
-        <translation>Especifica la distancia total entre la columna inicial y final &lt;{0}&gt;:</translation>
+        <translation>Especifica la distancia total entre la columna inicial y final &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specify distance between columns &lt;{0}&gt;: </source>
@@ -281,7 +280,7 @@
     </message>
     <message>
         <source>Specify path method [{0}] &lt;{1}&gt;: </source>
-        <translation>Especifica el método [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Especifica el método [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Specify the first point for array tangent direction: </source>
@@ -341,8 +340,7 @@ Numero maximo de elementos = {0}.</translation>
         <source>
 The distance between items can&apos;t be greater than {0}.</source>
         <translation>
-La distancia entre los elementos no puede ser mayor de {0}.
-</translation>
+La distancia entre los elementos no puede ser mayor de {0}.</translation>
     </message>
     <message>
         <source>Distributes object copies into any combination of rows and columns.</source>
@@ -364,7 +362,7 @@ El ángulo no puede ser mayor de {0}.</translation>
     </message>
     <message>
         <source>Select an option to edit array [{0}] &lt;{1}&gt;: </source>
-        <translation>Seleccione un pinzamiento para editar la matriz [{0}] &lt;{1}&gt;:</translation>
+        <translation>Seleccione un pinzamiento para editar la matriz [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -482,7 +480,7 @@ El ángulo no puede ser mayor de {0}.</translation>
     </message>
     <message>
         <source>Specify second end of the circle diameter: </source>
-        <translation>Precise segundo punto final del diámetro del círculo:</translation>
+        <translation>Precise segundo punto final del diámetro del círculo: </translation>
     </message>
     <message>
         <source>
@@ -923,7 +921,7 @@ Designe aristas de contorno...</translation>
     </message>
     <message>
         <source>Extend</source>
-        <translation>Alargar </translation>
+        <translation>Alargar</translation>
     </message>
     <message>
         <source>No extend</source>
@@ -978,7 +976,7 @@ Imposible hacer un empalme con radio &lt;{0}&gt;.</translation>
     </message>
     <message>
         <source>Select polyline or [{0}]: </source>
-        <translation>Precise polilínea or [{0}]:  </translation>
+        <translation>Precise polilínea or [{0}]: </translation>
     </message>
     <message>
         <source>Trim-extend</source>
@@ -990,7 +988,7 @@ Imposible hacer un empalme con radio &lt;{0}&gt;.</translation>
     </message>
     <message>
         <source>Specify trim mode [{0}] &lt;{1}&gt;: </source>
-        <translation>Especifica el método de recorte [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Especifica el método de recorte [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Radius</source>
@@ -1059,7 +1057,8 @@ Imposible hacer un empalme con radio &lt;{0}&gt;.</translation>
 ** RADIUS **
 </source>
         <translation>
-** RADIO **</translation>
+** RADIO **
+</translation>
     </message>
 </context>
 <context>
@@ -1073,28 +1072,32 @@ Imposible hacer un empalme con radio &lt;{0}&gt;.</translation>
 ** ADD VERTEX **
 </source>
         <translation>
-** INSERTAR VÉRTICE **</translation>
+** INSERTAR VÉRTICE **
+</translation>
     </message>
     <message>
         <source>
 ** REMOVE VERTEX **
 </source>
         <translation>
-** ELIMINAR VÉRTICE **</translation>
+** ELIMINAR VÉRTICE **
+</translation>
     </message>
     <message>
         <source>
 ** CONVERT TO ARC **
 </source>
         <translation>
-** CONVERTIR A ARC **</translation>
+** CONVERTIR A ARC **
+</translation>
     </message>
     <message>
         <source>
 ** CONVERT TO LINE **
 </source>
         <translation>
-** CONVERTIR A LA LÍNEA **</translation>
+** CONVERTIR A LA LÍNEA **
+</translation>
     </message>
 </context>
 <context>
@@ -1131,7 +1134,8 @@ Imposible hacer un empalme con radio &lt;{0}&gt;.</translation>
 ** MIRROR **
 </source>
         <translation>
-** SIMETRIA **</translation>
+** SIMETRIA **
+</translation>
     </message>
     <message>
         <source>
@@ -1171,7 +1175,8 @@ Los puntos deben ser diferentes.</translation>
 ** MOVE **
 </source>
         <translation>
-** DESPLAZA **</translation>
+** DESPLAZA **
+</translation>
     </message>
 </context>
 <context>
@@ -1209,7 +1214,8 @@ Los puntos deben ser diferentes.</translation>
 ** ROTATE **
 </source>
         <translation>
-** GIRA **</translation>
+** GIRA **
+</translation>
     </message>
     <message>
         <source>Specify second point: </source>
@@ -1255,7 +1261,8 @@ Los puntos deben ser diferentes.</translation>
 ** SCALE **
 </source>
         <translation>
-** ESCALA **</translation>
+** ESCALA **
+</translation>
     </message>
     <message>
         <source>Specify second point: </source>
@@ -1285,7 +1292,8 @@ Los puntos deben ser diferentes.</translation>
 ** STRETCH **
 </source>
         <translation>
-** ESTIRA **</translation>
+** ESTIRA **
+</translation>
     </message>
 </context>
 <context>
@@ -1344,7 +1352,7 @@ Designe objetos que se van a agregar: </translation>
         <source>
 Current length: {0}</source>
         <translation>
-Longitud actual: {0} </translation>
+Longitud actual: {0}</translation>
     </message>
     <message>
         <source>, included angle: {0}</source>
@@ -1411,7 +1419,7 @@ Longitud actual: {0} </translation>
         <translation>Precise longitud total [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
-        <source>Select an object or [{0}] &lt;{1}&gt;:  </source>
+        <source>Select an object or [{0}] &lt;{1}&gt;: </source>
         <translation>Designe objeto o [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
@@ -1469,10 +1477,6 @@ Ninguna perpendicular es posible</translation>
         <translation>Añadir</translation>
     </message>
     <message>
-        <source>Delete</source>
-        <translation type="obsolete">suPrimir</translation>
-    </message>
-    <message>
         <source>Union</source>
         <translation>Unión</translation>
     </message>
@@ -1483,10 +1487,6 @@ Ninguna perpendicular es posible</translation>
     <message>
         <source>Intersect</source>
         <translation>Intersección</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">desHacer</translation>
     </message>
     <message>
         <source>eXit</source>
@@ -1616,7 +1616,8 @@ arcs or a combination of two.</source>
 Polygon not valid.
 </source>
         <translation>
-Polígono no válido.</translation>
+Polígono no válido.
+</translation>
     </message>
 </context>
 <context>
@@ -1705,7 +1706,7 @@ Polígono no válido.</translation>
     <name>Command_PEDIT</name>
     <message>
         <source>Modifies existing polylines or polygon.</source>
-        <translation>Permite editar polilíneas, objetos que se van a unir a polilíneas y objetos relacionados. </translation>
+        <translation>Permite editar polilíneas, objetos que se van a unir a polilíneas y objetos relacionados.</translation>
     </message>
     <message>
         <source>Last</source>
@@ -1717,7 +1718,7 @@ Polígono no válido.</translation>
     </message>
     <message>
         <source>Select polyline or [{0}]: </source>
-        <translation>Designe polilínea or [{0}]:  </translation>
+        <translation>Designe polilínea or [{0}]: </translation>
     </message>
     <message>
         <source>Open</source>
@@ -1781,7 +1782,7 @@ Polígono no válido.</translation>
     </message>
     <message>
         <source>Extend</source>
-        <translation>Alargar </translation>
+        <translation>Alargar</translation>
     </message>
     <message>
         <source>Add</source>
@@ -1793,7 +1794,7 @@ Polígono no válido.</translation>
     </message>
     <message>
         <source>Specify join type [{0}] &lt;{1}&gt;: </source>
-        <translation>Especifica el tipo de junta [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Especifica el tipo de junta [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Next</source>
@@ -2216,7 +2217,7 @@ Rotación de una copia de los objetos seleccionado.</translation>
     </message>
     <message>
         <source>Specify reference length &lt;{0}&gt;: </source>
-        <translation>Precise longitud de referencia o [{0}] &lt;{1}&gt;:</translation>
+        <translation>Precise longitud de referencia o [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Points</source>
@@ -2501,10 +2502,6 @@ found {0}</source>
         <translation>Precise el desplazamiento &lt;{0}, {1}&gt;: </translation>
     </message>
     <message>
-        <source>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;: </source>
-        <translation type="obsolete">Precise segundo punto o &lt;usar primer punto como desplazamiento&gt;: </translation>
-    </message>
-    <message>
         <source>Specify second point or &lt;use first point as displacement from origin point 0,0&gt;: </source>
         <translation></translation>
     </message>
@@ -2570,7 +2567,7 @@ Designe aristas de corte...</translation>
     </message>
     <message>
         <source>Extend</source>
-        <translation>Alargar </translation>
+        <translation>Alargar</translation>
     </message>
     <message>
         <source>No extend</source>
@@ -3291,6 +3288,47 @@ command input near the crosshairs</source>
         <source>Drafting Tooltip Appearence...</source>
         <translation>Aspecto de la información de las herramientas de dibujo...</translation>
     </message>
+    <message>
+        <source>Makes additional angles in the list available for polar tracking. (POLARMODE and POLARADDANG system variables). Note: Additional angles are absolute, not incremental.</source>
+        <translation>Hace que los ángulos adicionales de la lista estén disponibles para el rastreo polar. Variables de sistema POLARMODE y POLARADDANG
+Nota: Los ángulos adicionales son absolutos, no incrementales.</translation>
+    </message>
+    <message>
+        <source>Additional angles</source>
+        <translation>Ángulos adicionales</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If Additional Angles is selected, the available additional angles are listed.&lt;/p&gt;&lt;p&gt;To add new angles, choose New. To remove existing angles, click Delete.&lt;/p&gt;&lt;p&gt;(POLARADDANG system variable)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Si se selecciona Ángulos adicionales, enumera los ángulos adicionales disponibles.&lt;/p&gt;&lt;p&gt;Para añadir ángulos nuevos, haga clic en Nuevo. Para eliminar ángulos existentes, haga clic en Suprimir.&lt;/p&gt;&lt;p&gt;(Variable de sistema POLARADDANG)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Adds additional polar tracking alignment angles.</source>
+        <translation>Añade ángulos adicionales de alineación de rastreo polar.</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+    <message>
+        <source>Deletes selected additional angles.</source>
+        <translation>Suprime los ángulos adicionales seleccionados.</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>suPrimir</translation>
+    </message>
+    <message>
+        <source>QAD - Additional angle</source>
+        <translation>QAD - Ángulos adicionales</translation>
+    </message>
+    <message>
+        <source>New angle:</source>
+        <translation>Nuevo ángulo:</translation>
+    </message>
+    <message>
+        <source>Angle already in list</source>
+        <translation>Ángulo ya en la lista</translation>
+    </message>
 </context>
 <context>
     <name>DimInput_Settings_Dialog</name>
@@ -3332,7 +3370,7 @@ command input near the crosshairs</source>
     </message>
     <message>
         <source>Show 2 dimension input fields at a time</source>
-        <translation>Mostrar sólo 2 campos de entrada de cota a la vez </translation>
+        <translation>Mostrar sólo 2 campos de entrada de cota a la vez</translation>
     </message>
     <message>
         <source>When you are using grip editing to stretch an object, displays the dimensional input tooltips that are selected below. (DYNDIVIS and DYNDIGRIP system variables)</source>
@@ -4476,17 +4514,20 @@ El estilo de cota &quot;{0}&quot; </translation>
     <message>
         <source>has not the textual layer for dimension.
 </source>
-        <translation>no tiene la capa para los textos de cota.</translation>
+        <translation>no tiene la capa para los textos de cota.
+</translation>
     </message>
     <message>
         <source>has not the symbol layer for dimension.
 </source>
-        <translation>no tiene la capa para los símbolos de cota.</translation>
+        <translation>no tiene la capa para los símbolos de cota.
+</translation>
     </message>
     <message>
         <source>has not the linear layer for dimension.
 </source>
-        <translation>no tiene la capa para las líneas de cota.</translation>
+        <translation>no tiene la capa para las líneas de cota.
+</translation>
     </message>
     <message>
         <source>has not the layers with the same coordinate reference system.</source>
@@ -4786,12 +4827,6 @@ El parámetro se almacena como un código binario usando la suma de los siguient
         <translation>CROSSINGAREACOLOR</translation>
     </message>
     <message>
-        <source>Controls the color of the transparent selection area during crossing selection (RGB, #33A02C = green).
-The SELECTIONAREA system variable must be on.</source>
-        <translation>Controla el color del área de selección durante la selección de captura (RGB, #33A02C = verde).
-La variable de sistema SELECTIONAREA debe estar activada.</translation>
-    </message>
-    <message>
         <source>Controls the color of unselected grips (RGB, #100DD6 = blue).</source>
         <translation>Controla el color de pinzamiento sin seleccionar (RGB, #100DD6 = azul).</translation>
     </message>
@@ -4842,26 +4877,8 @@ The valid range is 0 to 100. The lower the setting, the more transparent the are
 El rango válido está comprendido entre 0 y 100. Cuanto menor sea el parámetro, más transparente será el área. Con el valor 100 el área será opaca La variable de sistema SELECTIONAREA debe estar activada para que se vea este efecto.</translation>
     </message>
     <message>
-        <source>Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu).
-The SELECTIONAREA system variable must be on.</source>
-        <translation>Controla el color del área de selección transparente durante la designación por ventana (RGB, #1F78B4 = azul).
- La variable del sistema SELECTIONAREA debe estar activada para que se muestre el color.
-</translation>
-    </message>
-    <message>
         <source>PICKADD</source>
         <translation>PICKADD</translation>
-    </message>
-    <message>
-        <source>Controls whether subsequent selections replace the current selection set or add to it.
-0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
-1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
-2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. </source>
-        <translation>Determina si las selecciones posteriores sustituyen al conjunto de selección actual o se añaden al mismo.
-0 = Desactiva PICKADD. Los objetos recientemente designados se convierten en el conjunto de selección. Los objetos seleccionados anteriormente se suprimen automáticamente del conjunto de selección.
-1 = Activa PICKADD. Cada objeto designado, ya sea individualmente o por ventanas, se añade al conjunto de selección actual.
-2 = Activa PICKADD. Cada objeto designado, ya sea individualmente o por ventanas, se añade al conjunto de selección actual.
-Si se utiliza el comando DESIGNA, se conservan los objetos seleccionados tras la ejecución del comando.</translation>
     </message>
     <message>
         <source>INPUTSEARCHOPTIONS</source>
@@ -4942,30 +4959,6 @@ El parámetro se almacena como un código binario usando la suma de los siguient
     <message>
         <source>POLARMODE</source>
         <translation>POLARMODE</translation>
-    </message>
-    <message>
-        <source>Controls settings for polar and object snap tracking.
-The setting is stored as a bitcode using the sum of the following values:
-Polar angle measurements
-0 = Measure polar angles based on current UCS (absolute)
-1 = Measure polar angles from selected objects (relative)
-Object snap tracking
-0 = Track orthogonally only
-2 = Use polar tracking settings in object snap tracking
-Acquire object snap tracking points
-0 = Acquire automatically
-8 = Press Shift to acquire</source>
-        <translation>Controla los parámetros de rastreo polar y de referencia a objetos.
-El parámetro se almacena como un código binario usando la suma de los siguientes valores:
-Medidas de ángulo polar
-0 = Mide ángulos polares en función del SCP actual (absoluto)
-1 = Mide ángulos polares de objetos seleccionados (relativo)
-Seguimiento de referencia a objetos
-0 = Sólo rastreo ortogonal
-2 = Utiliza parámetros de rastreo polar en rastreo de referencia a objetos
-Adquiere puntos de rastreo de referencia a objetos
-0 = Los adquiere automáticamente
-8 = Pulse la tecla MAYÚS para adquirirlos</translation>
     </message>
     <message>
         <source>AUTOSNAPSIZE</source>
@@ -5330,8 +5323,7 @@ El parámetro se almacena como un código binario usando la suma de los siguient
 2 = Activa los menús contextuales del modo de edición
 4 = Activa los menús contextuales del modo de comando siempre que haya un comando activo
 8 = Activa los menús contextuales del modo de comando sólo cuando las opciones de comando estén disponibles en ese momento en la solicitud de comando
-16 = Activa la visualización de un menú contextual cuando el botón derecho del dispositivo señalador se mantiene pulsado durante el tiempo necesario
-</translation>
+16 = Activa la visualización de un menú contextual cuando el botón derecho del dispositivo señalador se mantiene pulsado durante el tiempo necesario</translation>
     </message>
     <message>
         <source>Specifies how long the right button on a pointing device must be pressed to display a shortcut menu in the drawing area.
@@ -5341,7 +5333,7 @@ El valor se expresa en milisegundos y el rango válido va de 100 a 10000.</trans
     </message>
     <message>
         <source>ELLIPSEARCMINSEGMENTQTY</source>
-        <translation></translation>
+        <translation>ELLIPSEARCMINSEGMENTQTY</translation>
     </message>
     <message>
         <source>TOLERANCE2COINCIDENT</source>
@@ -5354,6 +5346,67 @@ El valor se expresa en milisegundos y el rango válido va de 100 a 10000.</trans
     <message>
         <source>Maximum error approximating two coincident points.</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>POLARADDANG</source>
+        <translation>POLARADDANG</translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during crossing selection (RGB, #00FF3F = green).
+The SELECTIONAREA system variable must be on.</source>
+        <translation>Controla el color del área de selección durante la selección de captura (RGB, #00FF3F = verde).
+La variable de sistema SELECTIONAREA debe estar activada.</translation>
+    </message>
+    <message>
+        <source>Stores additional angles for polar tracking and polar snap.</source>
+        <translatorcomment>Almacena ángulos adicionales para rastreo polar y referencia polar.</translatorcomment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Controls settings for polar and object snap tracking.
+The setting is stored as a bitcode using the sum of the following values:
+Polar angle measurements
+0 = Measure polar angles based on current UCS (absolute)
+1 = Measure polar angles from selected objects (relative)
+Object snap tracking
+0 = Track orthogonally only
+2 = Use polar tracking settings in object snap tracking
+Use additional polar tracking angles
+0 = No
+4 = Yes
+Acquire object snap tracking points
+0 = Acquire automatically
+8 = Press Shift to acquire</source>
+        <translation>Controla los parámetros de rastreo polar y de referencia a objetos.
+El parámetro se almacena como un código binario usando la suma de los siguientes valores:
+Medidas de ángulo polar
+0 = Mide ángulos polares en función del SCP actual (absoluto
+1 = Mide ángulos polares de objetos seleccionados (relativo)
+Seguimiento de referencia a objetos
+0 = Sólo rastreo ortogonal
+2 = Utiliza parámetros de rastreo polar en rastreo de referencia a objetos
+Utiliza ángulos adicionales de rastreo polar
+0 = No
+4 = Sí
+Adquiere puntos de rastreo de referencia a objetos
+0 = Los adquiere automáticamente
+8 = Pulse la tecla MAYÚS para adquirirlos</translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during window selection (RGB, #007EFF = blu).
+The SELECTIONAREA system variable must be on.</source>
+        <translation>Controla el color del área de selección transparente durante la designación por ventana (RGB, #007EFF = azul).
+La variable del sistema SELECTIONAREA debe estar activada para que se muestre el color.</translation>
+    </message>
+    <message>
+        <source>Controls whether subsequent selections replace the current selection set or add to it.
+0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
+1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
+2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends.</source>
+        <translation>Determina si las selecciones posteriores sustituyen al conjunto de selección actual o se añaden al mismo.
+0 = Desactiva PICKADD. Los objetos recientemente designados se convierten en el conjunto de selección. Los objetos seleccionados anteriormente se suprimen automáticamente del conjunto de selección
+1 = Activa PICKADD. Cada objeto designado, ya sea individualmente o por ventanas, se añade al conjunto de selección actual
+2 = Activa PICKADD. Cada objeto designado, ya sea individualmente o por ventanas, se añade al conjunto de selección actual. Si se utiliza el comando DESIGNA, se conservan los objetos seleccionados tras la ejecución del comando.</translation>
     </message>
 </context>
 <context>
@@ -5702,10 +5755,6 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
         <translation>Activa o desactiva la visualización de la mira para referencia AutoSnap (variable de sistema APBOX).</translation>
     </message>
     <message>
-        <source>Displays the Drafting Tooltip dialog box. </source>
-        <translation>Presenta el cuadro de diálogo Aspecto de la información de herramientas.</translation>
-    </message>
-    <message>
         <source>Drafting Tooltip settings...</source>
         <translation>Parámetro de información de herramientas de dibujo...</translation>
     </message>
@@ -5773,6 +5822,10 @@ Este cuadro de diálogo ofrece más información acerca de la opción Menús con
     <message>
         <source>Invalid minimum number of segments in an arc of ellipse</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Displays the Drafting Tooltip dialog box.</source>
+        <translation>Determina el color, tamaño y transparencia de la información de herramientas de dibujo.</translation>
     </message>
 </context>
 <context>
@@ -5917,7 +5970,8 @@ Este cuadro de diálogo ofrece más información acerca de la opción Menús con
     <message>
         <source> ?
 </source>
-        <translation>?</translation>
+        <translation> ?
+</translation>
     </message>
     <message>
         <source>N</source>
@@ -5988,7 +6042,8 @@ Este cuadro de diálogo ofrece más información acerca de la opción Menús con
 The coordinate reference system of the project must be a projected coordinate system.
 </source>
         <translation>
-El Sistema de Referencia de Coordenadas del projecto debe ser un sistema de coordenadas reproyectado.</translation>
+El Sistema de Referencia de Coordenadas del projecto debe ser un sistema de coordenadas reproyectado.
+</translation>
     </message>
     <message>
         <source>
@@ -6018,7 +6073,7 @@ Verificar el valor de la variable DIMSTYLE.
     </message>
     <message>
         <source>Copy of </source>
-        <translation>Copia de</translation>
+        <translation>Copia de </translation>
     </message>
     <message>
         <source>Select object: </source>
@@ -6073,26 +6128,30 @@ La capa actual no es una capa de tipo símbolo.</translation>
 No current layer.
 </source>
         <translation>
-Ninguna capa actual.</translation>
+Ninguna capa actual.
+</translation>
     </message>
     <message>
         <source>
 The current layer is not a vector layer.
 </source>
         <translation>
-La capa actual no es una capa vectorial.</translation>
+La capa actual no es una capa vectorial.
+</translation>
     </message>
     <message>
         <source>Admitted {1} layer type only.
 </source>
-        <translation>Son admitidos solo capas de tipo {1}.</translation>
+        <translation>Son admitidos solo capas de tipo {1}.
+</translation>
     </message>
     <message>
         <source>
 The current layer is not editable.
 </source>
         <translation>
-La capa actual no es editable.</translation>
+La capa actual no es editable.
+</translation>
     </message>
     <message>
         <source>QAD - Temporary points</source>
@@ -6111,7 +6170,8 @@ La capa actual no es editable.</translation>
 Current layer is a layer referenced to {0} dimension style and it is not valid.
 </source>
         <translation>
-La capa actual pertenece a estilo de cota {0} y no es válida.</translation>
+La capa actual pertenece a estilo de cota {0} y no es válida.
+</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -6134,69 +6194,80 @@ La capa actual no es una capa de tipo texto.</translation>
 Enter a point, a real number or a keyword.
 </source>
         <translation>
-Se requiere un punto, un número real o una palabra clave.</translation>
+Se requiere un punto, un número real o una palabra clave.
+</translation>
     </message>
     <message>
         <source>
 Enter a point or a keyword.
 </source>
         <translation>
-Se requiere un punto  o una palabra clave.</translation>
+Se requiere un punto  o una palabra clave.
+</translation>
     </message>
     <message>
         <source>
 Enter a point or a real number.
 </source>
         <translation>
-Se requiere un punto o un número real.</translation>
+Se requiere un punto o un número real.
+</translation>
     </message>
     <message>
         <source>
 Point not valid.
 </source>
         <translation>
-Punto no válido.</translation>
+Punto no válido.
+</translation>
     </message>
     <message>
         <source>
 Keyword not valid.
 </source>
-        <translation>Palabra clave de opción no válida.</translation>
+        <translation>
+Palabra clave de opción no válida.
+</translation>
     </message>
     <message>
         <source>
 String not valid.
 </source>
         <translation>
-Valore no válido.</translation>
+Valore no válido.
+</translation>
     </message>
     <message>
         <source>
 Integer number not valid.
 </source>
         <translation>
-Numero entero no válido.</translation>
+Numero entero no válido.
+</translation>
     </message>
     <message>
         <source>
 Long integer number not valid.
 </source>
         <translation>
-Numero entero largo no válido.</translation>
+Numero entero largo no válido.
+</translation>
     </message>
     <message>
         <source>
 Real number not valid.
 </source>
         <translation>
-Numero real no válido.</translation>
+Numero real no válido.
+</translation>
     </message>
     <message>
         <source>
 Boolean not valid.
 </source>
         <translation>
-Valor booleano no válido.</translation>
+Valor booleano no válido.
+</translation>
     </message>
     <message>
         <source> or </source>
@@ -6207,7 +6278,8 @@ Valor booleano no válido.</translation>
 (temporary snap)
 </source>
         <translation>
-(referencia temporales)</translation>
+(referencia temporales)
+</translation>
     </message>
     <message>
         <source>FALSE</source>
@@ -6224,7 +6296,8 @@ Comando cancelado.</translation>
 The geometry type of the current layer is {0} and it is not valid.
 </source>
         <translation>
-El tipo de geometría de la capa actual es {0} y non es válida.</translation>
+El tipo de geometría de la capa actual es {0} y non es válida.
+</translation>
     </message>
     <message>
         <source>&lt;Object Snap Tracking on&gt;</source>
@@ -6271,6 +6344,7 @@ El tipo de geometría de la capa actual es {0} y non es válida.</translation>
 
 </source>
         <translation>Bueno, esto es vergonzoso !
+
 </translation>
     </message>
     <message>
@@ -6278,21 +6352,24 @@ El tipo de geometría de la capa actual es {0} y non es válida.</translation>
 A textual layer is a vector punctual layer having a label and the symbol transparency no more than 10%.
 </source>
         <translation>
-Una capa texto es una capa vectorial de puntos con una etiqueta y con unatransparencia de simbolo no mas de 10%.</translation>
+Una capa texto es una capa vectorial de puntos con una etiqueta y con unatransparencia de simbolo no mas de 10%.
+</translation>
     </message>
     <message>
         <source>
 A symbol layer is a vector punctual layer without label.
 </source>
         <translation>
-Una capa símbolo es una capa vectorial de puntos sin etiqueta.</translation>
+Una capa símbolo es una capa vectorial de puntos sin etiqueta.
+</translation>
     </message>
     <message>
         <source>
 The current layer belongs to a dimension style.
 </source>
         <translation>
-La capa actual pertenece a un estilo de cota.</translation>
+La capa actual pertenece a un estilo de cota.
+</translation>
     </message>
     <message>
         <source>&lt;Dynamic input on&gt;</source>

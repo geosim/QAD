@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR" sourcelanguage="en_US">
-<defaultcodec>UTF-8</defaultcodec>
+<TS version="2.1" language="fr_FR" sourcelanguage="en_US">
 <context>
     <name>Command_ARC</name>
     <message>
@@ -237,7 +236,7 @@
     </message>
     <message>
         <source>Specifies the total distance between the start and end columns &lt;{0}&gt;: </source>
-        <translation>Spécifier la distance totale entre la première et la dernière colonnes &lt;{0}&gt;:</translation>
+        <translation>Spécifier la distance totale entre la première et la dernière colonnes &lt;{0}&gt;: </translation>
     </message>
     <message>
         <source>Specify distance between columns &lt;{0}&gt;: </source>
@@ -281,7 +280,7 @@
     </message>
     <message>
         <source>Specify path method [{0}] &lt;{1}&gt;: </source>
-        <translation>Spécifier la méthode [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Spécifier la méthode [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Specify the first point for array tangent direction: </source>
@@ -341,8 +340,7 @@ Nombre maximum d&apos;éléments = {0}.</translation>
         <source>
 The distance between items can&apos;t be greater than {0}.</source>
         <translation>
-La distance entre les éléments ne peut excéder {0}.
-</translation>
+La distance entre les éléments ne peut excéder {0}.</translation>
     </message>
     <message>
         <source>Distributes object copies into any combination of rows and columns.</source>
@@ -364,7 +362,7 @@ L&apos;angle ne peut être plus grand que {0}.</translation>
     </message>
     <message>
         <source>Select an option to edit array [{0}] &lt;{1}&gt;: </source>
-        <translation>Sélectionner une option pour éditer la matrice [{0}] &lt;{1}&gt;:</translation>
+        <translation>Sélectionner une option pour éditer la matrice [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -482,7 +480,7 @@ L&apos;angle ne peut être plus grand que {0}.</translation>
     </message>
     <message>
         <source>Specify second end of the circle diameter: </source>
-        <translation>Spécifier la seconde extrémité du diamètre :</translation>
+        <translation>Spécifier la seconde extrémité du diamètre : </translation>
     </message>
     <message>
         <source>
@@ -748,7 +746,7 @@ La valeur doir être entre 2 et 32767.</translation>
     <name>Command_DSETTINGS</name>
     <message>
         <source>Drafting Settings (snaps, etc.).</source>
-        <translation>Paramètres (snaps, etc).</translation>
+        <translation>Paramètres de rédaction (snaps, etc).</translation>
     </message>
 </context>
 <context>
@@ -771,7 +769,7 @@ La valeur doir être entre 2 et 32767.</translation>
     </message>
     <message>
         <source>Specify axis endpoint of elliptical arc or [{0}]: </source>
-        <translation>Spécifiez l&apos;extrémité de l&apos;axe de l&apos;arc elliptique ou [{0}]:</translation>
+        <translation>Spécifiez l&apos;extrémité de l&apos;axe de l&apos;arc elliptique ou [{0}]: </translation>
     </message>
     <message>
         <source>Specify other endpoint of axis: </source>
@@ -815,7 +813,7 @@ La valeur doir être entre 2 et 32767.</translation>
     </message>
     <message>
         <source>Specify start parameter [{0}]: </source>
-        <translation>Spécifiez paramètre de départ ou [{0}]:</translation>
+        <translation>Spécifiez paramètre de départ ou [{0}]: </translation>
     </message>
     <message>
         <source>Specify end parameter or [{0}]: </source>
@@ -831,7 +829,7 @@ La valeur doir être entre 2 et 32767.</translation>
     </message>
     <message>
         <source>Specify second focus point of ellipse: </source>
-        <translation>Spécifiiez le second foye de l&apos;ellipse:</translation>
+        <translation>Spécifiiez le second foye de l&apos;ellipse: </translation>
     </message>
     <message>
         <source>Specify a point on ellipse: </source>
@@ -977,7 +975,7 @@ Impossible de remplir avec un rayon &lt;{0}&gt;.</translation>
     </message>
     <message>
         <source>Select polyline or [{0}]: </source>
-        <translation>Sélectionner la polyligne ou [{0}]:  </translation>
+        <translation>Sélectionner la polyligne ou [{0}]: </translation>
     </message>
     <message>
         <source>Trim-extend</source>
@@ -989,7 +987,7 @@ Impossible de remplir avec un rayon &lt;{0}&gt;.</translation>
     </message>
     <message>
         <source>Specify trim mode [{0}] &lt;{1}&gt;: </source>
-        <translation>Spécifier le mode de raccourci [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Spécifier le mode de raccourci [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Radius</source>
@@ -1059,7 +1057,8 @@ Impossible de remplir avec un rayon &lt;{0}&gt;.</translation>
 ** RADIUS **
 </source>
         <translation>
-** RAYON **</translation>
+** RAYON **
+</translation>
     </message>
 </context>
 <context>
@@ -1073,28 +1072,32 @@ Impossible de remplir avec un rayon &lt;{0}&gt;.</translation>
 ** ADD VERTEX **
 </source>
         <translation>
-** AJOUTER UN VECTEUR **</translation>
+** AJOUTER UN VECTEUR **
+</translation>
     </message>
     <message>
         <source>
 ** REMOVE VERTEX **
 </source>
         <translation>
-** SUPPRIMER UN VECTEUR **</translation>
+** SUPPRIMER UN VECTEUR **
+</translation>
     </message>
     <message>
         <source>
 ** CONVERT TO ARC **
 </source>
         <translation>
-** CONVERTIR EN ARC **</translation>
+** CONVERTIR EN ARC **
+</translation>
     </message>
     <message>
         <source>
 ** CONVERT TO LINE **
 </source>
         <translation>
-** CONVERTIR EN LIGNE **</translation>
+** CONVERTIR EN LIGNE **
+</translation>
     </message>
 </context>
 <context>
@@ -1131,7 +1134,8 @@ Impossible de remplir avec un rayon &lt;{0}&gt;.</translation>
 ** MIRROR **
 </source>
         <translation>
-** SYMETRIE **</translation>
+** SYMETRIE **
+</translation>
     </message>
     <message>
         <source>
@@ -1171,7 +1175,8 @@ Les points doivent être différents.</translation>
 ** MOVE **
 </source>
         <translation>
-** DEPLACEMENT **</translation>
+** DEPLACEMENT **
+</translation>
     </message>
 </context>
 <context>
@@ -1209,7 +1214,8 @@ Les points doivent être différents.</translation>
 ** ROTATE **
 </source>
         <translation>
-** ROTATION **</translation>
+** ROTATION **
+</translation>
     </message>
     <message>
         <source>Specify second point: </source>
@@ -1255,7 +1261,8 @@ Les points doivent être différents.</translation>
 ** SCALE **
 </source>
         <translation>
-** ECHELLE **</translation>
+** ECHELLE **
+</translation>
     </message>
     <message>
         <source>Specify second point: </source>
@@ -1285,7 +1292,8 @@ Les points doivent être différents.</translation>
 ** STRETCH **
 </source>
         <translation>
-** ETIREMENT **</translation>
+** ETIREMENT **
+</translation>
     </message>
 </context>
 <context>
@@ -1344,7 +1352,7 @@ Sélectionner les objets à réunir : </translation>
         <source>
 Current length: {0}</source>
         <translation>
-Longueur actuelle : {0} </translation>
+Longueur actuelle : {0}</translation>
     </message>
     <message>
         <source>, included angle: {0}</source>
@@ -1411,8 +1419,8 @@ Longueur actuelle : {0} </translation>
         <translation>Spécifier la longueur totale ou [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
-        <source>Select an object or [{0}] &lt;{1}&gt;:  </source>
-        <translation>Sélectionner un objet ou [{0}] &lt;{1}&gt;: </translation>
+        <source>Select an object or [{0}] &lt;{1}&gt;: </source>
+        <translation>Sélectionner les objets ou [{0}] &lt;{1}&gt;: </translation>
     </message>
 </context>
 <context>
@@ -1469,10 +1477,6 @@ Aucune perpendiculaire possible</translation>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <source>Delete</source>
-        <translation type="obsolete">SUpprimer</translation>
-    </message>
-    <message>
         <source>Union</source>
         <translation>Union</translation>
     </message>
@@ -1483,10 +1487,6 @@ Aucune perpendiculaire possible</translation>
     <message>
         <source>Intersect</source>
         <translation>Intersection</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">Annuler</translation>
     </message>
     <message>
         <source>eXit</source>
@@ -1618,7 +1618,8 @@ d&apos;arcs ou une combinaison des deux.</translation>
 Polygon not valid.
 </source>
         <translation>
-Polygone non valide.</translation>
+Polygone non valide.
+</translation>
     </message>
 </context>
 <context>
@@ -1719,7 +1720,7 @@ Polygone non valide.</translation>
     </message>
     <message>
         <source>Select polyline or [{0}]: </source>
-        <translation>électionner une polyligne ou [{0}]:  </translation>
+        <translation>électionner une polyligne ou [{0}]: </translation>
     </message>
     <message>
         <source>Open</source>
@@ -1795,7 +1796,7 @@ Polygone non valide.</translation>
     </message>
     <message>
         <source>Specify join type [{0}] &lt;{1}&gt;: </source>
-        <translation>Spécifier le type de jointure [{0}] &lt;{1}&gt;:  </translation>
+        <translation>Spécifier le type de jointure [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Next</source>
@@ -2222,7 +2223,7 @@ Rotation d&apos;une copie des objets sélectionnés.</translation>
     </message>
     <message>
         <source>Specify reference length &lt;{0}&gt;: </source>
-        <translation>Spécifier la longueur de référence ou [{0}] &lt;{1}&gt;:</translation>
+        <translation>Spécifier la longueur de référence ou [{0}] &lt;{1}&gt;: </translation>
     </message>
     <message>
         <source>Points</source>
@@ -2507,10 +2508,6 @@ found {0}</source>
     <message>
         <source>Specify the displacement from the origin point 0,0 &lt;{0}, {1}&gt;: </source>
         <translation>Spécifier le déplacement depuis l&apos;origine 0,0 &lt;{0}, {1}&gt;: </translation>
-    </message>
-    <message>
-        <source>Specify second point or [Array] &lt;use first point as displacement from origin point 0,0&gt;: </source>
-        <translation type="obsolete">Spécifier le second point ou &lt;usage premier point comme déplacement de l&apos;origine 0,0&gt;: </translation>
     </message>
     <message>
         <source>Specify second point or &lt;use first point as displacement from origin point 0,0&gt;: </source>
@@ -3304,6 +3301,46 @@ pres des réticules</translation>
     <message>
         <source>Drafting Tooltip Appearence...</source>
         <translation>Apparence des info-bulles du dessin...</translation>
+    </message>
+    <message>
+        <source>Makes additional angles in the list available for polar tracking. (POLARMODE and POLARADDANG system variables). Note: Additional angles are absolute, not incremental.</source>
+        <translation>Rend les autres angles de la liste disponibles pour le repérage polaire. (Variables système POLARMODE et POLARADDANG). Remarque : Les angles supplémentaires sont des angles absolus, pas d&apos;incrémentation.</translation>
+    </message>
+    <message>
+        <source>Additional angles</source>
+        <translation>Angles supplémentaires</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If Additional Angles is selected, the available additional angles are listed.&lt;/p&gt;&lt;p&gt;To add new angles, choose New. To remove existing angles, click Delete.&lt;/p&gt;&lt;p&gt;(POLARADDANG system variable)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Si l&apos;option Angles supplémentaires est sélectionnée, énumère les angles supplémentaires qui sont disponibles.&lt;/p&gt;&lt;p&gt;Pour ajouter de nouveaux angles, cliquez sur Nouveau. Pour supprimer des angles existants, cliquez sur Supprimer.&lt;/p&gt;&lt;p&gt;variable système POLARADDANG)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Adds additional polar tracking alignment angles.</source>
+        <translation>Ajoute angles de position supplémentaires pour le repérage polaire.</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation>Nouveau</translation>
+    </message>
+    <message>
+        <source>Deletes selected additional angles.</source>
+        <translation>Supprime les angles supplémentaires sélectionnés.</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>SUpprimer</translation>
+    </message>
+    <message>
+        <source>QAD - Additional angle</source>
+        <translation>QAD - Angles supplémentaires</translation>
+    </message>
+    <message>
+        <source>New angle:</source>
+        <translation>Nouveau angle:</translation>
+    </message>
+    <message>
+        <source>Angle already in list</source>
+        <translation>Angle déjà sur la liste</translation>
     </message>
 </context>
 <context>
@@ -4190,7 +4227,7 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>Compare:</source>
-        <translation>Comparer :</translation>
+        <translation>Comparer:</translation>
     </message>
     <message>
         <source>With:</source>
@@ -4241,11 +4278,11 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>New style name:</source>
-        <translation>Nommer le nouveau style :</translation>
+        <translation>Nommer le nouveau style:</translation>
     </message>
     <message>
         <source>Start with:</source>
-        <translation>Commence par :</translation>
+        <translation>Commence par:</translation>
     </message>
     <message>
         <source>Continue...</source>
@@ -4257,106 +4294,106 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation>Description :</translation>
+        <translation>Description:</translation>
     </message>
 </context>
 <context>
     <name>Dimension</name>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Descripción</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <source>File path</source>
-        <translation>Ruta del file</translation>
+        <translation>Chemin du fichier</translation>
     </message>
     <message>
         <source>Text prefix and suffix</source>
-        <translation>Prefijo y sufijo de texto</translation>
+        <translation>Préfixe et suffixe du texte</translation>
     </message>
     <message>
         <source>Leading zero suppression</source>
-        <translation>Supresión de zeros a la izquierda</translation>
+        <translation>Suppression du zéro en tête</translation>
     </message>
     <message>
         <source>Trailing zero suppression</source>
-        <translation>Supresión de zeros a la derecha</translation>
+        <translation>Suppression du zéro final</translation>
     </message>
     <message>
         <source>Text height</source>
-        <translation>Altura de texto</translation>
+        <translation>Hauteur du texte</translation>
     </message>
     <message>
         <source>Vertical text position</source>
-        <translation>Ubicación vertical del texto</translation>
+        <translation>Position verticale du texte</translation>
     </message>
     <message>
         <source>Horizontal text position</source>
-        <translation>Ubicación horizontal del texto</translation>
+        <translation>Position horizontale du texte</translation>
     </message>
     <message>
         <source>Text offset</source>
-        <translation>Desfase del texto</translation>
+        <translation>Décalage du texte</translation>
     </message>
     <message>
         <source>Text alignment</source>
-        <translation>Alineación de texto</translation>
+        <translation>Alignement du texte</translation>
     </message>
     <message>
         <source>Fixed text rotation</source>
-        <translation>Rotación fija de texto</translation>
+        <translation>Rotation fixe du texte</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation>Precisión</translation>
+        <translation>Précision</translation>
     </message>
     <message>
         <source>Decimal separator</source>
-        <translation>Separador decimal</translation>
+        <translation>Séparateur décimal</translation>
     </message>
     <message>
         <source>Text font</source>
-        <translation>Estilo de texto</translation>
+        <translation>Police du texte</translation>
     </message>
     <message>
         <source>Text color</source>
-        <translation>Color de texto</translation>
+        <translation>Couleur du texte</translation>
     </message>
     <message>
         <source>From left to right</source>
-        <translation>Izquierda a derecha</translation>
+        <translation>De gauche à droite</translation>
     </message>
     <message>
         <source>From right to left</source>
-        <translation>Derecha a izquierda</translation>
+        <translation>De droite à gauche</translation>
     </message>
     <message>
         <source>Text direction</source>
-        <translation>Dirección de texto</translation>
+        <translation>Sens du texte</translation>
     </message>
     <message>
         <source>Arc len. symbol</source>
-        <translation>Símbolo de long. arco</translation>
+        <translation>Symbole de longueur d&apos;arc</translation>
     </message>
     <message>
         <source>Dim line 1 visible</source>
-        <translation>Línea cota 1 visible</translation>
+        <translation>Ligne de cote 1 visible</translation>
     </message>
     <message>
         <source>Dim line 2 visible</source>
-        <translation>Línea cota 2 visible</translation>
+        <translation>Ligne de cote 2 visible</translation>
     </message>
     <message>
         <source>Dim line linetype</source>
-        <translation>Tipo de Línea de línea cota</translation>
+        <translation>Type de ligne de ligne de cote</translation>
     </message>
     <message>
         <source>Dim line color</source>
-        <translation>Color de línea cota</translation>
+        <translation>Couleur de la ligne de cote</translation>
     </message>
     <message>
         <source>Offset from origin</source>
@@ -4364,11 +4401,11 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>Arrow 1</source>
-        <translation>Flecha 1</translation>
+        <translation>Flèche 1</translation>
     </message>
     <message>
         <source>Arrow 2</source>
-        <translation>Flecha 2</translation>
+        <translation>Flèche 2</translation>
     </message>
     <message>
         <source>Leader arrow</source>
@@ -4376,172 +4413,175 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>Arrowhead width</source>
-        <translation>Tamaño de flecha</translation>
+        <translation>Largeur de la flèche</translation>
     </message>
     <message>
         <source>Arrowhead scale</source>
-        <translation>Escala de flecha</translation>
+        <translation>Échelle de flèche</translation>
     </message>
     <message>
         <source>Center mark size</source>
-        <translation>Marcador de punto central</translation>
+        <translation>Taille de la marque centrale</translation>
     </message>
     <message>
         <source>Fit: arrows and text</source>
-        <translation>Ajustar: flechas y testo</translation>
+        <translation>Ajustement&#xa0;: flèches et texte</translation>
     </message>
     <message>
         <source>Suppress arrows for lack of space</source>
-        <translation>Suprime la visualización de flechas si no hay espacio</translation>
+        <translation>Supprimer les flèches par manque de place</translation>
     </message>
     <message>
         <source>Ext. line 1 visible</source>
-        <translation>Línea ref. 1 visible</translation>
+        <translation>Ligne d&apos;attache 1 visible</translation>
     </message>
     <message>
         <source>Ext. line 2 visible</source>
-        <translation>Línea ref. 2 visible</translation>
+        <translation>Ligne d&apos;attache 2 visible</translation>
     </message>
     <message>
         <source>Ext. line 1 linetype</source>
-        <translation>Tipo línea de línea ref. 1</translation>
+        <translation>Type ligne attache 1</translation>
     </message>
     <message>
         <source>Ext. line 2 linetype</source>
-        <translation>Tipo línea de línea ref. 2</translation>
+        <translation>Type ligne attache 2</translation>
     </message>
     <message>
         <source>Ext. line color</source>
-        <translation>Color de línea ref</translation>
+        <translation>Couleur de la ligne d&apos;attache</translation>
     </message>
     <message>
         <source>Ext. line extension</source>
-        <translation>Extensión de línea ref</translation>
+        <translation>Extension de la ligne d&apos;attache</translation>
     </message>
     <message>
         <source>Ext. line offset</source>
-        <translation>Desfase de línea ref</translation>
+        <translation>Décalage de la ligne d&apos;attache</translation>
     </message>
     <message>
         <source>Fixed length ext. line activated</source>
-        <translation>Activada línea ref. de longitud fija</translation>
+        <translation>Longueur fixe de la ligne d&apos;attache activé</translation>
     </message>
     <message>
         <source>Fixed length ext. line</source>
-        <translation>Línea ref. de longitud fija</translation>
+        <translation>Longueur fixe de la ligne d&apos;attache</translation>
     </message>
     <message>
         <source>Layer for dim texts</source>
-        <translation>Capa para texto de cota</translation>
+        <translation>Calque pour texte de cote</translation>
     </message>
     <message>
         <source>Layer for dim lines</source>
-        <translation>Capa para línea de cota</translation>
+        <translation>Calque pour ligne de cote</translation>
     </message>
     <message>
         <source>Layer for dim arrows</source>
-        <translation>Capa para flechas de cota</translation>
+        <translation>Calque pour flèche de cote</translation>
     </message>
     <message>
         <source>Field for component type</source>
-        <translation>Campo para el tipo de componente</translation>
+        <translation>Champ pour le type de composant</translation>
     </message>
     <message>
         <source>Field for linetype</source>
-        <translation>Campo para el tipo de línea</translation>
+        <translation>Champ pour le type de ligne</translation>
     </message>
     <message>
         <source>Field for color</source>
-        <translation>Campo para el color</translation>
+        <translation>Champ pour couleur</translation>
     </message>
     <message>
         <source>Field for dim ID in texts</source>
-        <translation>Campo para el codigo de cota en los textos</translation>
+        <translation>Champ pour l&apos;ID de cote en les textes</translation>
     </message>
     <message>
         <source>Field for dim ID in lines and arrows</source>
-        <translation>Campo para el codigo de cota en las líneas y flechas</translation>
+        <translation>Champ pour l&apos;ID de cote en lignes et flèches</translation>
     </message>
     <message>
         <source>Field for dim style name</source>
-        <translation>Campo para el nombre de estilo de cota</translation>
+        <translation>Champ pour le nom du style de cote</translation>
     </message>
     <message>
         <source>Field for dim type</source>
-        <translation>Campo para el tipo de cota</translation>
+        <translation>Champ pour le type de cote</translation>
     </message>
     <message>
         <source>Field for symbol name</source>
-        <translation>Campo para el nombre del símbolo</translation>
+        <translation>Champ pour le nom du symbole</translation>
     </message>
     <message>
         <source>Field for arrows scale</source>
-        <translation>Campo para escala de flechas</translation>
+        <translation>Champ pour l&apos;échelle des flèches</translation>
     </message>
     <message>
         <source>Field for arrows rotation</source>
-        <translation>Campo para rotación de flechas</translation>
+        <translation>Champ pour la rotation des flèches</translation>
     </message>
     <message>
         <source>
 The dimension style &quot;{0}&quot; </source>
         <translation>
-El estilo de cota &quot;{0}&quot; </translation>
+Le style des cotes &quot;{0}&quot; </translation>
     </message>
     <message>
         <source>has not the textual layer for dimension.
 </source>
-        <translation>no tiene la capa para los textos de cota.</translation>
+        <translation>n&apos;a pas la couche textuelle pour la dimension.
+</translation>
     </message>
     <message>
         <source>has not the symbol layer for dimension.
 </source>
-        <translation>no tiene la capa para los símbolos de cota.</translation>
+        <translation>n&apos;a pas la couche de symboles pour la dimension.
+</translation>
     </message>
     <message>
         <source>has not the linear layer for dimension.
 </source>
-        <translation>no tiene la capa para las líneas de cota.</translation>
+        <translation>n&apos;a pas la couche linéaire pour la dimension.
+</translation>
     </message>
     <message>
         <source>has not the layers with the same coordinate reference system.</source>
-        <translation>no tiene las capas con el mismo sistema de coordenadas.</translation>
+        <translation>n&apos;a pas les couches avec le même système de référence de coordonnées.</translation>
     </message>
     <message>
         <source>has the textual layer for dimension ({0}) which is not a textual layer.</source>
-        <translation>tiene la capa para los textos de las cotas ({0} que no es una capa textual.</translation>
+        <translation>a le calque textuel pour la dimension ({0}) qui n&apos;est pas un calque textuel.</translation>
     </message>
     <message>
         <source>has the symbol layer for dimension ({0}) which is not a symbol layer.</source>
-        <translation>tiene la capa para los símbolo de las cotas ({0} que no es una capa símbolo.</translation>
+        <translation>a le calque de symboles pour la dimension ({0}) qui n&apos;est pas un calque de symboles.</translation>
     </message>
     <message>
         <source>has the linear layer for dimension ({0}) which is not a linear layer.</source>
-        <translation>tiene la capa para las líneas de las cotas ({0} que no es una capa lineal.</translation>
+        <translation>a la couche linéaire pour la dimension ({0}) qui n&apos;est pas une couche linéaire.</translation>
     </message>
     <message>
         <source>has the textual layer ({0}) not editable.</source>
-        <translation>tiene la capa para los textos ({0}) que no es editable.</translation>
+        <translation>a la calque textuel ({0}) n&apos;est pas modifiable.</translation>
     </message>
     <message>
         <source>has the symbol layer ({0}) not editable.</source>
-        <translation>tiene la capa para los símbolos ({0}) que no es editable.</translation>
+        <translation>a la calque de symboles ({0}) n&apos;est pas modifiable.</translation>
     </message>
     <message>
         <source>has the linear layer ({0}) not editable.</source>
-        <translation>tiene la capa para las líneas ({0}) que no es editable.</translation>
+        <translation>a la calque linéaire ({0}) n&apos;est pas modifiable.</translation>
     </message>
     <message>
         <source>hasn&apos;t the textual layer ({0}).</source>
-        <translation></translation>
+        <translation>n&apos;a pas la couche textuelle ({0}).</translation>
     </message>
     <message>
         <source>hasn&apos;t the symbol layer ({0}).</source>
-        <translation></translation>
+        <translation>n&apos;a pas la couche de symboles ({0}).</translation>
     </message>
     <message>
         <source>Dim line extension</source>
-        <translation>Extensión de línea ref</translation>
+        <translation>Extension de la ligne de cote</translation>
     </message>
 </context>
 <context>
@@ -4805,12 +4845,6 @@ Le paramètre est stocké en tant que bitcode utilisant la somme des valeurs sui
         <translation>CROSSINGAREACOLOR</translation>
     </message>
     <message>
-        <source>Controls the color of the transparent selection area during crossing selection (RGB, #33A02C = green).
-The SELECTIONAREA system variable must be on.</source>
-        <translation>Contrôle la couleur de l&apos;aire transparente de sélection lors de la sélection par croisement (RVB, #33A02C = vert).
-La variable de sistema SELECTIONAREA doit être activée.</translation>
-    </message>
-    <message>
         <source>Controls the color of unselected grips (RGB, #100DD6 = blue).</source>
         <translation>Contrôle la couleur des poignée déselectionné (RVB, #100DD6 = bleu).</translation>
     </message>
@@ -4861,24 +4895,8 @@ The valid range is 0 to 100. The lower the setting, the more transparent the are
 La plage valide est comprise entre 0 et 100. Plus le paramètre est bas, plus la zone est transparente. Une valeur de 100 rend la zone opaque. La variable système SELECTIONAREA doit être activée.</translation>
     </message>
     <message>
-        <source>Controls the color of the transparent selection area during window selection (RGB, #1F78B4 = blu).
-The SELECTIONAREA system variable must be on.</source>
-        <translation>Contrôle la couleur de l&apos;aire transparente de sélection lors de la sélection par fenêtre (RVB, #1F78B4 = bleu).
-La variable système SELECTIONAREA doit être activée.</translation>
-    </message>
-    <message>
         <source>PICKADD</source>
         <translation>PICKADD</translation>
-    </message>
-    <message>
-        <source>Controls whether subsequent selections replace the current selection set or add to it.
-0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
-1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
-2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. </source>
-        <translation>Détermine si les sélection subséquente remplace ou s&apos;ajoute à la sélection courrante.
-0 = Désactive PICKADD. La sélection courante est remplacée par les objets nouvellement séectionnés. Les objets précédemment sélectionnés sont déselectionnés. Pour ajouter des objet à la sélection appuyer sur SHIFT.
-1 = Activé PICKADD. Chaque objet sélectionné, de manière individuel ou via une fenêtre, est ajouté à la sélection courante. Pour enlever un objet appuyer sur SHIFT..
-2 = Activé PICKADD. Chaque objet sélectionné, de manière individuel ou via une fenêtre, est ajouté à la sélection courante. Pour enlever un objet appuyer sur SHIFT. Conserve la sélection des objets à la fin de la commande.</translation>
     </message>
     <message>
         <source>INPUTSEARCHOPTIONS</source>
@@ -4959,30 +4977,6 @@ Le paramètre est stocké en tant que bitcode en utilisant la somme des valeurs 
     <message>
         <source>POLARMODE</source>
         <translation>POLARMODE</translation>
-    </message>
-    <message>
-        <source>Controls settings for polar and object snap tracking.
-The setting is stored as a bitcode using the sum of the following values:
-Polar angle measurements
-0 = Measure polar angles based on current UCS (absolute)
-1 = Measure polar angles from selected objects (relative)
-Object snap tracking
-0 = Track orthogonally only
-2 = Use polar tracking settings in object snap tracking
-Acquire object snap tracking points
-0 = Acquire automatically
-8 = Press Shift to acquire</source>
-        <translation>Contrôle les paramètres pour le suivi d&apos;accrochage polaire ou d&apos;objet.
-Le paramètre est stocké en tant que bitcode en utilisant la somme des valeurs suivantes:
-Mesures d&apos;angle polaire
-0 = Mesurer les angles polaires en fonction du SCU courant (absolu)
-1 = Mesurer les angles polaires à partir des objets sélectionnés (relatif)
-Suivi d&apos;accrochage aux objets
-0 = Suivi orthogonale seulement
-2 = Utiliser les paramètres de suivi polaire pour le suivi de l&apos;accrochage aux objets
-Acquérir des points de suivi d&apos;accrochage aux objets
-0 = Acquérir automatiquement
-8 = Appuyez sur Maj pour acquérir</translation>
     </message>
     <message>
         <source>AUTOSNAPSIZE</source>
@@ -5371,6 +5365,66 @@ Cette valeur est exprimée en millisecondes et les valeurs admises sont comprise
         <source>Maximum error approximating two coincident points.</source>
         <translation></translation>
     </message>
+    <message>
+        <source>POLARADDANG</source>
+        <translation>POLARADDANG</translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during crossing selection (RGB, #00FF3F = green).
+The SELECTIONAREA system variable must be on.</source>
+        <translation>Gère la couleur de la zone de sélection lors de la sélection par capture (RGB, #00FF3F = vert).
+La variable système SELECTIONAREA doit être activée.</translation>
+    </message>
+    <message>
+        <source>Stores additional angles for polar tracking and polar snap.</source>
+        <translation>Permet de stocker d&apos;autres angles pour le repérage et l&apos;accrochage polaire.</translation>
+    </message>
+    <message>
+        <source>Controls settings for polar and object snap tracking.
+The setting is stored as a bitcode using the sum of the following values:
+Polar angle measurements
+0 = Measure polar angles based on current UCS (absolute)
+1 = Measure polar angles from selected objects (relative)
+Object snap tracking
+0 = Track orthogonally only
+2 = Use polar tracking settings in object snap tracking
+Use additional polar tracking angles
+0 = No
+4 = Yes
+Acquire object snap tracking points
+0 = Acquire automatically
+8 = Press Shift to acquire</source>
+        <translation>Gère les paramètres de repérage polaire et d&apos;accrochage aux objets.
+Le paramètre est stocké sous forme de code binaire en utilisant la somme des valeurs suivantes :
+Mesure des angles polaires
+0 = Mesure des angles polaires par rapport au SCU courant (mesure absolue)
+1 = Mesure des angles polaires à partir des objets sélectionnés (mesure relative)
+Repérage par accrochage aux objets
+0 = Repérage orthogonal uniquement
+2 = Utilisation des paramètres de repérage polaire dans le repérage d&apos;accrochage aux objets
+Utilisation d&apos;autres angles de repérage polaire
+0 = Non
+4 = Oui
+Acquisition de points de repérage d&apos;accrochage aux objets
+0 = Acquisition automatique
+8 = Pcquisition par appui sur la touche MAJ</translation>
+    </message>
+    <message>
+        <source>Controls the color of the transparent selection area during window selection (RGB, #007EFF = blu).
+The SELECTIONAREA system variable must be on.</source>
+        <translation>Gère la couleur de la zone de sélection transparente lors de la sélection par fenêtre. (RGB, #007EFF = bleu).
+Vous devez activer la variable système SELECTIONAREA pour afficher la couleur.</translation>
+    </message>
+    <message>
+        <source>Controls whether subsequent selections replace the current selection set or add to it.
+0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting.
+1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting.
+2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends.</source>
+        <translation>Détermine si les sélections suivantes remplacent le jeu de sélection courant ou s&apos;y ajoutent.
+0 = Désactive PICKADD. Les derniers objets sélectionnés deviennent le jeu de sélection. Les objets préalablement sélectionnés sont automatiquement supprimés du jeu de sélection.
+1 =Active PICKADD. Chaque objet sélectionné, individuellement ou par fenêtrage, est ajouté au jeu de sélection courant.
+2 = Active PICKADD. Chaque objet sélectionné, individuellement ou par fenêtrage, est ajouté au jeu de sélection courant. Si la commande SELECTIONNER est utilisée, conserve les objets sélectionnés à la fin de la commande.</translation>
+    </message>
 </context>
 <context>
     <name>GripColor_Dialog</name>
@@ -5722,10 +5776,6 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
 La mire est une boîte qui apparait au centre du réticule lorsque vous vous accrocher aux objets (variable système APBOX).</translation>
     </message>
     <message>
-        <source>Displays the Drafting Tooltip dialog box. </source>
-        <translation>Affiche la boîte de dialogue Apparence des info-bulles.</translation>
-    </message>
-    <message>
         <source>Drafting Tooltip settings...</source>
         <translation>Paramètres des info-bulles...</translation>
     </message>
@@ -5755,7 +5805,7 @@ La mire est une boîte qui apparait au centre du réticule lorsque vous vous acc
     </message>
     <message>
         <source>Windows Standard Behavior</source>
-        <translation>Fonctions Windows standard </translation>
+        <translation>Fonctions Windows standard</translation>
     </message>
     <message>
         <source>Controls whether Default, Edit, and Command mode shortcut menus are available in the drawing area. ( SHORTCUTMENU system variable)</source>
@@ -5776,23 +5826,27 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
     </message>
     <message>
         <source>Proximity (tolerance) within 2 point are to be considered coincident (system variable TOLERANCE2COINCIDENT).</source>
-        <translation></translation>
+        <translation>La proximité (tolérance) à moins de 2 points doit être considérée comme coïncidente (variable système TOLERANCE2COINCIDENT).</translation>
     </message>
     <message>
         <source>Tolerance for coincident points</source>
-        <translation></translation>
+        <translation>Tolérance pour les points coïncidents</translation>
     </message>
     <message>
         <source>Minimum number of segments in an arc of ellipse</source>
-        <translation></translation>
+        <translation>Nombre minimum de segments dans un arc d&apos;ellipse</translation>
     </message>
     <message>
         <source>Invalid tolerance value</source>
-        <translation></translation>
+        <translation>Valeur de tolérance invalide</translation>
     </message>
     <message>
         <source>Invalid minimum number of segments in an arc of ellipse</source>
-        <translation></translation>
+        <translation>Nombre minimum de segments non valide dans un arc d&apos;ellipse</translation>
+    </message>
+    <message>
+        <source>Displays the Drafting Tooltip dialog box.</source>
+        <translation>Paramètres des info-bulles de dessin.</translation>
     </message>
 </context>
 <context>
@@ -5823,7 +5877,7 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
     </message>
     <message>
         <source>Cartesian format</source>
-        <translation>Format cartésien </translation>
+        <translation>Format cartésien</translation>
     </message>
     <message>
         <source>Displays the tooltip for the second or next point in relative coordinate format. Enter a pound sign (#) to change to absolute format. (DYNPICOORDS system variable)</source>
@@ -5937,7 +5991,8 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
     <message>
         <source> ?
 </source>
-        <translation> ?</translation>
+        <translation> ?
+</translation>
     </message>
     <message>
         <source>N</source>
@@ -6008,7 +6063,8 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
 The coordinate reference system of the project must be a projected coordinate system.
 </source>
         <translation>
-Le système de coordonnées de référence du projet doit être un système projeté.</translation>
+Le système de coordonnées de référence du projet doit être un système projeté.
+</translation>
     </message>
     <message>
         <source>
@@ -6093,26 +6149,30 @@ La couche actuel n&apos;est pas une couche de symboles.</translation>
 No current layer.
 </source>
         <translation>
-Pas de couche courrante.</translation>
+Pas de couche courrante.
+</translation>
     </message>
     <message>
         <source>
 The current layer is not a vector layer.
 </source>
         <translation>
-La couche courrante n&apos;est pas une couche vectorielle.</translation>
+La couche courrante n&apos;est pas une couche vectorielle.
+</translation>
     </message>
     <message>
         <source>Admitted {1} layer type only.
 </source>
-        <translation>Seul une couche de type {1} est admise.</translation>
+        <translation>Seul une couche de type {1} est admise.
+</translation>
     </message>
     <message>
         <source>
 The current layer is not editable.
 </source>
         <translation>
-La couche courrante n&apos;est pas modifiable.</translation>
+La couche courrante n&apos;est pas modifiable.
+</translation>
     </message>
     <message>
         <source>QAD - Temporary points</source>
@@ -6131,7 +6191,8 @@ La couche courrante n&apos;est pas modifiable.</translation>
 Current layer is a layer referenced to {0} dimension style and it is not valid.
 </source>
         <translation>
-La couche actuelle est associée au style de cote {0} ce qui n&apos;est pas valide.</translation>
+La couche actuelle est associée au style de cote {0} ce qui n&apos;est pas valide.
+</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -6154,69 +6215,80 @@ La couche actuel n&apos;est pas une couche de texte.</translation>
 Enter a point, a real number or a keyword.
 </source>
         <translation>
-Entrer un point, un nombre réel ou un mot-clef.</translation>
+Entrer un point, un nombre réel ou un mot-clef.
+</translation>
     </message>
     <message>
         <source>
 Enter a point or a keyword.
 </source>
         <translation>
-Entrer un point ou un mot-clef.</translation>
+Entrer un point ou un mot-clef.
+</translation>
     </message>
     <message>
         <source>
 Enter a point or a real number.
 </source>
         <translation>
-Entrer un point ou un nombre réel.</translation>
+Entrer un point ou un nombre réel.
+</translation>
     </message>
     <message>
         <source>
 Point not valid.
 </source>
         <translation>
-Point non valide.</translation>
+Point non valide.
+</translation>
     </message>
     <message>
         <source>
 Keyword not valid.
 </source>
-        <translation>Mot-clef non valide.</translation>
+        <translation>
+Mot-clef non valide.
+</translation>
     </message>
     <message>
         <source>
 String not valid.
 </source>
         <translation>
-Valeur non valable.</translation>
+Valeur non valable.
+</translation>
     </message>
     <message>
         <source>
 Integer number not valid.
 </source>
         <translation>
-Entier non valide.</translation>
+Entier non valide.
+</translation>
     </message>
     <message>
         <source>
 Long integer number not valid.
 </source>
         <translation>
-Entier long non valide.</translation>
+Entier long non valide.
+</translation>
     </message>
     <message>
         <source>
 Real number not valid.
 </source>
         <translation>
-Nombre réel non valide.</translation>
+Nombre réel non valide.
+</translation>
     </message>
     <message>
         <source>
 Boolean not valid.
 </source>
         <translation>
-Booléen non valide.</translation>
+Booléen non valide.
+</translation>
     </message>
     <message>
         <source> or </source>
@@ -6227,7 +6299,8 @@ Booléen non valide.</translation>
 (temporary snap)
 </source>
         <translation>
-(accroche temporaire)</translation>
+(accroche temporaire)
+</translation>
     </message>
     <message>
         <source>FALSE</source>
@@ -6244,7 +6317,8 @@ La commande a été annulée.</translation>
 The geometry type of the current layer is {0} and it is not valid.
 </source>
         <translation>
-Le type de géométrie de la couche courrante est {0} ce qui n&apos;est pas valide.</translation>
+Le type de géométrie de la couche courrante est {0} ce qui n&apos;est pas valide.
+</translation>
     </message>
     <message>
         <source>&lt;Object Snap Tracking on&gt;</source>
@@ -6291,6 +6365,7 @@ Le type de géométrie de la couche courrante est {0} ce qui n&apos;est pas vali
 
 </source>
         <translation>Mouep, c&apos;est embarassant !
+
 </translation>
     </message>
     <message>
@@ -6298,14 +6373,16 @@ Le type de géométrie de la couche courrante est {0} ce qui n&apos;est pas vali
 A textual layer is a vector punctual layer having a label and the symbol transparency no more than 10%.
 </source>
         <translation>
-Une couche textuelle est une couche ponctuelle avec une étiquette et la transparence ne dépassant pas 10%.</translation>
+Une couche textuelle est une couche ponctuelle avec une étiquette et la transparence ne dépassant pas 10%.
+</translation>
     </message>
     <message>
         <source>
 A symbol layer is a vector punctual layer without label.
 </source>
         <translation>
-Une couche de symbole est une couche ponctuelle sans étiquette.</translation>
+Une couche de symbole est une couche ponctuelle sans étiquette.
+</translation>
     </message>
     <message>
         <source>
@@ -6313,7 +6390,8 @@ The current layer belongs to a dimension style.
 </source>
         <translatorcomment>Contexte ?</translatorcomment>
         <translation>
-La couche courrante correspond à une couche de cotation.</translation>
+La couche courrante correspond à une couche de cotation.
+</translation>
     </message>
     <message>
         <source>&lt;Dynamic input on&gt;</source>
