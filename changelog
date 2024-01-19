@@ -1,7 +1,9 @@
 version 3.0.6
 ---------------------------
 
-* 2023-09-29 The form to fill the data does not appear (proposed by franksalas1965)
+* 2024-01-19 Fixed bug on selection options (reported by Justin Ralston)
+* 2023-10-17 Added Polar Tracking options: additional angles. (inspired by Jonathan GUILLERM)
+* 2023-09-29 The form to fill the data does not appear, now it does. (proposed by franksalas1965)
 * 2023-09-29 qad offset command now use the native offset function provided by qgis api
 * 2023-04-07 pedit now can join multilinestring if composed by only one part.
 * 2022-07-27 Fixed bug on intersections between circle and ellipse

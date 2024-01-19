@@ -38,7 +38,7 @@ from . import qad_utils
 from .qad_snapper import QadSnapper, QadSnapModeEnum, QadSnapTypeEnum, snapTypeEnum2Str
 from .qad_snappointsdisplaymanager import QadSnapPointsDisplayManager
 from .qad_entity import QadEntity
-from .qad_variables import QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum
+from .qad_variables import QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum, POLARADDANG_to_list
 from .qad_rubberband import createRubberBand, getColorForCrossingSelectionArea, \
                             getColorForWindowSelectionArea, QadCursorTypeEnum, QadCursorRubberBand
 from .qad_cacheareas import QadLayerCacheGeomsDict
@@ -516,7 +516,7 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def setAutoSnap(self, autoSnap = None):
       # setta le variabili:
-      # self.__AutoSnap, self.__PolarAng, self.__PolarMode, self.__PolarAngOffset, self.__snapMarkerSizeInMapUnits
+      # self.__AutoSnap, self.__PolarAng, self.__PolarMode, self.__PolarAngOffset, self.__snapMarkerSizeInMapUnits, self.__PolarAddAngles
       # self.__QadSnapper viene svuotato dai punti polari se "Object Snap Tracking off"
       
       if autoSnap is None:
@@ -528,10 +528,17 @@ class QadGetPoint(QgsMapTool):
          self.__PolarAng = None
          self.__PolarMode = None
          self.__PolarAngOffset = None
+         self.__PolarAddAngles = None
       else:
          self.__PolarAng = math.radians(QadVariables.get(QadMsg.translate("Environment variables", "POLARANG")))
          self.__PolarMode = QadVariables.get(QadMsg.translate("Environment variables", "POLARMODE"))
          self.__PolarAngOffset = self.plugIn.lastSegmentAng
+         if self.__PolarMode & QadPOLARMODEnum.ADDITIONAL_ANGLES:
+            dummy = QadVariables.get(QadMsg.translate("Environment variables", "POLARADDANG"))   
+            self.__PolarAddAngles = POLARADDANG_to_list(dummy, True) # es. "1;2.3" genera la lista in ordine crescente convertendo in radianti        
+         else:
+            self.__PolarAddAngles = None
+            
          
       if (self.__AutoSnap & QadAUTOSNAPEnum.OBJ_SNAP_TRACKING) == False: # Object Snap Tracking off
          if self.__QadSnapper is not None:
@@ -565,6 +572,21 @@ class QadGetPoint(QgsMapTool):
    #============================================================================
    def getRealPolarAng(self):
       # ritorna l'angolo polare che veramente deve essere usato tenendo conto delle variabili di sistema
+      if self.__AutoSnap is None: return None
+      if (self.__AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING) == False: return None # puntamento polare non attivato
+
+      # il comportamento di QAD è uguale sia per i punti della linea che si sta disegnando che per i punti di osanp
+      if (self.__PolarMode & QadPOLARMODEnum.POLAR_TRACKING): # usa POLARANG
+         return self.__PolarAng
+      else:
+         return math.pi / 2 # 90 gradi (ortogonale)
+
+      
+   #============================================================================
+   # getRealPolarAddAngles
+   #============================================================================
+   def getRealPolarAddAngles(self):
+      # ritorna la lista degli angoli polari aggiuntivi che veramente deve essere usato tenendo conto delle variabili di sistema
       if self.__AutoSnap is None: return None
       if (self.__AutoSnap & QadAUTOSNAPEnum.POLAR_TRACKING) == False: return None # puntamento polare non attivato
 
@@ -839,9 +861,10 @@ class QadGetPoint(QgsMapTool):
          point = self.toMapCoordinates(event.pos()) # trasformo il punto da screen coordinate a map coordinate
          
          oSnapPoints = self.__QadSnapper.getSnapPoint(self.tmpEntity, point, \
-                                                        None, \
-                                                        self.getRealPolarAng(), \
-                                                        self.getRealPolarAngOffset())
+                                                      None, \
+                                                      self.getRealPolarAng(), \
+                                                      self.getRealPolarAngOffset(), \
+                                                      self.__PolarAddAngles)
 
          if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
             self.magneticCursor(oSnapPoints)
@@ -874,6 +897,7 @@ class QadGetPoint(QgsMapTool):
                                                          None, \
                                                          self.getRealPolarAng(), \
                                                          self.getRealPolarAngOffset(), \
+                                                         self.__PolarAddAngles, \
                                                          True)
 
             if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
@@ -890,7 +914,8 @@ class QadGetPoint(QgsMapTool):
             oSnapPoints = self.__QadSnapper.getSnapPoint(None, self.tmpPoint, \
                                                          None, \
                                                          self.getRealPolarAng(), \
-                                                         self.getRealPolarAngOffset())
+                                                         self.getRealPolarAngOffset(), \
+                                                        self.__PolarAddAngles)
 
             if self.__AutoSnap & QadAUTOSNAPEnum.MAGNET: # Turns on the AutoSnap magnet
                self.magneticCursor(oSnapPoints)

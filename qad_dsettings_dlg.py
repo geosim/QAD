@@ -26,10 +26,9 @@
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtCore import Qt, QObject, QEvent
 from qgis.PyQt.QtGui import QDoubleValidator, QIntValidator, QColor, QPainter, \
-     QFontMetrics
+     QFontMetrics, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit, QSizePolicy, \
-     QWidget
-
+     QWidget, QInputDialog
 
 from . import qad_dsettings_ui
 from . import qad_dimensioninput_settings_ui
@@ -37,7 +36,7 @@ from . import qad_pointerinput_settings_ui
 from . import qad_tooltip_appearance_ui
 
 
-from .qad_variables import QadVariable, QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum
+from .qad_variables import QadVariable, QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum, POLARADDANG_to_list
 from .qad_snapper import QadSnapTypeEnum
 from .qad_msg import QadMsg, qadShowPluginHelp
 from . import qad_utils
@@ -249,6 +248,20 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       else:
          self.radioButton_OsnapPolarAbolute.setChecked(True)
 
+      if PolarMode & QadPOLARMODEnum.ADDITIONAL_ANGLES:
+         self.checkBox_AdditionaltAngles.setChecked(True)
+      self.CheckAdditionalAngles()
+
+      PolarAddAngles = QadVariables.get(QadMsg.translate("Environment variables", "POLARADDANG"))
+      
+      addAngleList = POLARADDANG_to_list(PolarAddAngles) # es. "1;2.3" genera la lista in ordine crescente 1 2.3
+      model = QStandardItemModel()
+      self.listView_AdditionalAngles.setModel(model)      
+      for addAngle in addAngleList:
+         item = QStandardItem(qad_utils.numToStringFmt(addAngle))
+         item.setEditable(False)
+         model.appendRow(item)
+              
 
    def accept_polar_tab(self):
       # Memorizzo il valore di AUTOSNAP
@@ -270,7 +283,19 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          PolarMode = PolarMode | QadPOLARMODEnum.POLAR_TRACKING
       if self.radioButton_OsnapPolarRelative.isChecked():
          PolarMode = PolarMode | QadPOLARMODEnum.MEASURE_RELATIVE_ANGLE
+      if self.checkBox_AdditionaltAngles.isChecked():         
+         PolarMode = PolarMode | QadPOLARMODEnum.ADDITIONAL_ANGLES
       QadVariables.set(QadMsg.translate("Environment variables", "POLARMODE"), PolarMode)
+      
+      # Memorizzo il valore di POLARADDANG
+      PolarAddAngles = ""
+      model = self.listView_AdditionalAngles.model()
+      for row in range(0, model.rowCount()):
+         index = model.index(row, 0)
+         if row > 0:
+            PolarAddAngles += ";"
+         PolarAddAngles += index.data()         
+      QadVariables.set(QadMsg.translate("Environment variables", "POLARADDANG"), PolarAddAngles)
     
     
    def comboBox_increment_angle_Validation(self):
@@ -282,6 +307,59 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
          self.comboBox_increment_angle.lineEdit().selectAll()
          return False
       return True
+
+
+   def CheckAdditionalAngles(self):
+      if self.checkBox_AdditionaltAngles.checkState() == Qt.Checked:
+         self.pushButton_DelAngle.setEnabled(True)
+         self.listView_AdditionalAngles.setEnabled(True)
+      else:
+         self.pushButton_DelAngle.setEnabled(False)
+         self.listView_AdditionalAngles.setEnabled(False)
+
+
+   def ButtonNewAngle(self):
+      self.checkBox_AdditionaltAngles.setChecked(True)
+      self.CheckAdditionalAngles()
+      
+      while True:
+         # restituisce (valore, True o False a seconda del tasto OK o Cancel)
+         res = QInputDialog.getDouble(self, 
+                                      QadMsg.translate("DSettings_Dialog", "QAD - Additional angle"), \
+                                      QadMsg.translate("DSettings_Dialog", "New angle:"), \
+                                      0, -360, 360, 8)
+         if res[1] == False:
+            return
+         newAngle = res[0]
+         reAsk = False
+         # controllo che l'angolo non sia già presente
+         model = self.listView_AdditionalAngles.model()
+         for row in range(0, model.rowCount()):
+            index = model.index(row, 0)
+            angle = qad_utils.str2float(index.data())
+            if newAngle == angle:
+               QMessageBox.critical(self,  QadMsg.translate("QAD", "QAD"), QadMsg.translate("DSettings_Dialog", "Angle already in list"))
+               reAsk = True
+               break
+            if newAngle < angle:
+               item = QStandardItem(qad_utils.numToStringFmt(newAngle))
+               item.setEditable(False)
+               model.insertRow(row, item)
+               return
+         
+         if reAsk == False:
+            item = QStandardItem(qad_utils.numToStringFmt(newAngle))
+            item.setEditable(False)
+            model.appendRow(item)
+            return                                   
+
+
+   def ButtonDelAngle(self):
+      # cancello le righe selezionate (devo ordinarle in modo inverso)
+      indexes = self.listView_AdditionalAngles.selectedIndexes()
+      for index in reversed(sorted(indexes)):
+         self.listView_AdditionalAngles.model().removeRow(index.row())
+      
 
 
    ######################################

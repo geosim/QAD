@@ -537,18 +537,18 @@ class QadLayerEntitySet():
                gType = g.type()
                if g.isMultipart() == False:
                   if gType == QgsWkbTypes.PointGeometry:
-                     g = QgsGeometry().fromPoint(g.asPoint())
+                     g = QgsGeometry().fromPointXY(g.asPoint())
                   elif gType == QgsWkbTypes.LineGeometry:
-                     g = QgsGeometry().fromPolyline(g.asPolyline())
+                     g = QgsGeometry().fromPolylineXY(g.asPolyline())
                   elif gType == QgsWkbTypes.PolygonGeometry:
-                     g = QgsGeometry().fromPolygon(g.asPolygon())
+                     g = QgsGeometry().fromPolygonXY(g.asPolygon())
                else:
                   if gType == QgsWkbTypes.PointGeometry:
-                     g = QgsGeometry().fromMultiPoint(g.asMultiPoint())
+                     g = QgsGeometry().fromMultiPointXY(g.asMultiPoint())
                   elif gType == QgsWkbTypes.LineGeometry:
-                     g = QgsGeometry().fromMultiPolyline(g.asMultiPolyline())         
+                     g = QgsGeometry().fromMultiPolylineXY(g.asMultiPolyline())         
                   elif gType == QgsWkbTypes.PolygonGeometry:
-                     g = QgsGeometry().fromMultiPolygon(g.asMultiPolygon())                     
+                     g = QgsGeometry().fromMultiPolygonXY(g.asMultiPolygon())                     
                                    
             result.append(g)
       return result
@@ -977,12 +977,14 @@ def getSelSet(mode, mQgsMapTool, points = None, \
    dato un QgsMapTool, una modalità di selezione e una lista opzionale di punti (in map coordinates),
    la funzione cerca le entità.
    mode = "C"  -> Crossing selection (inside and crossing)
+          "CO" -> Crossing objects (inside and crossing)
           "CP" -> Crossing polygon (inside and crossing)
           "F"  -> Fence selection (crossing)
           "W"  -> Window selection (inside)
+          "WO" -> Window objects (inside)
           "WP" -> Windows polygon (inside)
           "X"  -> all          
-   layer = opzionale, lista dei layer in cui cercare
+   layersToCheck = opzionale, lista dei layer in cui cercare
    checkPointLayer = opzionale, considera i layer di tipo punto
    checkLineLayer = opzionale, considera i layer di tipo linea
    checkPolygonLayer = opzionale, considera i layer di tipo poligono

@@ -26,6 +26,7 @@
 from qgis.PyQt.QtCore import *
 import os.path
 from qgis.core import *
+import math
 
 
 from . import qad_utils
@@ -40,7 +41,7 @@ class QadVariableTypeEnum():
    STRING  = 1 # caratteri
    COLOR   = 2 # colore espresso in caratteri (es. rosso = "#FF0000")
    INT     = 3 # numero intero
-   FLOAT   = 4 # nmer con decimali
+   FLOAT   = 4 # numero con decimali
    BOOL    = 5 # booleano (True o False)
 
 
@@ -75,6 +76,7 @@ class QadPOLARMODEnum():
                               # if not setted: Measure polar angles based on current UCS (absolute)
    POLAR_TRACKING         = 2 # if setted: Use polar tracking settings in object snap tracking
                               # if not setted: Track orthogonally only
+   ADDITIONAL_ANGLES      = 4 # if setted: Use additional polar tracking angles
    SHIFT_TO_ACQUIRE       = 8 # if setted: Press Shift to acquire object snap tracking points,
                               # if not setted: Acquire automatically object snap tracking points
 
@@ -863,7 +865,7 @@ class QadVariablesClass():
       VariableDescr = QadMsg.translate("Environment variables", "Controls whether subsequent selections replace the current selection set or add to it." + \
                                        "\n0 = Turns off PICKADD. The objects most recently selected become the selection set. Previously selected objects are removed from the selection set. Add more objects to the selection set by pressing SHIFT while selecting." + \
                                        "\n1 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting." + \
-                                       "\n2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends. ") # x lupdate
+                                       "\n2 = Turns on PICKADD. Each object selected, either individually or by windowing, is added to the current selection set. To remove objects from the set, press SHIFT while selecting. Keeps objects selected after the SELECT command ends.") # x lupdate
       VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Integer type")
       VariableDescr = VariableDescr + ", " + QadMsg.translate("Environment variables", "global variable") + "."
       self.__VariableValuesDict[VariableName] = QadVariable(VariableName, int(0), \
@@ -908,6 +910,17 @@ class QadVariablesClass():
                                                             VariableDescr, \
                                                             QadVariableLevelEnum.GLOBAL)
 
+      # POLARADDANG (string): Memorizza ulteriori angoli per il puntamento polare e lo snap polare. Variabile globale.
+      VariableName = QadMsg.translate("Environment variables", "POLARADDANG") # x lupdate
+      VariableDescr = QadMsg.translate("Environment variables", "Stores additional angles for polar tracking and polar snap.") # x lupdate
+      VariableDescr = VariableDescr + "\n" + QadMsg.translate("Environment variables", "Character type")
+      VariableDescr = VariableDescr + ", " + QadMsg.translate("Environment variables", "global variable") + "."
+      self.__VariableValuesDict[VariableName] = QadVariable(VariableName, unicode(""), \
+                                                            QadVariableTypeEnum.STRING, \
+                                                            None, None, \
+                                                            VariableDescr, \
+                                                            QadVariableLevelEnum.GLOBAL) # red 
+
       # POLARANG (float): incremento dell'angolo polare per il puntamento polare (gradi). Variabile globale.
       VariableName = QadMsg.translate("Environment variables", "POLARANG") # x lupdate
       VariableDescr = QadMsg.translate("Environment variables", "Sets the polar angle increment (degree).") # x lupdate
@@ -929,6 +942,9 @@ class QadVariablesClass():
                                        "\nObject snap tracking" + \
                                        "\n0 = Track orthogonally only" + \
                                        "\n2 = Use polar tracking settings in object snap tracking" + \
+                                       "\nUse additional polar tracking angles" + \
+                                       "\n0 = No" + \
+                                       "\n4 = Yes" + \
                                        "\nAcquire object snap tracking points" + \
                                        "\n0 = Acquire automatically" + \
                                        "\n8 = Press Shift to acquire") # x lupdate
@@ -1334,4 +1350,19 @@ class QadVariablesClass():
 #  = variabile globale
 #===============================================================================
 
+
+def POLARADDANG_to_list(PolarAddAngles, convertToRadians = False):
+   strValueList = PolarAddAngles.split(";")
+   floatValueList = []
+   for strValue in strValueList:
+      floatValue = qad_utils.str2float(strValue)
+      if floatValue is not None:
+         if convertToRadians == True:
+            floatValue =  math.radians(floatValue)
+         floatValueList.append(floatValue)
+   
+   floatValueList.sort()
+   
+   return floatValueList
+ 
 QadVariables = QadVariablesClass()

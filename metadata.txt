@@ -37,8 +37,4 @@ deprecated=False
 
 qgisMaximumVersion=3.99
 
-# Uncomment the following line and add your changelog entries:
-changelog=
-   * 2020-15-05 Fixed bug on TRIM command
-   * 2020-03-05 Fixed bug on MBUFFER command
    
