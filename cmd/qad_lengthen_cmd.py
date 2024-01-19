@@ -282,9 +282,9 @@ class QadLENGTHENCommandClass(QadCommandClass):
                  QadMsg.translate("Command_LENGTHEN", "Total") + "/" + \
                  QadMsg.translate("Command_LENGTHEN", "DYnamic")
       if self.defaultValue is None:
-         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, self.defaultValue)
+         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>: ").format(keyWords, self.defaultValue)
       else:
-         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>:  ").format(keyWords, self.defaultValue)
+         prompt = QadMsg.translate("Command_LENGTHEN", "Select an object or [{0}] <{1}>: ").format(keyWords, self.defaultValue)
 
       englishKeyWords = "DElta" + "/" + "Percent" + "/" + "Total" + "/" + "DYnamic"
       keyWords += "_" + englishKeyWords

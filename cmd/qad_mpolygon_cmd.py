@@ -134,10 +134,7 @@ class QadMPOLYGONCommandClass(QadCommandClass):
                      del polyline
             else:
                self.showMsg(QadMsg.translate("Command_MPOLYGON", "\nPolygon not valid.\n"))
-                               
-            del self.PLINECommand
-            self.PLINECommand = None
-         
+                                        
             return True # fine
             
          return False

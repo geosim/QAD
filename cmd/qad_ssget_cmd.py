@@ -36,13 +36,14 @@ from ..qad_entity import QadEntitySet, getSelSet
 from ..qad_dim import QadDimStyles
 from ..qad_getpoint import QadGetPointDrawModeEnum, QadGetPointSelectionModeEnum
 from .qad_pline_cmd import QadPLINECommandClass
-from .qad_circle_cmd import QadCIRCLECommandClass
+from .qad_circle_cmd import QadCIRCLECommandClass, QadCircle
 from .qad_mpolygon_cmd import QadMPOLYGONCommandClass
 from ..qad_dynamicinput import QadDynamicInputContextEnum
 # ho dovuto spostare in fondo questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
 #from qad_mbuffer_cmd import QadMBUFFERCommandClass
 from ..qad_utils import getVisibleVectorLayers, distMapToLayerCoordinates
-
+from ..qad_rubberband import getColorForCrossingSelectionArea, \
+                             getColorForWindowSelectionArea
 
 #===============================================================================
 # QadSSGetClass
@@ -599,7 +600,7 @@ class QadSSGetClass(QadCommandClass):
             elif value == QadMsg.translate("Command_SSGET", "WBuffer") or value == "WBuffer" or \
                  value == QadMsg.translate("Command_SSGET", "CBuffer") or value == "CBuffer":
                # ho dovuto spostare questo import perché qad_mbuffer_cmd fa l'import di qad_ssget_cmd
-               from qad_mbuffer_cmd import QadMBUFFERCommandClass
+               from .qad_mbuffer_cmd import QadMBUFFERCommandClass
                
                # "FBuffer" = Seleziona oggetti che si trovano completamente all'interno di buffer intorno ad oggetti da selezionare
                # "IBuffer" = Seleziona oggetti che intersecano o si trovano all'interno di buffer intorno ad oggetti da selezionare
