@@ -9,7 +9,6 @@ path %OSGEO4W_ROOT%\apps\qgis-ltr\bin;%OSGEO4W_ROOT%\apps\grass\grass78\lib;%OSG
 cd /d %~dp0
 
 @ECHO ON
-call pyuic5 --from-imports -o qad_ui.py qad.ui
 call pyuic5 --from-imports -o .\qad_dsettings_ui.py .\qad_dsettings.ui
 call pyuic5 --from-imports -o .\qad_pointerinput_settings_ui.py .\qad_pointerinput_settings.ui
 call pyuic5 --from-imports -o .\qad_dimensioninput_settings_ui.py .\qad_dimensioninput_settings.ui

@@ -32,7 +32,6 @@ from qgis.gui import *
 
 import math
 import sys
-from networkx.generators import line
 from .qad_line import QadLine
 
 try:

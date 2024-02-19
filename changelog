@@ -1,6 +1,7 @@
 version 3.0.6
 ---------------------------
 
+* 2024-02-14 Selecting a point you can choose the "Midpoint between 2 points" option
 * 2024-01-19 Fixed bug on selection options (reported by Justin Ralston)
 * 2023-10-17 Added Polar Tracking options: additional angles. (inspired by Jonathan GUILLERM)
 * 2023-09-29 The form to fill the data does not appear, now it does. (proposed by franksalas1965)

@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Dimension Input Settings</string>
+   <string>Dimension Input Settings</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">

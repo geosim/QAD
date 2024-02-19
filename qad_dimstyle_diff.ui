@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Compare dimension styles</string>
+   <string>Compare dimension styles</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">

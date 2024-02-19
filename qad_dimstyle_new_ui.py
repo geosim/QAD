@@ -55,7 +55,7 @@ class Ui_DimStyle_New_Dialog(object):
 
     def retranslateUi(self, DimStyle_New_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DimStyle_New_Dialog.setWindowTitle(_translate("DimStyle_New_Dialog", "QAD - Create new dimension style"))
+        DimStyle_New_Dialog.setWindowTitle(_translate("DimStyle_New_Dialog", "Create new dimension style"))
         self.label.setText(_translate("DimStyle_New_Dialog", "New style name:"))
         self.label_2.setText(_translate("DimStyle_New_Dialog", "Start with:"))
         self.continueButton.setText(_translate("DimStyle_New_Dialog", "Continue..."))

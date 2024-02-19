@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Create new dimension style</string>
+   <string>Create new dimension style</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">

@@ -29,6 +29,7 @@ from qgis.PyQt.QtCore import QObject
 from qgis.PyQt.QtWidgets import QMessageBox
 
 import sys, traceback
+from datetime import date
 
 from .qad_maptool import QadMapTool, QadVirtualSelCommandClass, QadVirtualGripCommandsClass
 from .qad_msg import QadMsg
@@ -36,6 +37,7 @@ from .qad_cmd_aliases import *
 from .qad_variables import QadVariables
 
 from .qad_getpoint import *
+from .qad_utils import decriptPlainText, getMacAddress
 from .cmd.qad_generic_cmd import QadCommandClass
 from .cmd.qad_id_cmd import QadIDCommandClass
 from .cmd.qad_setcurrlayerbygraph_cmd import QadSETCURRLAYERBYGRAPHCommandClass, QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass
@@ -68,7 +70,7 @@ from .cmd.qad_polygon_cmd import QadPOLYGONCommandClass
 from .cmd.qad_dim_cmd import QadDIMLINEARCommandClass, QadDIMALIGNEDCommandClass, QadDIMARCCommandClass, QadDIMRADIUSCommandClass
 from .cmd.qad_dimstyle_cmd import QadDIMSTYLECommandClass
 from .cmd.qad_lengthen_cmd import QadLENGTHENCommandClass
-from .cmd.qad_help_cmd import QadHELPCommandClass
+from .cmd.qad_help_cmd import QadHELPCommandClass, QadSUPPORTERSCommandClass
 from .cmd.qad_options_cmd import QadOPTIONSCommandClass
 from .cmd.qad_mapmpedit_cmd import QadMAPMPEDITCommandClass
 from .cmd.qad_joindisjoin_cmd import QadJOINCommandClass, QadDISJOINCommandClass
@@ -138,6 +140,7 @@ class QadCommandsClass():
       self.__cmdObjs.append(QadDIVIDECommandClass(self.plugIn)) # DIVIDE
       self.__cmdObjs.append(QadMEASURECommandClass(self.plugIn)) # MEASURE
       self.__cmdObjs.append(QadELLIPSECommandClass(self.plugIn)) # ELLIPSE
+      self.__cmdObjs.append(QadSUPPORTERSCommandClass(self.plugIn)) # SUPPORTERS
 
       self.actualCommand = None  # Comando in corso di esecuzione
    
@@ -242,6 +245,15 @@ class QadCommandsClass():
          if self.actualCommand is not None:
             return
    
+         if command != QadMsg.translate("Command_list", "SUPPORTERS"):
+            if incrementDailyCmdCounter() > self.plugIn.maxDailyCmdCounter: 
+               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?"), \
+                                       QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                  QMessageBox.information(None, "QAD", QadMsg.translate("QAD", "You will need your mac address which is " + getMacAddress()))
+                  command = "_SUPPORTERS";
+               else:
+                  return
+               
          # eccezione per comando virtuale "QadVirtualSelCommandClass" che in realtà non è un comando
          # ma è usato per selezionare oggetti quando nessun comando è attivo
          if command == "QadVirtualSelCommandClass":
@@ -297,6 +309,15 @@ class QadCommandsClass():
          # se non c'é alcun comando attivo
          if self.actualCommand is not None:
             return
+
+         if args[0] != QadMsg.translate("Command_list", "SUPPORTERS"):
+            if incrementDailyCmdCounter() > self.plugIn.maxDailyCmdCounter: 
+               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?"), \
+                                       QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                  QMessageBox.information(None, "QAD", QadMsg.translate("QAD", "You will need your mac address which is " + getMacAddress()))
+                  args[0] = "_SUPPORTERS";
+               else:
+                  return
          
          self.actualCommand = self.getCommandObj("MACRO_RUNNER")
          if self.actualCommand is None:
@@ -400,7 +421,7 @@ class QadCommandsClass():
 
 
    #============================================================================
-   # forceCommandMapToolSnapTypeOnce
+   # getActualCommandPointMapTool
    #============================================================================
    def getActualCommandPointMapTool(self):
       # se non c'é alcun comando attivo
@@ -423,6 +444,16 @@ class QadCommandsClass():
       if pointMapTool is None:
          return
       pointMapTool.forceSnapTypeOnce(snapType, snapParams)
+
+
+   #============================================================================
+   # forceCommandMapToolM2P
+   #============================================================================
+   def forceCommandMapToolM2P(self):
+      pointMapTool = self.getActualCommandPointMapTool()
+      if pointMapTool is None:
+         return
+      pointMapTool.forceM2P()
 
 
    #============================================================================
@@ -644,3 +675,45 @@ def displayError(exception = None):
       stk = exception.__doc__ + "\n" + stk
    stk = QadMsg.translate("QAD", "Well, this is embarrassing !\n\n") + stk
    QMessageBox.critical(None, "QAD", stk)
+   
+
+def incrementDailyCmdCounter():
+   key = '/qgis/digitizing/qad_daily_cmd_counter'
+   today = date.today().strftime('%Y-%m-%d')
+   value = QSettings().value(key, today + ";0")
+   
+   if type(value) != str:
+      QSettings().setValue(key, today + ";1")
+      return 1
+   
+   res = value.split(";")
+   if len(res) != 2:
+      QSettings().setValue(key, today + ";1")
+      return 1
+   
+   if res[0] != today:
+      QSettings().setValue(key, today + ";1")
+      return 1
+   
+   n = qad_utils.str2int(res[1])
+   if n is None:
+      n = 0
+
+   n = n + 1   
+   QSettings().setValue(key, today + ";" + str(n))
+   return n   
+
+
+def getMaxDailyCmdCounter():
+   try:
+      path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
+      path = path + "/" + "auth.ini"
+      f = open(path, "r")
+      line = f.readline()
+      f.close()
+      if decriptPlainText(line) == getMacAddress():
+         return 999999
+   except:
+      pass
+      
+   return 999999

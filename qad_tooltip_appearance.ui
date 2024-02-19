@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Tooltip appearance</string>
+   <string>Tooltip appearance</string>
   </property>
   <widget class="QWidget" name="widget_Preview" native="true">
    <property name="geometry">

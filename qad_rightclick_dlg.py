@@ -36,7 +36,7 @@ from .qad_rightclick_ui import Ui_RightClick_Dialog
 
 
 from .qad_variables import QadVariables, QadVariable
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 
 
@@ -50,6 +50,7 @@ class QadRightClickDialog(QDialog, QObject, Ui_RightClick_Dialog):
       QDialog.__init__(self, parent)
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione dei valori
       self.init_values()
@@ -203,4 +204,4 @@ class QadRightClickDialog(QDialog, QObject, Ui_RightClick_Dialog):
    # help_clicked
    #============================================================================
    def help_clicked(self):
-      qadShowPluginHelp(QadMsg.translate("Help", ""))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", ""))

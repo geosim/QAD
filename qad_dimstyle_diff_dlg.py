@@ -31,7 +31,7 @@ from qgis.utils import *
 from . import qad_dimstyle_diff_ui
 
 from .qad_dim import QadDimStyles
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 
 
@@ -45,6 +45,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       QDialog.__init__(self, parent)
       
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
                  
       self.dimNameList = []
       for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
@@ -181,7 +182,7 @@ class QadDIMSTYLE_DIFF_Dialog(QDialog, QObject, qad_dimstyle_diff_ui.Ui_DimStyle
       
    
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "Dimensioning"))
 
    def resizeEvent(self, event):
       QDialog.resizeEvent(self, event)

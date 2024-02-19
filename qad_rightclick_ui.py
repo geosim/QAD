@@ -94,7 +94,7 @@ class Ui_RightClick_Dialog(object):
 
     def retranslateUi(self, RightClick_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        RightClick_Dialog.setWindowTitle(_translate("RightClick_Dialog", "QAD - Right click customization"))
+        RightClick_Dialog.setWindowTitle(_translate("RightClick_Dialog", "Right click customization"))
         self.checkBox_timeSensitive.setToolTip(_translate("RightClick_Dialog", "Controls right-click behavior. A quick click is the same as pressing Enter. A longer click displays a shortcut menu. You can set the duration of the longer click in milliseconds."))
         self.checkBox_timeSensitive.setText(_translate("RightClick_Dialog", "Turn on Time-Sensitive Right-Click"))
         self.label.setText(_translate("RightClick_Dialog", "Quick click for ENTER"))

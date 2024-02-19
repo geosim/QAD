@@ -30,6 +30,8 @@ import sys
 
 import urllib.parse
 import platform
+#from plotly.graph_objs.bar.marker.colorbar import title
+import webbrowser
 
 
 # traduction class.
@@ -65,6 +67,53 @@ class QadMsgClass():
       # "Help" per i titoli dei capitoli del manuale che servono da section nel file html di help
       return QCoreApplication.translate(context, sourceText, disambiguation, n)
 
+
+
+   #===============================================================================
+   # getQADTitle
+   #===============================================================================
+   def getQADTitle(self, sponsorWith = False):
+      title = QadMsg.translate("QAD", "QAD")
+      if sponsorWith == True:
+         title += " (supported by "
+         title +=  QadMsg.translate("SUPPORTER", "SUPPORTER WANTED")
+         title += ")"
+         
+      return title
+
+
+#===============================================================================
+# qadShowPluginHelp
+#===============================================================================
+def qadShowPluginPDFHelp(section = "", filename = "QAD"):
+   """
+   Apre il file di help in formato PDF alla sezione nota.
+   per conoscere la sezione/pagina del file html usare internet explorer,
+   selezionare nella finestra di destra la voce di interesse e leggerne l'indirizzo dalla casella in alto.
+   Questo perché internet explorer inserisce tutti i caratteri di spaziatura e tab che gli altri browser non fanno.
+   """   
+   basepath = os.path.dirname(os.path.realpath(__file__))
+   
+   # initialize locale
+   userLocaleList = QSettings().value("locale/userLocale").split("_")
+   language = userLocaleList[0]
+   region = userLocaleList[1] if len(userLocaleList) > 1 else ""
+
+   path = QDir.cleanPath(basepath + "/help")
+   helpfile = os.path.join(path, filename + "_" + language + "_" + region + ".pdf") # provo a caricare la lingua e la regione selezionate
+   
+   if not os.path.exists(helpfile):
+      helpfile = os.path.join(path, filename + "_" + language + ".pdf")  # provo a caricare la lingua
+      if not os.path.exists(helpfile):
+         helpfile = os.path.join(path, filename + "_en" + ".pdf") # provo a caricare la lingua inglese
+         if not os.path.exists(helpfile):
+            return
+      
+   if section != "":
+      helpfile = helpfile + "#" + urllib.parse.quote(section.encode('utf-8'))
+
+   webbrowser.open_new(helpfile)
+   
 
 #===============================================================================
 # qadShowPluginHelp
@@ -129,6 +178,19 @@ def qadShowPluginHelp(section = "", filename = "index", packageName = None):
       else:
          QDesktopServices.openUrl(QUrl(url))           
    
+   
+#===============================================================================
+# qadShowSupportersPage
+#===============================================================================
+def qadShowSupportersPage():
+   """
+   show the supporter members page in the user's html browser.
+   """   
+   try:
+      webbrowser.open_new("https://qgis.org/en/site/about/sustaining_members.html")
+   except:
+      return
+
    
 #===============================================================================
 # QadMsg = variabile globale

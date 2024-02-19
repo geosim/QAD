@@ -163,6 +163,10 @@ class QadGetPoint(QgsMapTool):
 
       # input dinamico
       self.dynamicEditInput = QadDynamicEditInput(plugIn, QadDynamicInputContextEnum.NONE)
+      
+      # gestione di punto medio tra 2 punto (M2P)
+      self.M2P_Mode = False # se la modalità M2P è attivata o meno
+      self.M2p_pt1 = None # primo punto
 
 
    def __del__(self):
@@ -472,6 +476,13 @@ class QadGetPoint(QgsMapTool):
             
       self.setSnapType(snapType)
 
+
+   #============================================================================
+   # forceM2P
+   #============================================================================
+   def forceM2P(self):
+      self.M2P_Mode = True
+      self.plugIn.showMsg("\n" + QadMsg.translate("Snap", "First point of mid: "))
 
    #============================================================================
    # refreshSnapType
@@ -1014,8 +1025,18 @@ class QadGetPoint(QgsMapTool):
             self.setSnapType(self.__oldSnapType) # riporto il valore precedente
             self.__QadSnapper.setProgressDistance(self.__oldSnapProgrDist)
             
-      self.plugIn.QadCommands.continueCommandFromMapTool()
-      #self.plugIn.setStandardMapTool()
+      if self.M2P_Mode == True: # modo "punto medio tra 2 punti"
+         if self.M2p_pt1 is None:
+            self.M2p_pt1 = self.point
+            self.plugIn.showMsg(QadMsg.translate("Snap", "Second point of mid: "))
+         else:
+            self.M2P_Mode = False
+            self.point = qad_utils.getMiddlePoint(self.M2p_pt1, self.point)
+            self.plugIn.setLastPoint(self.point)
+            self.plugIn.QadCommands.continueCommandFromMapTool()
+      else:
+         self.plugIn.QadCommands.continueCommandFromMapTool()
+         #self.plugIn.setStandardMapTool()
 
 
    #============================================================================

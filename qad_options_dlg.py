@@ -35,7 +35,7 @@ from .qad_options_ui import Ui_Options_Dialog
 
 
 from .qad_variables import *
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 from .qad_gripcolor_dlg import QadGripColorDialog
 from .qad_windowcolor_dlg import QadColorContextEnum, QadColorElementEnum, QadWindowColorDialog
@@ -67,6 +67,7 @@ class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
       self.previewAutoSnapMarker = None
       
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
 
       self.tempQadVariables = QadVariablesClass()
       QadVariables.copyTo(self.tempQadVariables)
@@ -667,7 +668,7 @@ class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
                msg = msg + QadMsg.translate("QAD", " and")
             msg = msg + QadMsg.translate("QAD", " <= {0}").format(str(var.maxNum))
          msg = msg + "."
-         QMessageBox.critical(self, "QAD", msg)
+         QMessageBox.critical(self, QadMsg.getQADTitle(), msg)
          widget.setFocus()
          widget.selectAll()
          return False
@@ -700,7 +701,7 @@ class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
                msg = msg + QadMsg.translate("QAD", " and")
             msg = msg + QadMsg.translate("QAD", " < {0}").format(str(var.maxNum))
          msg = msg + "."
-         QMessageBox.critical(self, "QAD", msg)
+         QMessageBox.critical(self, QadMsg.getQADTitle(), msg)
          widget.setFocus()
          widget.selectAll()
          return False
@@ -776,7 +777,7 @@ class QadOPTIONSDialog(QDialog, QObject, Ui_Options_Dialog):
       
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "OPTIONS"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "OPTIONS"))
 
 
 #===============================================================================

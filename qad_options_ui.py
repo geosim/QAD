@@ -268,7 +268,7 @@ class Ui_Options_Dialog(object):
 
     def retranslateUi(self, Options_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Options_Dialog.setWindowTitle(_translate("Options_Dialog", "QAD - Options"))
+        Options_Dialog.setWindowTitle(_translate("Options_Dialog", "Options"))
         self.groupBox.setTitle(_translate("Options_Dialog", "Window Elements"))
         self.Button_TextWindowColor.setToolTip(_translate("Options_Dialog", "Displays the Drawing Window Colors dialog box. "))
         self.Button_TextWindowColor.setText(_translate("Options_Dialog", "Colors"))

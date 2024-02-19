@@ -88,7 +88,7 @@ class Ui_ToolTipAppearance_Dialog(object):
 
     def retranslateUi(self, ToolTipAppearance_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        ToolTipAppearance_Dialog.setWindowTitle(_translate("ToolTipAppearance_Dialog", "QAD - Tooltip appearance"))
+        ToolTipAppearance_Dialog.setWindowTitle(_translate("ToolTipAppearance_Dialog", "Tooltip appearance"))
         self.Button_TooltipColors.setToolTip(_translate("ToolTipAppearance_Dialog", "Displays the Drawing Window Colors dialog box, where you can specify a color for drafting tooltips and their backgrounds in a specified context."))
         self.Button_TooltipColors.setText(_translate("ToolTipAppearance_Dialog", "Colors..."))
         self.groupBox.setTitle(_translate("ToolTipAppearance_Dialog", "Size"))

@@ -100,7 +100,7 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow):
       self.topLevelChanged['bool'].connect(self.onTopLevelChanged)
 
       title = self.windowTitle()
-      self.setWindowTitle(title + " - " + plugin.version())
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + title + " - " + plugin.version())
 
 
    def __del__(self):
@@ -300,7 +300,10 @@ class QadTextWindow(QDockWidget, Ui_QadTextWindow):
       return self.plugin.isValidEnvVariable(variable)
 
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
-      return self.plugin.forceCommandMapToolSnapTypeOnce(snapType, snapParams)      
+      return self.plugin.forceCommandMapToolSnapTypeOnce(snapType, snapParams)     
+   
+   def forceCommandMapToolM2P(self):
+      return self.plugin.forceCommandMapToolM2P()        
 
    def toggleOsMode(self):
       return self.plugin.toggleOsMode()
@@ -1042,6 +1045,12 @@ class QadEdit(QTextEdit):
             self.parentWidget().forceCommandMapToolSnapTypeOnce(snapType, snapParams)
             self.showMsg(QadMsg.translate("QAD", "\n(temporary snap)\n"), True) # ripeti il prompt
             return
+         
+         # valuto il caso di "punto medio tra 2 punti"
+         if cmd.upper() == QadMsg.translate("Snap", "M2P") or cmd.upper() == "_M2P":
+            self.parentWidget().forceCommandMapToolM2P()
+            return;
+         
          if (self.inputType & QadInputTypeEnum.INT) or \
             (self.inputType & QadInputTypeEnum.LONG) or \
             (self.inputType & QadInputTypeEnum.FLOAT) or \
@@ -1179,6 +1188,7 @@ class QadCmdSuggestWindow(QWidget, Ui_QadCmdSuggestWindow, object):
 
       self.editWidget = editWidget 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       self.infoCmds = infoCmds[:] # copio la lista comandi
       self.infoVars = infoVars[:] # copio la lista variabili ambiente
       self.filter = ""

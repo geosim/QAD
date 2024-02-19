@@ -38,7 +38,7 @@ from . import qad_tooltip_appearance_ui
 
 from .qad_variables import QadVariable, QadVariables, QadAUTOSNAPEnum, QadPOLARMODEnum, POLARADDANG_to_list
 from .qad_snapper import QadSnapTypeEnum
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 from .qad_windowcolor_dlg import QadColorContextEnum, QadColorElementEnum, QadWindowColorDialog
 
@@ -64,6 +64,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       #QDialog.__init__(self, self.iface)
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione del TAB che riguarda gli SNAP ad oggetto
       self.init_osnap_tab()
@@ -216,7 +217,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       string = self.lineEdit_ProgrDistance.text()
       if qad_utils.str2float(string) is None or qad_utils.str2float(string) == 0:
          msg = QadMsg.translate("DSettings_Dialog", "Invalid progressive distance object snap: enter a number not zero.")
-         QMessageBox.critical(self, "QAD", msg)
+         QMessageBox.critical(self, QadMsg.getQADTitle(), msg)
          self.lineEdit_ProgrDistance.setFocus()
          self.lineEdit_ProgrDistance.selectAll()
          return False
@@ -302,7 +303,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
       string = self.comboBox_increment_angle.lineEdit().text()
       if qad_utils.str2float(string) is None or qad_utils.str2float(string) <= 0 or qad_utils.str2float(string) >= 360:
          msg = QadMsg.translate("DSettings_Dialog", "Invalid increment angle: enter a number greater than zero and less than 360 degree.")
-         QMessageBox.critical(self, "QAD", msg) 
+         QMessageBox.critical(self, QadMsg.getQADTitle(), msg) 
          self.comboBox_increment_angle.lineEdit().setFocus()
          self.comboBox_increment_angle.lineEdit().selectAll()
          return False
@@ -338,7 +339,8 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
             index = model.index(row, 0)
             angle = qad_utils.str2float(index.data())
             if newAngle == angle:
-               QMessageBox.critical(self,  QadMsg.translate("QAD", "QAD"), QadMsg.translate("DSettings_Dialog", "Angle already in list"))
+               QMessageBox.critical(self, QadMsg.getQADTitle(), \
+                                    QadMsg.translate("DSettings_Dialog", "Angle already in list"))
                reAsk = True
                break
             if newAngle < angle:
@@ -436,7 +438,7 @@ class QadDSETTINGSDialog(QDialog, QObject, qad_dsettings_ui.Ui_DSettings_Dialog)
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "DSETTINGS"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "DSETTINGS"))
 
 
 #######################################################################################
@@ -449,6 +451,7 @@ class QadDIMINPUTDialog(QDialog, QObject, qad_dimensioninput_settings_ui.Ui_DimI
       QDialog.__init__(self, parent)
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione della finestra
       self.init()
@@ -532,7 +535,7 @@ class QadDIMINPUTDialog(QDialog, QObject, qad_dimensioninput_settings_ui.Ui_DimI
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "DSETTINGS"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "DSETTINGS"))
 
 
 #######################################################################################
@@ -545,6 +548,7 @@ class QadPOINTERINPUTDialog(QDialog, QObject, qad_pointerinput_settings_ui.Ui_Po
       QDialog.__init__(self, parent)
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione della finestra
       self.init()
@@ -610,7 +614,7 @@ class QadPOINTERINPUTDialog(QDialog, QObject, qad_pointerinput_settings_ui.Ui_Po
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "DSETTINGS"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "DSETTINGS"))
 
 
 #######################################################################################
@@ -625,6 +629,7 @@ class QadTOOLTIPAPPEARANCEDialog(QDialog, QObject, qad_tooltip_appearance_ui.Ui_
       QDialog.__init__(self, parent)
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione della finestra
       self.init()
@@ -766,7 +771,7 @@ class QadTOOLTIPAPPEARANCEDialog(QDialog, QObject, qad_tooltip_appearance_ui.Ui_
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "DSETTINGS"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "DSETTINGS"))
 
 
 #===============================================================================

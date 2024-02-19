@@ -173,7 +173,8 @@ class QadPolygon():
             else:
                # verifico se è una polilinea
                if polyline.fromPolyline(points):
-                  self.append(polyline)
+                  if polyline.isClosed():
+                     self.append(polyline)
    
       if self.qty() == 0: return None
       return True

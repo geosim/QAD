@@ -72,7 +72,7 @@ class Ui_DimStyle_Diff_Dialog(object):
 
     def retranslateUi(self, DimStyle_Diff_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DimStyle_Diff_Dialog.setWindowTitle(_translate("DimStyle_Diff_Dialog", "QAD - Compare dimension styles"))
+        DimStyle_Diff_Dialog.setWindowTitle(_translate("DimStyle_Diff_Dialog", "Compare dimension styles"))
         self.label.setText(_translate("DimStyle_Diff_Dialog", "Compare:"))
         self.label_2.setText(_translate("DimStyle_Diff_Dialog", "With:"))
         self.dimStyle1.setToolTip(_translate("DimStyle_Diff_Dialog", "Specify the first dimension style."))

@@ -87,7 +87,7 @@ class Ui_DimStyle_Dialog(object):
 
     def retranslateUi(self, DimStyle_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DimStyle_Dialog.setWindowTitle(_translate("DimStyle_Dialog", "QAD - Dimension style manager"))
+        DimStyle_Dialog.setWindowTitle(_translate("DimStyle_Dialog", "Dimension style manager"))
         self.label.setText(_translate("DimStyle_Dialog", "Current dimension style:"))
         self.currentDimStyle.setText(_translate("DimStyle_Dialog", "none"))
         self.label_2.setText(_translate("DimStyle_Dialog", "Styles"))

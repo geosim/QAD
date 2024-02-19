@@ -36,7 +36,7 @@ from .qad_gripcolor_ui import Ui_GripColor_Dialog
 
 
 from .qad_variables import QadVariables
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 
 
@@ -55,6 +55,7 @@ class QadGripColorDialog(QDialog, QObject, Ui_GripColor_Dialog):
       self.gripContour = gripContour
       
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione dei colori
       self.init_colors()
@@ -109,4 +110,4 @@ class QadGripColorDialog(QDialog, QObject, Ui_GripColor_Dialog):
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", ""))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", ""))

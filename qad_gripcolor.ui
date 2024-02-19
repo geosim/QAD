@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Grip colors</string>
+   <string>Grip colors</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">

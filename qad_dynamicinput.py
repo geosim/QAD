@@ -3438,10 +3438,16 @@ class QadDynamicEditInput(QadDynamicInput):
                      self.showEvaluateMsg(keyWord)
                   # altrimenti se ci si attendeva un punto e si tratta di un'opzione di osnap
                   elif (self.inputType & QadInputTypeEnum.POINT2D or self.inputType & QadInputTypeEnum.POINT3D) and \
-                       str2snapTypeEnum(value) != -1:
+                        str2snapTypeEnum(value) != -1:
                      currentWidget.showMsg("")
                      currentWidget.setLockedValue(False)
                      self.showEvaluateMsg(value)
+                  # altrimenti se ci si attendeva un punto e si tratta dell'opzione M2P "punto medio tra 2 punti"
+                  elif (self.inputType & QadInputTypeEnum.POINT2D or self.inputType & QadInputTypeEnum.POINT3D) and \
+                        (value.upper() == QadMsg.translate("Snap", "M2P") or value.upper() == "_M2P"):
+                     currentWidget.showMsg("")
+                     currentWidget.setLockedValue(False)
+                     self.showEvaluateMsg(value)                     
                   # altrimenti verifico la validità del valore
                   else:
                      if currentWidget.checkValid() is not None:

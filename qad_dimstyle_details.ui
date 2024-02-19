@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Dimension style details</string>
+   <string>Dimension style details</string>
   </property>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">

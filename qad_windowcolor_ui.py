@@ -72,7 +72,7 @@ class Ui_WindowColor_Dialog(object):
 
     def retranslateUi(self, WindowColor_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        WindowColor_Dialog.setWindowTitle(_translate("WindowColor_Dialog", "QAD - Drawing window Colors"))
+        WindowColor_Dialog.setWindowTitle(_translate("WindowColor_Dialog", "Drawing window Colors"))
         self.Button_Cancel.setText(_translate("WindowColor_Dialog", "Cancel"))
         self.Button_Help.setText(_translate("WindowColor_Dialog", "Help"))
         self.Button_ApplyClose.setText(_translate("WindowColor_Dialog", "Apply && Close"))

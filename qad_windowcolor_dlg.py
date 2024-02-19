@@ -35,7 +35,7 @@ from . import qad_windowcolor_ui
 
 
 from .qad_variables import QadVariable, QadVariableTypeEnum, QadVariables, QadVariablesClass
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 
 
@@ -86,6 +86,7 @@ class QadWindowColorDialog(QDialog, QObject, qad_windowcolor_ui.Ui_WindowColor_D
       self.currentElement = elementEnum
 
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       # Inizializzazione dei colori
       self.init_colors()
@@ -408,7 +409,7 @@ class QadWindowColorDialog(QDialog, QObject, qad_windowcolor_ui.Ui_WindowColor_D
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", ""))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", ""))
 
 
 #===============================================================================

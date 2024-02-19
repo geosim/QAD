@@ -36,13 +36,29 @@ import sys
 from gettext import find
 import configparser
 import time
-
+import uuid, re
 
 from .qad_variables import QadVariables
 from .qad_msg import QadMsg
 
 
 # Modulo che gestisce varie funzionalità di QAD
+
+
+def getMacAddress():
+   return ':'.join(re.findall('..', '%012x' % uuid.getnode())).upper()   
+
+
+def criptPlainText(strValue):
+   mytable = str.maketrans('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -./0123456789:;<=>?@"', \
+                           'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm9:;<=>?@" -./012345678')
+   return strValue.translate(mytable)
+
+
+def decriptPlainText(strValue):
+   mytable = str.maketrans('NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm9:;<=>?@" -./012345678', \
+                           'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -./0123456789:;<=>?@"')
+   return strValue.translate(mytable)
 
 
 #===============================================================================
@@ -177,7 +193,7 @@ def intLineEditWidgetValidation(widget, var, msg):
             msg = msg + QadMsg.translate("QAD", " and")
          msg = msg + QadMsg.translate("QAD", " <= {0}").format(str(var.maxNum))
       msg = msg + "."
-      QMessageBox.critical(None, "QAD", msg)
+      QMessageBox.critical(None, QadMsg.getQADTitle(), msg)
       widget.setFocus()
       widget.selectAll()
       return False
@@ -212,7 +228,7 @@ def floatLineEditWidgetValidation(widget, var, msg):
             msg = msg + QadMsg.translate("QAD", " and")
          msg = msg + QadMsg.translate("QAD", " < {0}").format(str(var.maxNum))
       msg = msg + "."
-      QMessageBox.critical(None, "QAD", msg)
+      QMessageBox.critical(None, QadMsg.getQADTitle(), msg)
       widget.setFocus()
       widget.selectAll()
       return False

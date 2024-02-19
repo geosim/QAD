@@ -26,7 +26,7 @@
 
 from qgis.PyQt.QtCore import Qt, QObject, QTranslator, qVersion, QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QIcon, QKeySequence
-from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QShortcut
+from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QShortcut, QMessageBox
 from qgis.core import QgsPointXY, QgsProject, QgsMapLayer
 from qgis.gui import QgsGui
 # Initialize Qt resources from file qad_rc.py
@@ -44,7 +44,7 @@ from .qad_maptool import QadMapTool
 from .qad_variables import QadVariables, QadAUTOSNAPEnum
 from .qad_snapper import QadSnapTypeEnum
 from .qad_textwindow import QadTextWindow, QadInputTypeEnum, QadInputModeEnum
-from .qad_commands import QadCommandsClass
+from .qad_commands import QadCommandsClass, getMaxDailyCmdCounter
 from .qad_entity import QadLayerEntitySet, QadEntity, QadEntitySet
 from .qad_dim import QadDimStyles
 from .qad_undoredo import QadUndoStack
@@ -173,6 +173,8 @@ class Qad(QObject):
    ptsHistory = [] # lista della storia degli ultimi punti usati
    
    shortcuts = QadShortcuts()
+   
+   maxDailyCmdCounter = -1
    
 
    #============================================================================
@@ -426,7 +428,9 @@ class Qad(QObject):
       self.initOnProjectLoaded()
 
       # QadMapTool va creato dopo aver inizializzato self.QadCommands e self.canvas e self.initOnProjectLoaded()
-      self.tool = QadMapTool(self) 
+      self.tool = QadMapTool(self)
+      
+      self.maxDailyCmdCounter = getMaxDailyCmdCounter()
 
 
    #============================================================================
@@ -517,9 +521,12 @@ class Qad(QObject):
       self.canvas.mapToolSet.connect(self.deactivate)
       
       # Add menu
-      self.menu = QMenu(QadMsg.translate("QAD", "QAD"))
+      self.menu = QMenu(QadMsg.getQADTitle()) # titolo (nome applicazione + sponsor)
       self.menu.addAction(self.mainAction)
-      self.menu.addAction(self.help_action)
+      
+      # crea il menu help
+      self.helpMenu = self.createHelpMenu()
+      self.menu.addMenu(self.helpMenu)
 
       self.menu.addAction(self.u_action)
       self.menu.addAction(self.undo_action)
@@ -550,10 +557,13 @@ class Qad(QObject):
 #       menu_bar.insertMenu(lastAction, self.menu )
       
       # aggiunge le toolbar
-      self.toolBar = self.iface.addToolBar("QAD")
-      self.toolBar.setObjectName("QAD")
+      self.toolBar = self.iface.addToolBar(QadMsg.getQADTitle())
+      self.toolBar.setObjectName(QadMsg.getQADTitle())
       self.toolBar.addAction(self.mainAction)
-      self.toolBar.addAction(self.help_action)
+      
+      # help
+      self.helpToolButton = self.createHelpToolButton()
+      self.toolBar.addWidget(self.helpToolButton)      
 
       # aggiunge le toolbar per i comandi 
       self.toolBar.addAction(self.setCurrLayerByGraph_action)
@@ -688,7 +698,7 @@ class Qad(QObject):
       # Creo le azioni e le collego ai comandi
       
       self.mainAction = QAction(QIcon(":/plugins/qad/icons/qad.png"), \
-                                QadMsg.translate("QAD", "QAD"), self.iface.mainWindow())
+                                QadMsg.getQADTitle(), self.iface.mainWindow())
       self.mainAction.setCheckable(True)
       self.mainAction.triggered.connect(self.run)
       
@@ -1026,6 +1036,12 @@ class Qad(QObject):
       self.stretch_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
       self.stretch_action.setToolTip(cmd.getToolTipText())
       cmd.connectQAction(self.stretch_action)
+
+      # SUPPORTERS
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "SUPPORTERS"))
+      self.supporters_action = QAction(cmd.getIcon(), cmd.getName(), self.iface.mainWindow())
+      self.supporters_action.setToolTip(cmd.getToolTipText())
+      cmd.connectQAction(self.supporters_action)
       
       # TEXT
       cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "TEXT"))
@@ -1067,6 +1083,17 @@ class Qad(QObject):
    #============================================================================
    # INIZIO - Gestione MENU (da chiamare prima di creare TOOLBAR)
    #============================================================================
+
+   
+   def createHelpMenu(self):
+      # menu Help
+      helpMenu = QMenu(QadMsg.translate("Command_list", "HELP"))
+      cmd = self.QadCommands.getCommandObj(QadMsg.translate("Command_list", "HELP"))
+      helpMenu.setIcon(cmd.getIcon())
+      helpMenu.addAction(self.help_action)
+      helpMenu.addAction(self.supporters_action)
+      return helpMenu
+   
    def createArcMenu(self):
       # menu Arco
       arcMenu = QMenu(QadMsg.translate("Command_list", "ARC"))
@@ -1219,6 +1246,18 @@ class Qad(QObject):
    #============================================================================
    # INIZIO - Gestione TOOLBAR
    #============================================================================
+   
+   def createHelpToolButton(self):
+      helpToolButton = QToolButton(self.toolBar)
+      helpToolButton.setPopupMode(QToolButton.MenuButtonPopup)
+      helpToolButton.setMenu(self.helpMenu)
+      helpToolButton.setDefaultAction(self.helpMenu.actions()[0]) # prima voce di menu
+      helpToolButton.triggered.connect(self.helpToolButtonTriggered)
+      return helpToolButton
+   def helpToolButtonTriggered(self, action):
+      self.helpToolButton.setDefaultAction(action)
+   
+   
    def createArcToolButton(self):
       arcToolButton = QToolButton(self.toolBar)
       arcToolButton.setPopupMode(QToolButton.MenuButtonPopup)
@@ -1276,8 +1315,8 @@ class Qad(QObject):
 
    def createDimToolBar(self):
       # aggiunge la toolbar per la quotatura
-      toolBar = self.iface.addToolBar(QadMsg.translate("QAD", "QAD - Dimensioning"))
-      toolBar.setObjectName(QadMsg.translate("QAD", "QAD - Dimensioning"))
+      toolBar = self.iface.addToolBar(QadMsg.getQADTitle() + " - " + QadMsg.translate("QAD", "Dimensioning"))
+      toolBar.setObjectName(QadMsg.getQADTitle() + " - " + QadMsg.translate("QAD", "Dimensioning"))
       toolBar.addAction(self.dimLinear_action)
       toolBar.addAction(self.dimAligned_action)
       toolBar.addAction(self.dimArc_action)
@@ -1607,7 +1646,10 @@ class Qad(QObject):
    
    def forceCommandMapToolSnapTypeOnce(self, snapType, snapParams = None):
       self.QadCommands.forceCommandMapToolSnapTypeOnce(snapType, snapParams)
-   
+      
+   def forceCommandMapToolM2P(self):
+      self.QadCommands.forceCommandMapToolM2P()
+
    def refreshCommandMapToolSnapType(self):
       self.QadCommands.refreshCommandMapToolSnapType()
    
@@ -1710,11 +1752,14 @@ class Qad(QObject):
    #============================================================================
    # funzioni per l'avvio di un comando
    #============================================================================
+   
+   
    def runCommandAbortingTheCurrent(self, cmdName):
       self.mainAction.setChecked(True)
       self.canvas.setFocus()
       self.abortCommand()
       self.showEvaluateMsg(cmdName)
+
 
    def runMacroAbortingTheCurrent(self, args):
       self.mainAction.setChecked(True)
@@ -1722,6 +1767,7 @@ class Qad(QObject):
       self.abortCommand()      
       self.runMacro(args)
       
+
    def runIDCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "ID"))
    
@@ -2012,6 +2058,9 @@ class Qad(QObject):
 
    def runHELPCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "HELP"))
+
+   def runSUPPORTERSCommand(self):
+      self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "SUPPORTERS"))
 
    def runLENGTHENCommand(self):
       self.runCommandAbortingTheCurrent(QadMsg.translate("Command_list", "LENGTHEN"))

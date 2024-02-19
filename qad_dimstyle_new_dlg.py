@@ -32,7 +32,7 @@ from .qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog
 
 from .qad_variables import QadVariables
 from .qad_dim import QadDimStyle, QadDimStyles
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_utils
 
 
@@ -49,6 +49,7 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
       self.newDimStyleNameChanged = False
       
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
                  
       self.dimNameList = []
       for dimStyle in QadDimStyles.dimStyleList: # lista degli stili di quotatura caricati
@@ -79,14 +80,14 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
          
    def ButtonBOX_continue(self):
       if self.newDimStyleName.text() in self.dimNameList:
-         QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
+         QMessageBox.critical(self, QadMsg.getQADTitle(), \
                               QadMsg.translate("DimStyle_Dialog", "Dimension style name already existing. Specify a different name."))
          return False
       self.newDimStyle.name = self.newDimStyleName.text()
       self.newDimStyle.description = self.newDimStyleDescr.text()
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.newDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "New dimension style: ") + self.newDimStyle.name
-      Form.setWindowTitle(title)
+      Form.setWindowTitle(QadMsg.getQADTitle() + " - " + title)
       
       if Form.exec_() == QDialog.Accepted:
          self.dimStyle = Form.dimStyle
@@ -96,4 +97,4 @@ class QadDIMSTYLE_NEW_Dialog(QDialog, QObject, qad_dimstyle_new_ui.Ui_DimStyle_N
          QDialog.reject(self)      
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "Dimensioning"))

@@ -516,7 +516,7 @@ class Ui_DimStyle_Details_Dialog(object):
 
     def retranslateUi(self, DimStyle_Details_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DimStyle_Details_Dialog.setWindowTitle(_translate("DimStyle_Details_Dialog", "QAD - Dimension style details"))
+        DimStyle_Details_Dialog.setWindowTitle(_translate("DimStyle_Details_Dialog", "Dimension style details"))
         self.groupBox_5.setTitle(_translate("DimStyle_Details_Dialog", "Lines"))
         self.label_2.setText(_translate("DimStyle_Details_Dialog", "Layer:"))
         self.linearLayerName.setToolTip(_translate("DimStyle_Details_Dialog", "Name of the layer for dimension lines."))

@@ -62,7 +62,7 @@ class Ui_GripColor_Dialog(object):
 
     def retranslateUi(self, GripColor_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        GripColor_Dialog.setWindowTitle(_translate("GripColor_Dialog", "QAD - Grip colors"))
+        GripColor_Dialog.setWindowTitle(_translate("GripColor_Dialog", "Grip colors"))
         self.groupBox.setTitle(_translate("GripColor_Dialog", "Settings"))
         self.label.setText(_translate("GripColor_Dialog", "Unselected grip color:"))
         self.label_2.setText(_translate("GripColor_Dialog", "Hover grip color:"))

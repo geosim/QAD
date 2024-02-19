@@ -32,7 +32,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>QAD - Drawing settings</string>
+   <string>Drawing settings</string>
   </property>
   <property name="modal">
    <bool>true</bool>

@@ -82,7 +82,7 @@ class Ui_PointerInput_Settings_Dialog(object):
 
     def retranslateUi(self, PointerInput_Settings_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        PointerInput_Settings_Dialog.setWindowTitle(_translate("PointerInput_Settings_Dialog", "QAD - Pointer Input Settings"))
+        PointerInput_Settings_Dialog.setWindowTitle(_translate("PointerInput_Settings_Dialog", "Pointer Input Settings"))
         self.groupBox.setTitle(_translate("PointerInput_Settings_Dialog", "Format"))
         self.label.setText(_translate("PointerInput_Settings_Dialog", "For second or next points, default to:"))
         self.radioPolarFmt.setToolTip(_translate("PointerInput_Settings_Dialog", "Displays the tooltip for the second or next point in polar coordinate format. Enter a comma (,) to change to Cartesian format. (DYNPIFORMAT system variable)"))

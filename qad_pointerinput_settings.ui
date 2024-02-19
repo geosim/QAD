@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Pointer Input Settings</string>
+   <string>Pointer Input Settings</string>
   </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">

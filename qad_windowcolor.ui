@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QAD - Drawing window Colors</string>
+   <string>Drawing window Colors</string>
   </property>
   <widget class="QPushButton" name="Button_Cancel">
    <property name="geometry">

@@ -326,7 +326,7 @@ class Ui_DSettings_Dialog(object):
 
     def retranslateUi(self, DSettings_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DSettings_Dialog.setWindowTitle(_translate("DSettings_Dialog", "QAD - Drawing settings"))
+        DSettings_Dialog.setWindowTitle(_translate("DSettings_Dialog", "Drawing settings"))
         self.groupBox.setTitle(_translate("DSettings_Dialog", "Object Snap modes"))
         self.pushButton_SelectALL.setText(_translate("DSettings_Dialog", "Select All"))
         self.pushButton_DeSelectALL.setText(_translate("DSettings_Dialog", "Deselect All"))

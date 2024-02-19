@@ -39,7 +39,7 @@ from .qad_dim import QadDimStyle, QadDimStyleArcSymbolPosEnum, \
                      QadDimStyleTxtVerticalPosEnum, QadDimStyleTxtHorizontalPosEnum, \
                      QadDimStyleTxtDirectionEnum, QadDimStyleTxtRotModeEnum, \
                      QadDimStyleTextBlocksAdjustEnum, QadDimStyleAlignmentEnum
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from . import qad_layer
 from . import qad_utils
 from .qad_arc import QadArc
@@ -70,6 +70,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       self.onInit = False # vero se si è in fase di inizializzazione
       
       self.setupUi(self)
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
       
       self.init_db_tab()
       self.init_lines_tab()
@@ -834,7 +835,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
    ####################################################################
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "Dimensioning"))
 
    def accept(self):
       self.accept_db_tab()
@@ -846,7 +847,7 @@ class QadDIMSTYLE_DETAILS_Dialog(QDialog, QObject, qad_dimstyle_details_ui.Ui_Di
       errMsg = self.dimStyle.getInValidErrMsg()
       if errMsg is not None:
          errMsg += QadMsg.translate("DimStyle_Details_Dialog", "\nDo you want to accepts these settings ?")
-         res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), errMsg, \
+         res = QMessageBox.question(self, QadMsg.getQADTitle(), errMsg, \
                                  QMessageBox.Yes | QMessageBox.No)
          if res == QMessageBox.No:
             return

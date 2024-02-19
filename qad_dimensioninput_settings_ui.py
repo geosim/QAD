@@ -85,7 +85,7 @@ class Ui_DimInput_Settings_Dialog(object):
 
     def retranslateUi(self, DimInput_Settings_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        DimInput_Settings_Dialog.setWindowTitle(_translate("DimInput_Settings_Dialog", "QAD - Dimension Input Settings"))
+        DimInput_Settings_Dialog.setWindowTitle(_translate("DimInput_Settings_Dialog", "Dimension Input Settings"))
         self.okButton.setText(_translate("DimInput_Settings_Dialog", "OK"))
         self.cancelButton.setText(_translate("DimInput_Settings_Dialog", "Cancel"))
         self.helpButton.setText(_translate("DimInput_Settings_Dialog", "?"))

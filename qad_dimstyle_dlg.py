@@ -32,7 +32,7 @@ from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QInputDialog, QMenu, QActi
 from . import qad_dimstyle_ui
 from .qad_variables import QadVariables
 from .qad_dim import QadDimStyles
-from .qad_msg import QadMsg, qadShowPluginHelp
+from .qad_msg import QadMsg, qadShowPluginPDFHelp
 from .qad_dimstyle_new_dlg import QadDIMSTYLE_NEW_Dialog
 from .qad_dimstyle_details_dlg import QadDIMSTYLE_DETAILS_Dialog, QadPreviewDim
 from .qad_dimstyle_diff_dlg import QadDIMSTYLE_DIFF_Dialog
@@ -54,6 +54,8 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       
       self.setupUi(self)
       self.retranslateUi(self) # aggiungo alcune traduzioni personalizzate
+      self.setWindowTitle(QadMsg.getQADTitle() + " - " + self.windowTitle())
+      
       self.dimStyleList.setContextMenuPolicy(Qt.CustomContextMenu)
       
       # aggiungo il canvans di preview della quota chiamato QadPreviewDim 
@@ -144,7 +146,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       if self.selectedDimStyle is None:
          return
       if QadDimStyles.renameDimStyle(self.selectedDimStyle.name, newName) == False:
-         QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
+         QMessageBox.critical(self, QadMsg.getQADTitle(), \
                               QadMsg.translate("DimStyle_Dialog", "Dimension style not renamed."))
       else:
          self.init()
@@ -152,9 +154,9 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
    def updDescrSelectedDimStyle(self):
       if self.selectedDimStyle is None:
          return
-      Title = QadMsg.translate("DimStyle_Dialog", "QAD - Editing dimension style description: ") + self.selectedDimStyle.name
+      title = QadMsg.translate("DimStyle_Dialog", "Editing dimension style description: ") + self.selectedDimStyle.name
       inputDlg = QInputDialog(self)
-      inputDlg.setWindowTitle(Title)                 
+      inputDlg.setWindowTitle(QadMsg.getQADTitle() + " - " + title)                 
       inputDlg.setInputMode(QInputDialog.TextInput) 
       inputDlg.setLabelText(QadMsg.translate("DimStyle_Dialog", "New description:"))
       inputDlg.setTextValue(self.selectedDimStyle.description)
@@ -168,11 +170,11 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       if self.selectedDimStyle is None:
          return
       msg = QadMsg.translate("DimStyle_Dialog", "Remove dimension style {0} ?").format(self.selectedDimStyle.name)
-      res = QMessageBox.question(self, QadMsg.translate("QAD", "QAD"), msg, \
+      res = QMessageBox.question(self, QadMsg.getQADTitle(), msg, \
                                  QMessageBox.Yes | QMessageBox.No)
       if res == QMessageBox.Yes:
          if QadDimStyles.removeDimStyle(self.selectedDimStyle.name, True) == False:
-            QMessageBox.critical(self, QadMsg.translate("QAD", "QAD"), \
+            QMessageBox.critical(self, QadMsg.getQADTitle(), \
                                  QadMsg.translate("DimStyle_Dialog", "Dimension style not removed."))
          else:
             self.selectedDimStyle = None
@@ -199,7 +201,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
       
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Modify dimension style: ") + self.selectedDimStyle.name
-      Form.setWindowTitle(title)
+      Form.setWindowTitle(QadMsg.getQADTitle() + " - " + title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
          self.selectedDimStyle.save()
@@ -216,7 +218,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
 
       Form = QadDIMSTYLE_DETAILS_Dialog(self.plugIn, self, self.selectedDimStyle)
       title = QadMsg.translate("DimStyle_Dialog", "Set temporary overrides to dimension style: ") + self.selectedDimStyle.name
-      Form.setWindowTitle(title)
+      Form.setWindowTitle(QadMsg.getQADTitle() + " - " + title)
       if Form.exec_() == QDialog.Accepted:
          self.selectedDimStyle.set(Form.dimStyle)
          self.init()
@@ -251,7 +253,7 @@ class QadDIMSTYLEDialog(QDialog, QObject, qad_dimstyle_ui.Ui_DimStyle_Dialog):
 
 
    def ButtonHELP_Pressed(self):
-      qadShowPluginHelp(QadMsg.translate("Help", "Dimensioning"))
+      qadShowPluginPDFHelp(QadMsg.translate("Help", "Dimensioning"))
 
 
    #============================================================================

@@ -1022,6 +1022,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True,  None, False)):
                entity.set(layer, feature.id())
                result.addEntity(entity)
+               
          elif mode.upper() == "C": # crossing selection
             p1 = mQgsMapTool.toLayerCoordinates(layer, points[0])
             p2 = mQgsMapTool.toLayerCoordinates(layer, points[1])
@@ -1031,6 +1032,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             for feature in layer.getFeatures(qad_utils.getFeatureRequest([], True, selectRect, True)):
                entity.set(layer, feature.id())
                result.addEntity(entity)
+               
          elif mode.upper() == "W": # window selection
             p1 = mQgsMapTool.toLayerCoordinates(layer, points[0])
             p2 = mQgsMapTool.toLayerCoordinates(layer, points[1])
@@ -1043,6 +1045,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                if g.contains(feature.geometry()):
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
+                  
          elif mode.upper() == "CP": # crossing polygon
             polyline = []      
             for point in points:
@@ -1056,6 +1059,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                if g.intersects(feature.geometry()):                     
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
+                  
          elif mode.upper() == "WP": # windows polygon
             polyline = []      
             for point in points:
@@ -1069,6 +1073,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                if g.contains(feature.geometry()):                     
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
+                  
          elif mode.upper() == "CO": # crossing object
             # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
@@ -1101,6 +1106,7 @@ def getSelSet(mode, mQgsMapTool, points = None, \
                if g.intersects(feature.geometry()):
                   entity.set(layer, feature.id())
                   result.addEntity(entity)
+                  
          elif mode.upper() == "WO": # windows object
             # points é in questo caso un QgsGeometry  
             g = QgsGeometry(points)
@@ -1125,12 +1131,32 @@ def getSelSet(mode, mQgsMapTool, points = None, \
             else:
                # fetchAttributes, fetchGeometry, rectangle, useIntersect
                request = qad_utils.getFeatureRequest([], True, g.boundingBox(), True)
+                  
+            gList = []      
+            if g.type() == QgsWkbTypes.LineGeometry:               
+               polygon = QadPolygon()
+               
+               if g.isMultipart() == False:
+                  # se g è una linestring allora provo a convertirla in un poligono
+                  if polygon.fromPolygon([g.asPolyline()]) == True:
+                     gList.append(QgsGeometry.fromPolygonXY(polygon.asPolygon()))
+               else:               
+                  # se g è una multilinestring allora provo a convertirla in una lista di poligoni se le linestring sono chiuse
+                  multipolyline = g.asMultiPolyline()
+                  for polyline in multipolyline:      
+                     if polygon.fromPolygon([polyline]) == True:
+                        gList.append(QgsGeometry.fromPolygonXY(polygon.asPolygon()))
+            else: # se non è una linestring
+               if g.type() == QgsWkbTypes.PolygonGeometry:
+                  gList.append(g)    
             
             # solo le feature completamente interne all'oggetto
-            for feature in layer.getFeatures(request):                           
-               if g.contains(feature.geometry()):                     
-                  entity.set(layer, feature.id())
-                  result.addEntity(entity)
+            for feature in layer.getFeatures(request):
+               for g in gList:                         
+                  if g.contains(feature.geometry()):                     
+                     entity.set(layer, feature.id())
+                     result.addEntity(entity)
+                     
          elif mode.upper() == "F": # fence
             polyline = []      
             for point in points:
