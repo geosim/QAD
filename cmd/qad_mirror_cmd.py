@@ -192,7 +192,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_mirror_maptool_ModeEnum.NONE_KNOWN_ASK_FOR_FIRST_PT)                                
    
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "))
+         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "), None, QadInputModeEnum.NOT_NULL)
          self.step = 2      
          return False
          
@@ -207,7 +207,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
-                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "))
+                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify first point of mirror line: "), None, QadInputModeEnum.NOT_NULL)
                   return False
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
@@ -224,7 +224,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          self.getPointMapTool().setMode(Qad_mirror_maptool_ModeEnum.FIRST_PT_KNOWN_ASK_FOR_SECOND_PT)                                
          
          # si appresta ad attendere un punto
-         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
+         self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "), None, QadInputModeEnum.NOT_NULL)
          self.step = 3
          
          return False 
@@ -240,7 +240,7 @@ class QadMIRRORCommandClass(QadCommandClass):
             if self.getPointMapTool().point is None: # il maptool é stato attivato senza un punto
                if self.getPointMapTool().rightButton == True: # se usato il tasto destro del mouse
                   # si appresta ad attendere un punto
-                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
+                  self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "), None, QadInputModeEnum.NOT_NULL)
                else:
                   self.setMapTool(self.getPointMapTool()) # riattivo il maptool
                   return False
@@ -252,7 +252,7 @@ class QadMIRRORCommandClass(QadCommandClass):
          if qad_utils.ptNear(self.firstMirrorPt, value):
             self.showMsg(QadMsg.translate("Command_MIRROR", "\nThe points must be different."))
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "))
+            self.waitForPoint(QadMsg.translate("Command_MIRROR", "Specify second point of mirror line: "), None, QadInputModeEnum.NOT_NULL)
             return False
          
          self.secondMirrorPt.set(value.x(), value.y())

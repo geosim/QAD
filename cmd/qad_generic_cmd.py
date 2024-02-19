@@ -97,7 +97,7 @@ class QadCommandClass(QObject): # derivato da QObject per gestire il metodo send
       else:
          return None
 
-
+      
    def getCurrentContextualMenu(self):
       return self.contextualMenu
 
@@ -114,7 +114,7 @@ class QadCommandClass(QObject): # derivato da QObject per gestire il metodo send
 
 
    def waitForPoint(self, msg = QadMsg.translate("QAD", "Specify point: "), \
-                    default = None, inputMode = QadInputModeEnum.NONE):
+                    default = None, inputMode = QadInputModeEnum.NOT_NULL):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.POINT2D, default, "", inputMode)
@@ -132,19 +132,19 @@ class QadCommandClass(QObject): # derivato da QObject per gestire il metodo send
       self.showInputMsg(msg, QadInputTypeEnum.INT, default, "", inputMode)
 
 
-   def waitForLong(self, msg, default = None, inputMode = QadInputModeEnum.NONE):
+   def waitForLong(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.LONG, default, "", inputMode)
 
 
-   def waitForFloat(self, msg, default = None, inputMode = QadInputModeEnum.NONE):
+   def waitForFloat(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.FLOAT, default, "", inputMode)
 
 
-   def waitForBool(self, msg, default = None, inputMode = QadInputModeEnum.NONE):
+   def waitForBool(self, msg, default = None, inputMode = QadInputModeEnum.NOT_NULL):
       self.setMapTool(self.getPointMapTool())
       # setto l'input via finestra di testo
       self.showInputMsg(msg, QadInputTypeEnum.BOOL, default, "", inputMode)
@@ -482,6 +482,13 @@ class QadOsnapContextualMenuClass(QMenu):
    def initActions(self):
       self.delActions()
 
+      msg = QadMsg.translate("Snap", "Midpoint between 2 points")
+      M2PAction = QAction(msg, self)
+      self.addAction(M2PAction)
+      self.connections.append([M2PAction, self.addM2PActionByPopupMenu])
+      
+      self.addSeparator()
+
       msg = QadMsg.translate("DSettings_Dialog", "Start / End")
       icon = QIcon(":/plugins/qad/icons/osnap_endLine.png")
       if icon is None:
@@ -654,6 +661,8 @@ class QadOsnapContextualMenuClass(QMenu):
 #       QadVariables.save()
 #       self.plugIn.refreshCommandMapToolSnapType()
          
+   def addM2PActionByPopupMenu(self):
+      self.plugIn.showEvaluateMsg("_M2P")      
    def addEndLineSnapTypeByPopupMenu(self):
       self.addSnapTypeByPopupMenu(QadSnapTypeEnum.END_PLINE)
    def addEndSnapTypeByPopupMenu(self):

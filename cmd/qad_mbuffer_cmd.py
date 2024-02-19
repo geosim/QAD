@@ -257,7 +257,7 @@ class QadMBUFFERCommandClass(QadCommandClass):
             self.getPointMapTool().setMode(Qad_mbuffer_maptool_ModeEnum.FIRST_PT_ASK_FOR_BUFFER_WIDTH)
          
             # si appresta ad attendere un punto
-            self.waitForPoint(QadMsg.translate("Command_MBUFFER", "Specify second point: "))
+            self.waitForPoint(QadMsg.translate("Command_MBUFFER", "Specify second point: "), None, QadInputModeEnum.NOT_NULL)
             self.step = 3
             return False            
          else:

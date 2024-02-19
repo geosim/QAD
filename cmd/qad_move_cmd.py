@@ -129,7 +129,6 @@ class QadMOVECommandClass(QadCommandClass):
       
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
-      openForm = True if self.cacheEntitySet.count() == 1 else False
       
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
@@ -140,7 +139,7 @@ class QadMOVECommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.move(entity, offsetX, offsetY, openForm) == False:
+         if self.move(entity, offsetX, offsetY) == False:
             self.plugIn.destroyEditCommand()
             return
                
@@ -372,6 +371,8 @@ class QadGRIPMOVECommandClass(QadCommandClass):
 
       dimElaboratedList = [] # lista delle quotature già elaborate
       entityIterator = QadCacheEntitySetIterator(self.cacheEntitySet)
+      openForm = True if self.cacheEntitySet.count() == 1 else False
+      
       for entity in entityIterator:
          qadGeom = entity.getQadGeom() # così inizializzo le info qad
          # verifico se l'entità appartiene ad uno stile di quotatura
@@ -381,7 +382,7 @@ class QadGRIPMOVECommandClass(QadCommandClass):
                continue
             entity = dimEntity
 
-         if self.move(entity, offsetX, offsetY) == False:
+         if self.move(entity, offsetX, offsetY, openForm) == False:
             self.plugIn.destroyEditCommand()
             return
                
