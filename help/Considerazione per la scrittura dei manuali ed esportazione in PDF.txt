@@ -1,0 +1,19 @@
+Considerazione per la scrittura dei manuali ed esportazione in PDF.
+
+Tutti i paragrafi che dovranno avere accesso diretto devo avere un segnalibro.
+Il nome del segnalibro non deve contenere spazi oppure _ (" ", "_") ed incominciare con una lettera. 
+Nominare il segnalibro come il paragrafo togliendo gli spazi o i _ ed usando le lettere maiuscole per separare le parole(es. "Importazione dati da DB Oracle" diventa "ImportazioneDatiDaDBOracle"
+
+Quando si vuole esportare in PDF:
+in OpenOffice writer 
+menu File
+voce Esporta nel formato PDF...
+
+-Pagina Generale
+Esporta segnalibri
+
+-Pagina Collegamenti
+Esporta segnalibri come segnaposto PDF
+
+-Pagina Visualizzazione iniziale
+Segnalibri e pagina
