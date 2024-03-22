@@ -37,7 +37,7 @@ from .qad_cmd_aliases import *
 from .qad_variables import QadVariables
 
 from .qad_getpoint import *
-from .qad_utils import decriptPlainText
+from .qad_utils import decriptPlainText, getQADPath
 from .cmd.qad_generic_cmd import QadCommandClass
 from .cmd.qad_id_cmd import QadIDCommandClass
 from .cmd.qad_setcurrlayerbygraph_cmd import QadSETCURRLAYERBYGRAPHCommandClass, QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass
@@ -704,8 +704,7 @@ def incrementDailyCmdCounter():
 
 def getMaxDailyCmdCounter():
    try:
-      path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "python/plugins/qad")
-      path = path + "/" + "auth.ini"
+      path = getQADPath() + "/" + "auth.ini"
       f = open(path, "r")
       line = f.readline()
       f.close()

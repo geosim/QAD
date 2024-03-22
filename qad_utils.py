@@ -22,7 +22,6 @@
  ***************************************************************************/
 """
 
-
 from qgis.PyQt.QtCore import QVariant, QDir
 from qgis.PyQt.QtGui  import QCursor, QPixmap, QColor, QFont, QPalette
 from qgis.PyQt.QtWidgets import QToolTip, QMessageBox, QApplication
@@ -657,6 +656,18 @@ def findFile(fileName):
             return _dir
 
    return ""
+
+   return s
+
+
+#===============================================================================
+# getQADPath
+#===============================================================================
+def getQADPath():
+   """
+   Restituisce la path di installazione di QAD
+   """
+   return os.path.dirname(os.path.realpath(__file__))
 
 
 #===============================================================================
