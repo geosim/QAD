@@ -37,7 +37,7 @@ from .qad_cmd_aliases import *
 from .qad_variables import QadVariables
 
 from .qad_getpoint import *
-from .qad_utils import decriptPlainText, getMacAddress
+from .qad_utils import decriptPlainText
 from .cmd.qad_generic_cmd import QadCommandClass
 from .cmd.qad_id_cmd import QadIDCommandClass
 from .cmd.qad_setcurrlayerbygraph_cmd import QadSETCURRLAYERBYGRAPHCommandClass, QadSETCURRUPDATEABLELAYERBYGRAPHCommandClass
@@ -247,9 +247,8 @@ class QadCommandsClass():
    
          if command != QadMsg.translate("Command_list", "SUPPORTERS"):
             if incrementDailyCmdCounter() > self.plugIn.maxDailyCmdCounter: 
-               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?"), \
+               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, your reasonable donation will allow us to adapt the product to your needs. Do you want to donate ?"), \
                                        QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-                  QMessageBox.information(None, "QAD", QadMsg.translate("QAD", "You will need your mac address which is " + getMacAddress()))
                   command = "_SUPPORTERS";
                else:
                   return
@@ -312,9 +311,8 @@ class QadCommandsClass():
 
          if args[0] != QadMsg.translate("Command_list", "SUPPORTERS"):
             if incrementDailyCmdCounter() > self.plugIn.maxDailyCmdCounter: 
-               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?"), \
+               if QMessageBox.critical(None, "QAD", QadMsg.translate("QAD", "You have run out of daily commands available for this version of QAD, your reasonable donation will allow us to adapt the product to your needs. Do you want to donate ?"), \
                                        QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-                  QMessageBox.information(None, "QAD", QadMsg.translate("QAD", "You will need your mac address which is " + getMacAddress()))
                   args[0] = "_SUPPORTERS";
                else:
                   return

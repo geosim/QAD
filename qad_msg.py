@@ -187,7 +187,7 @@ def qadShowSupportersPage():
    show the supporter members page in the user's html browser.
    """   
    try:
-      webbrowser.open_new("https://qgis.org/en/site/about/sustaining_members.html")
+      webbrowser.open_new("https://qadplugin.wordpress.com/donations")
    except:
       return
 

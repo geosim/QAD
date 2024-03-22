@@ -245,7 +245,7 @@ class Ui_Options_Dialog(object):
         self.tabWidget.addTab(self.SelectionTab, "")
 
         self.retranslateUi(Options_Dialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         self.buttonBox.accepted.connect(Options_Dialog.ButtonBOX_Accepted)
         self.buttonBox.clicked['QAbstractButton*'].connect(Options_Dialog.ButtonBOX_Apply)
         self.buttonBox.helpRequested.connect(Options_Dialog.ButtonHELP_Pressed)
@@ -334,7 +334,7 @@ class Ui_Options_Dialog(object):
         self.horizontalSlider_AUTOSNAPSIZE.setToolTip(_translate("Options_Dialog", "Sets the display size for the AutoSnap marker."))
         self.groupBox_7.setTitle(_translate("Options_Dialog", "Aperture Size"))
         self.horizontalSlider_APERTURE.setToolTip(_translate("Options_Dialog", "Sets the display size for the object snap target box, in pixels (APERTURE system variable)."))
-        self.button_DraftingTootipSettings.setToolTip(_translate("Options_Dialog", "Displays the Drafting Tooltip dialog box. "))
+        self.button_DraftingTootipSettings.setToolTip(_translate("Options_Dialog", "Displays the Drafting Tooltip dialog box."))
         self.button_DraftingTootipSettings.setText(_translate("Options_Dialog", "Drafting Tooltip settings..."))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.DraftingTab), _translate("Options_Dialog", "Drafting"))
         self.groupBox_8.setTitle(_translate("Options_Dialog", "Pickbox size"))

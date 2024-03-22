@@ -16,7 +16,7 @@ description=Quantum Aided Design: cad like commands in QGIS
 about=Quantum Aided Design: cad like commands in QGIS
 version=3.0.6
 tracker=https://github.com/gam17/QAD/issues
-repository=https://github.com/gam17/QAD
+repository=https://qadplugin.wordpress.com
 
 # end of mandatory metadata
 
