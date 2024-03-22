@@ -27,6 +27,7 @@
 from qgis.PyQt.QtGui  import *
 
 
+from ..qad_utils import getMacAddress
 from .qad_generic_cmd import QadCommandClass
 from ..qad_msg import QadMsg, qadShowPluginPDFHelp, qadShowSupportersPage
 
@@ -89,5 +90,6 @@ class QadSUPPORTERSCommandClass(QadCommandClass):
       QadCommandClass.__init__(self, plugIn)
         
    def run(self, msgMapTool = False, msg = None):
+      self.showMsg("\nYour mac address is " + getMacAddress())
       qadShowSupportersPage()       
       return True
