@@ -2515,6 +2515,13 @@ found {0}</source>
     </message>
 </context>
 <context>
+    <name>Command_SUPPORTERS</name>
+    <message>
+        <source>The QAD supporting members page will be showed.</source>
+        <translation>La page des membres soutenant QAD sera affichée.</translation>
+    </message>
+</context>
+<context>
     <name>Command_TEXT</name>
     <message>
         <source>Inserts a text.</source>
@@ -2835,6 +2842,10 @@ Une marque ne peut pas être insérée dans un groupe.</translation>
         <source>ELLIPSE</source>
         <translation>ELLIPSE</translation>
     </message>
+    <message>
+        <source>SUPPORTERS</source>
+        <translation>PARTISANS</translation>
+    </message>
 </context>
 <context>
     <name>ContextualCmdMenu</name>
@@ -2868,7 +2879,7 @@ Une marque ne peut pas être insérée dans un groupe.</translation>
     </message>
     <message>
         <source>QAD - Drawing settings</source>
-        <translation>QAD - Paramètres de dessin</translation>
+        <translation type="vanished">QAD - Paramètres de dessin</translation>
     </message>
     <message>
         <source>Object Snap</source>
@@ -3342,12 +3353,16 @@ pres des réticules</translation>
         <source>Angle already in list</source>
         <translation>Angle déjà sur la liste</translation>
     </message>
+    <message>
+        <source>Drawing settings</source>
+        <translation>Paramètres de dessin</translation>
+    </message>
 </context>
 <context>
     <name>DimInput_Settings_Dialog</name>
     <message>
         <source>QAD - Dimension Input Settings</source>
-        <translation>QAD - Paramètres de saisie de cote</translation>
+        <translation type="vanished">QAD - Paramètres de saisie de cote</translation>
     </message>
     <message>
         <source>OK</source>
@@ -3429,6 +3444,10 @@ pres des réticules</translation>
         <source>Press TAB to switch to the next dimension input field</source>
         <translation>Appuyez sur TAB pour passer au champ de saisie de cote suivant</translation>
     </message>
+    <message>
+        <source>Dimension Input Settings</source>
+        <translation>Paramètres de saisie de cote</translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Details_Dialog</name>
@@ -3486,7 +3505,7 @@ pres des réticules</translation>
     </message>
     <message>
         <source>QAD - Dimension style details</source>
-        <translation>QAD - Paramètres du style de cote</translation>
+        <translation type="vanished">QAD - Paramètres du style de cote</translation>
     </message>
     <message>
         <source>Lines</source>
@@ -4072,6 +4091,10 @@ Validez-vous ces paramètres ?</translation>
         <source>Size of the center mark or centerline.</source>
         <translation>Taille d&apos;une marque de centre ou un trait d&apos;axe.</translation>
     </message>
+    <message>
+        <source>Dimension style details</source>
+        <translation>Détails du style de cote</translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Dialog</name>
@@ -4081,7 +4104,7 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>QAD - Dimension style manager</source>
-        <translation>QAD - gestion des styles de cote</translation>
+        <translation type="vanished">QAD - gestion des styles de cote</translation>
     </message>
     <message>
         <source>Current dimension style:</source>
@@ -4168,7 +4191,7 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>QAD - Editing dimension style description: </source>
-        <translation>QAD - Édition de la description du style de cote : </translation>
+        <translation type="vanished">QAD - Édition de la description du style de cote : </translation>
     </message>
     <message>
         <source>New description:</source>
@@ -4210,6 +4233,14 @@ Validez-vous ces paramètres ?</translation>
         <source>New dimension style: </source>
         <translation>Nouveau style de cote : </translation>
     </message>
+    <message>
+        <source>Dimension style manager</source>
+        <translation>Gestion des styles de cote</translation>
+    </message>
+    <message>
+        <source>Editing dimension style description: </source>
+        <translation>Édition de la description du style de cote: </translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_Diff_Dialog</name>
@@ -4223,7 +4254,7 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>QAD - Compare dimension styles</source>
-        <translation>QAD - comparer les styles de cote</translation>
+        <translation type="vanished">QAD - comparer les styles de cote</translation>
     </message>
     <message>
         <source>Compare:</source>
@@ -4265,6 +4296,10 @@ Validez-vous ces paramètres ?</translation>
         <source>Found {0} differences: </source>
         <translation>Trouvé {1} différences : </translation>
     </message>
+    <message>
+        <source>Compare dimension styles</source>
+        <translation>Comparer les styles de cote</translation>
+    </message>
 </context>
 <context>
     <name>DimStyle_New_Dialog</name>
@@ -4274,7 +4309,7 @@ Validez-vous ces paramètres ?</translation>
     </message>
     <message>
         <source>QAD - Create new dimension style</source>
-        <translation>QAD - Créer un nouveau style de cote</translation>
+        <translation type="vanished">QAD - Créer un nouveau style de cote</translation>
     </message>
     <message>
         <source>New style name:</source>
@@ -4295,6 +4330,10 @@ Validez-vous ces paramètres ?</translation>
     <message>
         <source>Description:</source>
         <translation>Description:</translation>
+    </message>
+    <message>
+        <source>Create new dimension style</source>
+        <translation>Créer un nouveau style de cote</translation>
     </message>
 </context>
 <context>
@@ -5430,7 +5469,7 @@ Vous devez activer la variable système SELECTIONAREA pour afficher la couleur.<
     <name>GripColor_Dialog</name>
     <message>
         <source>QAD - Grip colors</source>
-        <translation>QAD - Couleur des poignées</translation>
+        <translation type="vanished">QAD - Couleur des poignées</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -5452,6 +5491,10 @@ Vous devez activer la variable système SELECTIONAREA pour afficher la couleur.<
         <source>Grip contour color:</source>
         <translation>Couleur du contour de poignée :</translation>
     </message>
+    <message>
+        <source>Grip colors</source>
+        <translation>Couleur des poignées</translation>
+    </message>
 </context>
 <context>
     <name>Help</name>
@@ -5472,7 +5515,7 @@ Vous devez activer la variable système SELECTIONAREA pour afficher la couleur.<
     <name>Options_Dialog</name>
     <message>
         <source>QAD - Options</source>
-        <translation>QAD - Options</translation>
+        <translation type="vanished">QAD - Options</translation>
     </message>
     <message>
         <source>Display</source>
@@ -5848,12 +5891,16 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
         <source>Displays the Drafting Tooltip dialog box.</source>
         <translation>Paramètres des info-bulles de dessin.</translation>
     </message>
+    <message>
+        <source>Options</source>
+        <translation>Options</translation>
+    </message>
 </context>
 <context>
     <name>PointerInput_Settings_Dialog</name>
     <message>
         <source>QAD - Pointer Input Settings</source>
-        <translation>QAD - Paramètres de saisie de pointeur</translation>
+        <translation type="vanished">QAD - Paramètres de saisie de pointeur</translation>
     </message>
     <message>
         <source>Format</source>
@@ -5930,6 +5977,10 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
     <message>
         <source>?</source>
         <translation>?</translation>
+    </message>
+    <message>
+        <source>Pointer Input Settings</source>
+        <translation>Paramètres de saisie de pointeu</translation>
     </message>
 </context>
 <context>
@@ -6028,7 +6079,7 @@ Cette boîte de dialogue permet de compléter la définition des menu contextuel
     </message>
     <message>
         <source>QAD - Dimensioning</source>
-        <translation>QAD - Cotation</translation>
+        <translation type="vanished">QAD - Cotation</translation>
     </message>
     <message>
         <source>Command: </source>
@@ -6407,12 +6458,16 @@ Ambiguous answer: specify with more clarity...</source>
         <translation>
 Réponse ambiguë: précisez avec plus de clarté...</translation>
     </message>
+    <message>
+        <source>You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?</source>
+        <translation>Vous n&apos;avez plus de commandes quotidiennes disponibles pour cette version de QAD, pourriez-vous penser à faire un don pour obtenir la version illimitée ?</translation>
+    </message>
 </context>
 <context>
     <name>RightClick_Dialog</name>
     <message>
         <source>QAD - Right click customization</source>
-        <translation>QAD - Personnalisation du bouton droit de la souris</translation>
+        <translation type="vanished">QAD - Personnalisation du bouton droit de la souris</translation>
     </message>
     <message>
         <source>Controls right-click behavior. A quick click is the same as pressing Enter. A longer click displays a shortcut menu. You can set the duration of the longer click in milliseconds.</source>
@@ -6531,6 +6586,17 @@ Si aucune option n&apos;est disponible, cliquer avec le bouton droit produit le 
     <message>
         <source>Disables the Command shortcut menu. As a result, right-clicking in the drawing area when a command is in progress is the same as pressing Enter.</source>
         <translation>Désactive le menu contextuel de commande. Le fait de cliquer dans la zone de dessin avec le bouton droit de la souris alors qu&apos;une com­mande est en cours revient à appuyer sur ENTREE.</translation>
+    </message>
+    <message>
+        <source>Right click customization</source>
+        <translation>Personnalisation du bouton droit de la souris</translation>
+    </message>
+</context>
+<context>
+    <name>SUPPORTER</name>
+    <message>
+        <source>SUPPORTER WANTED</source>
+        <translation>SUPPORTEUR RECHERCHÉ</translation>
     </message>
 </context>
 <context>
@@ -6667,19 +6733,39 @@ Si aucune option n&apos;est disponible, cliquer avec le bouton droit produit le 
         <source>Intersection on extension</source>
         <translation>Intersection aux extensions</translation>
     </message>
+    <message>
+        <source>Midpoint between 2 points</source>
+        <translation>Milieu de 2 points</translation>
+    </message>
+    <message>
+        <source>M2P</source>
+        <translation>M2P</translation>
+    </message>
+    <message>
+        <source>First point of mid: </source>
+        <translation>Premier point du milieu: </translation>
+    </message>
+    <message>
+        <source>Second point of mid: </source>
+        <translation>Deuxième point du milieu: </translation>
+    </message>
 </context>
 <context>
     <name>Text_window</name>
     <message>
         <source>QAD text window</source>
-        <translation>QAD fenêtre de commandes</translation>
+        <translation type="vanished">QAD fenêtre de commandes</translation>
+    </message>
+    <message>
+        <source>Text window</source>
+        <translation>Fenêtre de commandes</translation>
     </message>
 </context>
 <context>
     <name>ToolTipAppearance_Dialog</name>
     <message>
         <source>QAD - Tooltip appearance</source>
-        <translation>QAD - Apparence des info-bulles</translation>
+        <translation type="vanished">QAD - Apparence des info-bulles</translation>
     </message>
     <message>
         <source>Displays the Drawing Window Colors dialog box, where you can specify a color for drafting tooltips and their backgrounds in a specified context.</source>
@@ -6729,6 +6815,10 @@ Si aucune option n&apos;est disponible, cliquer avec le bouton droit produit le 
     <message>
         <source>Use settings only for Dynamic Input tooltips</source>
         <translation>Utiliser paramètres pour info-bulles de saisie dynamique seulement</translation>
+    </message>
+    <message>
+        <source>Tooltip appearance</source>
+        <translation>Apparence des info-bulles</translation>
     </message>
 </context>
 <context>
@@ -6830,7 +6920,7 @@ Si aucune option n&apos;est disponible, cliquer avec le bouton droit produit le 
     </message>
     <message>
         <source>QAD - Drawing window Colors</source>
-        <translation>QAD - Couleurs de la fenêtre de dessin</translation>
+        <translation type="vanished">QAD - Couleurs de la fenêtre de dessin</translation>
     </message>
     <message>
         <source>Dynamic dimension lines</source>
@@ -6847,6 +6937,10 @@ Si aucune option n&apos;est disponible, cliquer avec le bouton droit produit le 
     <message>
         <source>Drafting tool tip background</source>
         <translation>Fond de info-bulles de dessin</translation>
+    </message>
+    <message>
+        <source>Drawing window Colors</source>
+        <translation>Couleurs de la fenêtre de dessin</translation>
     </message>
 </context>
 </TS>
