@@ -1815,7 +1815,7 @@ The points must be different.</source>
 <context>
     <name>Command_HELP</name>
     <message>
-        <location filename="../cmd/qad_help_cmd.py" line="55"/>
+        <location filename="../cmd/qad_help_cmd.py" line="58"/>
         <source>The QAD manual will be showed.</source>
         <translation></translation>
     </message>
@@ -3521,7 +3521,7 @@ found {0}</source>
 <context>
     <name>Command_SUPPORTERS</name>
     <message>
-        <location filename="../cmd/qad_help_cmd.py" line="86"/>
+        <location filename="../cmd/qad_help_cmd.py" line="89"/>
         <source>The QAD supporting members page will be showed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3979,7 +3979,7 @@ A mark can&apos;t be inserted into a group.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../cmd/qad_help_cmd.py" line="42"/>
+        <location filename="../cmd/qad_help_cmd.py" line="45"/>
         <location filename="../qad.py" line="915"/>
         <location filename="../qad.py" line="1090"/>
         <location filename="../qad.py" line="1091"/>
@@ -3988,11 +3988,11 @@ A mark can&apos;t be inserted into a group.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../cmd/qad_help_cmd.py" line="73"/>
+        <location filename="../cmd/qad_help_cmd.py" line="76"/>
         <location filename="../qad.py" line="1041"/>
         <location filename="../qad.py" line="2063"/>
         <location filename="../qad_commands.py" line="248"/>
-        <location filename="../qad_commands.py" line="313"/>
+        <location filename="../qad_commands.py" line="312"/>
         <source>SUPPORTERS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6287,7 +6287,7 @@ The dimension style &quot;{0}&quot; </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="643"/>
+        <location filename="../qad_utils.py" line="642"/>
         <location filename="../qad_variables.py" line="1022"/>
         <source>SUPPORTPATH</source>
         <translation></translation>
@@ -6333,7 +6333,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_dsettings_dlg.py" line="690"/>
         <location filename="../qad_dsettings_dlg.py" line="746"/>
         <location filename="../qad_dynamicinput.py" line="108"/>
-        <location filename="../qad_utils.py" line="140"/>
+        <location filename="../qad_utils.py" line="139"/>
         <location filename="../qad_variables.py" line="1083"/>
         <source>TOOLTIPSIZE</source>
         <translation></translation>
@@ -6355,7 +6355,7 @@ The dimension style &quot;{0}&quot; </source>
     <message>
         <location filename="../qad_dsettings_dlg.py" line="667"/>
         <location filename="../qad_dsettings_dlg.py" line="754"/>
-        <location filename="../qad_utils.py" line="139"/>
+        <location filename="../qad_utils.py" line="138"/>
         <location filename="../qad_variables.py" line="537"/>
         <source>DYNTOOLTIPS</source>
         <translation></translation>
@@ -6366,7 +6366,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_dynamicinput.py" line="624"/>
         <location filename="../qad_dynamicinput.py" line="805"/>
         <location filename="../qad_dynamicinput.py" line="1021"/>
-        <location filename="../qad_utils.py" line="145"/>
+        <location filename="../qad_utils.py" line="144"/>
         <location filename="../qad_variables.py" line="436"/>
         <location filename="../qad_windowcolor_dlg.py" line="186"/>
         <location filename="../qad_windowcolor_dlg.py" line="495"/>
@@ -6379,7 +6379,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_dynamicinput.py" line="625"/>
         <location filename="../qad_dynamicinput.py" line="806"/>
         <location filename="../qad_dynamicinput.py" line="1022"/>
-        <location filename="../qad_utils.py" line="146"/>
+        <location filename="../qad_utils.py" line="145"/>
         <location filename="../qad_variables.py" line="447"/>
         <location filename="../qad_windowcolor_dlg.py" line="196"/>
         <location filename="../qad_windowcolor_dlg.py" line="486"/>
@@ -6440,7 +6440,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_options_dlg.py" line="519"/>
         <location filename="../qad_options_dlg.py" line="571"/>
         <location filename="../qad_rubberband.py" line="60"/>
-        <location filename="../qad_utils.py" line="810"/>
+        <location filename="../qad_utils.py" line="821"/>
         <location filename="../qad_variables.py" line="879"/>
         <source>PICKBOX</source>
         <translation></translation>
@@ -6497,8 +6497,8 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_options_dlg.py" line="746"/>
         <location filename="../qad_rubberband.py" line="59"/>
         <location filename="../qad_rubberband.py" line="88"/>
-        <location filename="../qad_utils.py" line="816"/>
-        <location filename="../qad_utils.py" line="844"/>
+        <location filename="../qad_utils.py" line="827"/>
+        <location filename="../qad_utils.py" line="855"/>
         <location filename="../qad_variables.py" line="890"/>
         <location filename="../qad_windowcolor_dlg.py" line="166"/>
         <location filename="../qad_windowcolor_dlg.py" line="445"/>
@@ -6521,7 +6521,7 @@ The dimension style &quot;{0}&quot; </source>
         <location filename="../qad_options_dlg.py" line="320"/>
         <location filename="../qad_rubberband.py" line="66"/>
         <location filename="../qad_rubberband.py" line="79"/>
-        <location filename="../qad_utils.py" line="837"/>
+        <location filename="../qad_utils.py" line="848"/>
         <location filename="../qad_variables.py" line="367"/>
         <source>CURSORSIZE</source>
         <translation></translation>
@@ -7539,13 +7539,13 @@ Negative values represent smaller sizes than the default.</source>
         <location filename="../qad_options_dlg.py" line="203"/>
         <location filename="../qad_options_dlg.py" line="272"/>
         <location filename="../qad_stretch_fun.py" line="55"/>
-        <location filename="../qad_utils.py" line="1749"/>
-        <location filename="../qad_utils.py" line="1764"/>
-        <location filename="../qad_utils.py" line="1780"/>
-        <location filename="../qad_utils.py" line="1795"/>
-        <location filename="../qad_utils.py" line="1810"/>
-        <location filename="../qad_utils.py" line="1825"/>
-        <location filename="../qad_utils.py" line="1840"/>
+        <location filename="../qad_utils.py" line="1760"/>
+        <location filename="../qad_utils.py" line="1775"/>
+        <location filename="../qad_utils.py" line="1791"/>
+        <location filename="../qad_utils.py" line="1806"/>
+        <location filename="../qad_utils.py" line="1821"/>
+        <location filename="../qad_utils.py" line="1836"/>
+        <location filename="../qad_utils.py" line="1851"/>
         <location filename="../qad_variables.py" line="1059"/>
         <source>TOLERANCE2COINCIDENT</source>
         <translation></translation>
@@ -8350,26 +8350,26 @@ The aperture box is a box that appears inside the crosshairs when you snap to an
     </message>
     <message>
         <location filename="../qad_commands.py" line="250"/>
-        <location filename="../qad_commands.py" line="315"/>
-        <source>You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?</source>
+        <location filename="../qad_commands.py" line="314"/>
+        <source>You have run out of daily commands available for this version of QAD, your reasonable donation will allow us to adapt the product to your needs. Do you want to donate ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qad_commands.py" line="290"/>
-        <location filename="../qad_commands.py" line="324"/>
-        <location filename="../qad_commands.py" line="599"/>
+        <location filename="../qad_commands.py" line="289"/>
+        <location filename="../qad_commands.py" line="322"/>
+        <location filename="../qad_commands.py" line="597"/>
         <location filename="../qad_textwindow.py" line="1021"/>
         <source>
 Invalid command &quot;{0}&quot;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_commands.py" line="392"/>
+        <location filename="../qad_commands.py" line="390"/>
         <source>*Canceled*</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_commands.py" line="676"/>
+        <location filename="../qad_commands.py" line="674"/>
         <source>Well, this is embarrassing !
 
 </source>
@@ -8518,12 +8518,12 @@ Boolean not valid.
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="118"/>
+        <location filename="../qad_utils.py" line="117"/>
         <source> or </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="120"/>
+        <location filename="../qad_utils.py" line="119"/>
         <source> ?
 </source>
         <translation></translation>
@@ -8536,68 +8536,68 @@ Boolean not valid.
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="112"/>
+        <location filename="../qad_utils.py" line="111"/>
         <source>
 Ambiguous answer: specify with more clarity...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="371"/>
+        <location filename="../qad_utils.py" line="370"/>
         <source>N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="372"/>
+        <location filename="../qad_utils.py" line="371"/>
         <source>NO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="373"/>
+        <location filename="../qad_utils.py" line="372"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qad_utils.py" line="374"/>
+        <location filename="../qad_utils.py" line="373"/>
         <source>FALSE</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="663"/>
         <location filename="../qad_options_dlg.py" line="694"/>
-        <location filename="../qad_utils.py" line="188"/>
-        <location filename="../qad_utils.py" line="221"/>
+        <location filename="../qad_utils.py" line="187"/>
+        <location filename="../qad_utils.py" line="220"/>
         <source>: enter a number</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="665"/>
-        <location filename="../qad_utils.py" line="190"/>
+        <location filename="../qad_utils.py" line="189"/>
         <source> &gt;= {0}</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="668"/>
         <location filename="../qad_options_dlg.py" line="701"/>
-        <location filename="../qad_utils.py" line="193"/>
-        <location filename="../qad_utils.py" line="228"/>
+        <location filename="../qad_utils.py" line="192"/>
+        <location filename="../qad_utils.py" line="227"/>
         <source> and</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="669"/>
-        <location filename="../qad_utils.py" line="194"/>
+        <location filename="../qad_utils.py" line="193"/>
         <source> &lt;= {0}</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="696"/>
-        <location filename="../qad_utils.py" line="223"/>
+        <location filename="../qad_utils.py" line="222"/>
         <source> &gt; {0}</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../qad_options_dlg.py" line="702"/>
-        <location filename="../qad_utils.py" line="229"/>
+        <location filename="../qad_utils.py" line="228"/>
         <source> &lt; {0}</source>
         <translation></translation>
     </message>

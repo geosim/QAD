@@ -6460,7 +6460,11 @@ Réponse ambiguë: précisez avec plus de clarté...</translation>
     </message>
     <message>
         <source>You have run out of daily commands available for this version of QAD, might you think about making a donation to get the unlimited version ?</source>
-        <translation>Vous n&apos;avez plus de commandes quotidiennes disponibles pour cette version de QAD, pourriez-vous penser à faire un don pour obtenir la version illimitée ?</translation>
+        <translation type="vanished">Vous n&apos;avez plus de commandes quotidiennes disponibles pour cette version de QAD, pourriez-vous penser à faire un don pour obtenir la version illimitée ?</translation>
+    </message>
+    <message>
+        <source>You have run out of daily commands available for this version of QAD, your reasonable donation will allow us to adapt the product to your needs. Do you want to donate ?</source>
+        <translation>Vous n&apos;avez plus de commandes quotidiennes disponibles pour cette version de QAD, votre don raisonnable nous permettra d&apos;adapter le produit à vos besoins. Voulez-vous faire un don ?</translation>
     </message>
 </context>
 <context>
